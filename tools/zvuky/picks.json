@@ -1,0 +1,1538 @@
+[
+{
+"pack": "interface-sounds",
+"path": "raw/interface-sounds/x/Audio/back_001.ogg",
+"dur": 0.06,
+"cat": "Rozhraní"
+},
+{
+"pack": "interface-sounds",
+"path": "raw/interface-sounds/x/Audio/bong_001.ogg",
+"dur": 0.12,
+"cat": "Rozhraní"
+},
+{
+"pack": "interface-sounds",
+"path": "raw/interface-sounds/x/Audio/close_004.ogg",
+"dur": 0.32,
+"cat": "Rozhraní"
+},
+{
+"pack": "interface-sounds",
+"path": "raw/interface-sounds/x/Audio/confirmation_002.ogg",
+"dur": 0.54,
+"cat": "Rozhraní"
+},
+{
+"pack": "interface-sounds",
+"path": "raw/interface-sounds/x/Audio/confirmation_004.ogg",
+"dur": 0.49,
+"cat": "Rozhraní"
+},
+{
+"pack": "interface-sounds",
+"path": "raw/interface-sounds/x/Audio/drop_004.ogg",
+"dur": 0.29,
+"cat": "Rozhraní"
+},
+{
+"pack": "interface-sounds",
+"path": "raw/interface-sounds/x/Audio/error_008.ogg",
+"dur": 0.14,
+"cat": "Rozhraní"
+},
+{
+"pack": "interface-sounds",
+"path": "raw/interface-sounds/x/Audio/glass_004.ogg",
+"dur": 0.69,
+"cat": "Rozhraní"
+},
+{
+"pack": "interface-sounds",
+"path": "raw/interface-sounds/x/Audio/glitch_004.ogg",
+"dur": 0.02,
+"cat": "Rozhraní"
+},
+{
+"pack": "interface-sounds",
+"path": "raw/interface-sounds/x/Audio/maximize_008.ogg",
+"dur": 0.23,
+"cat": "Rozhraní"
+},
+{
+"pack": "interface-sounds",
+"path": "raw/interface-sounds/x/Audio/minimize_005.ogg",
+"dur": 0.53,
+"cat": "Rozhraní"
+},
+{
+"pack": "interface-sounds",
+"path": "raw/interface-sounds/x/Audio/open_004.ogg",
+"dur": 0.32,
+"cat": "Rozhraní"
+},
+{
+"pack": "interface-sounds",
+"path": "raw/interface-sounds/x/Audio/pluck_002.ogg",
+"dur": 0.16,
+"cat": "Rozhraní"
+},
+{
+"pack": "interface-sounds",
+"path": "raw/interface-sounds/x/Audio/scratch_004.ogg",
+"dur": 0.33,
+"cat": "Rozhraní"
+},
+{
+"pack": "interface-sounds",
+"path": "raw/interface-sounds/x/Audio/scroll_003.ogg",
+"dur": 1.0,
+"cat": "Rozhraní"
+},
+{
+"pack": "interface-sounds",
+"path": "raw/interface-sounds/x/Audio/select_003.ogg",
+"dur": 0.38,
+"cat": "Rozhraní"
+},
+{
+"pack": "interface-sounds",
+"path": "raw/interface-sounds/x/Audio/select_007.ogg",
+"dur": 0.05,
+"cat": "Rozhraní"
+},
+{
+"pack": "interface-sounds",
+"path": "raw/interface-sounds/x/Audio/switch_006.ogg",
+"dur": 0.61,
+"cat": "Rozhraní"
+},
+{
+"pack": "interface-sounds",
+"path": "raw/interface-sounds/x/Audio/tick_004.ogg",
+"dur": 0.05,
+"cat": "Rozhraní"
+},
+{
+"pack": "interface-sounds",
+"path": "raw/interface-sounds/x/Audio/toggle_004.ogg",
+"dur": 0.07,
+"cat": "Rozhraní"
+},
+{
+"pack": "interface-beeps",
+"path": "raw/interface-beeps/x/Beeps/beep-06.wav",
+"dur": 0.86,
+"cat": "Rozhraní"
+},
+{
+"pack": "interface-beeps",
+"path": "raw/interface-beeps/x/Beeps/beep-12.wav",
+"dur": 0.86,
+"cat": "Rozhraní"
+},
+{
+"pack": "gui-sound-effects",
+"path": "raw/gui-sound-effects/x/GUI_Sound_Effects_by_Lokif/click.wav",
+"dur": 1.72,
+"cat": "Rozhraní"
+},
+{
+"pack": "gui-sound-effects",
+"path": "raw/gui-sound-effects/x/GUI_Sound_Effects_by_Lokif/misc_menu.wav",
+"dur": 1.72,
+"cat": "Rozhraní"
+},
+{
+"pack": "gui-sound-effects",
+"path": "raw/gui-sound-effects/x/GUI_Sound_Effects_by_Lokif/positive.wav",
+"dur": 1.72,
+"cat": "Rozhraní"
+},
+{
+"pack": "gui-sound-effects",
+"path": "raw/gui-sound-effects/x/GUI_Sound_Effects_by_Lokif/sharp_echo.wav",
+"dur": 1.72,
+"cat": "Rozhraní"
+},
+{
+"pack": "droning-sound-effects",
+"path": "raw/droning-sound-effects/drone53.wav",
+"dur": 120.0,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "droning-sound-effects",
+"path": "raw/droning-sound-effects/drone54.wav",
+"dur": 120.0,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "space-winds",
+"path": "raw/space-winds/space-wind_0.mp3",
+"dur": 48.64,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "space-ship-floating-sounds2",
+"path": "raw/space-ship-floating-sounds2/space_ship_floating_sound.mp3",
+"dur": 19.51,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "space-ship-floating-sounds2",
+"path": "raw/space-ship-floating-sounds2/space_ship_floating_sound_1.mp3",
+"dur": 19.52,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "7-space-sounds",
+"path": "raw/7-space-sounds/7 Space Sounds_1.mp3",
+"dur": 16.69,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "dark-ambiences",
+"path": "raw/dark-ambiences/x/dark_ambiences/ambience-2.wav",
+"dur": 1.81,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "dark-ambiences",
+"path": "raw/dark-ambiences/x/dark_ambiences/ambience-3.wav",
+"dur": 1.69,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "dark-ambiences",
+"path": "raw/dark-ambiences/x/dark_ambiences/ambience-4.wav",
+"dur": 1.4,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "dark-ambiences",
+"path": "raw/dark-ambiences/x/dark_ambiences/ambience-5.wav",
+"dur": 3.44,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "4-atmospheric-ghostly-loops",
+"path": "raw/4-atmospheric-ghostly-loops/x/atmosmoody/atmoseerie02.mp3.flac",
+"dur": 20.01,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "4-atmospheric-ghostly-loops",
+"path": "raw/4-atmospheric-ghostly-loops/x/atmosmoody/atmoseerie03.mp3.flac",
+"dur": 20.04,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "4-atmospheric-ghostly-loops",
+"path": "raw/4-atmospheric-ghostly-loops/x/atmosmoody/atmoseerie04.mp3.flac",
+"dur": 20.04,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "30-cc0-sfx-loops",
+"path": "raw/30-cc0-sfx-loops/x/ambient_02.ogg",
+"dur": 3.17,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "30-cc0-sfx-loops",
+"path": "raw/30-cc0-sfx-loops/x/ambient_03.ogg",
+"dur": 7.04,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "30-cc0-sfx-loops",
+"path": "raw/30-cc0-sfx-loops/x/noise_01.ogg",
+"dur": 7.23,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "30-cc0-sfx-loops",
+"path": "raw/30-cc0-sfx-loops/x/noise_02.ogg",
+"dur": 3.86,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "100-cc0-sfx-2",
+"path": "raw/100-cc0-sfx-2/x/sfx100v2_loop_ambient_01.ogg",
+"dur": 10.09,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "100-cc0-sfx-2",
+"path": "raw/100-cc0-sfx-2/x/sfx100v2_loop_ambient_02.ogg",
+"dur": 3.0,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "100-cc0-sfx-2",
+"path": "raw/100-cc0-sfx-2/x/sfx100v2_loop_ambient_03.ogg",
+"dur": 3.51,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "100-cc0-sfx-2",
+"path": "raw/100-cc0-sfx-2/x/sfx100v2_loop_ambient_04.ogg",
+"dur": 10.12,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/loop_ambient_weird.ogg",
+"dur": 3.2,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "60-cc0-sci-fi-sfx",
+"path": "raw/60-cc0-sci-fi-sfx/x/sfx_11a.ogg",
+"dur": 6.86,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "60-cc0-sci-fi-sfx",
+"path": "raw/60-cc0-sci-fi-sfx/x/sfx_11c.ogg",
+"dur": 8.93,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "60-cc0-sci-fi-sfx",
+"path": "raw/60-cc0-sci-fi-sfx/x/sfx_19b.ogg",
+"dur": 42.8,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "60-cc0-sci-fi-sfx",
+"path": "raw/60-cc0-sci-fi-sfx/x/sfx_19c.ogg",
+"dur": 41.87,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "reversing-time-stuck-in-time",
+"path": "raw/reversing-time-stuck-in-time/Reverse-Time-Loop-isaiah658.wav",
+"dur": 21.33,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "wind1",
+"path": "raw/wind1/wind1.wav",
+"dur": 60.0,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/computerNoise_000.ogg",
+"dur": 5.0,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/computerNoise_001.ogg",
+"dur": 5.0,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/computerNoise_003.ogg",
+"dur": 5.0,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "static",
+"path": "raw/static/ScatterNoise1.mp3",
+"dur": 30.04,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "frequency-static-sound-effects",
+"path": "raw/frequency-static-sound-effects/static1.wav",
+"dur": 120.0,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "dripping-water-loop",
+"path": "raw/dripping-water-loop/atmosbasement.mp3_.flac",
+"dur": 20.06,
+"cat": "Ambient a hukot"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/doorClose_000.ogg",
+"dur": 0.53,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/doorOpen_000.ogg",
+"dur": 0.53,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/doorOpen_002.ogg",
+"dur": 0.53,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "100-cc0-sfx",
+"path": "raw/100-cc0-sfx/x/door_02.ogg",
+"dur": 2.64,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "100-cc0-sfx",
+"path": "raw/100-cc0-sfx/x/door_close_01.ogg",
+"dur": 0.5,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "100-cc0-sfx",
+"path": "raw/100-cc0-sfx/x/door_open.ogg",
+"dur": 0.45,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "100-cc0-sfx",
+"path": "raw/100-cc0-sfx/x/key_open_01.ogg",
+"dur": 0.43,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "100-cc0-sfx",
+"path": "raw/100-cc0-sfx/x/microwave_door_open.ogg",
+"dur": 0.75,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "100-cc0-sfx",
+"path": "raw/100-cc0-sfx/x/switch_01.ogg",
+"dur": 0.23,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "100-cc0-metal-and-wood-sfx",
+"path": "raw/100-cc0-metal-and-wood-sfx/x/door_open_01.ogg",
+"dur": 0.43,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "100-cc0-metal-and-wood-sfx",
+"path": "raw/100-cc0-metal-and-wood-sfx/x/lock_open_01.ogg",
+"dur": 0.74,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "100-cc0-metal-and-wood-sfx",
+"path": "raw/100-cc0-metal-and-wood-sfx/x/metal_open_01.ogg",
+"dur": 1.15,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "100-cc0-metal-and-wood-sfx",
+"path": "raw/100-cc0-metal-and-wood-sfx/x/metal_slam_01.ogg",
+"dur": 0.57,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "platformer-sounds-terminal-interaction-door-shots-bang-and-footsteps",
+"path": "raw/platformer-sounds-terminal-interaction-door-shots-bang-and-footsteps/x/yd-Sounds/boxopen.ogg",
+"dur": 1.36,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "platformer-sounds-terminal-interaction-door-shots-bang-and-footsteps",
+"path": "raw/platformer-sounds-terminal-interaction-door-shots-bang-and-footsteps/x/yd-Sounds/cogs.ogg",
+"dur": 1.51,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "100-cc0-sfx-2",
+"path": "raw/100-cc0-sfx-2/x/sfx100v2_air_01.ogg",
+"dur": 2.64,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "100-cc0-sfx-2",
+"path": "raw/100-cc0-sfx-2/x/sfx100v2_air_02.ogg",
+"dur": 1.11,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "100-cc0-sfx-2",
+"path": "raw/100-cc0-sfx-2/x/sfx100v2_door_01.ogg",
+"dur": 0.41,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "100-cc0-sfx-2",
+"path": "raw/100-cc0-sfx-2/x/sfx100v2_door_03.ogg",
+"dur": 0.75,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "steam-release-sounds",
+"path": "raw/steam-release-sounds/x/steam hisses - Marker #1.wav",
+"dur": 1.85,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "steam-release-sounds",
+"path": "raw/steam-release-sounds/x/steam hisses - Marker #2.wav",
+"dur": 1.85,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "steam-release-sounds",
+"path": "raw/steam-release-sounds/x/steam hisses - Marker #4.wav",
+"dur": 1.85,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "door-open-door-close-set",
+"path": "raw/door-open-door-close-set/x/qubodup-DoorSet/flac/qubodup-DoorClose02.flac",
+"dur": 1.0,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "door-open-door-close-set",
+"path": "raw/door-open-door-close-set/x/qubodup-DoorSet/flac/qubodup-DoorClose08.flac",
+"dur": 1.0,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "door-open-door-close-set",
+"path": "raw/door-open-door-close-set/x/qubodup-DoorSet/flac/qubodup-DoorOpen01.flac",
+"dur": 1.0,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "door-open-door-close-set",
+"path": "raw/door-open-door-close-set/x/qubodup-DoorSet/flac/qubodup-DoorOpen07.flac",
+"dur": 1.0,
+"cat": "Dveře, zámky, hydraulika"
+},
+{
+"pack": "100-cc0-sfx",
+"path": "raw/100-cc0-sfx/x/bell_01.ogg",
+"dur": 1.3,
+"cat": "Kov, zvony, údery"
+},
+{
+"pack": "100-cc0-sfx",
+"path": "raw/100-cc0-sfx/x/bell_03.ogg",
+"dur": 1.78,
+"cat": "Kov, zvony, údery"
+},
+{
+"pack": "100-cc0-sfx",
+"path": "raw/100-cc0-sfx/x/gong_01.ogg",
+"dur": 1.42,
+"cat": "Kov, zvony, údery"
+},
+{
+"pack": "100-cc0-sfx",
+"path": "raw/100-cc0-sfx/x/metal_04.ogg",
+"dur": 1.0,
+"cat": "Kov, zvony, údery"
+},
+{
+"pack": "100-cc0-sfx",
+"path": "raw/100-cc0-sfx/x/metal_05.ogg",
+"dur": 0.84,
+"cat": "Kov, zvony, údery"
+},
+{
+"pack": "100-cc0-sfx",
+"path": "raw/100-cc0-sfx/x/metal_12.ogg",
+"dur": 1.23,
+"cat": "Kov, zvony, údery"
+},
+{
+"pack": "100-cc0-sfx",
+"path": "raw/100-cc0-sfx/x/slam_01.ogg",
+"dur": 0.47,
+"cat": "Kov, zvony, údery"
+},
+{
+"pack": "100-cc0-sfx",
+"path": "raw/100-cc0-sfx/x/spring_01.ogg",
+"dur": 1.3,
+"cat": "Kov, zvony, údery"
+},
+{
+"pack": "100-cc0-sfx",
+"path": "raw/100-cc0-sfx/x/spring_06.ogg",
+"dur": 0.91,
+"cat": "Kov, zvony, údery"
+},
+{
+"pack": "100-cc0-metal-and-wood-sfx",
+"path": "raw/100-cc0-metal-and-wood-sfx/x/hammer_01.ogg",
+"dur": 0.5,
+"cat": "Kov, zvony, údery"
+},
+{
+"pack": "100-cc0-metal-and-wood-sfx",
+"path": "raw/100-cc0-metal-and-wood-sfx/x/metal_hit_01.ogg",
+"dur": 0.27,
+"cat": "Kov, zvony, údery"
+},
+{
+"pack": "100-cc0-metal-and-wood-sfx",
+"path": "raw/100-cc0-metal-and-wood-sfx/x/metal_hit_03.ogg",
+"dur": 0.4,
+"cat": "Kov, zvony, údery"
+},
+{
+"pack": "100-cc0-metal-and-wood-sfx",
+"path": "raw/100-cc0-metal-and-wood-sfx/x/metal_sheet_06.ogg",
+"dur": 0.62,
+"cat": "Kov, zvony, údery"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/impactMetal_000.ogg",
+"dur": 0.63,
+"cat": "Kov, zvony, údery"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/impactMetal_001.ogg",
+"dur": 0.69,
+"cat": "Kov, zvony, údery"
+},
+{
+"pack": "metal-interactions",
+"path": "raw/metal-interactions/x/metal_interactions/metal_button_press1.wav",
+"dur": 0.7,
+"cat": "Kov, zvony, údery"
+},
+{
+"pack": "metal-interactions",
+"path": "raw/metal-interactions/x/metal_interactions/metal_button_press2.wav",
+"dur": 0.79,
+"cat": "Kov, zvony, údery"
+},
+{
+"pack": "metal-interactions",
+"path": "raw/metal-interactions/x/metal_interactions/metal_interaction2.wav",
+"dur": 0.5,
+"cat": "Kov, zvony, údery"
+},
+{
+"pack": "metal-interactions",
+"path": "raw/metal-interactions/x/metal_interactions/metal_swing1.wav",
+"dur": 0.88,
+"cat": "Kov, zvony, údery"
+},
+{
+"pack": "impact",
+"path": "raw/impact/x/qubodupImpact/qubodupImpactStone.flac",
+"dur": 0.5,
+"cat": "Kov, zvony, údery"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/beep_01.ogg",
+"dur": 0.32,
+"cat": "Pípání a terminály"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/beep_03.ogg",
+"dur": 0.24,
+"cat": "Pípání a terminály"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/retro_beep_01.ogg",
+"dur": 0.51,
+"cat": "Pípání a terminály"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/retro_beep_03.ogg",
+"dur": 0.53,
+"cat": "Pípání a terminály"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/retro_beep_04.ogg",
+"dur": 0.72,
+"cat": "Pípání a terminály"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/retro_beep_06.ogg",
+"dur": 0.67,
+"cat": "Pípání a terminály"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/terminal_01.ogg",
+"dur": 0.4,
+"cat": "Pípání a terminály"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/terminal_05.ogg",
+"dur": 0.38,
+"cat": "Pípání a terminály"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/terminal_07.ogg",
+"dur": 0.26,
+"cat": "Pípání a terminály"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/highDown.mp3",
+"dur": 0.5,
+"cat": "Pípání a terminály"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/highUp.mp3",
+"dur": 0.52,
+"cat": "Pípání a terminály"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/lowRandom.mp3",
+"dur": 0.52,
+"cat": "Pípání a terminály"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/lowThreeTone.mp3",
+"dur": 0.99,
+"cat": "Pípání a terminály"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/pepSound2.mp3",
+"dur": 0.52,
+"cat": "Pípání a terminály"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/pepSound3.mp3",
+"dur": 0.42,
+"cat": "Pípání a terminály"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/pepSound5.mp3",
+"dur": 0.6,
+"cat": "Pípání a terminály"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/threeTone1.mp3",
+"dur": 1.72,
+"cat": "Pípání a terminály"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/tone1.mp3",
+"dur": 1.57,
+"cat": "Pípání a terminály"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/twoTone1.mp3",
+"dur": 1.2,
+"cat": "Pípání a terminály"
+},
+{
+"pack": "platformer-sounds-terminal-interaction-door-shots-bang-and-footsteps",
+"path": "raw/platformer-sounds-terminal-interaction-door-shots-bang-and-footsteps/x/yd-Sounds/beep_message.ogg",
+"dur": 3.71,
+"cat": "Pípání a terminály"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/laser1.mp3",
+"dur": 1.62,
+"cat": "Lasery a výboje"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/laser3.mp3",
+"dur": 1.91,
+"cat": "Lasery a výboje"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/laser4.mp3",
+"dur": 1.75,
+"cat": "Lasery a výboje"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/laser6.mp3",
+"dur": 1.28,
+"cat": "Lasery a výboje"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/laser8.mp3",
+"dur": 1.52,
+"cat": "Lasery a výboje"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/laser9.mp3",
+"dur": 1.28,
+"cat": "Lasery a výboje"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/phaserDown3.mp3",
+"dur": 0.47,
+"cat": "Lasery a výboje"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/phaserUp4.mp3",
+"dur": 0.34,
+"cat": "Lasery a výboje"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/phaserUp7.mp3",
+"dur": 0.34,
+"cat": "Lasery a výboje"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/zap2.mp3",
+"dur": 1.2,
+"cat": "Lasery a výboje"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/zapThreeToneDown.mp3",
+"dur": 1.31,
+"cat": "Lasery a výboje"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/zapTwoTone.mp3",
+"dur": 1.28,
+"cat": "Lasery a výboje"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/laserLarge_002.ogg",
+"dur": 0.74,
+"cat": "Lasery a výboje"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/laserRetro_000.ogg",
+"dur": 0.24,
+"cat": "Lasery a výboje"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/laserSmall_000.ogg",
+"dur": 0.24,
+"cat": "Lasery a výboje"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/retro_laser_01.ogg",
+"dur": 0.53,
+"cat": "Lasery a výboje"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/retro_laser_02.ogg",
+"dur": 1.24,
+"cat": "Lasery a výboje"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/shoot_02.ogg",
+"dur": 0.15,
+"cat": "Lasery a výboje"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/misc_03.ogg",
+"dur": 1.47,
+"cat": "Podivnosti"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/misc_06.ogg",
+"dur": 0.86,
+"cat": "Podivnosti"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/misc_12.ogg",
+"dur": 0.82,
+"cat": "Podivnosti"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/weird_01.ogg",
+"dur": 0.7,
+"cat": "Podivnosti"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/weird_03.ogg",
+"dur": 0.96,
+"cat": "Podivnosti"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/weird_04.ogg",
+"dur": 1.9,
+"cat": "Podivnosti"
+},
+{
+"pack": "30-cc0-sfx-loops",
+"path": "raw/30-cc0-sfx-loops/x/weird_01.ogg",
+"dur": 1.15,
+"cat": "Podivnosti"
+},
+{
+"pack": "30-cc0-sfx-loops",
+"path": "raw/30-cc0-sfx-loops/x/weird_02.ogg",
+"dur": 2.28,
+"cat": "Podivnosti"
+},
+{
+"pack": "100-cc0-sfx",
+"path": "raw/100-cc0-sfx/x/weird_02.ogg",
+"dur": 0.71,
+"cat": "Podivnosti"
+},
+{
+"pack": "100-cc0-sfx",
+"path": "raw/100-cc0-sfx/x/weird_04.ogg",
+"dur": 1.07,
+"cat": "Podivnosti"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/spaceTrash1.mp3",
+"dur": 1.93,
+"cat": "Podivnosti"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/spaceTrash2.mp3",
+"dur": 2.12,
+"cat": "Podivnosti"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/spaceTrash4.mp3",
+"dur": 2.3,
+"cat": "Podivnosti"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/spaceTrash5.mp3",
+"dur": 2.35,
+"cat": "Podivnosti"
+},
+{
+"pack": "100-cc0-sfx-2",
+"path": "raw/100-cc0-sfx-2/x/sfx100v2_misc_12.ogg",
+"dur": 2.47,
+"cat": "Podivnosti"
+},
+{
+"pack": "100-cc0-sfx-2",
+"path": "raw/100-cc0-sfx-2/x/sfx100v2_misc_22.ogg",
+"dur": 3.22,
+"cat": "Podivnosti"
+},
+{
+"pack": "100-cc0-sfx-2",
+"path": "raw/100-cc0-sfx-2/x/sfx100v2_misc_37.ogg",
+"dur": 4.85,
+"cat": "Podivnosti"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/slime_001.ogg",
+"dur": 4.71,
+"cat": "Podivnosti"
+},
+{
+"pack": "60-cc0-sci-fi-sfx",
+"path": "raw/60-cc0-sci-fi-sfx/x/sfx_03a.ogg",
+"dur": 0.49,
+"cat": "Podivnosti"
+},
+{
+"pack": "60-cc0-sci-fi-sfx",
+"path": "raw/60-cc0-sci-fi-sfx/x/sfx_05a.ogg",
+"dur": 0.42,
+"cat": "Podivnosti"
+},
+{
+"pack": "60-cc0-sci-fi-sfx",
+"path": "raw/60-cc0-sci-fi-sfx/x/sfx_08a.ogg",
+"dur": 0.69,
+"cat": "Podivnosti"
+},
+{
+"pack": "60-cc0-sci-fi-sfx",
+"path": "raw/60-cc0-sci-fi-sfx/x/sfx_10a.ogg",
+"dur": 0.3,
+"cat": "Podivnosti"
+},
+{
+"pack": "60-cc0-sci-fi-sfx",
+"path": "raw/60-cc0-sci-fi-sfx/x/sfx_14a.ogg",
+"dur": 0.43,
+"cat": "Podivnosti"
+},
+{
+"pack": "60-cc0-sci-fi-sfx",
+"path": "raw/60-cc0-sci-fi-sfx/x/sfx_16a.ogg",
+"dur": 2.61,
+"cat": "Podivnosti"
+},
+{
+"pack": "60-cc0-sci-fi-sfx",
+"path": "raw/60-cc0-sci-fi-sfx/x/sfx_21a.ogg",
+"dur": 0.55,
+"cat": "Podivnosti"
+},
+{
+"pack": "60-cc0-sci-fi-sfx",
+"path": "raw/60-cc0-sci-fi-sfx/x/sfx_22a.ogg",
+"dur": 0.33,
+"cat": "Podivnosti"
+},
+{
+"pack": "30-cc0-sfx-loops",
+"path": "raw/30-cc0-sfx-loops/x/alarm_01.ogg",
+"dur": 1.98,
+"cat": "Stroje a smyčky"
+},
+{
+"pack": "30-cc0-sfx-loops",
+"path": "raw/30-cc0-sfx-loops/x/alarm_02.ogg",
+"dur": 0.68,
+"cat": "Stroje a smyčky"
+},
+{
+"pack": "30-cc0-sfx-loops",
+"path": "raw/30-cc0-sfx-loops/x/machine_01.ogg",
+"dur": 1.2,
+"cat": "Stroje a smyčky"
+},
+{
+"pack": "30-cc0-sfx-loops",
+"path": "raw/30-cc0-sfx-loops/x/machine_03.ogg",
+"dur": 0.79,
+"cat": "Stroje a smyčky"
+},
+{
+"pack": "30-cc0-sfx-loops",
+"path": "raw/30-cc0-sfx-loops/x/machine_05.ogg",
+"dur": 1.19,
+"cat": "Stroje a smyčky"
+},
+{
+"pack": "30-cc0-sfx-loops",
+"path": "raw/30-cc0-sfx-loops/x/machine_08.ogg",
+"dur": 4.53,
+"cat": "Stroje a smyčky"
+},
+{
+"pack": "30-cc0-sfx-loops",
+"path": "raw/30-cc0-sfx-loops/x/machine_09.ogg",
+"dur": 2.7,
+"cat": "Stroje a smyčky"
+},
+{
+"pack": "30-cc0-sfx-loops",
+"path": "raw/30-cc0-sfx-loops/x/machine_11.ogg",
+"dur": 5.67,
+"cat": "Stroje a smyčky"
+},
+{
+"pack": "30-cc0-sfx-loops",
+"path": "raw/30-cc0-sfx-loops/x/pump_02.ogg",
+"dur": 2.11,
+"cat": "Stroje a smyčky"
+},
+{
+"pack": "30-cc0-sfx-loops",
+"path": "raw/30-cc0-sfx-loops/x/rolling.ogg",
+"dur": 1.06,
+"cat": "Stroje a smyčky"
+},
+{
+"pack": "30-cc0-sfx-loops",
+"path": "raw/30-cc0-sfx-loops/x/saw.ogg",
+"dur": 2.34,
+"cat": "Stroje a smyčky"
+},
+{
+"pack": "100-cc0-sfx-2",
+"path": "raw/100-cc0-sfx-2/x/sfx100v2_loop_machine_01.ogg",
+"dur": 7.56,
+"cat": "Stroje a smyčky"
+},
+{
+"pack": "100-cc0-sfx-2",
+"path": "raw/100-cc0-sfx-2/x/sfx100v2_loop_machine_03.ogg",
+"dur": 1.84,
+"cat": "Stroje a smyčky"
+},
+{
+"pack": "100-cc0-sfx-2",
+"path": "raw/100-cc0-sfx-2/x/sfx100v2_loop_machine_04.ogg",
+"dur": 4.58,
+"cat": "Stroje a smyčky"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/loop_machine_01.ogg",
+"dur": 3.11,
+"cat": "Stroje a smyčky"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/loop_machine_03.ogg",
+"dur": 4.66,
+"cat": "Stroje a smyčky"
+},
+{
+"pack": "steam-boiler-sound-loop",
+"path": "raw/steam-boiler-sound-loop/generator_loop.wav",
+"dur": 22.15,
+"cat": "Stroje a smyčky"
+},
+{
+"pack": "short-alarm",
+"path": "raw/short-alarm/alarm_0.ogg",
+"dur": 1.71,
+"cat": "Stroje a smyčky"
+},
+{
+"pack": "100-cc0-sfx",
+"path": "raw/100-cc0-sfx/x/machine_02.ogg",
+"dur": 0.53,
+"cat": "Stroje a smyčky"
+},
+{
+"pack": "100-cc0-sfx",
+"path": "raw/100-cc0-sfx/x/machine_03.ogg",
+"dur": 0.46,
+"cat": "Stroje a smyčky"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/phaseJump1.mp3",
+"dur": 0.44,
+"cat": "Energie a přechody"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/phaseJump3.mp3",
+"dur": 0.42,
+"cat": "Energie a přechody"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/powerUp1.mp3",
+"dur": 1.18,
+"cat": "Energie a přechody"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/powerUp10.mp3",
+"dur": 0.63,
+"cat": "Energie a přechody"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/powerUp12.mp3",
+"dur": 0.84,
+"cat": "Energie a přechody"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/powerUp3.mp3",
+"dur": 1.12,
+"cat": "Energie a přechody"
+},
+{
+"pack": "63-digital-sound-effects-lasers-phasers-space-etc",
+"path": "raw/63-digital-sound-effects-lasers-phasers-space-etc/x/powerUp8.mp3",
+"dur": 0.55,
+"cat": "Energie a přechody"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/teleport_01.ogg",
+"dur": 0.45,
+"cat": "Energie a přechody"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/teleport_02.ogg",
+"dur": 1.74,
+"cat": "Energie a přechody"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/forceField_000.ogg",
+"dur": 0.95,
+"cat": "Energie a přechody"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/forceField_004.ogg",
+"dur": 0.95,
+"cat": "Energie a přechody"
+},
+{
+"pack": "space-ship-shield-sounds",
+"path": "raw/space-ship-shield-sounds/x/space shield sounds - 1.wav",
+"dur": 1.67,
+"cat": "Energie a přechody"
+},
+{
+"pack": "space-ship-shield-sounds",
+"path": "raw/space-ship-shield-sounds/x/space shield sounds - 3.wav",
+"dur": 1.72,
+"cat": "Energie a přechody"
+},
+{
+"pack": "space-ship-shield-sounds",
+"path": "raw/space-ship-shield-sounds/x/space shield sounds - 5.wav",
+"dur": 1.71,
+"cat": "Energie a přechody"
+},
+{
+"pack": "energy-drain",
+"path": "raw/energy-drain/x/qubodup-PowerDrain/flac/qubodup-PowerDrain.flac",
+"dur": 3.0,
+"cat": "Energie a přechody"
+},
+{
+"pack": "warp-engine-engage-sound",
+"path": "raw/warp-engine-engage-sound/warp engine engage_0-16bit.wav",
+"dur": 8.57,
+"cat": "Energie a přechody"
+},
+{
+"pack": "bubble-sound-effects",
+"path": "raw/bubble-sound-effects/bubbles-loop1-amp.wav",
+"dur": 4.85,
+"cat": "Voda a bubliny"
+},
+{
+"pack": "bubble-sound-effects",
+"path": "raw/bubble-sound-effects/bubbles-loop2-amp.wav",
+"dur": 6.76,
+"cat": "Voda a bubliny"
+},
+{
+"pack": "bubble-sound-effects",
+"path": "raw/bubble-sound-effects/bubbles-single2.wav",
+"dur": 0.44,
+"cat": "Voda a bubliny"
+},
+{
+"pack": "bubble-sound-effects",
+"path": "raw/bubble-sound-effects/bubbles-single3.wav",
+"dur": 0.41,
+"cat": "Voda a bubliny"
+},
+{
+"pack": "40-cc0-water-splash-slime-sfx",
+"path": "raw/40-cc0-water-splash-slime-sfx/x/bubble_02.ogg",
+"dur": 0.36,
+"cat": "Voda a bubliny"
+},
+{
+"pack": "40-cc0-water-splash-slime-sfx",
+"path": "raw/40-cc0-water-splash-slime-sfx/x/loop_bubbles_1.ogg",
+"dur": 4.41,
+"cat": "Voda a bubliny"
+},
+{
+"pack": "40-cc0-water-splash-slime-sfx",
+"path": "raw/40-cc0-water-splash-slime-sfx/x/loop_water_01.ogg",
+"dur": 3.38,
+"cat": "Voda a bubliny"
+},
+{
+"pack": "40-cc0-water-splash-slime-sfx",
+"path": "raw/40-cc0-water-splash-slime-sfx/x/loop_water_02.ogg",
+"dur": 7.01,
+"cat": "Voda a bubliny"
+},
+{
+"pack": "40-cc0-water-splash-slime-sfx",
+"path": "raw/40-cc0-water-splash-slime-sfx/x/slime_09.ogg",
+"dur": 0.65,
+"cat": "Voda a bubliny"
+},
+{
+"pack": "40-cc0-water-splash-slime-sfx",
+"path": "raw/40-cc0-water-splash-slime-sfx/x/splash_01.ogg",
+"dur": 1.38,
+"cat": "Voda a bubliny"
+},
+{
+"pack": "40-cc0-water-splash-slime-sfx",
+"path": "raw/40-cc0-water-splash-slime-sfx/x/splash_07.ogg",
+"dur": 1.26,
+"cat": "Voda a bubliny"
+},
+{
+"pack": "30-cc0-sfx-loops",
+"path": "raw/30-cc0-sfx-loops/x/water_boiling.ogg",
+"dur": 4.49,
+"cat": "Voda a bubliny"
+},
+{
+"pack": "100-cc0-sfx-2",
+"path": "raw/100-cc0-sfx-2/x/sfx100v2_loop_water_01.ogg",
+"dur": 6.37,
+"cat": "Voda a bubliny"
+},
+{
+"pack": "100-cc0-sfx-2",
+"path": "raw/100-cc0-sfx-2/x/sfx100v2_loop_water_03.ogg",
+"dur": 9.71,
+"cat": "Voda a bubliny"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/engineCircular_000.ogg",
+"dur": 5.0,
+"cat": "Motory a pohony"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/engineCircular_002.ogg",
+"dur": 5.0,
+"cat": "Motory a pohony"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/spaceEngineLarge_000.ogg",
+"dur": 5.0,
+"cat": "Motory a pohony"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/spaceEngineLarge_003.ogg",
+"dur": 5.0,
+"cat": "Motory a pohony"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/spaceEngineLow_000.ogg",
+"dur": 5.0,
+"cat": "Motory a pohony"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/spaceEngineLow_002.ogg",
+"dur": 5.0,
+"cat": "Motory a pohony"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/spaceEngineSmall_003.ogg",
+"dur": 5.0,
+"cat": "Motory a pohony"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/spaceEngine_000.ogg",
+"dur": 5.0,
+"cat": "Motory a pohony"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/spaceEngine_002.ogg",
+"dur": 5.0,
+"cat": "Motory a pohony"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/thrusterFire_000.ogg",
+"dur": 5.0,
+"cat": "Motory a pohony"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/thrusterFire_004.ogg",
+"dur": 5.0,
+"cat": "Motory a pohony"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/rocket_01.ogg",
+"dur": 2.05,
+"cat": "Motory a pohony"
+},
+{
+"pack": "atmospheric-interaction-sound-pack",
+"path": "raw/atmospheric-interaction-sound-pack/x/krank_sounds/industry/anchor_action.wav",
+"dur": 2.19,
+"cat": "Magnety a mechanismy"
+},
+{
+"pack": "atmospheric-interaction-sound-pack",
+"path": "raw/atmospheric-interaction-sound-pack/x/krank_sounds/water/anchor_action.wav",
+"dur": 3.58,
+"cat": "Magnety a mechanismy"
+},
+{
+"pack": "atmospheric-interaction-sound-pack",
+"path": "raw/atmospheric-interaction-sound-pack/x/krank_sounds/space/exit.wav",
+"dur": 2.81,
+"cat": "Magnety a mechanismy"
+},
+{
+"pack": "atmospheric-interaction-sound-pack",
+"path": "raw/atmospheric-interaction-sound-pack/x/krank_sounds/water/link.wav",
+"dur": 1.48,
+"cat": "Magnety a mechanismy"
+},
+{
+"pack": "atmospheric-interaction-sound-pack",
+"path": "raw/atmospheric-interaction-sound-pack/x/krank_sounds/summer/magnet_action.wav",
+"dur": 2.53,
+"cat": "Magnety a mechanismy"
+},
+{
+"pack": "atmospheric-interaction-sound-pack",
+"path": "raw/atmospheric-interaction-sound-pack/x/krank_sounds/space/magnet_off.wav",
+"dur": 1.15,
+"cat": "Magnety a mechanismy"
+},
+{
+"pack": "atmospheric-interaction-sound-pack",
+"path": "raw/atmospheric-interaction-sound-pack/x/krank_sounds/industry/magnet_on.wav",
+"dur": 2.11,
+"cat": "Magnety a mechanismy"
+},
+{
+"pack": "atmospheric-interaction-sound-pack",
+"path": "raw/atmospheric-interaction-sound-pack/x/krank_sounds/water/magnet_on.wav",
+"dur": 5.03,
+"cat": "Magnety a mechanismy"
+},
+{
+"pack": "atmospheric-interaction-sound-pack",
+"path": "raw/atmospheric-interaction-sound-pack/x/krank_sounds/summer/magnet_start.wav",
+"dur": 1.72,
+"cat": "Magnety a mechanismy"
+},
+{
+"pack": "atmospheric-interaction-sound-pack",
+"path": "raw/atmospheric-interaction-sound-pack/x/krank_sounds/industry/unlink.wav",
+"dur": 0.91,
+"cat": "Magnety a mechanismy"
+},
+{
+"pack": "atmospheric-interaction-sound-pack",
+"path": "raw/atmospheric-interaction-sound-pack/x/krank_sounds/water/unlink.wav",
+"dur": 1.27,
+"cat": "Magnety a mechanismy"
+},
+{
+"pack": "atmospheric-interaction-sound-pack",
+"path": "raw/atmospheric-interaction-sound-pack/x/krank_sounds/space/wall.wav",
+"dur": 0.95,
+"cat": "Magnety a mechanismy"
+},
+{
+"pack": "horde-war-drums-loop",
+"path": "raw/horde-war-drums-loop/horde_war_drums_by_william_hector.wav",
+"dur": 14.77,
+"cat": "Bubny a výbuchy"
+},
+{
+"pack": "an-interesting-snare-drum-sound",
+"path": "raw/an-interesting-snare-drum-sound/best_snare_0.wav",
+"dur": 0.49,
+"cat": "Bubny a výbuchy"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/explosionCrunch_000.ogg",
+"dur": 0.78,
+"cat": "Bubny a výbuchy"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/explosionCrunch_002.ogg",
+"dur": 1.26,
+"cat": "Bubny a výbuchy"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/explosionCrunch_004.ogg",
+"dur": 1.98,
+"cat": "Bubny a výbuchy"
+},
+{
+"pack": "sci-fi-sounds",
+"path": "raw/sci-fi-sounds/x/Audio/lowFrequency_explosion_000.ogg",
+"dur": 2.0,
+"cat": "Bubny a výbuchy"
+},
+{
+"pack": "muffled-distant-explosion",
+"path": "raw/muffled-distant-explosion/NenadSimic - Muffled Distant Explosion.wav",
+"dur": 5.14,
+"cat": "Bubny a výbuchy"
+},
+{
+"pack": "mechanical-explosion",
+"path": "raw/mechanical-explosion/mechanical_explosion.wav",
+"dur": 1.36,
+"cat": "Bubny a výbuchy"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/explosion_01.ogg",
+"dur": 1.84,
+"cat": "Bubny a výbuchy"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/explosion_02.ogg",
+"dur": 1.23,
+"cat": "Bubny a výbuchy"
+},
+{
+"pack": "50-cc0-sci-fi-sfx",
+"path": "raw/50-cc0-sci-fi-sfx/x/retro_explosion.ogg",
+"dur": 1.0,
+"cat": "Bubny a výbuchy"
+},
+{
+"pack": "100-cc0-sfx-2",
+"path": "raw/100-cc0-sfx-2/x/sfx100v2_thunder_01.ogg",
+"dur": 5.26,
+"cat": "Bubny a výbuchy"
+}
+]
