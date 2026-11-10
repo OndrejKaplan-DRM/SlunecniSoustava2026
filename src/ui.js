@@ -186,7 +186,7 @@ export function createUI(S, A) {
     music() { A.unlock(); A.setMusic(!A.music); G.music = A.music; save(); toast(A.music ? '🎵 Hudba zapnuta.' : 'Hudba vypnuta.'); },
     disco() { S.disco = !S.disco; S.orbMode = S.disco ? 2 : 1; A.play('disco'); toast(S.disco ? '🪩 Disko ve Sluneční soustavě! (Stejný kód ho zase vypne.)' : 'Disko skončilo.'); },
     dev() { if (toggle('#dev')) { A.play('secret'); drawDev(); } },
-    mode() { setMode(!G.kid); }, tut() { toggle('#help', false); tut.start(); },
+    mode() { setMode(!G.kid); }, tut() { if (document.body.classList.contains('mob') || document.body.classList.contains('touch')) return toast('Ukázka ovládání je jen pro počítač s myší a klávesnicí.'); toggle('#help', false); tut.start(); },
     sunf() { S.setSunMode((S.sunMode + 1) % 3); A.play(['sun_white', 'sun_halpha', 'sun_euv'][S.sunMode]); if (S.sel === SUN) drawCard(SUN); if (S.focus !== SUN) toast('Filtr Slunce: ' + ['bílé světlo', 'H-alfa', 'EUV 304 Å'][S.sunMode]); }, full() { A.play('full'); try { (document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen()).catch(() => toast('Celou obrazovku tady prohlížeč nepovolil.')); } catch (e) { toast('Celou obrazovku tady prohlížeč nepovolil.'); } } };
   $('#tools').addEventListener('click', (e) => { const t = e.target.closest('button'); if (!t) return; A.unlock(); if (act[t.dataset.a]) { if (['help', 'game', 'list', 'home', 'full', 'orb', 'lab', 'lock', 'con', 'stars', 'snd', 'mode', 'more'].indexOf(t.dataset.a) < 0) A.play('click'); act[t.dataset.a](); } setBtn(); S.wake(); });
   $('#gam').addEventListener('input', (e) => { S.setGamma(+e.target.value); });
@@ -223,7 +223,7 @@ export function createUI(S, A) {
     if (e.target.tagName === 'INPUT' && e.target.type !== 'range') { if (e.key === 'Escape') { e.target.blur(); toggle('#list', false); } if (e.key === 'Enter') { const f = $('#items .it'); if (f) { S.flyTo(+f.dataset.i); e.target.blur(); toggle('#list', false); } } return; }
     if (e.ctrlKey || e.metaKey || e.altKey) return; const k = e.key.length === 1 ? e.key.toLowerCase() : e.key; S.wake(); A.unlock();
     if (tut.running()) { if (k === 'Escape' || e.isTrusted) { e.preventDefault(); tut.stop(); } return; }
-    if ($('#splash').classList.contains('on')) { if (k === 'Enter' || k === ' ') { e.preventDefault(); $('#sp-tut').click(); } else if (k === 'Escape') $('#sp-go').click(); return; }
+    if ($('#splash').classList.contains('on')) { if (k === 'Enter' || k === ' ') { e.preventDefault(); ($('#sp-tut').offsetParent ? $('#sp-tut') : $('#sp-go')).click(); } else if (k === 'Escape') $('#sp-go').click(); return; }
     seq.push(e.key); if (seq.length > 10) seq.shift(); if (seq.join(',') === 'ArrowUp,ArrowUp,ArrowDown,ArrowDown,ArrowLeft,ArrowRight,ArrowLeft,ArrowRight,b,a') { act.disco(); return; }
     if (seq.slice(-2).join('') === '42' && performance.now() - t42 < 900) { A.play('egg'); toast('🐬 42 – odpověď na základní otázku života, vesmíru a vůbec. Otázku ale pořád neznáme.'); } t42 = performance.now();
     if (k === '`' || k === ';' || k === '°') { act.dev(); return; }
@@ -263,7 +263,7 @@ export function createUI(S, A) {
   $('#more').addEventListener('click', (e) => { const t = e.target.closest('button'); if (!t || !act[t.dataset.a]) return; toggle('#more', false); act[t.dataset.a](); setBtn(); S.wake(); });
   let gt = 0; function guide(i) { const g = $('#guide'); if (!K() || tut.running()) { g.classList.remove('on'); return; } const b = B[i], inf = S.info(i), car = inf.earth / 130 / 8766;
     const txt = FUN[b.id] || (b.type === 'comet' ? `${b.cs} je špinavá sněhová koule. Až přiletí blíž ke Slunci, naroste jí ohon dlouhý miliony kilometrů.` : b.type === 'moon' ? `${b.cs} obíhá kolem ${GEN[b.parent] || B[par[i]].cs} jednou za ${fmtPer(period[i])}.` : `Autem po dálnici bys sem ze Země jel ${car > 2 ? sig(car) + ' let' : nf(car * 365) + ' dní'}. Bez přestávky na svačinu!`);
-    $('#guide p').textContent = txt; g.classList.add('on'); A.play('guide'); clearTimeout(gt); gt = setTimeout(() => g.classList.remove('on'), 11000); }
+    $('#guide p').textContent = txt; g.classList.add('on'); A.play('guide'); clearTimeout(gt); gt = setTimeout(() => g.classList.remove('on'), document.body.classList.contains('mob') ? 6500 : 11000); }
   $('#guide').addEventListener('click', () => $('#guide').classList.remove('on'));
   let ufoT = 0; function ufo(force) { const u = $('#ufo'); if (!force && (!K() || tut.running() || document.hidden)) return; u.style.top = (15 + Math.random() * 45) + '%'; u.classList.remove('fly'); void u.offsetWidth; u.classList.add('fly'); A.play('ufo', 1, 0.5); }
   setInterval(() => { if (performance.now() - ufoT > 95000 && Math.random() < 0.5) { ufoT = performance.now(); ufo(false); } }, 20000);

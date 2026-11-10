@@ -28,3 +28,13 @@ repo OliverovaPlanetka8 pro původních 147 map a fity drah). Před novou stavbo
 ## Zdroje dat
 Dráhy a fyzikální údaje: Stellarium (JPL, MPC, IAU), Standishovy elementy + opravy z DE421, PyEphem; Měsíc podle Meeuse.
 Hvězdy: Yale Bright Star Catalogue. Mapy: NASA, Stellarium, three.js examples, Planet Pixel Emporium (J. Hastings-Trew).
+
+## Telefon a tablet (iterace 5)
+`src/mobile.js` nastavuje na `<body>` třídy `mob` (telefon nebo okno užší než 700 px), `tab` (tablet), `touch` (dotykové zařízení),
+`land` (telefon naležato) a `stack` (lišty pod sebou). Všechna pravidla pro ně jsou na konci stylů v `dist/index.html`;
+bez těchto tříd se nepoužije nic. Ruční přepnutí: nabídka ☰ → „Zobrazení“, nebo adresa s `?view=mob|tab|pc`.
+Test: `node tools/mobshot.mjs /tmp/mob phone|land|tab|tabl`.
+
+## Zkušebna zvuků
+Ikona ♪ v pravém dolním rohu. 256 zvuků v `dist/zvuky/`, seznam `src/zvuky.json`, zdroje a licence `zdroje/ZVUKY.md`
+(vše CC0 z opengameart.org). Výběr a převod: `tools/zvuky/` (`oga.py`, `unpack.py`, `pick.py`, `encode.py`).

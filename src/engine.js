@@ -289,7 +289,7 @@ export function createEngine(canvas, overlay) {
     ctx.globalAlpha = 1;
   }
   S.pick = (x, y) => { // nejdřív značky nerozlišených těles u kurzoru, pak nejbližší kotouč pod kurzorem
-    let best = -1, bd = 12, disc = -1, dd = 1e99;
+    let best = -1, bd = S.pickR || 12, disc = -1, dd = 1e99;
     for (const it of S.items) { const d = Math.hypot(it.sx - x, it.sy - y); if (it.pr < 11) { if (d < bd) { bd = d; best = it.i; } } else if (d < it.pr && it.dist < dd) { dd = it.dist; disc = it.i; } }
     if (best >= 0 && disc >= 0 && R[best].dist > dd) return disc; return best >= 0 ? best : disc; };
   S.setGamma = (g) => { S.gamma = g; gamU.fill.value = 0.32 * g * g; gamU.gam.value = 1 + 0.9 * g; wake(); };
