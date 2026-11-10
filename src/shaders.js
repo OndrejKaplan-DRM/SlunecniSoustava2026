@@ -81,43 +81,138 @@ void main(){
   gl_FragColor = vec4(col, 1.0);
   #include <colorspace_fragment>
 }`;
-// Slunce: uMode 0 = bílé světlo (fotosféra se skvrnami), 1 = H-alfa (chromosféra, filamenty), 2 = EUV 171 Å (koróna, smyčky)
+// Slunce: uMode 0 = bílé světlo (fotosféra se skvrnami), 1 = H-alfa (chromosféra, filamenty), 2 = EUV 304 Å (aktivní oblasti, oblouky)
+// Slunce: vše procedurálně (mapa SDO jen určuje jas koróny v EUV). Tři měřítka buněk: supergranule (~25 000 km),
+// mezogranule (~6 000 km) a granule (~1 200 km) – každé se zapne, až když je buňka větší než pár pixelů.
+// Skvrny: dvojice (vedoucí + následující) v aktivní oblasti, umbra, penumbra s radiálními vlákny.
+const SUNLIB = /* glsl */`
+vec3 h33(vec3 p){ p = fract(p * vec3(0.1031, 0.1030, 0.0973)); p += dot(p, p.yxz + 33.33); return fract((p.xxy + p.yxx) * p.zyx); }
+vec3 voro(vec3 x, float t){ x += 0.22 * sin(vec3(0.0, 2.1, 4.2) + 6.2831 * vn(x * 0.8)); vec3 p = floor(x), f = fract(x); float d1 = 8.0, d2 = 8.0, id = 0.0;
+  for (int k = -1; k <= 1; k++) for (int j = -1; j <= 1; j++) for (int i = -1; i <= 1; i++) { vec3 g = vec3(float(i), float(j), float(k));
+    vec3 hh = h33(p + g), r = g + 0.5 + 0.42 * sin(t + 6.2831 * hh) - f; float d = dot(r, r); if (d < d1) { d2 = d1; d1 = d; id = hh.x; } else if (d < d2) d2 = d; }
+  return vec3(sqrt(d1), sqrt(d2), id); }
+// jas buňky: zaoblený mnohoúhelník, tmavé mezery
+float cellB(vec3 c){ return smoothstep(0.0, 0.2, c.y - c.x) * (1.0 - 0.55 * smoothstep(0.28, 0.72, c.x)) * (0.72 + 0.4 * c.z); }
+float hk(float k){ return fract(sin(k * 12.9898 + 4.1) * 43758.5453); }
+// skvrna v místních souřadnicích p (rad), poloměr s → (umbra, penumbra, vlákna)
+vec3 spot(vec2 p, float s, float seed){ float r = length(p) / s; if (r > 1.5) return vec3(0.0);
+  vec2 cs = p / max(length(p), 1e-6);
+  float rr = r * (1.0 + 0.36 * (vn(vec3(cs * 1.6, seed)) - 0.5) + 0.14 * (vn(vec3(cs * 4.0, seed + 3.0)) - 0.5));
+  float fil = vn(vec3(cs * 13.0, rr * 1.3 + seed)) * 0.6 + vn(vec3(cs * 31.0, rr * 2.2 + seed)) * 0.4;
+  float umb = 1.0 - smoothstep(0.36, 0.47, rr + (fil - 0.5) * 0.10), pen = 1.0 - smoothstep(0.84, 1.0, rr + (fil - 0.5) * 0.34);
+  return vec3(umb, pen, fil); }
+`;
 export const SUN_FS = /* glsl */`
 #include <common>
 #include <logdepthbuf_pars_fragment>
-uniform sampler2D tMap; uniform float uHasMap; uniform vec3 uCtr; uniform float uTime; uniform float uMode; uniform vec4 uFlare; uniform vec3 uAR[16];
+uniform sampler2D tMap; uniform float uHasMap; uniform vec3 uCtr; uniform float uTime; uniform float uMode; uniform vec4 uFlare; uniform vec3 uAR[16]; uniform float uQ;
 varying vec3 vO; varying vec3 vN; varying vec3 vP;
 ${NOISE}
+${SUNLIB}
+vec3 ramp(float v){ v = clamp(v, 0.0, 1.3); return v < 0.5 ? mix(vec3(0.22, 0.045, 0.004), vec3(0.90, 0.36, 0.035), v * 2.0) : mix(vec3(0.90, 0.36, 0.035), vec3(1.0, 0.80, 0.34), min(1.0, (v - 0.5) * 2.0)) * (1.0 + max(0.0, v - 1.0)); }
 void main(){
   #include <logdepthbuf_fragment>
   vec3 o = normalize(vO); float lat = asin(clamp(o.z, -1.0, 1.0)), lon = atan(o.y, o.x);
   float u0 = lon * 0.15915494 + 0.5, ua = fract(u0), ub = fract(u0 + 0.5) - 0.5;
   vec2 uv = vec2(fwidth(ua) < fwidth(ub) ? ua : ub, lat * 0.31830989 + 0.5);
   vec3 V = normalize(-(uCtr + vP)); float mu = max(dot(normalize(vN), V), 0.0);
-  float ar = 0.0; for (int k = 0; k < 16; k++) ar = max(ar, smoothstep(0.984, 0.9985, dot(o, uAR[k])) * (k < 6 ? 1.0 : 0.72));
-  vec3 tex = uHasMap > 0.5 ? texture2D(tMap, uv).rgb : vec3(0.3);
-  float lum = dot(tex, vec3(0.4, 0.45, 0.15)), act = uHasMap > 0.5 ? dot(texture2D(tMap, uv, 3.0).rgb, vec3(0.4, 0.45, 0.15)) : 0.3;
-  float a2 = ar;
-  float n1 = vn(o * 30.0 + 3.1), n2 = vn(o * 95.0 + 7.7), sp = a2 * smoothstep(0.42, 0.66, n1 * 0.7 + n2 * 0.3 + (a2 - 0.6) * 0.5);
-  float umb = smoothstep(0.55, 0.8, sp), pen = smoothstep(0.12, 0.5, sp);
-  float gr = vn(o * 260.0 + uTime) * 0.6 + vn(o * 620.0 - uTime * 0.7) * 0.4;
+  float px = length(fwidth(o)) + 1e-7;
+  float wS = 1.0 - smoothstep(0.10, 0.34, px * 28.0), wM = 1.0 - smoothstep(0.10, 0.34, px * 120.0), wG = (1.0 - smoothstep(0.10, 0.34, px * 560.0)) * step(0.5, uQ);
+  wS *= 1.0 - wG; if (uQ < 1.5) wS *= 1.0 - wM;       // nejvýš dvě měřítka najednou (výkon)
+  // nejbližší aktivní oblast a její místní souřadnice (x k východu, y k severu)
+  float best = -1.0, kb = 0.0; vec3 c = vec3(1.0, 0.0, 0.0);
+  for (int k = 0; k < 16; k++) { float d = dot(o, uAR[k]); if (d > best) { best = d; kb = float(k); c = uAR[k]; } }
+  float sz = kb < 9.0 ? mix(1.0, 0.5, kb / 9.0) * (0.75 + 0.5 * hk(kb)) : 0.0, ar = smoothstep(0.972, 0.9975, best) * (kb < 9.0 ? 1.0 : 0.6);
+  vec3 e1 = normalize(cross(vec3(0.0, 0.0, 1.0), c)), e2 = cross(c, e1), dv = o - c; vec2 q = vec2(dot(dv, e1), dot(dv, e2));
+  float tl = (hk(kb + 7.0) - 0.5) * 0.5 + sign(c.z) * 0.15; q = vec2(q.x * cos(tl) - q.y * sin(tl), q.x * sin(tl) + q.y * cos(tl));
+  float a = 0.062 * sz + 0.014; vec2 pL = q - vec2(a, 0.0), pF = q + vec2(a * 1.15, 0.0);
+  vec3 sp = vec3(0.0);
+  if (sz > 0.0 && best > 0.98) { sp = spot(pL, 0.052 * sz, kb); vec3 s2 = spot(pF + vec2(0.0, 0.006), 0.036 * sz, kb + 20.0); sp = s2.y > sp.y ? s2 : sp;
+    vec3 s3 = spot(pF - vec2(0.045, 0.026) * sz, 0.017 * sz, kb + 40.0); sp = s3.y > sp.y ? s3 : sp; s3 = spot(pL + vec2(0.018, 0.066) * sz, 0.012 * sz, kb + 60.0); sp = s3.y > sp.y ? s3 : sp; }
+  // siločáry dvojpólu: úhel, pod kterým je z bodu vidět spojnice obou skvrn → oblouky mezi skvrnami
+  float phi = atan(pL.y, pL.x) - atan(pF.y, pF.x), ql = length(q) / (a * 2.4), arcs = pow(abs(sin(phi * 4.5 + hk(kb) * 6.0 + 1.6 * vn(o * 30.0 + kb))), 14.0);
+  arcs *= smoothstep(0.30, 0.62, vn(vec3(phi * 2.2, kb, ql * 1.5))) * exp(-ql * ql) * smoothstep(0.0, 0.25, min(length(pL), length(pF)) / a) * step(0.001, sz);
+  vec3 cS = vec3(0.5, 0.7, 0.5), cM = cS, cG = cS;
+  if (wS > 0.01) cS = voro(o * 28.0, uTime * 0.6); if (wM > 0.01) cM = voro(o * 120.0 + 5.0, uTime * 2.0); if (wG > 0.01) cG = voro(o * 560.0 + 9.0, uTime * 7.0);
+  float bS = cellB(cS), bM = cellB(cM), bG = cellB(cG), eS = cS.y - cS.x;
+  float big = vn(o * 3.0 + 1.7) * 0.6 + vn(o * 9.0 + uTime * 0.2) * 0.4, mid = vn(o * 45.0 + 3.0);
   vec3 col;
-  if (uMode < 0.5) {
-    col = mix(vec3(1.0, 0.36, 0.05), vec3(1.0, 0.68, 0.16), pow(mu, 0.7)) * (0.3 + 0.7 * pow(mu, 0.55)) * (0.9 + 0.2 * gr) * 0.9;
-    col += vec3(1.0, 0.95, 0.8) * a2 * (1.0 - pen) * pow(1.0 - mu, 2.0) * 0.5;                    // fakule u okraje
-    col *= mix(1.0, 0.5 + 0.1 * n2, pen); col = mix(col, col * vec3(0.1, 0.07, 0.05), umb);
-  } else if (uMode < 1.5) {
-    float fib = vn(o * vec3(70.0, 70.0, 24.0) + uTime * 0.2), fil = 1.0 - abs(2.0 * vn(o * vec3(8.0, 8.0, 21.0) + 11.0) - 1.0);
-    col = vec3(1.0, 0.17, 0.03) * (0.42 + 0.58 * pow(mu, 0.4)) * (0.7 + 0.6 * fib) * 1.05;
-    col += vec3(1.0, 0.55, 0.25) * a2 * (0.35 + 0.5 * n1);                                         // plage
-    col *= 1.0 - 0.7 * smoothstep(0.9, 0.975, fil) * smoothstep(0.42, 0.6, vn(o * 2.6 + 5.0));     // tmavé filamenty
-    col = mix(col, col * 0.25, umb); col += vec3(1.0, 0.25, 0.08) * pow(1.0 - mu, 6.0) * 0.8;      // spikule na okraji
-  } else {
-    col = mix(vec3(0.3, 0.09, 0.0), vec3(1.0, 0.72, 0.16), clamp(lum * 2.4, 0.0, 1.0)) * 1.15 + vec3(1.0, 0.9, 0.6) * (pow(lum, 3.0) * 4.0 + ar * ar * 0.5);
-    col *= (0.85 + 0.3 * vn(o * 40.0 + uTime * 0.3)) * (0.8 + 0.5 * pow(1.0 - mu, 2.0));
+  if (uMode < 0.5) {                                   // bílé světlo: fotosféra
+    float v = 0.60 + (big - 0.5) * 0.12 + (mid - 0.5) * 0.06;
+    v += wS * (bS - 0.62) * 0.26;
+    v += wM * mix((bM - 0.62) * 0.48, (0.5 - cM.x) * 0.16, wG);
+    v += wG * (bG - 0.60) * 0.95;
+    float fac = ar * (1.0 - sp.y) * (0.35 + 0.65 * smoothstep(0.45, 0.75, vn(o * 70.0 + 4.0))) * (0.2 + 0.8 * pow(1.0 - mu, 1.5));
+    v += fac * 0.36;                                   // fakule: jasná síť kolem skvrn, nejlépe u okraje
+    v = mix(v, 0.24 + 0.40 * sp.z + 0.16 * (bG - 0.6) * wG, sp.y * 0.94);                        // penumbra: radiální vlákna
+    v = mix(v, 0.035 + 0.07 * wG * smoothstep(0.3, 0.0, cG.x) * cG.z, sp.x);                     // umbra s umbrálními body
+    col = ramp(v * (0.60 + 0.40 * pow(mu, 0.5))) * (0.40 + 0.60 * pow(mu, 0.62)) * 1.12;
+  } else if (uMode < 1.5) {                            // H-alfa: chromosféra
+    float fib = vn(o * vec3(70.0, 70.0, 24.0) + uTime * 0.2), fil = 1.0 - abs(2.0 * vn(o * vec3(7.0, 7.0, 19.0) + 11.0) - 1.0);
+    float net = 1.0 - smoothstep(0.0, 0.5, cS.x), thr = vn(o * vec3(150.0, 150.0, 60.0) + 2.0);
+    float v = 0.44 + (big - 0.5) * 0.20 + (fib - 0.5) * 0.26 + (mid - 0.5) * 0.14 + pow(vn(o * 85.0 + 7.0), 2.0) * 0.22 + net * wS * 0.10 + wM * (0.5 - cM.x) * 0.22 + (thr - 0.5) * 0.16 * (wM + wG) + wG * (0.5 - cG.x) * 0.12;
+    vec2 qn = q / max(length(q), 1e-5); float sup = vn(vec3(qn * 11.0, length(q) * 22.0 + kb));  // fibrily kolem skvrn
+    v = mix(v, 0.36 + 0.5 * sup, ar * 0.55 * (1.0 - sp.y));
+    v += ar * 0.20 * (0.5 + 0.7 * vn(o * 55.0 + 2.0)) + 0.5 * arcs * (1.0 - sp.y); // plage a oblouky mezi skvrnami
+    v *= 1.0 - 0.8 * smoothstep(0.93, 0.975, fil) * smoothstep(0.50, 0.64, vn(o * 3.1 + 5.0)) * (0.7 + 0.3 * vn(o * 90.0));  // tmavé filamenty
+    v = mix(v, 0.16 + 0.2 * sp.z, sp.y * 0.8); v = mix(v, 0.05, sp.x);
+    col = mix(vec3(0.20, 0.012, 0.004), vec3(1.0, 0.20, 0.035), clamp(v * 1.25, 0.0, 1.0)) + vec3(1.0, 0.55, 0.22) * max(0.0, v - 0.78) * 1.5;
+    col *= 0.50 + 0.50 * pow(mu, 0.45); col += vec3(1.0, 0.22, 0.06) * pow(1.0 - mu, 5.0) * 0.55;
+  } else {                                             // EUV 304 Å: přechodová vrstva, jasné aktivní oblasti
+    vec3 tex = uHasMap > 0.5 ? texture2D(tMap, uv).rgb : vec3(0.3); float lum = dot(tex, vec3(0.4, 0.45, 0.15));
+    float hole = smoothstep(0.52, 0.72, vn(o * 1.7 + 9.0)) * smoothstep(0.35, 0.85, abs(o.z) + 0.25 * vn(o * 4.0));
+    float sp1 = pow(vn(o * 26.0 + uTime * 0.3), 2.0), sp2 = pow(vn(o * 85.0 + 7.0), 2.0), sp3 = pow(vn(o * 300.0 + 3.0), 2.0);
+    float v = 0.20 + lum * 0.45 + (big - 0.5) * 0.24 + sp1 * 0.34 + sp2 * 0.30 * (0.4 + wS) + sp3 * 0.24 * wM + (1.0 - smoothstep(0.0, 0.45, cM.x)) * wM * 0.16 + (0.5 - cG.x) * wG * 0.12;
+    v *= 1.0 - 0.55 * hole;                            // koronální díry
+    float core = smoothstep(0.990, 0.9995, best);
+    v += ar * (0.16 + 0.5 * pow(vn(o * 38.0 + kb), 2.0)) + 1.1 * arcs * (0.5 + 0.5 * vn(o * 90.0 + uTime)) + core * 0.30 + pow(lum, 3.0) * 1.2;
+    col = v < 0.55 ? mix(vec3(0.16, 0.012, 0.0), vec3(0.93, 0.25, 0.02), v / 0.55) : mix(vec3(0.93, 0.25, 0.02), vec3(1.0, 0.80, 0.30), clamp((v - 0.55) / 0.5, 0.0, 1.0));
+    col += vec3(1.0, 0.9, 0.6) * max(0.0, v - 1.05) * 0.9; col *= 0.78 + 0.5 * pow(1.0 - mu, 2.0);
   }
   col += vec3(1.0, 0.95, 0.85) * uFlare.w * exp(-(1.0 - dot(o, uFlare.xyz)) * 900.0) * 6.0;
   gl_FragColor = vec4(col, 1.0);
+  #include <colorspace_fragment>
+}`;
+// Nad okrajem: spikule, protuberance, oblouky nad aktivními oblastmi a výron při erupci. Koule 1,8 R kreslená zevnitř;
+// pro každý pixel se bere pár bodů na zorném paprsku kolem místa, kde paprsek míjí Slunce nejblíž.
+export const PROM_VS = /* glsl */`
+#include <common>
+#include <logdepthbuf_pars_vertex>
+varying vec3 vW;
+void main(){ vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w;
+  #include <logdepthbuf_vertex>
+}`;
+export const PROM_FS = /* glsl */`
+#include <common>
+#include <logdepthbuf_pars_fragment>
+uniform vec3 uCtr; uniform float uRad; uniform mat3 uRot; uniform float uTime; uniform float uMode; uniform float uI; uniform vec4 uFlare; uniform float uErupt; uniform vec3 uAR[16];
+varying vec3 vW;
+${NOISE}
+float hk(float k){ return fract(sin(k * 12.9898 + 4.1) * 43758.5453); }
+void main(){
+  #include <logdepthbuf_fragment>
+  vec3 d = normalize(vW); float tc = dot(uCtr, d); if (tc < 0.0) discard; vec3 qw = (d * tc - uCtr) / uRad; float b = length(qw); if (b < 0.985 || b > 1.78) discard;
+  vec3 q0 = qw * uRot, dl = d * uRot; float I = 0.0, hot = 0.0, pxr = fwidth(b);
+  for (int s = 0; s < 5; s++) { float ls = (float(s) - 2.0) * 0.11; vec3 p = q0 + dl * ls; float r = length(p), h = r - 1.0; vec3 n = p / r; if (h < 0.0) continue;
+    // spikule: nízký les výtrysků
+    float spk = vn(n * 260.0 + vec3(0.0, 0.0, uTime * 3.0)); I += smoothstep(0.003 + 0.014 * spk * spk, 0.0, h) * 0.22;
+    // klidové protuberance: závěsy z vláken
+    float top = 0.03 + 0.10 * vn(n * 3.0 + 8.0) + 0.03 * vn(n * 38.0), cl = smoothstep(0.66, 0.80, vn(n * 6.0 + 3.0)) * smoothstep(top, top * 0.55, h);
+    if (cl > 0.0) { float thd = vn(vec3(n.xy * 170.0, n.z * 170.0 + h * 9.0 - uTime)); I += cl * (0.10 + 1.1 * thd * thd) * smoothstep(0.0, 0.005, h) * 0.6; }
+    for (int k = 0; k < 16; k++) { float c = dot(n, uAR[k]); if (c < 0.955) continue; float fk = float(k), ang = acos(min(c, 1.0)), w = 0.07 + 0.11 * hk(fk + 1.0), H = (k < 9 ? 0.05 + 0.16 * hk(fk + 2.0) : 0.03 + 0.05 * hk(fk + 2.0));
+      float x = ang / w; if (x < 1.0) { float sh = sqrt(1.0 - x * x), th = max(0.0022 + 0.002 * hk(fk + 3.0), pxr * 0.8), wob = 0.010 * (vn(n * 40.0 + fk) - 0.5);
+        for (int m = 0; m < 3; m++) { float hm = H * (1.0 - 0.3 * float(m)) * sh + wob; float e = (h - hm) / th; I += exp(-e * e) * (0.62 - 0.12 * float(m)) * (0.3 + 0.9 * vn(n * 120.0 + fk)); }
+        hot += exp(-h * 45.0) * (1.0 - x) * 0.07; }
+    }
+    // erupce: rozpínající se smyčka a jas nad aktivní oblastí
+    float cf = dot(n, uFlare.xyz); if (cf > 0.80 && uErupt > 0.0) { float af = acos(min(cf, 1.0)), R1 = 0.04 + 0.62 * uErupt, wf = 0.10 + 0.34 * uErupt, x = af / wf;
+      if (x < 1.0) { float hm = R1 * sqrt(1.0 - x * x), e = (h - hm) / (0.010 + 0.05 * uErupt); I += exp(-e * e) * (1.0 - uErupt) * 2.2 * (0.4 + 0.6 * vn(n * 60.0 + uTime * 4.0));
+        I += smoothstep(hm, 0.0, h) * (1.0 - uErupt) * 0.35 * vn(vec3(n.xy * 45.0, h * 12.0 - uTime * 6.0)); }
+      hot += uFlare.w * exp(-af * af * 180.0) * exp(-h * 14.0) * 1.5; }
+  }
+  I = I * 0.34 + hot; if (I * uI < 0.004) discard;
+  vec3 ca = uMode < 1.5 ? vec3(1.0, 0.16, 0.07) : vec3(1.0, 0.50, 0.12), cb = uMode < 1.5 ? vec3(1.0, 0.62, 0.42) : vec3(1.0, 0.90, 0.60);
+  gl_FragColor = vec4(mix(ca, cb, clamp(I - 0.55, 0.0, 1.0)) * min(I, 1.5) * uI, 1.0);
   #include <colorspace_fragment>
 }`;
 // záře: čtverec natočený ke kameře; uS = poloměr v km

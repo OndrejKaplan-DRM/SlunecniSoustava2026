@@ -18,7 +18,7 @@ const sstep = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a)
 
 export function createEngine(canvas, overlay) {
   const S = { jd: jdNow(), rateIdx: 1, paused: false, focus: EARTH, sel: EARTH, hover: -1, orbMode: 1, labMode: 1, realBright: false, disco: false, conMode: 0, starNames: false, sunMode: 0, lock: false, gamma: 0, fps: 60, quality: 2,
-    on: { focus() {}, select() {}, visit() {}, hud() {}, arrive() {}, flare() {}, fly() {}, overlay: null }, items: [], camPos: new Float64Array(3) };
+    R: null, on: { focus() {}, select() {}, visit() {}, hud() {}, arrive() {}, flare() {}, fly() {}, overlay: null }, items: [], camPos: new Float64Array(3) };
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, logarithmicDepthBuffer: true, powerPreference: 'high-performance' });
   let PR = Math.min(window.devicePixelRatio || 1, 1.5); renderer.setPixelRatio(PR); renderer.setClearColor(0x000000, 1);
   const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(FOV, 1, 1, 1e12); camera.matrixAutoUpdate = false;
@@ -75,7 +75,7 @@ export function createEngine(canvas, overlay) {
   const PLUME = { enceladus: [[[0, 0, -1], 2.2, 0.08, 0.9, [0.75, 0.88, 1.0], 0.5], [[0.12, 0.05, -0.99], 1.6, 0.06, 0.6, [0.75, 0.88, 1.0], 0.35]], io: [[[-0.24, 0.92, -0.32], 0.22, 0.03, 0.3, [0.95, 0.9, 0.7], 0.5], [[0.61, 0.76, 0.22], 0.14, 0.03, 0.22, [0.8, 0.9, 1.0], 0.4]] };
   const kindOf = (b) => b.id === 'earth' ? 4 : (b.atm && b.atm.gas) || b.id === 'venus' || b.id === 'titan' ? 2 : b.type === 'comet' ? 3 : (b.type === 'tno' || (b.type === 'dwarf' && b.id !== 'ceres') || (b.type === 'moon' && (b.albedo || 0) > 0.3)) ? 1 : 0;
   const occOf = B.map((b, i) => { const o = []; if (par[i] >= 0 && par[i] !== SUN) o.push(par[i]); const ks = [...kids[i]].sort((x, y) => B[y].R - B[x].R); for (const k of ks) { if (o.length >= 4) break; if (i === SUN) break; o.push(k); } return o; });
-  const R = B.map(() => ({ mesh: null, tex: 0, used: 0, pr: 0, dist: 1, z: 0, sx: 0, sy: 0, orbit: null, rel: new THREE.Vector3() }));
+  const R = B.map(() => ({ mesh: null, tex: 0, used: 0, pr: 0, dist: 1, z: 0, sx: 0, sy: 0, orbit: null, rel: new THREE.Vector3() })); S.R = R;
   const gamU = { fill: { value: 0 }, gam: { value: 1 } };
   let texCount = 0; const m9 = new Array(9);
 
@@ -84,7 +84,7 @@ export function createEngine(canvas, overlay) {
     const U = { tMap: { value: blank }, tAux: { value: blank }, tRing: { value: blank }, uHasMap: { value: 0 }, uHasAux: { value: 0 }, uKind: { value: kindOf(b) }, uDet: { value: 0 }, uSeed: { value: sp.seed * 7 }, uFill: gamU.fill, uGam: gamU.gam,
       uAtmK: { value: RIM[b.id] || 0 }, uSunR: { value: 0.005 }, uRad: { value: b.R }, uTime: { value: 0 }, uCol: { value: new THREE.Vector3(...col) }, uSun: { value: new THREE.Vector3(1, 0, 0) },
       uAtmCol: { value: new THREE.Vector3(...((ATM[b.id] && ATM[b.id][2]) || RIMC[b.id] || [1, 1, 1])) }, uPole: { value: new THREE.Vector3(0, 1, 0) }, uCtr: { value: r.rel }, uRingSh: { value: new THREE.Vector3(0, 1, 0) }, uRot: { value: new THREE.Matrix3() },
-      uOcc: { value: [new THREE.Vector4(), new THREE.Vector4(), new THREE.Vector4(), new THREE.Vector4()] }, uAur: { value: new THREE.Vector4(...(AUR[b.id] ? AUR[b.id][0] : [0, 0.3, 0.05, 0])) }, uAurC: { value: new THREE.Vector3(...(AUR[b.id] ? AUR[b.id][1] : [0, 0, 0])) }, uExp: { value: 1 }, uAbc: { value: new THREE.Vector3(...sp.a) }, uShp: { value: new THREE.Vector3(sp.lump, sp.neck, sp.seed) }, uMode: { value: S.sunMode }, uFlare: { value: new THREE.Vector4(1, 0, 0, 0) }, uAR: { value: isSun ? Array.from({ length: 16 }, (_, k) => AR[k] || new THREE.Vector3(0, 0, 1)) : [] } };
+      uOcc: { value: [new THREE.Vector4(), new THREE.Vector4(), new THREE.Vector4(), new THREE.Vector4()] }, uAur: { value: new THREE.Vector4(...(AUR[b.id] ? AUR[b.id][0] : [0, 0.3, 0.05, 0])) }, uAurC: { value: new THREE.Vector3(...(AUR[b.id] ? AUR[b.id][1] : [0, 0, 0])) }, uExp: { value: 1 }, uAbc: { value: new THREE.Vector3(...sp.a) }, uShp: { value: new THREE.Vector3(sp.lump, sp.neck, sp.seed) }, uMode: { value: S.sunMode }, uFlare: { value: new THREE.Vector4(1, 0, 0, 0) }, uQ: { value: 2 }, uAR: { value: isSun ? Array.from({ length: 16 }, (_, k) => AR[k] || new THREE.Vector3(0, 0, 1)) : [] } };
     const mat = new THREE.ShaderMaterial({ uniforms: U, vertexShader: SH.BODY_VS, fragmentShader: isSun ? SH.SUN_FS : SH.BODY_FS });
     const mesh = new THREE.Mesh(GEO[1], mat); mesh.matrixAutoUpdate = false; mesh.frustumCulled = false; scene.add(mesh); r.mesh = mesh; r.U = U; if (isSun) makeLoops(mesh);
     const rg = RINGS[b.id];
@@ -104,13 +104,9 @@ export function createEngine(canvas, overlay) {
   }
   // magnetické smyčky a protuberance nad aktivními oblastmi (poloha z jasných míst mapy EUV)
   const AR = (CAT.sunAR || []).map(a => { const lo = a[0] * DEG, la = a[1] * DEG; return new THREE.Vector3(Math.cos(la) * Math.cos(lo), Math.cos(la) * Math.sin(lo), Math.sin(la)); }); let loops = null;
-  function makeLoops(mesh) { const pos = [], col = [], rnd = (() => { let s = 7; return () => (s = (s * 16807) % 2147483647) / 2147483647; })(), SEG = 22, t1 = new THREE.Vector3(), t2 = new THREE.Vector3();
-    const arc = (p1, p2, hgt, br) => { let prev = null; for (let k = 0; k <= SEG; k++) { const t = k / SEG, p = t1.copy(p1).lerp(p2, t).normalize().multiplyScalar(1.002 + hgt * Math.pow(Math.sin(Math.PI * t), 0.8)).clone(), c = br * Math.sin(Math.PI * t) ** 0.5 + 0.08; if (prev) { pos.push(prev.x, prev.y, prev.z, p.x, p.y, p.z); col.push(prev.c, prev.c, prev.c, c, c, c); } p.c = c; prev = p; } };
-    const jit = (v, a) => t2.set(rnd() - 0.5, rnd() - 0.5, rnd() - 0.5).multiplyScalar(a).add(v).normalize().clone();
-    AR.forEach((a, n) => { const big = n % 3 === 0; for (let k = 0; k < (big ? 11 : 6); k++) { const s = 0.05 + rnd() * (big ? 0.13 : 0.07); arc(jit(a, s), jit(a, s), 0.012 + rnd() * rnd() * (big ? 0.2 : 0.07), 0.5 + rnd() * 0.5); } });
-    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
-    loops = new THREE.LineSegments(g, new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, color: 0xffc070 })); loops.frustumCulled = false; mesh.add(loops); }
-  let flare = { t: -1, next: 4, k: 0 };
+  function makeLoops(mesh) { const U = R[SUN].U; const m = new THREE.ShaderMaterial({ uniforms: { uCtr: U.uCtr, uRad: U.uRad, uRot: U.uRot, uTime: U.uTime, uMode: U.uMode, uFlare: U.uFlare, uAR: U.uAR, uI: { value: 0 }, uErupt: { value: 0 } }, vertexShader: SH.PROM_VS, fragmentShader: SH.PROM_FS, side: THREE.BackSide, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
+    loops = new THREE.Mesh(GEO[0], m); loops.scale.setScalar(1.8); loops.frustumCulled = false; mesh.add(loops); }
+  let flare = { t: -1, next: 4, k: 0 }; S.flareNow = (k) => { flare.next = 0; flare.force = k; };
   S.setSunMode = (m) => { S.sunMode = m; wake(); };
   function needTex(i) {
     const r = R[i]; if (r.tex !== 0) return; r.tex = 1;
@@ -209,9 +205,9 @@ export function createEngine(canvas, overlay) {
           const oc = occOf[i]; for (let k = 0; k < 4; k++) { const j = oc[k]; if (j === undefined) U.uOcc.value[k].w = 0; else U.uOcc.value[k].set(P[j * 3] - hx, P[j * 3 + 1] - hy, P[j * 3 + 2] - hz, B[j].R); }
           { const th = (r.mw || 512) * 0.22; U.uDet.value = S.quality > 0 && pr > th ? Math.min(1, (pr - th) / (th * 1.5)) * (kindOf(b) === 2 || i === EARTH ? 0.25 : 1) : 0; }
           if (i === EARTH) U.uTime.value = ((S.jd - 2451545) * 0.02) % 1; }
-        else { U.uTime.value = (now * 0.00002) % 100; U.uMode.value = S.sunMode;
-          if (loops) { loops.visible = S.sunMode > 0 && pr > 40; loops.material.color.setHex(S.sunMode === 1 ? 0xff5a3c : 0xffc878); loops.material.opacity = Math.min(1, pr / 200) * (0.75 + 0.25 * Math.sin(now * 0.0013)); }
-          flare.next -= dt; if (flare.t < 0 && flare.next <= 0 && AR.length) { flare.k = Math.floor(Math.random() * AR.length); flare.t = 0; U.uFlare.value.set(AR[flare.k].x, AR[flare.k].y, AR[flare.k].z, 0); if (pr > 60) S.on.flare(); }
+        else { U.uTime.value = (now * 0.00002) % 100; U.uMode.value = S.sunMode; U.uQ.value = S.quality;
+          if (loops) { const lu = loops.material.uniforms; lu.uI.value = (S.sunMode === 0 ? 0.0 : 1.0) * Math.min(1, pr / 120); lu.uErupt.value = flare.t >= 0 ? flare.t : 0; loops.visible = lu.uI.value > 0.01 && pr > 30; }
+          flare.next -= dt; if (flare.t < 0 && flare.next <= 0 && AR.length) { flare.k = flare.force !== undefined ? flare.force : Math.floor(Math.random() * AR.length); flare.force = undefined; flare.t = 0; U.uFlare.value.set(AR[flare.k].x, AR[flare.k].y, AR[flare.k].z, 0); if (pr > 60) S.on.flare(); }
           if (flare.t >= 0) { flare.t += dt / 3.5; const e = flare.t < 0.12 ? flare.t / 0.12 : Math.max(0, 1 - (flare.t - 0.12) / 0.88); U.uFlare.value.w = e * e * (S.sunMode === 0 ? 0.35 : 1); if (flare.t >= 1) { flare.t = -1; flare.next = 6 + Math.random() * 9; } wake(); } }
         if (pr > 5 && z > 0) big.push(i);
       }

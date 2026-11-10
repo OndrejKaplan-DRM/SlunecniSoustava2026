@@ -25,7 +25,7 @@ export const SFX = {
   flare: [Nz('bandpass', 3000, 300, 1.5, 1.6, 0.3), Nz('highpass', 5000, 2000, 1, 0.35, 0.16), T('sawtooth', 90, 40, 1.4, 0.12)],
   // --- čas (14) ---
   pause: [T('sine', 500, 250, 0.2, 0.16)], play: [T('sine', 250, 500, 0.2, 0.16)], now: arp('sine', [660, 880, 660], 0.1, 0.14, 0.08), reverse: [Nz('bandpass', 2500, 300, 4, 0.35, 0.16), T('sawtooth', 400, 100, 0.3, 0.06)],
-  ...Object.fromEntries(Array.from({ length: 10 }, (_, k) => ['rate' + (k + 1), [T('sawtooth', 60 + k * 26, 90 + k * 44, 0.25, 0.07), T('sine', 240 + k * 90, 300 + k * 130, 0.18, 0.1)]])),
+  ...Object.fromEntries(Array.from({ length: 10 }, (_, k) => ['rate' + (k + 1), [T('sawtooth', 60 + k * 26, 90 + k * 44, 0.25, 0.07 * Math.max(0.3, 1 - k * 0.09)), T('sine', 240 + k * 90, 300 + k * 130, 0.18, 0.1 * Math.max(0.35, 1 - k * 0.08))]])),
   // --- let (13) ---
   launch: [Nz('bandpass', 200, 3000, 1.2, 0.9, 0.22), T('sawtooth', 60, 180, 0.8, 0.07)], warp: [Nz('bandpass', 3000, 6000, 3, 0.5, 0.1), T('sine', 300, 1500, 0.5, 0.06)], brake: [Nz('bandpass', 3000, 250, 1.2, 0.8, 0.18)], closeup: [T('sine', 700, 1050, 0.15, 0.12)],
   arrive_star: arp('sine', [220, 277, 330, 440], 0.6, 0.12, 0.1), arrive_planet: arp('sine', [262, 330, 392, 523], 0.45, 0.13, 0.09), arrive_dwarf: arp('sine', [294, 370, 440], 0.4, 0.12, 0.1), arrive_moon: arp('triangle', [523, 659, 784], 0.3, 0.12, 0.08),
@@ -54,13 +54,34 @@ export const AMB = {
   moon_j: { d: [[36, 0.05, 'sine']], ev: ['burst', 2.5, 0.05] }, moon_s: { d: [[73, 0.04, 'sine']], ev: ['tinkle', 1.2, 0.04] }, moon_u: { d: [[87.3, 0.04, 'sine'], [130.8, 0.03, 'sine']] }, moon_n: { n: ['bandpass', 900, 2.5, 0.05, 3] }, moon_x: { ev: ['tick', 4, 0.04] },
   rock: { ev: ['tumble', 1, 0.07] }, comet: { n: ['highpass', 3500, 0.7, 0.1, 2], ev: ['crackle', 0.8, 0.07] }, tno: { d: [[32.7, 0.1, 'sine'], [49.2, 0.05, 'sine']] }, centaur: { d: [[43.6, 0.07, 'sine']], ev: ['tumble', 2.5, 0.05] }, alien: { d: [[207.6, 0.03, 'sine'], [311.1, 0.03, 'sine'], [466.2, 0.02, 'sine']], ev: ['eerie', 2.2, 0.06] },
 };
-export const COUNT = Object.keys(SFX).length + Object.keys(AMB).length + 4; // + smyčka času a smyčka letu
+// Záhadná tělesa mají vlastní hudební téma. root = základní tón (Hz), sc = stupnice v půltónech, step = krok (s), dens = hustota tónů,
+// x = zvláštnost (gliss, two, desc, jump, chaos, metal, pulse, pair), trem = pulz (Hz), slot = skladba ze Suno, která téma nahradí.
+export const MYST = {
+  oumuamua: { slot: 'mezihvezdni', name: 'Návštěvník', root: 146.83, sc: [0, 2, 4, 6, 8, 10], step: 2.3, dens: 0.6, fm: 3.01, dur: 5, drone: [0, 6], trem: 0.27, dly: 0.9, fb: 0.55, x: 'gliss', why: 'celotónová stupnice bez „domova“; zvuk pulzuje, jako když se převalující se těleso co pár hodin zjasní a zase pohasne.' },
+  borisov: { slot: 'mezihvezdni', name: 'Kometa odjinud', root: 185, sc: [0, 1, 5, 7, 8], step: 1.9, dens: 0.55, fm: 2, dur: 4, oct: 1, drone: [0, 7], dly: 0.75, fb: 0.5, why: 'ledové zvonky ve frygické stupnici – první kometa, která k nám přiletěla od jiné hvězdy.' },
+  sedna: { slot: 'daleko', name: 'Jedenáct tisíc let', root: 55, sc: [0, 3, 7, 10], step: 5.5, dens: 0.5, dur: 9, att: 2.5, drone: [0, 7], lp: 900, dly: 1.8, fb: 0.6, why: 'hluboké, velmi pomalé tóny – jeden oběh kolem Slunce jí trvá asi 11 400 let.' },
+  eris: { slot: 'daleko', name: 'Svár', root: 61.74, sc: [0, 1, 6, 7], step: 3.6, dens: 0.6, dur: 6, att: 1.2, drone: [0, 6], lp: 1300, dly: 1.3, fb: 0.5, why: 'nelibozvučné intervaly (malá sekunda a tritón) – nese jméno bohyně sváru a kvůli ní přišlo Pluto o titul planety.' },
+  arrokoth: { slot: 'daleko', name: 'Dva v jednom', root: 98, sc: [0, 7, 12, 14], step: 3.2, dens: 0.6, dur: 6, att: 0.8, drone: [0], lp: 1600, dly: 1.1, x: 'pair', why: 'každý tón zní dvakrát, v čisté kvintě – dvě tělesa, která se kdysi jemně spojila v jedno.' },
+  iapetus: { name: 'Dvě tváře', root: 110, sc: [0, 4, 7, 11], sc2: [0, 3, 7, 10], step: 2.2, dens: 0.7, dur: 4, drone: [0, 7], x: 'two', why: 'střídá se durová a mollová stupnice – jedna polokoule je světlá jako sníh, druhá tmavá jako saze.' },
+  hyperion: { name: 'Chaos', root: 130.8, sc: [0, 2, 3, 7, 9], step: 1.1, dens: 0.75, wave: 'triangle', dur: 1.2, att: 0.005, drone: [0], dly: 0.37, fb: 0.4, x: 'chaos', why: 'tóny přicházejí nepravidelně – Hyperion se převaluje chaoticky, jeho den nejde předpovědět.' },
+  miranda: { name: 'Slepenec', root: 123.5, sc: [0, 5, 6, 11], step: 2, dens: 0.7, wave: 'triangle', dur: 2.5, drone: [0, 5], x: 'jump', why: 'melodie skáče mezi vzdálenými tóny – povrch vypadá jako poslepovaný z kusů, s útesem vysokým asi 20 km.' },
+  triton: { name: 'Proti proudu', root: 116.5, sc: [0, 2, 3, 7, 8], step: 2.4, dens: 0.8, dur: 4.5, att: 3.2, drone: [0, 7], dly: 1.0, x: 'desc', why: 'melodie jen klesá a každý tón se rozeznívá pozpátku – Triton obíhá Neptun proti směru jeho otáčení.' },
+  psyche: { name: 'Kovový svět', root: 138.6, sc: [0, 5, 7, 12], step: 2.6, dens: 0.65, dur: 5, att: 0.004, drone: [0], dly: 0.8, fb: 0.5, x: 'metal', why: 'zvonivé neharmonické tóny jako úder do kovu – planetka bohatá na železo a nikl.' },
+  apophis: { name: 'Blízký průlet', root: 73.4, sc: [0, 1, 3], step: 1.5, dens: 0.4, wave: 'triangle', dur: 2.5, drone: [0, 1], lp: 1100, x: 'pulse', why: 'tep a temné tóny – 13. dubna 2029 proletí blíž k Zemi než družice na geostacionární dráze.' },
+  haumea: { name: 'Káča', root: 196, sc: [0, 4, 7, 9, 12], step: 0.34, dens: 0.9, wave: 'triangle', dur: 0.9, att: 0.005, drone: [0, 7], dly: 0.51, fb: 0.35, why: 'rychlé rozklady akordů – otočí se jednou za necelé 4 hodiny, nejrychleji z velkých těles.' },
+  europa: { slot: 'ocean', name: 'Oceán pod ledem', root: 110, sc: [0, 2, 5, 7, 9], step: 2.8, dens: 0.6, dur: 6, att: 1.5, drone: [0, 7], lp: 700, dly: 1.4, fb: 0.6, why: 'tlumené tóny jako pod vodou – pod ledovou krustou je oceán slané vody.' },
+  enceladus: { slot: 'ocean', name: 'Gejzíry', root: 164.8, sc: [0, 2, 4, 7, 9], step: 2.1, dens: 0.6, dur: 4, oct: 1, att: 0.6, drone: [0, 7], lp: 1500, dly: 1.0, fb: 0.55, why: 'vysoké, vzdušné tóny – z trhlin u jižního pólu tryská voda z podpovrchového oceánu.' },
+  '67p': { name: 'Zpívající kometa', root: 220, sc: [0, 1, 2, 3, 5], step: 0.45, dens: 0.8, wave: 'triangle', dur: 0.5, att: 0.03, drone: [0], dly: 0.3, fb: 0.3, x: 'gliss', why: 'podle skutečného měření: magnetometr sondy Rosetta zachytil kmity pole kolem komety (40–50 mHz), po zrychlení znějí jako cvrlikání.' },
+};
+// skladby ze Suno: slot → soubor v dist/music/. Zatím žádné; až budou, stačí je sem zapsat.
+export const TRACKS = {};
+export const COUNT = Object.keys(SFX).length + Object.keys(AMB).length + 4 + Object.keys(MYST).length; // + smyčka času a smyčka letu
 const AMB_ID = { sun: 'sun', mercury: 'mercury', venus: 'venus', earth: 'earth', moon: 'moon', mars: 'mars', jupiter: 'jupiter', io: 'io', europa: 'europa', ganymede: 'ganymede', callisto: 'callisto', saturn: 'saturn', titan: 'titan', enceladus: 'enceladus', uranus: 'uranus', neptune: 'neptune', triton: 'triton', pluto: 'pluto' };
 export const ambOf = (i) => { const b = B[i]; if (AMB_ID[b.id]) return AMB_ID[b.id]; if (b.type === 'moon') { const p = b.parent; if (p === 'saturn' && B[i].R < 60) return 'ring'; return { jupiter: 'moon_j', saturn: 'moon_s', uranus: 'moon_u', neptune: 'moon_n' }[p] || ((b.albedo || 0) > 0.4 ? 'ice' : 'moon_x'); }
   return { comet: 'comet', tno: 'tno', dwarf: 'ice', centaur: 'centaur', interstellar: 'alien' }[b.type] || 'rock'; };
 
 export function createAudio(S) {
-  const A = { on: true, vol: 0.55, ctx: null, count: COUNT }; let master, nbuf, amb = null, ambKey = '', whirr = null, wind = null, lastAlt = 0, lastT = 0;
+  const A = { on: true, vol: 0.55, ctx: null, count: COUNT }; let master, nbuf, amb = null, ambKey = '', whirr = null, wind = null, lastAlt = 0, lastT = 0, myst = null, mystKey = '';
   try { const s = JSON.parse(localStorage.getItem('s200snd') || 'null'); if (s) { A.on = s.on; A.vol = s.vol; } } catch (e) { /* nic */ }
   const save = () => { try { localStorage.setItem('s200snd', JSON.stringify({ on: A.on, vol: A.vol })); } catch (e) { /* nic */ } };
   A.unlock = () => { if (A.ctx) { if (A.ctx.state === 'suspended') A.ctx.resume(); return; } const C = window.AudioContext || window.webkitAudioContext; if (!C) return; try { A.ctx = new C(); } catch (e) { return; }
@@ -95,16 +116,40 @@ export function createAudio(S) {
     if (!A.ctx || A.ctx.state !== 'running') return; const c = A.ctx, t = c.currentTime, i = S.focus, alt = S.cam.alt, near = Math.max(0, Math.min(1, 1.15 - Math.log10(1 + alt / shape[i].rmax) / 1.6)), fly = S.cam.fly && S.cam.fly.ph !== 2;
     const key = fly ? '' : ambOf(i);
     if (key !== ambKey) { if (amb) amb.stop(); amb = key ? startAmb(key) : null; ambKey = key; }
-    if (amb) amb.g.gain.setTargetAtTime(near * 0.9, t, 0.5);
+    const mk = !fly && near > 0.22 && MYST[B[i].id] ? B[i].id : ''; if (mk !== mystKey) { if (myst) myst.stop(); myst = mk ? startMyst(mk) : null; mystKey = mk; }
+    if (myst) myst.vol(near); if (mus) mus.g.gain.setTargetAtTime(myst ? 0.06 : 0.5, t, 1.2);
+    if (amb) amb.g.gain.setTargetAtTime(near * (myst ? 0.3 : 0.9), t, 0.5);
     if (!whirr) { const o = c.createOscillator(), o2 = c.createOscillator(), f = c.createBiquadFilter(), g = c.createGain(), l = c.createOscillator(), lg = c.createGain(); o.type = 'sawtooth'; o2.type = 'sawtooth'; f.type = 'lowpass'; f.frequency.value = 500; g.gain.value = 0; l.connect(lg); lg.connect(g.gain); o.connect(f); o2.connect(f); f.connect(g); g.connect(master); o.start(); o2.start(); l.start(); whirr = { o, o2, f, g, l, lg }; }
-    const r = S.paused ? 0 : Math.abs(S.rateIdx) - 1, wv = r > 0 ? 0.012 + r * 0.0045 : 0, wf = 38 * Math.pow(1.3, r) * (S.rateIdx < 0 ? 0.84 : 1);
-    whirr.o.frequency.setTargetAtTime(wf, t, 0.15); whirr.o2.frequency.setTargetAtTime(wf * 1.507, t, 0.15); whirr.f.frequency.setTargetAtTime(260 + r * 170, t, 0.2); whirr.l.frequency.setTargetAtTime(0.6 + r * 1.4, t, 0.2); whirr.lg.gain.setTargetAtTime(wv * 0.6, t, 0.2); whirr.g.gain.setTargetAtTime(wv, t, 0.2);
+    const r = S.paused ? 0 : Math.abs(S.rateIdx) - 1, wv = r > 0 ? 0.017 * Math.exp(-Math.max(0, r - 3) * 0.36) : 0, wf = 38 * Math.pow(1.3, Math.min(r, 4)) * Math.pow(1.1, Math.max(0, r - 4)) * (S.rateIdx < 0 ? 0.84 : 1); // od 4. stupně výš slábne a přestává stoupat
+    whirr.o.frequency.setTargetAtTime(wf, t, 0.15); whirr.o2.frequency.setTargetAtTime(wf * 1.507, t, 0.15); whirr.f.frequency.setTargetAtTime(260 + Math.min(r, 4) * 150, t, 0.2); whirr.l.frequency.setTargetAtTime(0.6 + r * 1.4, t, 0.2); whirr.lg.gain.setTargetAtTime(wv * 0.6, t, 0.2); whirr.g.gain.setTargetAtTime(wv, t, 0.2);
     if (!wind) { const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); s.buffer = nbuf; s.loop = true; f.type = 'bandpass'; f.Q.value = 1.4; g.gain.value = 0; s.connect(f); f.connect(g); g.connect(master); s.start(); wind = { f, g }; }
     const now = performance.now(), sp = Math.abs(Math.log(alt / (lastAlt || alt))) / Math.max(0.02, (now - lastT) / 1000); lastAlt = alt; lastT = now;
     wind.g.gain.setTargetAtTime(Math.min(0.2, sp * 0.03), t, 0.12); wind.f.frequency.setTargetAtTime(300 + Math.min(4000, sp * 500), t, 0.12);
   }, 110);
   // generativní hudba: pomalé akordy (dospělé: hluboké plochy; dětské: o oktávu výš a pentatonické zvonky)
-  const CH = [[0, 7, 16], [5, 12, 21], [9, 16, 24], [7, 14, 23], [0, 12, 19], [5, 9, 16]]; let mus = null; A.music = false; A.kidMood = false;
+  let mus = null;
+  // záhadná témata: bzukot + řídká melodie ze stupnice přes ozvěnu; když je pro slot nahraná skladba (TRACKS), hraje místo syntézy ta
+  function startMyst(id) { const c = A.ctx, m = MYST[id], file = TRACKS[m.slot];
+    if (file) { const el = new Audio(file); el.loop = true; el.volume = 0; el.play().catch(() => {}); let dead = false, v = 0, tv = 0; const tm = setInterval(() => { v += (tv - v) * 0.08; el.volume = Math.max(0, Math.min(1, v * (A.on ? A.vol : 0) * 1.3)); if (dead && v < 0.01) { el.pause(); clearInterval(tm); } }, 60);
+      return { vol(n) { tv = n; }, stop() { dead = true; tv = 0; } }; }
+    const g = c.createGain(), bus = c.createBiquadFilter(), dl = c.createDelay(3), fb = c.createGain(), nodes = [], tms = []; g.gain.value = 0; g.connect(master); bus.type = 'lowpass'; bus.frequency.value = m.lp || 2400; bus.connect(g);
+    dl.delayTime.value = m.dly || 0.6; fb.gain.value = m.fb === undefined ? 0.45 : m.fb; bus.connect(dl); dl.connect(fb); fb.connect(dl); dl.connect(g);
+    const tr = c.createGain(); tr.gain.value = 1; tr.connect(bus); if (m.trem) { const l = c.createOscillator(), lg = c.createGain(); l.frequency.value = m.trem; lg.gain.value = 0.45; tr.gain.value = 0.55; l.connect(lg); lg.connect(tr.gain); l.start(); nodes.push(l); }
+    for (const sm of m.drone || [0]) for (const det of [-4, 5]) { const o = c.createOscillator(), og = c.createGain(); o.type = 'sine'; o.frequency.value = m.root / 2 * Math.pow(2, sm / 12); o.detune.value = det; og.gain.value = 0.05; o.connect(og); og.connect(tr); o.start(); nodes.push(o); }
+    const tone = (f, t, dur, vol, att) => { const o = c.createOscillator(), og = c.createGain(); o.type = m.wave || 'sine'; o.frequency.value = f; og.gain.setValueAtTime(0.0001, t); og.gain.linearRampToValueAtTime(vol, t + att); og.gain.exponentialRampToValueAtTime(0.0001, t + dur); o.connect(og); og.connect(bus);
+      if (m.fm) { const mo = c.createOscillator(), mg = c.createGain(); mo.frequency.value = f * m.fm; mg.gain.setValueAtTime(f * 1.6, t); mg.gain.exponentialRampToValueAtTime(1, t + dur * 0.6); mo.connect(mg); mg.connect(o.frequency); mo.start(t); mo.stop(t + dur + 0.1); }
+      if (m.x === 'gliss') o.frequency.exponentialRampToValueAtTime(f * (Math.random() < 0.5 ? 1.06 : 0.94), t + dur);
+      o.start(t); o.stop(t + dur + 0.1); };
+    let k = 2, n = 0, sc = m.sc; const step = () => { if (!A.on || c.state !== 'running') return; const t = c.currentTime + 0.05; n++;
+      if (m.x === 'two' && n % 6 === 0) sc = sc === m.sc ? m.sc2 : m.sc;                                   // dvě tváře: střídání dur a moll
+      if (m.x === 'pulse') { tone(m.root / 2, t, 0.22, 0.2, 0.01); tone(m.root / 2, t + 0.28, 0.25, 0.14, 0.01); }
+      if (Math.random() > m.dens) return; k = m.x === 'desc' ? (k <= 0 ? sc.length * 2 - 1 : k - 1) : m.x === 'jump' ? Math.floor(Math.random() * sc.length * 2) : Math.max(0, Math.min(sc.length * 2 - 1, k + [-1, -1, 0, 1, 1, 2][Math.floor(Math.random() * 6)]));
+      const f = m.root * Math.pow(2, (sc[k % sc.length] + 12 * Math.floor(k / sc.length) + 12 * (m.oct || 0)) / 12), d = m.dur || 3.5;
+      tone(f, t, d, 0.09, m.att || 0.02); if (m.x === 'metal') { tone(f * 2.76, t, d * 0.6, 0.035, 0.005); tone(f * 5.4, t, d * 0.35, 0.02, 0.005); }
+      if (m.x === 'pair') tone(f * 1.498, t + 0.5, d, 0.05, m.att || 0.02); };
+    const loop = () => { step(); tms[0] = setTimeout(loop, m.step * 1000 * (m.x === 'chaos' ? 0.25 + Math.random() * 1.7 : 0.9 + Math.random() * 0.2)); }; tms[0] = setTimeout(loop, 500);
+    return { vol(nr) { g.gain.setTargetAtTime(Math.min(1, nr * 1.3) * 0.8, c.currentTime, 0.9); }, stop() { clearTimeout(tms[0]); g.gain.setTargetAtTime(0, c.currentTime, 0.7); setTimeout(() => { nodes.forEach(x => { try { x.stop(); } catch (e) { /* nic */ } }); g.disconnect(); }, 5000); } }; }
+  const CH = [[0, 7, 16], [5, 12, 21], [9, 16, 24], [7, 14, 23], [0, 12, 19], [5, 9, 16]]; A.music = false; A.kidMood = false;
   A.setMusic = (v) => { A.music = v; if (!A.ctx) return; if (mus) { clearInterval(mus.t); mus.g.gain.setTargetAtTime(0, A.ctx.currentTime, 0.8); const g = mus.g; setTimeout(() => g.disconnect(), 4000); mus = null; } if (!v) return;
     const c = A.ctx, g = c.createGain(), f = c.createBiquadFilter(); g.gain.value = 0; g.gain.setTargetAtTime(0.5, c.currentTime, 1.5); f.type = 'lowpass'; f.frequency.value = 1400; f.connect(g); g.connect(master); let k = Math.floor(Math.random() * CH.length);
     const note = (semi, t, dur, vol, type, att) => { const o = c.createOscillator(), og = c.createGain(); o.type = type; o.frequency.value = 65.41 * Math.pow(2, semi / 12); og.gain.setValueAtTime(0.0001, t); og.gain.linearRampToValueAtTime(vol, t + att); og.gain.exponentialRampToValueAtTime(0.0001, t + dur); o.connect(og); og.connect(f); o.start(t); o.stop(t + dur + 0.1); };
@@ -114,6 +159,6 @@ export function createAudio(S) {
     step(); mus = { g, t: setInterval(step, 5200) }; };
   A.setOn = (v) => { A.on = v; if (master) master.gain.setTargetAtTime(v ? A.vol : 0, A.ctx.currentTime, 0.05); save(); };
   A.setVol = (v) => { A.vol = v; if (master && A.on) master.gain.setTargetAtTime(v, A.ctx.currentTime, 0.05); save(); };
-  A.note = (i) => { const r = AMB[ambOf(i)]; return r && r.real ? '🔊 Zvuk: syntéza podle skutečných měření – ' + r.real + '.' : '🔊 Zvuk: ilustrace (ve vakuu se zvuk nešíří).'; };
+  A.note = (i) => { const r = AMB[ambOf(i)], m = MYST[B[i].id]; if (m) return '🎵 Záhadné téma „' + m.name + '“ (' + (TRACKS[m.slot] ? 'skladba' : 'syntéza') + '): ' + m.why; return r && r.real ? '🔊 Zvuk: syntéza podle skutečných měření – ' + r.real + '.' : '🔊 Zvuk: ilustrace (ve vakuu se zvuk nešíří).'; };
   return A;
 }

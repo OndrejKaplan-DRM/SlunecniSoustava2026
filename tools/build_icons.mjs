@@ -21,7 +21,6 @@ for (let i = 0; i < B.length; i++) {
       let lump = 1; if (b.R < 150 && b.type !== 'planet') { const t = Math.atan2(yr, xr); lump = 1 + 0.07 * Math.sin(t * 3 + seed) + 0.05 * Math.sin(t * 5 + seed * 2); }
       const ex = xr / (ax * lump), ey = yr / (ay * lump), d2 = ex * ex + ey * ey;
       if (comet) { const tx = x * 0.8 - y * 0.6, ty = x * 0.6 + y * 0.8; if (tx > 0) { const w = 0.5 + tx * 0.55, I = Math.exp(-((ty / w) ** 2) * 2.5) * Math.exp(-tx * 0.55) * 0.9; if (I > 0.02) { c = [150 + 80 * I, 205 + 40 * I, 255]; al = I; } } const cm = Math.exp(-(x * x + y * y) * 1.2) * 0.6; if (cm > al) { c = [200, 235, 255]; al = cm; } }
-      if (ring) { const yy = y / Math.sin(tilt), rr = Math.hypot(x, yy); if (rr > ring[0] && rr < ring[1] && !(d2 < 1 && y > 0)) { const u = (rr - ring[0]) / (ring[1] - ring[0]); let o = ring[2]; if (b.id === 'saturn') o *= (u > 0.58 && u < 0.64 ? 0.12 : u < 0.25 ? 0.45 : 1); c = ring[3]; al = o; } }
       if (d2 < 1) {
         const ez = Math.sqrt(1 - d2), lat = Math.asin(Math.max(-1, Math.min(1, ey))), lon = Math.atan2(ex, ez) + lon0;
         let col = b.col ? b.col.map(v => v * 255) : [150, 150, 150];
@@ -32,6 +31,12 @@ for (let i = 0; i < B.length; i++) {
         const bst = b.type === 'star' ? 1 : 1.15 + 0.5 * (1 - Math.min(1, (col[0] + col[1] + col[2]) / 420)); // tmavá tělesa trochu zesvětlit, ať je ikona čitelná
         c = col.map(v => Math.min(255, v * L * bst)); al = 1;
       }
+      // prstenec: vzdálená polovina (nahoře) je za koulí, bližší polovina (dole) se kreslí PŘES kouli; na prstenec padá stín planety
+      if (ring) { const ra = b.id === 'uranus' ? 1.25 : -0.22, xq = x * Math.cos(ra) + y * Math.sin(ra), yq = -x * Math.sin(ra) + y * Math.cos(ra), yy = yq / Math.sin(tilt), rr = Math.hypot(xq, yy);
+        if (rr > ring[0] && rr < ring[1]) { const u = (rr - ring[0]) / (ring[1] - ring[0]); let o = ring[2]; if (b.id === 'saturn') o *= (u > 0.58 && u < 0.64 ? 0.12 : u < 0.25 ? 0.5 : 1);
+          const far = yq > 0, sh = far && xq > 0.15 && xq < 1.0 && rr < 2.2 ? 0.45 : 1, k = (0.9 + 0.1 * Math.sin(u * 17)) * sh, rc = ring[3].map(v => v * k);
+          if (!(far && d2 < 1)) { if (c && al >= 1) { c = c.map((v, q) => v * (1 - o) + rc[q] * o); } else { c = rc; al = o; } } }
+        else if (d2 < 1 && c) { const ys = (yq + 0.16) / Math.sin(tilt), rs = Math.hypot(xq, ys); if (rs > ring[0] && rs < ring[1] && yq > -0.6) c = c.map(v => v * 0.72); } }   // stín prstence na planetě
       if (c) { r += c[0] * al; g += c[1] * al; bl += c[2] * al; a += al; }
     }
     const n = SS * SS, k = ((oy + py) * COLS * S + ox + px) * 4; if (a > 0) { atlas[k] = r / a; atlas[k + 1] = g / a; atlas[k + 2] = bl / a; atlas[k + 3] = Math.min(255, a / n * 255); }
