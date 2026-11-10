@@ -35,7 +35,7 @@ uniform sampler2D tMap; uniform sampler2D tAux; uniform sampler2D tRing;
 uniform float uHasMap; uniform float uHasAux; uniform float uKind; uniform float uDet; uniform float uSeed; uniform float uFill; uniform float uGam;
 uniform float uAtmK; uniform float uSunR; uniform float uRad; uniform float uTime;
 uniform vec3 uCol; uniform vec3 uSun; uniform vec3 uAtmCol; uniform vec3 uPole; uniform vec3 uCtr; uniform vec3 uRingSh; uniform mat3 uRot;
-uniform vec4 uOcc[4];
+uniform vec4 uOcc[4]; uniform vec4 uAur; uniform vec3 uAurC; uniform float uExp;
 varying vec3 vO; varying vec3 vN; varying vec3 vP;
 ${NOISE}
 void main(){
@@ -44,7 +44,7 @@ void main(){
   float lat = asin(clamp(o.z, -1.0, 1.0)), lon = atan(o.y, o.x);
   float u0 = lon * 0.15915494 + 0.5, ua = fract(u0), ub = fract(u0 + 0.5) - 0.5;
   vec2 uv = vec2(fwidth(ua) < fwidth(ub) ? ua : ub, lat * 0.31830989 + 0.5);
-  vec3 alb = uHasMap > 0.5 ? texture2D(tMap, uv).rgb : uCol;
+  vec3 alb = uHasMap > 0.0 ? mix(uCol, texture2D(tMap, uv).rgb, uHasMap) : uCol;   // mapa se po načtení plynule prolne
   vec3 N = normalize(vN);
   if (uDet > 0.0) { // jemná kresba pod rozlišením mapy (šum podle velikosti pixelu) – jen zblízka
     float fw = length(fwidth(vO)), amp = 0.0; vec3 g = vec3(0.0);
@@ -72,7 +72,10 @@ void main(){
     alb *= mix(vec3(1.0, 0.55, 0.35), vec3(1.0), smoothstep(-0.02, 0.28, mu0));
   } else if (uKind > 1.5 && uKind < 2.5) { lit = clamp((mu0 + 0.07) / 1.07, 0.0, 1.0) * (0.72 + 0.28 * pow(mu, 0.45)); }
   else { float ls = 2.0 * m0 / (m0 + mu + 0.03); lit = mix(m0, min(ls, 1.5) * 0.62, 0.6) * step(0.0, mu0); }
-  vec3 col = alb * (lit * sh + uFill) + add;
+  vec3 col = alb * (lit * sh * uExp + uFill) + add * uExp;
+  if (uAur.x > 0.0) { // polární záře: ovál kolem magnetického pólu, záclony ze šumu
+    vec3 mp = normalize(vec3(-0.05, -0.16, 0.985)); float cl2 = acos(clamp(abs(dot(o, mp)), 0.0, 1.0)), ring = exp(-pow((cl2 - uAur.y) / uAur.z, 2.0));
+    float cur = 0.35 + 0.65 * vn(vec3(atan(o.y, o.x) * 9.0, uSeed + uTime * 300.0 + uAur.w, cl2 * 30.0)); col += uAurC * ring * cur * uAur.x * mix(1.0, smoothstep(0.12, -0.18, mu0), step(3.5, uKind)); }
   if (uAtmK > 0.0) col += uAtmCol * pow(1.0 - mu, 3.0) * uAtmK * (smoothstep(-0.12, 0.3, mu0) * sh + uFill);
   col = pow(max(col, vec3(0.0)), vec3(1.0 / uGam));
   gl_FragColor = vec4(col, 1.0);

@@ -34,6 +34,10 @@ export const SFX = {
   ...Object.fromEntries(['star', 'planet', 'dwarf', 'moon', 'asteroid', 'comet', 'tno', 'centaur', 'interstellar'].map((t, k) => ['stamp_' + t, [Nz('lowpass', 500, 120, 1, 0.09, 0.3), ...arp('triangle', [660 + k * 40, 880 + k * 50, 1320 + k * 60], 0.2, 0.12, 0.07).map(v => (v[6] += 0.08, v))]])),
   mission: arp('triangle', [523, 659, 784, 1047, 784, 1047, 1319], 0.22, 0.14, 0.09), rank: arp('square', [392, 523, 659, 784, 1047], 0.3, 0.07, 0.11), quiz_ok: arp('sine', [659, 988], 0.16, 0.18, 0.09), quiz_ok2: arp('sine', [659, 988, 1319], 0.16, 0.17, 0.08), quiz_ok3: arp('sine', [659, 988, 1319, 1976], 0.16, 0.16, 0.07),
   quiz_bad: [T('sawtooth', 220, 150, 0.3, 0.1), T('sawtooth', 208, 140, 0.3, 0.08)], hint: [T('sine', 1100, 1500, 0.12, 0.12), T('sine', 1500, 1100, 0.12, 0.1, 0.1)], skip: [Nz('bandpass', 800, 2500, 3, 0.2, 0.14)],
+  // --- iterace 3 (10) ---
+  pop: [Nz('highpass', 1200, 4000, 1, 0.12, 0.2), ...arp('triangle', [1319, 1568, 2093, 2637], 0.12, 0.08, 0.035)], ufo: [T('sine', 600, 1200, 0.5, 0.12), T('sine', 1200, 500, 0.5, 0.12, 0.45), T('sine', 900, 905, 0.9, 0.05)], disco: arp('square', [262, 330, 392, 523, 659, 784, 1047, 1319], 0.12, 0.06, 0.06),
+  shutter: [Nz('highpass', 3000, 800, 1, 0.07, 0.2), Nz('lowpass', 600, 200, 1, 0.1, 0.16, 0.06)], ruler: [T('triangle', 880, 880, 0.04, 0.14), T('triangle', 1320, 1320, 0.06, 0.12, 0.07)], egg: arp('sine', [784, 988, 1175, 1568, 1976], 0.18, 0.1, 0.06),
+  timewarp: [Nz('bandpass', 300, 5000, 2, 0.9, 0.16), T('sine', 200, 1600, 0.9, 0.08), T('sine', 1600, 400, 0.5, 0.06, 0.85)], guide: [T('sine', 988, 1319, 0.08, 0.12), T('sine', 1319, 1568, 0.1, 0.1, 0.07)], compare: [T('sine', 392, 392, 0.1, 0.12), T('sine', 784, 784, 0.14, 0.1, 0.08)], secret: arp('sawtooth', [110, 165, 220, 330, 440], 0.2, 0.05, 0.05),
   // --- ukázka (6) ---
   tut_start: arp('triangle', [392, 523, 659, 784, 1047], 0.2, 0.13, 0.08), tut_step: [T('sine', 880, 1175, 0.1, 0.14)], tut_type: [T('square', 1800, 1800, 0.012, 0.03)], tut_cursor: [Nz('bandpass', 1200, 2400, 5, 0.18, 0.07)], tut_ping: [T('sine', 1568, 1568, 0.25, 0.16), T('sine', 2349, 2349, 0.3, 0.08, 0.03)], tut_end: arp('triangle', [1047, 784, 1047, 1319, 1568], 0.25, 0.13, 0.09),
 };
@@ -50,7 +54,7 @@ export const AMB = {
   moon_j: { d: [[36, 0.05, 'sine']], ev: ['burst', 2.5, 0.05] }, moon_s: { d: [[73, 0.04, 'sine']], ev: ['tinkle', 1.2, 0.04] }, moon_u: { d: [[87.3, 0.04, 'sine'], [130.8, 0.03, 'sine']] }, moon_n: { n: ['bandpass', 900, 2.5, 0.05, 3] }, moon_x: { ev: ['tick', 4, 0.04] },
   rock: { ev: ['tumble', 1, 0.07] }, comet: { n: ['highpass', 3500, 0.7, 0.1, 2], ev: ['crackle', 0.8, 0.07] }, tno: { d: [[32.7, 0.1, 'sine'], [49.2, 0.05, 'sine']] }, centaur: { d: [[43.6, 0.07, 'sine']], ev: ['tumble', 2.5, 0.05] }, alien: { d: [[207.6, 0.03, 'sine'], [311.1, 0.03, 'sine'], [466.2, 0.02, 'sine']], ev: ['eerie', 2.2, 0.06] },
 };
-export const COUNT = Object.keys(SFX).length + Object.keys(AMB).length + 2; // + smyčka času a smyčka letu
+export const COUNT = Object.keys(SFX).length + Object.keys(AMB).length + 4; // + smyčka času a smyčka letu
 const AMB_ID = { sun: 'sun', mercury: 'mercury', venus: 'venus', earth: 'earth', moon: 'moon', mars: 'mars', jupiter: 'jupiter', io: 'io', europa: 'europa', ganymede: 'ganymede', callisto: 'callisto', saturn: 'saturn', titan: 'titan', enceladus: 'enceladus', uranus: 'uranus', neptune: 'neptune', triton: 'triton', pluto: 'pluto' };
 export const ambOf = (i) => { const b = B[i]; if (AMB_ID[b.id]) return AMB_ID[b.id]; if (b.type === 'moon') { const p = b.parent; if (p === 'saturn' && B[i].R < 60) return 'ring'; return { jupiter: 'moon_j', saturn: 'moon_s', uranus: 'moon_u', neptune: 'moon_n' }[p] || ((b.albedo || 0) > 0.4 ? 'ice' : 'moon_x'); }
   return { comet: 'comet', tno: 'tno', dwarf: 'ice', centaur: 'centaur', interstellar: 'alien' }[b.type] || 'rock'; };
@@ -99,6 +103,15 @@ export function createAudio(S) {
     const now = performance.now(), sp = Math.abs(Math.log(alt / (lastAlt || alt))) / Math.max(0.02, (now - lastT) / 1000); lastAlt = alt; lastT = now;
     wind.g.gain.setTargetAtTime(Math.min(0.2, sp * 0.03), t, 0.12); wind.f.frequency.setTargetAtTime(300 + Math.min(4000, sp * 500), t, 0.12);
   }, 110);
+  // generativní hudba: pomalé akordy (dospělé: hluboké plochy; dětské: o oktávu výš a pentatonické zvonky)
+  const CH = [[0, 7, 16], [5, 12, 21], [9, 16, 24], [7, 14, 23], [0, 12, 19], [5, 9, 16]]; let mus = null; A.music = false; A.kidMood = false;
+  A.setMusic = (v) => { A.music = v; if (!A.ctx) return; if (mus) { clearInterval(mus.t); mus.g.gain.setTargetAtTime(0, A.ctx.currentTime, 0.8); const g = mus.g; setTimeout(() => g.disconnect(), 4000); mus = null; } if (!v) return;
+    const c = A.ctx, g = c.createGain(), f = c.createBiquadFilter(); g.gain.value = 0; g.gain.setTargetAtTime(0.5, c.currentTime, 1.5); f.type = 'lowpass'; f.frequency.value = 1400; f.connect(g); g.connect(master); let k = Math.floor(Math.random() * CH.length);
+    const note = (semi, t, dur, vol, type, att) => { const o = c.createOscillator(), og = c.createGain(); o.type = type; o.frequency.value = 65.41 * Math.pow(2, semi / 12); og.gain.setValueAtTime(0.0001, t); og.gain.linearRampToValueAtTime(vol, t + att); og.gain.exponentialRampToValueAtTime(0.0001, t + dur); o.connect(og); og.connect(f); o.start(t); o.stop(t + dur + 0.1); };
+    const step = () => { if (!A.on || c.state !== 'running') return; const t = c.currentTime + 0.05, ch = CH[k = (k + 1 + (Math.random() < 0.3 ? 1 : 0)) % CH.length], up = A.kidMood ? 12 : 0;
+      for (const s of ch) note(s + up, t, 7.5, 0.05, 'sine', 2.2); note(ch[0] - 12 + up, t, 7.5, 0.06, 'triangle', 2.5);
+      const pent = [0, 2, 4, 7, 9], n = A.kidMood ? 5 : 2; for (let j = 0; j < n; j++) if (Math.random() < (A.kidMood ? 0.8 : 0.55)) note(36 + ch[0] % 12 + pent[Math.floor(Math.random() * 5)] + (Math.random() < 0.3 ? 12 : 0), t + 0.4 + j * (A.kidMood ? 0.75 : 1.9) + Math.random() * 0.2, A.kidMood ? 1.4 : 3.5, A.kidMood ? 0.045 : 0.03, A.kidMood ? 'triangle' : 'sine', 0.01); };
+    step(); mus = { g, t: setInterval(step, 5200) }; };
   A.setOn = (v) => { A.on = v; if (master) master.gain.setTargetAtTime(v ? A.vol : 0, A.ctx.currentTime, 0.05); save(); };
   A.setVol = (v) => { A.vol = v; if (master && A.on) master.gain.setTargetAtTime(v, A.ctx.currentTime, 0.05); save(); };
   A.note = (i) => { const r = AMB[ambOf(i)]; return r && r.real ? '🔊 Zvuk: syntéza podle skutečných měření – ' + r.real + '.' : '🔊 Zvuk: ilustrace (ve vakuu se zvuk nešíří).'; };
