@@ -44,3 +44,9 @@ Všech 256 zvuků pochází z balíčků na opengameart.org s jedinou licencí *
 | Steam release sounds | bart | https://opengameart.org/content/steam-release-sounds | 3 |
 | Warp Engine Engage Sound | bart | https://opengameart.org/content/warp-engine-engage-sound | 1 |
 | wind1 | Luke.RUSTLTD | https://opengameart.org/content/wind1 | 1 |
+
+## Hudba (iterace 7, 2026-11-11)
+Osm skladeb ze Suno (zadání z iterace 4, vygeneroval Ondřej Kaplan, tarif Pro): `dist/music/<slot>1.mp3` a `<slot>2.mp3`
+pro sloty `mezihvezdni` (Návštěvník), `daleko` (Na okraji), `ocean` (Oceán pod ledem), `slunce` (Hvězda).
+Převod: MP3 96 kb/s stereo, hlasitost srovnána na −17,5 LUFS, náběh 1,2 s, doběh 3,5 s. Původní soubory (≈180 kb/s) má Ondřej.
+Zvuky Země (příboj, ptáci) jsou syntéza podle `voices.js` z Oliverovy Planetky 8, žádné nahrávky.
