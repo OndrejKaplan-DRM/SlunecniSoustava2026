@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&display=swap">
+<title>Sluneční soustava 200</title>
+<style>
+:root { --bg: rgba(9, 13, 22, 0.86); --ln: rgba(140, 165, 210, 0.22); --tx: #dfe7f5; --mu: #8f9cb5; --ac: #ffc857; --ok: #6fdc8c; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #000; color: var(--tx); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; overflow: hidden; -webkit-user-select: none; user-select: none; }
+canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+#gl { cursor: grab; } #ov { pointer-events: none; }
+button { font: inherit; color: var(--tx); background: rgba(120, 150, 210, 0.13); border: 1px solid var(--ln); border-radius: 8px; padding: 5px 10px; cursor: pointer; }
+button:hover { background: rgba(120, 150, 210, 0.28); } button:focus-visible, input:focus-visible { outline: 2px solid var(--ac); outline-offset: 1px; }
+button.pri { background: rgba(255, 200, 87, 0.18); border-color: rgba(255, 200, 87, 0.55); color: #ffe7ad; }
+.panel { position: fixed; background: var(--bg); border: 1px solid var(--ln); border-radius: 12px; }
+#top { top: 10px; left: 10px; padding: 8px 12px; display: flex; gap: 14px; align-items: center; }
+#top h1 { font-size: 15px; margin: 0; font-weight: 650; letter-spacing: 0.02em; } #top h1 small { color: var(--ac); font-weight: 600; }
+#time { display: flex; gap: 6px; align-items: center; } #time button { padding: 3px 9px; min-width: 32px; }
+#date { font-variant-numeric: tabular-nums; min-width: 190px; } #rate { color: var(--mu); min-width: 105px; font-size: 12.5px; }
+#tools { top: 10px; right: 10px; padding: 6px; display: flex; gap: 5px; align-items: center; }
+#tools button { padding: 5px 8px; white-space: nowrap; } #tools button span { font-size: 12.5px; } #tools button[data-m="0"] { opacity: 0.5; } #tools button[data-m="2"] { border-color: var(--ac); color: #ffe7ad; }
+#tools label { display: flex; align-items: center; gap: 5px; color: var(--mu); font-size: 12.5px; padding: 0 2px; } #gam { width: 62px; accent-color: var(--ac); } #vol { width: 120px; accent-color: var(--ac); vertical-align: middle; }
+#score { color: #ffe7ad; font-weight: 600; }
+#mission { top: 62px; left: 50%; transform: translateX(-50%); padding: 7px 8px 7px 14px; max-width: min(640px, 60vw); display: flex; gap: 8px; align-items: center; border-color: rgba(255, 200, 87, 0.4); }
+#mission button { padding: 1px 8px; } #mission i { color: var(--ac); }
+#card { top: 62px; right: 10px; width: 318px; max-height: calc(100vh - 190px); overflow: auto; padding: 12px 14px; -webkit-user-select: text; user-select: text; }
+#card .hd { display: flex; gap: 11px; align-items: center; } #card h2 { margin: 0; font-size: 19px; line-height: 1.2; } .sub { color: var(--mu); font-size: 12.5px; }
+.ball { width: 58px; height: 50px; flex: none; display: grid; place-items: center; }
+.ic { display: block; background-image: url(icons.webp); background-repeat: no-repeat; flex: none; }
+.stamp { margin-left: auto; width: 30px; height: 30px; border-radius: 50%; border: 2px dashed var(--mu); color: var(--mu); display: grid; place-items: center; font-weight: 700; flex: none; }
+.stamp.on { border: 2px solid var(--ok); color: var(--ok); }
+.kid { font-size: 15px; margin: 10px 0 8px; color: #fff; } .adult { color: #c3cde0; margin: 8px 0 4px; font-size: 13px; } .src { color: var(--mu); font-size: 12px; margin: 6px 0; }
+#card table { width: 100%; border-collapse: collapse; font-size: 13px; } #card th { text-align: left; color: var(--mu); font-weight: 400; padding: 2px 8px 2px 0; white-space: nowrap; vertical-align: top; } #card td { padding: 2px 0; font-variant-numeric: tabular-nums; } #card small { color: var(--mu); }
+.row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+#hud { left: 12px; bottom: 12px; max-width: 215px; white-space: nowrap; position: fixed; color: #c9d3e6; font-size: 12.5px; text-shadow: 0 0 4px #000, 0 0 2px #000; pointer-events: none; }
+#scale { margin-top: 5px; display: flex; align-items: center; gap: 8px; } #scale i { display: block; height: 6px; border: 1px solid #c9d3e6; border-top: 0; min-width: 10px; }
+#dockwrap { position: fixed; left: 240px; right: 20px; bottom: 10px; display: flex; flex-direction: column; align-items: center; gap: 6px; pointer-events: none; } #dockwrap > * { pointer-events: auto; }
+#dock, #sub { position: static; display: flex; gap: 2px; padding: 5px 7px; max-width: 100%; overflow-x: auto; scrollbar-width: thin; }
+.it { background: none; border: 1px solid transparent; padding: 4px 5px 2px; display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 52px; border-radius: 9px; }
+.it b { height: 50px; min-width: 34px; display: grid; place-items: center; } .it.sm b { height: 36px; min-width: 26px; } .it.li b { height: 26px; width: 44px; min-width: 44px; overflow: hidden; }
+.it i.menu { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-style: normal; background: rgba(120, 150, 210, 0.2); }
+.it:hover .ic { filter: brightness(1.25); }
+.it span { font-size: 11px; color: #c3cde0; white-space: nowrap; max-width: 62px; overflow: hidden; text-overflow: ellipsis; } .it.sm { min-width: 44px; } .it.sm span { font-size: 10.5px; }
+.it.sel { border-color: var(--ac); background: rgba(255, 200, 87, 0.1); } .it.seen span::after { content: " ✓"; color: var(--ok); }
+#list { top: 62px; left: 10px; bottom: 96px; width: 268px; padding: 10px; display: none; flex-direction: column; } #list.on { display: flex; }
+#search { width: 100%; padding: 6px 9px; border-radius: 8px; border: 1px solid var(--ln); background: rgba(0, 0, 0, 0.4); color: var(--tx); font: inherit; -webkit-user-select: text; user-select: text; }
+#items { overflow: auto; margin-top: 8px; flex: 1; } #items h4 { margin: 10px 0 3px; font-size: 12px; color: var(--ac); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; } #items h4 small { color: var(--mu); }
+.it.li { flex-direction: row; width: 100%; gap: 8px; padding: 3px 6px; min-width: 0; }  .it.li span { font-size: 13px; max-width: none; } .it.li small { color: var(--mu); }
+#gamebox { right: 10px; bottom: 10px; width: 318px; padding: 12px 14px; display: none; max-height: calc(100vh - 80px); overflow: auto; z-index: 5; } #gamebox.on { display: block; }
+#game h3 { margin: 0 0 6px; font-size: 16px; } #game p { margin: 8px 0; font-size: 13px; } .rank small { color: var(--mu); }
+.bar { height: 6px; background: rgba(120, 150, 210, 0.2); border-radius: 3px; overflow: hidden; margin: 4px 0; } .bar i { display: block; height: 100%; background: var(--ac); }
+.cats div { display: grid; grid-template-columns: 118px 1fr 44px; gap: 8px; align-items: center; font-size: 12.5px; } .cats em { font-style: normal; color: var(--mu); text-align: right; }
+#quiz { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; } #quiz .q { font-size: 15px; } #quiz button.ok { border-color: var(--ok); color: var(--ok); } #quiz button.bad { border-color: #ff7b72; color: #ff7b72; } .res { color: var(--ac); }
+.x { position: absolute; top: 6px; right: 6px; padding: 0 7px; border: 0; background: none; font-size: 18px; color: var(--mu); }
+#help { inset: 0; margin: auto; width: min(720px, 94vw); height: fit-content; max-height: 92vh; overflow: auto; padding: 18px 22px; display: none; z-index: 10; } #help.on { display: block; }
+#help h2 { margin: 0 0 4px; } #help .g { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 22px; margin: 10px 0; } #help .g div { display: flex; gap: 8px; align-items: baseline; }
+kbd { background: rgba(120, 150, 210, 0.2); border: 1px solid var(--ln); border-bottom-width: 2px; border-radius: 5px; padding: 0 6px; font: 12px ui-monospace, Menlo, Consolas, monospace; white-space: nowrap; }
+#help p { color: #c3cde0; margin: 6px 0; }
+#toast { position: fixed; left: 50%; top: 112px; transform: translate(-50%, -12px); background: rgba(20, 26, 40, 0.95); border: 1px solid rgba(255, 200, 87, 0.5); border-radius: 10px; padding: 8px 16px; opacity: 0; transition: opacity 0.25s, transform 0.25s; pointer-events: none; z-index: 20; }
+#toast.on { opacity: 1; transform: translate(-50%, 0); }
+.sunf { margin: 8px 0; padding: 8px 10px; border: 1px solid rgba(255, 200, 87, 0.35); border-radius: 10px; } .sunf p { margin: 6px 0 0; font-size: 12.5px; color: #c3cde0; }
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 8px 0; } .tiles div { background: rgba(124, 108, 255, 0.16); border: 1px solid rgba(124, 108, 255, 0.4); border-radius: 12px; padding: 6px 8px; display: flex; gap: 7px; align-items: flex-start; } .tiles span { font-size: 20px; line-height: 1.1; } .tiles p { margin: 0; font-size: 13px; line-height: 1.3; } .tiles b { color: #ffe27a; }
+/* ukázka */
+#tut { left: 50%; bottom: 150px; transform: translateX(-50%); width: min(760px, 78vw); padding: 9px 12px 11px; display: none; z-index: 30; border-color: rgba(255, 200, 87, 0.55); font: 13.5px/1.4 ui-monospace, Menlo, Consolas, monospace; } #tut.on { display: block; }
+#tut .r { display: flex; gap: 10px; align-items: flex-start; } #tut-n { color: var(--ac); white-space: nowrap; } #tut-txt { flex: 1; min-height: 38px; } #tut-txt::after { content: "▍"; color: var(--ac); animation: bl 0.8s steps(2) infinite; } #tut-skip { padding: 1px 9px; font: 12px system-ui, sans-serif; }
+#tut-bar { height: 3px; background: rgba(120, 150, 210, 0.2); border-radius: 2px; margin-top: 7px; } #tut-bar i { display: block; height: 100%; width: 0; background: var(--ac); border-radius: 2px; transition: width 0.4s; }
+#tut-key { display: inline-block; margin-left: 8px; font-size: 14px; padding: 1px 9px; } #tut-key.pop { animation: pop 0.5s; }
+#cur { position: fixed; left: 0; top: 0; width: 0; height: 0; z-index: 40; pointer-events: none; opacity: 0; transition: transform 0.6s cubic-bezier(0.3, 0.8, 0.3, 1), opacity 0.3s; }
+#cur::before { content: ""; position: absolute; left: -2px; top: -2px; border: 9px solid transparent; border-left-color: #fff; border-top-color: #fff; filter: drop-shadow(0 0 3px #000); }
+#cur::after { content: ""; position: absolute; left: -16px; top: -16px; width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--ac); opacity: 0; } #cur.tap::after { animation: tap 0.6s; }
+.blink { animation: blink 0.33s 3 !important; position: relative; z-index: 31; }
+@keyframes blink { 50% { box-shadow: 0 0 0 3px var(--ac), 0 0 22px 6px rgba(255, 200, 87, 0.8); background: rgba(255, 200, 87, 0.45); } }
+@keyframes tap { 0% { opacity: 1; transform: scale(0.3); } 100% { opacity: 0; transform: scale(1.6); } } @keyframes bl { 50% { opacity: 0; } } @keyframes pop { 0% { transform: scale(1.7); background: var(--ac); color: #000; } }
+/* úvod */
+#splash { position: fixed; inset: 0; z-index: 50; display: none; place-items: center; background: radial-gradient(ellipse at center, rgba(5, 8, 16, 0.55), rgba(0, 0, 0, 0.88)); } #splash.on { display: grid; }
+#splash .in { text-align: center; max-width: 620px; padding: 20px; } #splash h1 { font-size: 40px; margin: 0; letter-spacing: 0.01em; } #splash h1 small { color: var(--ac); } #splash p { color: #c3cde0; margin: 8px 0 16px; }
+.modes { display: flex; gap: 12px; justify-content: center; margin: 14px 0 18px; } .modes button { width: 250px; padding: 12px; text-align: left; border-radius: 14px; } .modes button b { display: block; font-size: 17px; } .modes button small { color: var(--mu); } .modes button.sel { border-color: var(--ac); background: rgba(255, 200, 87, 0.14); }
+#sp-tut { font-size: 18px; padding: 10px 26px; border-radius: 12px; } #sp-go { padding: 10px 18px; border-radius: 12px; margin-left: 8px; } #splash .fine { font-size: 12px; color: var(--mu); margin-top: 16px; }
+/* dětské rozhraní */
+body.kid { font: 500 15.5px/1.4 "Baloo 2", "Comic Sans MS", system-ui, sans-serif; --bg: rgba(24, 17, 58, 0.9); --ln: rgba(140, 124, 255, 0.6); --ac: #ffd23f; }
+body.kid .panel { border-width: 2px; border-radius: 20px; } body.kid button { border-radius: 14px; } body.kid button.pri { background: linear-gradient(180deg, #ffd23f, #ff9f1c); color: #2b1a00; border-color: #ffe79a; font-weight: 700; }
+body.kid #tools button { font-size: 18px; padding: 4px 9px; } body.kid #tools button span { font-size: 13px; } body.kid #top h1 { font-size: 18px; } body.kid #time button { font-size: 17px; }
+body.kid #card { width: 350px; } body.kid #card h2 { font-size: 26px; color: #ffe27a; } body.kid .kid { font-size: 17.5px; } body.kid .adult { font-size: 14px; } body.kid #card .row button { font-size: 17px; padding: 7px 14px; }
+body.kid #mission { font-size: 16.5px; border-color: #ff7ac8; background: rgba(60, 20, 70, 0.92); } body.kid #dock { zoom: 1.16; } body.kid .it span { color: #fff; font-size: 12px; } body.kid .it.sel { background: rgba(255, 210, 63, 0.22); } body.kid .it:hover .ic { transform: scale(1.15) rotate(-6deg); transition: transform 0.15s; }
+body.kid #hud { font-size: 14px; } body.kid #game h3 { color: #ffe27a; font-size: 21px; } body.kid .bar i { background: linear-gradient(90deg, #ff7ac8, #ffd23f); } body.kid #toast { font-size: 17px; border-color: #ff7ac8; } body.kid #tut { font-family: inherit; font-size: 16px; }
+@media (max-width: 1500px) { #top h1 { display: none; } #tools button span { display: none; } body.kid #tools button span { display: none; } }
+@media (max-width: 900px) { #card { width: 260px; } #top h1 { display: none; } #dockwrap { left: 4px; right: 4px; bottom: 6px; } #hud { bottom: 76px; } #card { max-height: 40vh; } #tools label { display: none; } #rate { display: none; } }
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas><canvas id="ov"></canvas>
+<div id="top" class="panel"><h1>Sluneční soustava <small>200</small></h1>
+  <div id="time"><button data-a="slow" title="Zpomalit / couvat (,)">⏪</button><button data-a="play" id="b-play" title="Zastavit čas (mezerník)">⏸</button><button data-a="fast" title="Zrychlit (.)">⏩</button><span id="date"></span><span id="rate"></span><button data-a="now" title="Zpět do současnosti (T)">Teď</button></div></div>
+<div id="tools" class="panel"><span id="score">⭐ 0</span><button data-a="game" title="Deník astronoma (J)">📓 <span>Deník</span></button><label title="Přisvětlení nočních stran (G)">☀ <input id="gam" type="range" min="0" max="1" step="0.05" value="0"></label>
+  <button data-a="orb" id="b-orb" title="Dráhy (O)">◯ <span>Dráhy</span></button><button data-a="lab" id="b-lab" title="Popisky (L)">🏷 <span>Popisky</span></button><button data-a="con" id="b-con" title="Souhvězdí (U)">✨ <span>Souhvězdí</span></button><button data-a="stars" id="b-star" title="Jména hvězd (N)">⭐ <span>Hvězdy</span></button>
+  <button data-a="lock" id="b-lock" title="Otáčet kameru s tělesem (R)">⟳</button><button data-a="home" title="Celá soustava (Home)">⌂</button><button data-a="snd" id="b-snd" title="Zvuk (X)">🔊</button><button data-a="mode" id="b-mode" title="Přepnout dětské / dospělé rozhraní (K)">🧒 <span>Dětské</span></button><button data-a="full" title="Celá obrazovka (F)">⛶</button><button data-a="help" title="Nápověda (H)">?</button></div>
+<div id="mission" class="panel" style="display:none"></div>
+<div id="card" class="panel"></div>
+<div id="list" class="panel"><button class="x" data-close="#list">×</button><input id="search" type="search" placeholder="Hledat těleso…" aria-label="Hledat těleso"><div id="items"></div></div>
+<div id="gamebox" class="panel"><button class="x" data-close="#gamebox">×</button><div id="game"></div></div>
+<div id="hud"><div id="alt"></div><div id="scale"><i></i><span></span></div></div>
+<div id="dockwrap"><div id="sub" class="panel" style="display:none"></div><div id="dock" class="panel"></div></div>
+<div id="help" class="panel"><button class="x" data-close="#help">×</button>
+  <h2>Vítej, mladý astronome!</h2>
+  <p>Tohle je Sluneční soustava ve <b>skutečném měřítku</b>: 200 těles tam, kde právě teď opravdu jsou. Vesmír je hlavně prázdno – proto jsou tělesa z dálky jen tečky se jménem. Doleť k nim a uvidíš je zblízka.</p>
+  <div class="g">
+    <div><kbd>dvojklik</kbd> leť k tělesu</div><div><kbd>Tab</kbd> / <kbd>Shift+Tab</kbd> další / předchozí těleso</div>
+    <div><kbd>kolečko</kbd> <kbd>Q</kbd> <kbd>E</kbd> přiblížit / oddálit</div><div><kbd>0</kbd> Slunce, <kbd>1</kbd>–<kbd>8</kbd> planety, <kbd>9</kbd> Pluto (znovu = měsíce)</div>
+    <div><kbd>levé tlačítko</kbd> <kbd>šipky</kbd> <kbd>WASD</kbd> otáčet</div><div><kbd>Enter</kbd> leť k vybranému / přiblížit</div>
+    <div><kbd>pravé tlačítko</kbd> rozhlédnout se, <kbd>C</kbd> zpět</div><div><kbd>mezerník</kbd> zastavit čas, <kbd>,</kbd> <kbd>.</kbd> rychlost, <kbd>T</kbd> teď</div>
+    <div><kbd>klik</kbd> vybrat těleso (karta vpravo)</div><div><kbd>G</kbd> přisvětlení, <kbd>O</kbd> dráhy, <kbd>L</kbd> popisky</div>
+    <div><kbd>Home</kbd> celá soustava, <kbd>P</kbd> k mateřskému tělesu</div><div><kbd>B</kbd> seznam, <kbd>J</kbd> deník, <kbd>R</kbd> otáčet se s tělesem, <kbd>F</kbd> celá obrazovka</div>
+    <div><kbd>U</kbd> souhvězdí, <kbd>N</kbd> jména hvězd</div><div><kbd>V</kbd> filtr Slunce, <kbd>K</kbd> dětské / dospělé, <kbd>X</kbd> zvuk</div>
+  </div>
+  <p>🔊 Zvuků: <b id="sndn"></b>, všechny vznikají syntézou v prohlížeči. Hlasitost <input id="vol" type="range" min="0" max="1" step="0.05" value="0.55"></p>
+  <p>🎯 Nahoře je <b>hádanka</b>. Najdi těleso, o kterém mluví, a doleť k němu. Za každé nově navštívené těleso dostaneš razítko do deníku a body.</p>
+  <div class="row"><button class="pri" data-close="#help">Letíme!</button><button data-a="tut">▶ Přehrát ukázku (1 min)</button></div>
+</div>
+<div id="toast"></div>
+<div id="tut" class="panel"><div class="r"><span id="tut-n">1/9</span><span id="tut-txt"></span><kbd id="tut-key" style="display:none"></kbd><button id="tut-skip" title="Ukončit ukázku (Esc)">Přeskočit ✕</button></div><div id="tut-bar"><i></i></div></div>
+<div id="cur"></div>
+<div id="splash" class="on"><div class="in">
+  <h1>Sluneční soustava <small>200</small></h1>
+  <p>200 těles ve skutečném měřítku, tam, kde právě teď jsou.</p>
+  <div class="modes"><button id="sp-adult"><b>🎓 Dospělé rozhraní</b><small>Věcné údaje, jednotky, zdroje.</small></button><button id="sp-kid"><b>🧒 Dětské rozhraní</b><small>Hravé karty, tykání, zajímavosti.</small></button></div>
+  <button id="sp-tut" class="pri">▶ Ukázka ovládání (1 min)</button><button id="sp-go">Rovnou do vesmíru</button>
+  <div class="fine">Se zvukem. Rozhraní i zvuk jde kdykoli přepnout (K, X). Enter = ukázka, Esc = přeskočit.</div>
+</div></div>
+<script src="app.js"></script>
+</body>
+</html>
