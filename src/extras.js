@@ -79,8 +79,14 @@ export function createExtras(S, A, api) {
     mx.fillStyle = '#ffd98a'; mx.beginPath(); mx.arc(c, c, 3, 0, 6.2832); mx.fill(); spots.push([c, c, SUN]);
     for (const i of PL) { const x = P[i * 3], z = P[i * 3 + 2], au = Math.hypot(x, z) / AU, r = rad(au), a = Math.atan2(z, x), px = c + Math.cos(a) * r, py = c + Math.sin(a) * r; mx.strokeStyle = 'rgba(140,165,210,0.16)'; mx.beginPath(); mx.arc(c, c, r, 0, 6.2832); mx.stroke();
       const col = B[i].col || [0.7, 0.7, 0.7], on = i === S.focus || par[S.focus] === i; mx.fillStyle = `rgb(${col.map(v => Math.round(Math.min(1, v * 0.8 + 0.3) * 255))})`; mx.beginPath(); mx.arc(px, py, on ? 4 : 2.6, 0, 6.2832); mx.fill(); if (on) { mx.strokeStyle = '#ffc857'; mx.beginPath(); mx.arc(px, py, 7, 0, 6.2832); mx.stroke(); } spots.push([px, py, i]); }
-    const C = S.camPos, au = Math.hypot(C[0], C[2]) / AU, r = Math.min(MS / 2 - 4, rad(au)), a = Math.atan2(C[2], C[0]), px = c + Math.cos(a) * r, py = c + Math.sin(a) * r; mx.fillStyle = '#7dffb0'; mx.beginPath(); mx.moveTo(px, py - 5); mx.lineTo(px + 4, py + 4); mx.lineTo(px - 4, py + 4); mx.closePath(); mx.fill(); };
-  setInterval(X.drawMini, 600);
-  mc.addEventListener('click', (e) => { const b = mc.getBoundingClientRect(), x = e.clientX - b.left, y = e.clientY - b.top; let best = -1, bd = 14; for (const s of spots) { const q = Math.hypot(s[0] - x, s[1] - y); if (q < bd) { bd = q; best = s[2]; } } if (best >= 0) S.flyTo(best); });
+    // kde právě jsi: zelená značka s pulzujícím kruhem, spojnice ke Slunci a jméno tělesa, u kterého stojíš
+    const C = S.camPos, au = Math.hypot(C[0], C[2]) / AU, r = Math.min(MS / 2 - 6, rad(au)), a = Math.atan2(C[2], C[0]), px = c + Math.cos(a) * r, py = c + Math.sin(a) * r, ph = (performance.now() % 1800) / 1800;
+    mx.strokeStyle = 'rgba(125,255,176,0.35)'; mx.lineWidth = 1; mx.setLineDash([2, 3]); mx.beginPath(); mx.moveTo(c, c); mx.lineTo(px, py); mx.stroke(); mx.setLineDash([]);
+    mx.strokeStyle = `rgba(125,255,176,${0.9 * (1 - ph)})`; mx.lineWidth = 1.6; mx.beginPath(); mx.arc(px, py, 5 + ph * 11, 0, 6.2832); mx.stroke();
+    mx.fillStyle = '#7dffb0'; mx.strokeStyle = '#04140a'; mx.lineWidth = 1.2; mx.beginPath(); mx.arc(px, py, 4.2, 0, 6.2832); mx.fill(); mx.stroke();
+    const nm = B[S.focus].cs, f = S.focus === SUN ? '' : (au >= 10 ? au.toFixed(1) : au.toFixed(2)).replace('.', ',') + ' AU'; mx.font = '600 10.5px system-ui, sans-serif'; mx.textBaseline = 'middle'; const tw = Math.max(mx.measureText(nm).width, mx.measureText(f).width), tx = px + 9 + tw > MS - 4 ? px - 9 - tw : px + 9, ty = Math.max(14, Math.min(MS - 20, py));
+    mx.lineWidth = 3; mx.strokeStyle = 'rgba(0,0,0,0.85)'; mx.strokeText(nm, tx, ty); mx.fillStyle = '#eafff2'; mx.fillText(nm, tx, ty); if (f) { mx.font = '9.5px system-ui, sans-serif'; mx.strokeText(f, tx, ty + 11); mx.fillStyle = '#9fe8bd'; mx.fillText(f, tx, ty + 11); } };
+  setInterval(X.drawMini, 150);
+  mc.addEventListener('click', (e) => { const b = mc.getBoundingClientRect(), x = e.clientX - b.left, y = e.clientY - b.top; let best = -1, bd = 14; for (const s of spots) { const q = Math.hypot(s[0] - x, s[1] - y); if (q < bd) { bd = q; best = s[2]; } } if (best >= 0) S.flyTo(best); else if (api.where) api.where(); });
   return X;
 }

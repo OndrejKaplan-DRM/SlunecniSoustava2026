@@ -25,7 +25,7 @@ button.pri { background: rgba(255, 200, 87, 0.18); border-color: rgba(255, 200, 
 #score { color: #ffe7ad; font-weight: 600; }
 #mission { top: 62px; left: 50%; transform: translateX(-50%); padding: 7px 8px 7px 14px; max-width: min(640px, 60vw); display: flex; gap: 8px; align-items: center; border-color: rgba(255, 200, 87, 0.4); }
 #mission button { padding: 1px 8px; } #mission i { color: var(--ac); }
-#card { top: 62px; right: 10px; width: 318px; max-height: calc(100vh - 190px); overflow: auto; padding: 12px 14px; -webkit-user-select: text; user-select: text; }
+#card { top: 62px; right: 10px; width: 318px; max-height: calc(100vh - var(--dk, 120px) - 80px); overflow: auto; padding: 12px 14px; -webkit-user-select: text; user-select: text; }
 #card .hd { display: flex; gap: 11px; align-items: center; } #card h2 { margin: 0; font-size: 19px; line-height: 1.2; } .sub { color: var(--mu); font-size: 12.5px; }
 .ball { width: 58px; height: 50px; flex: none; display: grid; place-items: center; }
 .ic { display: block; background-image: url(icons.webp); background-repeat: no-repeat; flex: none; }
@@ -109,13 +109,17 @@ body.kid #hud { font-size: 14px; } body.kid #game h3 { color: #ffe27a; font-size
 @media (max-width: 900px) { #card { width: 260px; } #top h1 { display: none; } #dockwrap { left: 4px; right: 4px; bottom: 6px; } #hud { bottom: 76px; } #card { max-height: 40vh; } #tools label { display: none; } #rate { display: none; } }
 
 /* ---------- telefon a tablet (třídy nastavuje src/mobile.js; bez nich se nic z toho nepoužije) ---------- */
-.mo, .tg, #minfo, .mctl { display: none; }
-#card.gone { opacity: 0; pointer-events: none; } #card { transition: opacity 1.1s; }
+.mo, .tg, #minfo { display: none; }
+.mctl { display: flex; position: absolute; top: 3px; right: 3px; gap: 0; z-index: 2; } #card .hd { padding-right: 30px; } .hw { color: #aeb9cf; }
+#card.dock { transform: translateX(calc(100% + 16px)); pointer-events: none; }
+#cardtab { position: fixed; right: 0; top: 118px; writing-mode: vertical-rl; padding: 10px 5px 10px 6px; border-radius: 10px 0 0 10px; border-right: 0; background: var(--bg); transform: translateX(110%); transition: transform 0.45s 0.12s; z-index: 3; max-height: 230px; overflow: hidden; white-space: nowrap; font-size: 12.5px; } #cardtab.on { transform: none; animation: tabhi 1.4s 0.5s 2; } @keyframes tabhi { 50% { box-shadow: 0 0 0 2px var(--ac), 0 0 16px rgba(255, 200, 87, 0.7); } }
+body.cine #cardtab { opacity: 0; pointer-events: none; } body.mob #cardtab, body.tab #cardtab { display: none; }
+#card.gone { opacity: 0; pointer-events: none; } #card { transition: opacity 1.1s, transform 0.45s cubic-bezier(0.3, 0.8, 0.3, 1); }
 body.touch { overscroll-behavior: none; } body.touch .panel, body.touch button { touch-action: manipulation; }
 body.touch kbd, body.touch #help .g, body.touch [data-a="tut"], body.touch #sp-tut, body.mob #sp-tut, body.touch #splash .fine, body.mob #splash .fine, body.touch [data-a="full"] { display: none; }
 body.touch .tg, body.mob #splash .tg { display: block; } #help .tg p { margin: 5px 0; } #splash .tg { font-size: 12.5px; color: var(--mu); margin-top: 14px; line-height: 1.6; }
 body.touch #more .mo, body.mob #more .mo, body.stack #more .mo { display: flex; }
-body.touch .mctl, body.mob .mctl { display: flex; position: absolute; top: 3px; right: 3px; gap: 0; z-index: 2; } .mctl button { border: 0; background: none; color: var(--mu); font-size: 19px; padding: 2px 9px; line-height: 1.2; }
+.mctl button { border: 0; background: none; color: var(--mu); font-size: 19px; padding: 2px 9px; line-height: 1.2; }
 body.touch #card .hd, body.mob #card .hd { padding-right: 62px; }
 body.touch #minfo.on, body.mob #minfo.on { display: grid; position: fixed; right: 8px; bottom: calc(var(--dk, 84px) + 10px); width: 38px; height: 38px; place-items: center; border-radius: 50%; padding: 0; font-size: 17px; background: rgba(9, 13, 22, 0.7); z-index: 3; }
 /* tablet a úzké okno: lišta nástrojů pod horní lištou */
@@ -168,7 +172,7 @@ body.mob .zr em { display: none; } body.mob #zv-cats { flex-wrap: nowrap; overfl
 <div id="tools" class="panel"><span id="score">⭐ 0</span><button data-a="game" title="Deník astronoma (J)">📓 <span>Deník</span></button><label title="Přisvětlení nočních stran (G)">☀ <input id="gam" type="range" min="0" max="1" step="0.05" value="0"></label>
   <button data-a="orb" id="b-orb" title="Dráhy (O)">◯ <span>Dráhy</span></button><button data-a="lab" id="b-lab" title="Popisky (L)">🏷 <span>Popisky</span></button><button data-a="con" id="b-con" title="Souhvězdí (U)">✨ <span>Souhvězdí</span></button><button data-a="stars" id="b-star" title="Jména hvězd (N)">⭐ <span>Hvězdy</span></button>
   <button data-a="lock" id="b-lock" title="Otáčet kameru s tělesem (R)">⟳</button><button data-a="home" title="Celá soustava (Home)">⌂</button><button data-a="snd" id="b-snd" title="Zvuk (X)">🔊</button><button data-a="mode" id="b-mode" title="Přepnout dětské / dospělé rozhraní (K)">🧒 <span>Dětské</span></button><button data-a="full" title="Celá obrazovka (F)">⛶</button><button data-m="mis" class="mo" title="Hádanka">🎯</button><button data-a="more" title="Další funkce">☰</button><button data-a="help" title="Nápověda (H)">?</button></div>
-<div id="more" class="panel pop"><button class="mo" data-a="game">📓 Deník astronoma</button><button class="mo" data-a="list">🔎 Seznam a hledání</button><button class="mo" data-a="home">⌂ Celá soustava</button><button class="mo" data-a="orb">◯ Dráhy</button><button class="mo" data-a="lab">🏷 Popisky</button><button class="mo" data-a="con">✨ Souhvězdí</button><button class="mo" data-a="stars">⭐ Jména hvězd</button><button class="mo" data-a="gam">☀ Přisvětlení</button><button class="mo" data-a="sunf">🔆 Filtr Slunce</button><button class="mo" data-a="lock">⟳ Otáčet se s tělesem</button><button data-a="album">🗂 Album / atlas těles <kbd>Z</kbd></button><button data-a="tm">🕰 Stroj času <kbd>Shift+T</kbd></button><button data-a="cmp">⚖ Porovnat velikost</button><button data-a="ruler">📏 Měřit vzdálenost <kbd>Shift+D</kbd></button><button data-a="grid">🌐 Osa, rovník, poledníky <kbd>Shift+A</kbd></button><button data-a="real">🔦 Reálný jas <kbd>Shift+G</kbd></button><button data-a="cine">🎬 Kino (skrýt rozhraní) <kbd>I</kbd></button><button data-a="autorot">🔄 Pomalé otáčení <kbd>Y</kbd></button><button data-a="music">🎵 Hudba <kbd>M</kbd></button><button data-a="mini">🧭 Minimapa</button><button data-m="view" id="b-view">📱 Zobrazení: automaticky</button></div>
+<div id="more" class="panel pop"><button class="mo" data-a="game">📓 Deník astronoma</button><button class="mo" data-a="list">🔎 Seznam a hledání</button><button class="mo" data-a="home">⌂ Celá soustava</button><button class="mo" data-a="orb">◯ Dráhy</button><button class="mo" data-a="lab">🏷 Popisky</button><button class="mo" data-a="con">✨ Souhvězdí</button><button class="mo" data-a="stars">⭐ Jména hvězd</button><button class="mo" data-a="gam">☀ Přisvětlení</button><button class="mo" data-a="sunf">🔆 Filtr Slunce</button><button class="mo" data-a="lock">⟳ Otáčet se s tělesem</button><button data-a="album">🗂 Album / atlas těles <kbd>Z</kbd></button><button data-a="tm">🕰 Stroj času <kbd>Shift+T</kbd></button><button data-a="cmp">⚖ Porovnat velikost</button><button data-a="ruler">📏 Měřit vzdálenost <kbd>Shift+D</kbd></button><button data-a="grid">🌐 Osa, rovník, poledníky <kbd>Shift+A</kbd></button><button data-a="real">🔦 Reálný jas <kbd>Shift+G</kbd></button><button data-a="cine">🎬 Kino (skrýt rozhraní) <kbd>I</kbd></button><button data-a="autorot">🔄 Pomalé otáčení <kbd>Y</kbd></button><button data-a="music">🎵 Hudba <kbd>M</kbd></button><button data-m="where">📍 Kde jsem? (orientační body)</button><button data-a="mini">🧭 Minimapa</button><button data-m="view" id="b-view">📱 Zobrazení: automaticky</button></div>
 <div id="album" class="panel pop"><button class="x" data-close="#album">×</button><div id="album-in"></div></div>
 <div id="tm" class="panel pop"><button class="x" data-close="#tm">×</button><h3>🕰 Stroj času</h3><div id="tm-list"></div></div>
 <div id="cmp" class="panel pop"><button class="x" data-close="#cmp">×</button><div id="cmp-in"></div></div>
@@ -180,7 +184,7 @@ body.mob .zr em { display: none; } body.mob #zv-cats { flex-wrap: nowrap; overfl
 <div id="card" class="panel"></div>
 <div id="list" class="panel"><button class="x" data-close="#list">×</button><input id="search" type="search" placeholder="Hledat těleso…" aria-label="Hledat těleso"><div id="items"></div></div>
 <div id="gamebox" class="panel"><button class="x" data-close="#gamebox">×</button><div id="game"></div></div>
-<button id="minfo" title="Ukázat kartu tělesa">ⓘ</button><button id="zvb" title="Zkušebna zvuků" aria-label="Zkušebna zvuků">♪</button>
+<button id="minfo" title="Ukázat kartu tělesa">ⓘ</button><button id="cardtab" title="Ukázat kartu tělesa">ⓘ</button><button id="zvb" title="Zkušebna zvuků" aria-label="Zkušebna zvuků">♪</button>
 <div id="zv" class="panel pop"><button class="x" data-zx="1">×</button><h3>🎧 Zkušebna zvuků <small id="zv-n"></small></h3><div id="zv-cats"></div><div id="zv-list"></div><div id="zv-foot"><button id="zv-copy" class="pri">Zkopírovat výběr</button><button id="zv-stop">■ Ticho</button><label><input type="checkbox" id="zv-loop"> opakovat</label><label><input type="checkbox" id="zv-auto" checked> šipky rovnou přehrávají</label><span class="sub">↑↓ další · mezerník znovu · Enter fajfka</span><textarea id="zv-out" readonly></textarea></div></div>
 <div id="hud"><div id="alt"></div><div id="scale"><i></i><span></span></div></div>
 <div id="dockwrap"><div id="sub" class="panel" style="display:none"></div><div id="dock" class="panel"></div></div>
@@ -199,7 +203,7 @@ body.mob .zr em { display: none; } body.mob #zv-cats { flex-wrap: nowrap; overfl
     <div><kbd>Shift+D</kbd> měřit, <kbd>Shift+A</kbd> osa a rovník</div><div><kbd>Shift+G</kbd> reálný jas, <kbd>☰</kbd> další funkce</div>
   </div>
   <div class="tg"><p>👆 <b>Jeden prst</b> otáčí pohled kolem tělesa.</p><p>🤏 <b>Dva prsty</b> k sobě a od sebe: oddálit a přiblížit.</p><p>👉 <b>Ťuknutí</b> na těleso nebo ikonu dole ho vybere, <b>dvojí ťuknutí</b> k němu doletí.</p><p>☰ Další funkce (dráhy, souhvězdí, deník, stroj času…) jsou v nabídce vpravo nahoře. 🎯 ukáže hádanku.</p><p>ⓘ Karta tělesa po chvíli sama zmizí; křížkem ji zavřeš, šipkou rozbalíš.</p></div>
-  <p>🔊 Zvuků: <b id="sndn"></b>, všechny vznikají syntézou v prohlížeči. Hlasitost <input id="vol" type="range" min="0" max="1" step="0.05" value="0.55"></p>
+  <p>🔊 Zvuků: <b id="sndn"></b> – syntéza v prohlížeči a nahrané zvuky z volných balíčků (CC0). Hlasitost <input id="vol" type="range" min="0" max="1" step="0.05" value="0.55"></p>
   <p>🎯 Nahoře je <b>hádanka</b>. Najdi těleso, o kterém mluví, a doleť k němu. Za každé nově navštívené těleso dostaneš razítko do deníku a body.</p>
   <div class="row"><button class="pri" data-close="#help">Letíme!</button><button data-a="tut">▶ Přehrát ukázku (1 min)</button></div>
 </div>

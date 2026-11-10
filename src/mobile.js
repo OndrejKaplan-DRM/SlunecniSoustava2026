@@ -12,7 +12,7 @@ export function createMobile(S, A, ui) {
     B.classList.toggle('mob', M.mob); B.classList.toggle('tab', M.tab); B.classList.toggle('touch', M.touch); B.classList.toggle('land', M.mob && w > h);
     B.classList.remove('stack'); if (!M.mob) { const a = $('#top').getBoundingClientRect(), b = $('#tools').getBoundingClientRect(); if (a.right + 8 > b.left) B.classList.add('stack'); }
     S.pickR = M.touch ? 24 : 12; $('#b-view').textContent = '📱 Zobrazení: ' + { auto: 'automaticky', mob: 'telefon', tab: 'tablet', pc: 'počítač' }[f];
-    dock(); if (!M.mob && !M.tab) { card.classList.remove('gone', 'open'); minfo.classList.remove('on'); mis.classList.remove('show'); } else decorate();
+    dock(); if (!M.mob && !M.tab) { card.classList.remove('gone', 'open'); minfo.classList.remove('on'); mis.classList.remove('show'); } else { card.classList.remove('dock'); $('#cardtab').classList.remove('on'); } decorate();
     S.wake();
   }
   const dock = () => B.style.setProperty('--dk', Math.round(innerHeight - $('#dockwrap').getBoundingClientRect().top - 5) + 'px');
@@ -22,16 +22,22 @@ export function createMobile(S, A, ui) {
   const arm = () => { clearTimeout(fadeT); if (M.mob && !card.classList.contains('open')) fadeT = setTimeout(() => hide(false), 8000); };
   const show = () => { card.classList.remove('gone'); minfo.classList.remove('on'); dismissed = -1; arm(); };
   function decorate() {
-    if (!(M.mob || M.tab) || !card.firstChild) return;
+    if (!card.firstChild) return; tab.textContent = 'ⓘ ' + ((card.querySelector('h2') || {}).textContent || 'karta') + ' ‹';
     if (!card.querySelector('.mctl')) { const d = document.createElement('div'); d.className = 'mctl'; d.innerHTML = (M.mob ? `<button data-mc="open" title="Rozbalit / sbalit">${card.classList.contains('open') ? '⌄' : '⌃'}</button>` : '') + '<button data-mc="x" title="Zavřít">×</button>'; card.appendChild(d); }
+    if (!(M.mob || M.tab)) return;
     if (S.sel !== lastSel) { lastSel = S.sel; card.classList.remove('open'); const o = card.querySelector('[data-mc="open"]'); if (o) o.textContent = '⌃'; if (dismissed !== S.sel) show(); }
     else if (!card.classList.contains('gone')) arm();
   }
   new MutationObserver(decorate).observe(card, { childList: true });
   card.addEventListener('click', (e) => { const m = e.target.dataset.mc; if (!m) { arm(); return; } e.stopPropagation();
-    if (m === 'x') { hide(true); A.play('panel_close'); } else { const o = card.classList.toggle('open'); e.target.textContent = o ? '⌄' : '⌃'; A.play(o ? 'panel_open' : 'panel_close'); clearTimeout(fadeT); if (!o) arm(); } }, true);
+    if (m === 'x') { if (M.mob || M.tab) hide(true); else dockCard(true, false); A.play('panel_close'); } else { const o = card.classList.toggle('open'); e.target.textContent = o ? '⌄' : '⌃'; A.play(o ? 'panel_open' : 'panel_close'); clearTimeout(fadeT); if (!o) arm(); } }, true);
   card.addEventListener('pointerdown', () => clearTimeout(fadeT)); card.addEventListener('scroll', () => clearTimeout(fadeT));
   minfo.addEventListener('click', () => { show(); A.play('panel_open'); });
+  // počítač: karta zajede za pravý okraj a nechá tam ouško; deník ji odsune sám, protože by se překrývaly
+  const tab = $('#cardtab'), gb = $('#gamebox'); let autoDock = false;
+  function dockCard(v, auto) { card.classList.toggle('dock', v); tab.classList.toggle('on', v); autoDock = v && auto; }
+  tab.addEventListener('click', () => { dockCard(false, false); gb.classList.remove('on'); A.play('panel_open'); });
+  new MutationObserver(() => { if (M.mob) return; const on = gb.classList.contains('on'); if (on && !card.classList.contains('dock')) dockCard(true, true); else if (!on && autoDock) dockCard(false, false); }).observe(gb, { attributes: true, attributeFilter: ['class'] });
   // hádanka: na telefonu se ukáže na 7 s při změně a na ťuknutí na 🎯
   const misShow = (ms) => { if (!M.mob || !mis.innerHTML) return; mis.classList.add('show'); clearTimeout(misT); misT = setTimeout(() => mis.classList.remove('show'), ms); };
   new MutationObserver(() => misShow(7000)).observe(mis, { childList: true });

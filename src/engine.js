@@ -44,7 +44,7 @@ export function createEngine(canvas, overlay) {
     const pts = new THREE.Points(g, starMat); pts.frustumCulled = false; pts.renderOrder = -20; scene.add(pts); }
 
   const eq2s = (ra, de) => { const x = Math.cos(de) * Math.cos(ra), y = Math.cos(de) * Math.sin(ra), z = Math.sin(de); return new THREE.Vector3(x, -se * y + ce * z, -(ce * y + se * z)); };
-  const cons = [], starLab = []; let conMat;
+  const cons = [], starLab = []; let conMat; S.eq2s = (ra, de) => eq2s(ra, de);
   { const li = dec64(CON_LINES, Int16Array), LP = new Float32Array(li.length / 4 * 6); let k = 0;
     for (const part of CON_IDS.split(',')) { const [id, cnt] = part.split(':'), c = new THREE.Vector3();
       for (let j = 0; j < +cnt; j++, k++) { const a = eq2s((li[k * 4] / 100 + 180) * DEG, li[k * 4 + 1] / 100 * DEG), b = eq2s((li[k * 4 + 2] / 100 + 180) * DEG, li[k * 4 + 3] / 100 * DEG); LP.set([a.x, a.y, a.z, b.x, b.y, b.z], k * 6); c.add(a).add(b); }

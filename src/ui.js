@@ -89,6 +89,8 @@ export function createUI(S, A) {
   $('#game').addEventListener('click', (e) => { const a = e.target.dataset.a; if (a === 'quiz') quiz(); if (a === 'reset') { if (e.target.dataset.sure) { G = { pts: 0, seen: {}, done: {}, cur: null, hint: false, quiz: { ok: 0, n: 0, streak: 0 }, help: true, kid: G.kid }; save(); nextMission(); markSeen(); } else { e.target.dataset.sure = 1; e.target.textContent = 'Opravdu smazat deník?'; } } });
 
   // ---------- karta tělesa ----------
+  // počet známých měsíců: Jupiter a Saturn podle Minor Planet Center (stav k dubnu 2026), Uran včetně S/2025 U1; čísla dál rostou
+  const MOONS = { mercury: 0, venus: 0, earth: 1, mars: 2, jupiter: 115, saturn: 292, uranus: 29, neptune: 16, pluto: 5, eris: 1, haumea: 2, makemake: 1 };
   function drawCard(i) {
     const b = B[i], p = par[i], D = b.R * 2, inf = S.info(i), rows = [];
     const sub = b.type === 'moon' ? `měsíc ${GEN[b.parent] || B[p].cs}` : TYPE[b.type];
@@ -100,6 +102,7 @@ export function createUI(S, A) {
     if (i !== SUN) rows.push(['Jeden oběh', fmtPer(period[i])]);
     if (b.rot) rows.push(['Otočka', fmtPer(Math.abs(b.rot) / 24) + (b.rot < 0 ? ' (pozpátku)' : '')]);
     if (b.g) rows.push(['Tíže', b.g > 0.05 ? `${sig(b.g / 9.80665)} g <small>(skok ${sig(Math.min(1e6, 0.5 * 9.80665 / b.g))} m vysoko)</small>` : b.vesc < 2 ? `skoro žádná <small>(odrazem bys odletěl)</small>` : `${sig(b.g / 9.80665 * 1000)} tisícin g`]);
+    if (MOONS[b.id] !== undefined) { const m = MOONS[b.id], inm = kids[i].size !== undefined ? kids[i].size : kids[i].length; rows.push(['Měsíce', m === 0 ? 'žádné' : `<b>${m}</b> ${m === 1 ? 'známý' : m < 5 ? 'známé' : 'známých'}${m > 4 ? ' <small>(stav k dubnu 2026)</small>' : ''}${inm && inm < m ? ` <small>· v modelu ${inm}</small>` : ''}`]); }
     if (b.atm && b.atm.comp) rows.push(['Atmosféra', b.atm.comp]);
     if (b.disc) rows.push(['Objev', `${b.disc[0]}${b.disc[1] ? ', ' + b.disc[1] : ''}`]);
     if (b.missions) rows.push(['Sondy', b.missions]);
@@ -132,7 +135,7 @@ export function createUI(S, A) {
   $('#card').addEventListener('click', (e) => { const chip = e.target.closest('.chip'); if (chip) return S.flyTo(+chip.dataset.i); const a = e.target.dataset.a, i = S.sel; if (a === 'sunf') return act.sunf(); if (a === 'cmp') return act.cmp(); if (a === 'pin') { api.X.ruler = api.X.ruler === i ? -1 : i; A.play('ruler'); toast(api.X.ruler < 0 ? 'Měření zrušeno.' : `📏 Měřím od tělesa ${B[i].cs}. Vyber klikem jiné těleso.`); return drawCard(i); } if (a === 'go') S.flyTo(i); if (a === 'close') S.flyTo(i, { alt: shape[i].rmax * 0.6 }); if (a === 'far') S.flyTo(i, { alt: Math.max(shape[i].rmax * 60, semi[[...kids[i]].sort((x, y) => semi[y] - semi[x])[0]] * 2.2 || 0) }); if (a === 'parent') S.flyTo(par[i]); });
   S.on.select = (i) => { drawCard(i); document.querySelectorAll('.it.sel').forEach(e => e.classList.remove('sel')); document.querySelectorAll(`.it[data-i="${i}"]`).forEach(e => e.classList.add('sel')); };
   S.on.focus = (i) => { drawCard(S.sel); drawSub(); };
-  S.on.arrive = (i) => { drawCard(S.sel); A.play('arrive_' + B[i].type); guide(i); try { history.replaceState(null, '', '#' + B[i].id.replace(/_/g, '-')); } catch (e) { /* nic */ } };
+  S.on.arrive = (i) => { drawCard(S.sel); A.play('arrive_' + B[i].type, 1, 0.7); A.play('arrive_echo'); if (api.onArrive) api.onArrive(i); guide(i); try { history.replaceState(null, '', '#' + B[i].id.replace(/_/g, '-')); } catch (e) { /* nic */ } };
   S.on.fly = (j) => { A.play(j === S.focus ? 'closeup' : 'launch'); };
   S.on.flare = () => A.play('flare', 1, 0.7);
 
@@ -162,12 +165,13 @@ export function createUI(S, A) {
 
   // ---------- HUD ----------
   S.on.hud = () => { drawTime(); const inf = S.info(S.focus), b = B[S.focus];
-    $('#alt').innerHTML = `<b>${b.cs}</b><br><span>${K() ? 'jsi ' : 'výška '}${fmtDist(inf.alt).replace(/ \(.*/, '')}${K() ? ' nad povrchem' : ''}</span>`;
+    $('#alt').innerHTML = `<b>${b.cs}</b><br><span>${K() ? 'jsi ' : 'výška '}${fmtDist(inf.alt).replace(/ \(.*/, '')}${K() ? ' nad povrchem' : ''}</span><br><span class="hw">${S.focus === SUN ? '' : '☀ ' + sig(inf.sun / AU) + ' AU'}${S.focus === SUN || S.focus === EARTH ? '' : ' · '}${S.focus === EARTH ? '' : '🌍 ' + sig(inf.earth / AU) + ' AU'}</span>`;
     let km = inf.kmPerPx * 120, p = Math.pow(10, Math.floor(Math.log10(km))), n = km / p >= 5 ? 5 : km / p >= 2 ? 2 : 1; const w = n * p / inf.kmPerPx; $('#scale i').style.width = w + 'px'; $('#scale span').textContent = fmtDist(n * p).replace(/ \(.*/, '') + (n * p > 0.05 * AU ? ` = ${sig(n * p / AU)} AU` : '');
     const s = S.info(S.sel), q = (id, t) => { const e = document.getElementById(id); if (e) e.textContent = t; }; q('c-sun', fmtDist(s.sun)); q('c-earth', fmtDist(s.earth)); q('c-light', fmtLight(s.earth)); };
 
   // ---------- přepínače ----------
-  const toggle = (sel, on) => { const e = $(sel); const was = e.classList.contains('on'), v = on === undefined ? !was : on; if (v !== was) A.play(v ? 'panel_open' : 'panel_close'); e.classList.toggle('on', v); if (sel === '#list' && v) { drawList($('#search').value); } if (sel === '#gamebox' && v) drawGame(); return v; };
+  const POPS = ['#help', '#gamebox', '#list', '#album', '#tm', '#cmp', '#dev', '#more', '#zv'], PSND = { '#gamebox': 'book', '#album': 'book', '#more': 'menu', '#help': 'help' };
+  const toggle = (sel, on) => { const e = $(sel); const was = e.classList.contains('on'), v = on === undefined ? !was : on; if (v !== was) A.play(v ? PSND[sel] || 'panel_open' : 'panel_close'); if (v) for (const o of POPS) if (o !== sel) $(o).classList.remove('on'); e.classList.toggle('on', v); if (sel === '#list' && v) { drawList($('#search').value); } if (sel === '#gamebox' && v) drawGame(); return v; };
   const setBtn = () => { $('#b-orb').dataset.m = S.orbMode; $('#b-lab').dataset.m = S.labMode; $('#b-lock').dataset.m = S.lock ? 1 : 0; $('#b-con').dataset.m = S.conMode; $('#b-star').dataset.m = S.starNames ? 2 : 0; $('#b-snd').dataset.m = A.on ? 1 : 0; $('#b-snd').firstChild.textContent = A.on ? '🔊' : '🔇'; $('#b-mode').innerHTML = K() ? '🎓 <span>Dospělé</span>' : '🧒 <span>Dětské</span>'; $('#gam').value = S.gamma; $('#b-orb').title = 'Dráhy: ' + ['vypnuté', 'hlavní', 'všechny'][S.orbMode] + ' (O)'; $('#b-lab').title = 'Popisky: ' + ['vypnuté', 'hlavní', 'všechny'][S.labMode] + ' (L)'; };
   const act = { orb() { S.orbMode = (S.orbMode + 1) % 3; A.play(['orbit_off', 'orbit_on', 'orbit_all'][S.orbMode]); toast('Dráhy: ' + ['vypnuté', 'planety a blízké měsíce', 'všech 200 těles'][S.orbMode]); }, lab() { S.labMode = (S.labMode + 1) % 3; A.play(S.labMode ? 'labels_on' : 'labels_off'); toast('Popisky: ' + ['vypnuté', 'hlavní', 'všechny'][S.labMode]); }, lock() { S.lock = !S.lock; A.play(S.lock ? 'lock_on' : 'lock_off'); toast(S.lock ? 'Kamera se otáčí s tělesem (stojíš nad jedním místem).' : 'Kamera stojí vůči hvězdám.'); },
     gam() { const g = S.gamma < 0.2 ? 0.45 : S.gamma < 0.7 ? 1 : 0; S.setGamma(g); A.play(g ? 'gamma_up' : 'gamma_down'); toast(['Přisvětlení vypnuto – skutečný kontrast.', 'Přisvětlení: noční strany jsou trochu vidět.', 'Přisvětlení naplno: vidíš i neosvětlené strany.'][g === 0 ? 0 : g < 0.7 ? 1 : 2]); },
@@ -213,7 +217,7 @@ export function createUI(S, A) {
   const upH = (e) => { const p = ptr.get(e.pointerId); ptr.delete(e.pointerId); pinch = 0; cv.style.cursor = 'grab'; if (!p || moved >= 5 || p.b !== 0) return;
     const i = S.pick(e.clientX, e.clientY), now = performance.now();
     if (now - lastTap < 380 && i === lastTapI) { if (i >= 0) { if (i === S.focus) S.flyTo(i, { alt: shape[i].rmax * 0.6 }); else S.flyTo(i); } lastTap = 0; return; }
-    lastTap = now; lastTapI = i; if (i >= 0) { S.select(i); A.play('select'); } else { const pr = api.X && api.X.pickProbe(e.clientX, e.clientY); if (pr) { toast(`🛰️ <b>${pr.name}</b>: ${pr.info}`); A.play('select'); } } };
+    lastTap = now; lastTapI = i; if (i >= 0) { S.select(i); A.play('select'); } else { const pr = api.X && api.X.pickProbe(e.clientX, e.clientY); if (pr) { toast(`🛰️ <b>${pr.name}</b>: ${pr.info}`); A.play('probe'); } } };
   cv.addEventListener('pointerup', upH); cv.addEventListener('pointercancel', upH);
   let zt = 0; cv.addEventListener('wheel', (e) => { e.preventDefault(); const k = e.deltaMode === 1 ? 33 : 1; if (performance.now() - zt > 90) { zt = performance.now(); A.play(e.deltaY < 0 ? 'zoom_in' : 'zoom_out'); } S.zoom(Math.exp(Math.max(-240, Math.min(240, e.deltaY * k)) * 0.0022)); }, { passive: false });
 
@@ -260,6 +264,7 @@ export function createUI(S, A) {
     $('#cmp-in').innerHTML = `<h3>⚖ ${b.cs}: ${K() ? 'jak je to velké?' : 'porovnání velikosti'}</h3><div class="cmp">` + set.map(j => { const dia = 190 * B[j].R / mx; return `<div class="${j === i ? 'me' : ''}"><b>${dia >= 3 ? icoD(j, dia) : '<i class="dot"></i>'}</b><span>${B[j].cs}</span><small>${fmtDist(B[j].R * 2).replace(/ \(.*/, '')}${dia < 3 ? ' · menší než tečka' : ''}</small></div>`; }).join('') + `</div><p>${i === EARTH ? 'Do Slunce by se vedle sebe vešlo 109 Zemí.' : r >= 1 ? `${b.cs} má průměr <b>${sig(r)}×</b> větší než Země${r > 2 ? ` a vešlo by se do něj asi <b>${nf(Math.round(r * r * r))}</b> Zemí` : ''}.` : `Země má průměr <b>${sig(1 / r)}×</b> větší. Do Země by se ${b.cs} vešlo asi <b>${nf(Math.round(1 / (r * r * r)))}×</b>.`} Kotouče jsou ve skutečném poměru.</p>`; }
   function drawDev() { $('#dev-in').innerHTML = `<h3>🛠 Tajné menu</h3><p>${nf(S.fps)} snímků/s · kvalita ${S.quality}/2 · zvuků ${A.count}</p><div class="row"><button data-d="q-">Kvalita −</button><button data-d="q+">Kvalita +</button><button data-d="disco">🪩 Disko</button><button data-d="real">🔦 Reálný jas</button><button data-d="all">Odemknout všechna razítka</button><button data-d="ufo">🛸 Zavolat UFO</button></div><p>Skok na datum: <input id="dev-date" type="date" min="1600-01-01" max="2200-12-31"> <button data-d="go">Skoč</button></p><p><small>Další tajemství: zkus kód ↑↑↓↓←→←→BA, napiš 42, do hledání zadej „tesla“, „nibiru“ nebo „vulkan“, sedmkrát klikni na nadpis.</small></p>`; }
   $('#dev').addEventListener('click', (e) => { const d = e.target.dataset.d; if (!d) return; if (d === 'q-') S.quality = Math.max(0, S.quality - 1); if (d === 'q+') S.quality = Math.min(2, S.quality + 1); if (d === 'disco') act.disco(); if (d === 'real') act.real(); if (d === 'ufo') ufo(true); if (d === 'all') { B.forEach(b => { G.seen[b.id] = 1; }); save(); markSeen(); drawGame(); toast('Všech 200 razítek odemčeno. Podvodníčku!'); } if (d === 'go') { const v = $('#dev-date').value; if (v) { S.jd = new Date(v + 'T12:00:00Z').getTime() / 86400000 + 2440587.5; drawTime(); A.play('timewarp'); } } drawDev(); S.wake(); });
+  document.addEventListener('pointerdown', (e) => { if ($('#more').classList.contains('on') && !e.target.closest('#more') && !e.target.closest('[data-a="more"]')) toggle('#more', false); }, true);
   $('#more').addEventListener('click', (e) => { const t = e.target.closest('button'); if (!t || !act[t.dataset.a]) return; toggle('#more', false); act[t.dataset.a](); setBtn(); S.wake(); });
   let gt = 0; function guide(i) { const g = $('#guide'); if (!K() || tut.running()) { g.classList.remove('on'); return; } const b = B[i], inf = S.info(i), car = inf.earth / 130 / 8766;
     const txt = FUN[b.id] || (b.type === 'comet' ? `${b.cs} je špinavá sněhová koule. Až přiletí blíž ke Slunci, naroste jí ohon dlouhý miliony kilometrů.` : b.type === 'moon' ? `${b.cs} obíhá kolem ${GEN[b.parent] || B[par[i]].cs} jednou za ${fmtPer(period[i])}.` : `Autem po dálnici bys sem ze Země jel ${car > 2 ? sig(car) + ' let' : nf(car * 365) + ' dní'}. Bez přestávky na svačinu!`);

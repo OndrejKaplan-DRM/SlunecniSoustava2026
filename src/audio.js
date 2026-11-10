@@ -14,20 +14,20 @@ export const SFX = {
   tab_next: [T('square', 440, 440, 0.04, 0.08), T('square', 660, 660, 0.05, 0.08, 0.05)], tab_prev: [T('square', 660, 660, 0.04, 0.08), T('square', 440, 440, 0.05, 0.08, 0.05)],
   key: [T('triangle', 1200, 900, 0.03, 0.12)], enter: [T('sine', 500, 1000, 0.12, 0.2)], back: [T('sine', 800, 400, 0.12, 0.18)], error: [T('sawtooth', 160, 110, 0.18, 0.14)],
   zoom_in: [T('sine', 900, 1100, 0.03, 0.05)], zoom_out: [T('sine', 700, 560, 0.03, 0.05)], search: [T('triangle', 1500, 1500, 0.02, 0.08)], home: arp('sine', [392, 523, 784], 0.14, 0.14, 0.07),
-  full: [Nz('highpass', 800, 5000, 1, 0.25, 0.12)], gamma_up: [T('sine', 300, 900, 0.2, 0.14)], gamma_down: [T('sine', 900, 300, 0.2, 0.14)],
+  full: [T('sine', 400, 800, 0.2, 0.1)], gamma_up: [T('sine', 300, 900, 0.2, 0.14)], gamma_down: [T('sine', 900, 300, 0.2, 0.14)],
   orbit_on: [T('sine', 300, 600, 0.3, 0.14), T('sine', 450, 900, 0.3, 0.08)], orbit_all: arp('sine', [300, 450, 600, 900], 0.2, 0.09, 0.05), orbit_off: [T('sine', 600, 300, 0.25, 0.14)],
   labels_on: [T('triangle', 990, 990, 0.04, 0.14), T('triangle', 1320, 1320, 0.04, 0.12, 0.05)], labels_off: [T('triangle', 990, 660, 0.07, 0.14)],
   const_on: arp('sine', [1047, 1319, 1568, 2093, 1568], 0.22, 0.09, 0.06), const_off: arp('sine', [1568, 1047], 0.18, 0.09, 0.06), stars_on: arp('triangle', [2093, 2637, 3136], 0.12, 0.07, 0.04), stars_off: [T('triangle', 2637, 1760, 0.12, 0.08)],
   lock_on: [T('square', 220, 220, 0.05, 0.1), T('square', 330, 330, 0.08, 0.1, 0.07)], lock_off: [T('square', 330, 220, 0.1, 0.1)], sound_on: arp('sine', [523, 659, 784], 0.12, 0.16, 0.06),
   // --- režimy a Slunce (6) ---
   mode_kid: arp('triangle', [523, 659, 784, 1047, 1319], 0.14, 0.14, 0.07), mode_adult: arp('sine', [392, 494, 587], 0.22, 0.13, 0.09),
-  sun_white: [T('sine', 220, 440, 0.4, 0.14), Nz('lowpass', 900, 300, 1, 0.4, 0.08)], sun_halpha: [T('sawtooth', 110, 165, 0.4, 0.08), Nz('bandpass', 500, 1500, 3, 0.4, 0.1)], sun_euv: [T('sine', 880, 1760, 0.4, 0.1), Nz('highpass', 3000, 7000, 1, 0.4, 0.07)],
-  flare: [Nz('bandpass', 3000, 300, 1.5, 1.6, 0.3), Nz('highpass', 5000, 2000, 1, 0.35, 0.16), T('sawtooth', 90, 40, 1.4, 0.12)],
+  sun_white: [T('sine', 220, 440, 0.4, 0.14)], sun_halpha: [T('sawtooth', 110, 165, 0.4, 0.08), Nz('bandpass', 500, 1200, 3, 0.4, 0.05)], sun_euv: [T('sine', 880, 1760, 0.4, 0.1), T('sine', 1760, 2640, 0.3, 0.04)],
+  flare: [Nz('bandpass', 1800, 300, 1.5, 1.4, 0.11), T('sawtooth', 90, 40, 1.4, 0.09)],
   // --- čas (14) ---
-  pause: [T('sine', 500, 250, 0.2, 0.16)], play: [T('sine', 250, 500, 0.2, 0.16)], now: arp('sine', [660, 880, 660], 0.1, 0.14, 0.08), reverse: [Nz('bandpass', 2500, 300, 4, 0.35, 0.16), T('sawtooth', 400, 100, 0.3, 0.06)],
+  pause: [T('sine', 500, 250, 0.2, 0.16)], play: [T('sine', 250, 500, 0.2, 0.16)], now: arp('sine', [660, 880, 660], 0.1, 0.14, 0.08), reverse: [Nz('bandpass', 1800, 300, 4, 0.3, 0.07), T('sine', 400, 100, 0.3, 0.07)],
   ...Object.fromEntries(Array.from({ length: 10 }, (_, k) => ['rate' + (k + 1), [T('sawtooth', 60 + k * 26, 90 + k * 44, 0.25, 0.07 * Math.max(0.3, 1 - k * 0.09)), T('sine', 240 + k * 90, 300 + k * 130, 0.18, 0.1 * Math.max(0.35, 1 - k * 0.08))]])),
   // --- let (13) ---
-  launch: [Nz('bandpass', 200, 3000, 1.2, 0.9, 0.22), T('sawtooth', 60, 180, 0.8, 0.07)], warp: [Nz('bandpass', 3000, 6000, 3, 0.5, 0.1), T('sine', 300, 1500, 0.5, 0.06)], brake: [Nz('bandpass', 3000, 250, 1.2, 0.8, 0.18)], closeup: [T('sine', 700, 1050, 0.15, 0.12)],
+  launch: [Nz('bandpass', 200, 1800, 1.2, 0.7, 0.07), T('sine', 60, 180, 0.8, 0.07)], warp: [Nz('bandpass', 1500, 3000, 3, 0.4, 0.04), T('sine', 300, 1500, 0.5, 0.05)], brake: [Nz('bandpass', 1600, 250, 1.2, 0.6, 0.06), T('sine', 240, 120, 0.5, 0.05)], closeup: [T('sine', 700, 1050, 0.15, 0.12)],
   arrive_star: arp('sine', [220, 277, 330, 440], 0.6, 0.12, 0.1), arrive_planet: arp('sine', [262, 330, 392, 523], 0.45, 0.13, 0.09), arrive_dwarf: arp('sine', [294, 370, 440], 0.4, 0.12, 0.1), arrive_moon: arp('triangle', [523, 659, 784], 0.3, 0.12, 0.08),
   arrive_asteroid: arp('triangle', [330, 311, 415], 0.25, 0.12, 0.09), arrive_comet: arp('sine', [1319, 988, 1568, 1976], 0.35, 0.09, 0.07), arrive_tno: arp('sine', [196, 233, 294], 0.7, 0.12, 0.14), arrive_centaur: arp('triangle', [247, 330, 370], 0.4, 0.11, 0.1), arrive_interstellar: arp('sine', [415, 587, 831, 1175], 0.5, 0.1, 0.11),
   // --- hra (17) ---
@@ -35,9 +35,9 @@ export const SFX = {
   mission: arp('triangle', [523, 659, 784, 1047, 784, 1047, 1319], 0.22, 0.14, 0.09), rank: arp('square', [392, 523, 659, 784, 1047], 0.3, 0.07, 0.11), quiz_ok: arp('sine', [659, 988], 0.16, 0.18, 0.09), quiz_ok2: arp('sine', [659, 988, 1319], 0.16, 0.17, 0.08), quiz_ok3: arp('sine', [659, 988, 1319, 1976], 0.16, 0.16, 0.07),
   quiz_bad: [T('sawtooth', 220, 150, 0.3, 0.1), T('sawtooth', 208, 140, 0.3, 0.08)], hint: [T('sine', 1100, 1500, 0.12, 0.12), T('sine', 1500, 1100, 0.12, 0.1, 0.1)], skip: [Nz('bandpass', 800, 2500, 3, 0.2, 0.14)],
   // --- iterace 3 (10) ---
-  pop: [Nz('highpass', 1200, 4000, 1, 0.12, 0.2), ...arp('triangle', [1319, 1568, 2093, 2637], 0.12, 0.08, 0.035)], ufo: [T('sine', 600, 1200, 0.5, 0.12), T('sine', 1200, 500, 0.5, 0.12, 0.45), T('sine', 900, 905, 0.9, 0.05)], disco: arp('square', [262, 330, 392, 523, 659, 784, 1047, 1319], 0.12, 0.06, 0.06),
+  pop: [Nz('bandpass', 1200, 2400, 1, 0.1, 0.08), ...arp('triangle', [1319, 1568, 2093, 2637], 0.12, 0.08, 0.035)], ufo: [T('sine', 600, 1200, 0.5, 0.12), T('sine', 1200, 500, 0.5, 0.12, 0.45), T('sine', 900, 905, 0.9, 0.05)], disco: arp('square', [262, 330, 392, 523, 659, 784, 1047, 1319], 0.12, 0.06, 0.06),
   shutter: [Nz('highpass', 3000, 800, 1, 0.07, 0.2), Nz('lowpass', 600, 200, 1, 0.1, 0.16, 0.06)], ruler: [T('triangle', 880, 880, 0.04, 0.14), T('triangle', 1320, 1320, 0.06, 0.12, 0.07)], egg: arp('sine', [784, 988, 1175, 1568, 1976], 0.18, 0.1, 0.06),
-  timewarp: [Nz('bandpass', 300, 5000, 2, 0.9, 0.16), T('sine', 200, 1600, 0.9, 0.08), T('sine', 1600, 400, 0.5, 0.06, 0.85)], guide: [T('sine', 988, 1319, 0.08, 0.12), T('sine', 1319, 1568, 0.1, 0.1, 0.07)], compare: [T('sine', 392, 392, 0.1, 0.12), T('sine', 784, 784, 0.14, 0.1, 0.08)], secret: arp('sawtooth', [110, 165, 220, 330, 440], 0.2, 0.05, 0.05),
+  timewarp: [Nz('bandpass', 300, 2500, 2, 0.8, 0.06), T('sine', 200, 1600, 0.9, 0.08), T('sine', 1600, 400, 0.5, 0.06, 0.85)], guide: [T('sine', 988, 1319, 0.08, 0.12), T('sine', 1319, 1568, 0.1, 0.1, 0.07)], compare: [T('sine', 392, 392, 0.1, 0.12), T('sine', 784, 784, 0.14, 0.1, 0.08)], secret: arp('sawtooth', [110, 165, 220, 330, 440], 0.2, 0.05, 0.05),
   // --- ukázka (6) ---
   tut_start: arp('triangle', [392, 523, 659, 784, 1047], 0.2, 0.13, 0.08), tut_step: [T('sine', 880, 1175, 0.1, 0.14)], tut_type: [T('square', 1800, 1800, 0.012, 0.03)], tut_cursor: [Nz('bandpass', 1200, 2400, 5, 0.18, 0.07)], tut_ping: [T('sine', 1568, 1568, 0.25, 0.16), T('sine', 2349, 2349, 0.3, 0.08, 0.03)], tut_end: arp('triangle', [1047, 784, 1047, 1319, 1568], 0.25, 0.13, 0.09),
 };
@@ -75,7 +75,16 @@ export const MYST = {
 };
 // skladby ze Suno: slot → soubor v dist/music/. Zatím žádné; až budou, stačí je sem zapsat.
 export const TRACKS = {};
-export const COUNT = Object.keys(SFX).length + Object.keys(AMB).length + 4 + Object.keys(MYST).length; // + smyčka času a smyčka letu
+// Nahrané zvuky (CC0, dist/zvuky/) vybrané ve zkušebně: efekt → [soubor, hlasitost, rychlost]. Dokud se soubor nenačte, hraje syntéza.
+export const SMP = { click: ['z013', 0.5], click2: ['z017', 0.55], select: ['z016', 0.5], panel_open: ['z012', 0.5], panel_close: ['z003', 0.5], toggle_on: ['z018', 0.45], toggle_off: ['z018', 0.4, 0.84],
+  enter: ['z004', 0.5], back: ['z011', 0.45], error: ['z007', 0.5], quiz_ok: ['z005', 0.55], quiz_ok2: ['z005', 0.55, 1.12], quiz_ok3: ['z005', 0.6, 1.26], quiz_bad: ['z007', 0.5, 0.8], mission: ['z025', 0.5], hint: ['z002', 0.6], skip: ['z006', 0.5],
+  lock_on: ['z067', 0.6], lock_off: ['z079', 0.5], closeup: ['z010', 0.5], tab_next: ['z019', 0.5], tab_prev: ['z019', 0.5, 0.85], stars_on: ['z021', 0.3], const_on: ['z022', 0.3], shutter: ['z014', 0.5], disco: ['z009', 0.6],
+  book: ['z072', 0.5], menu: ['z024', 0.3], help: ['z023', 0.35], full: ['z066', 0.5], home: ['z015', 0.4], probe: ['z057', 0.22], arrive_echo: ['z026', 0.16], timewarp: ['z056', 0.2], eerie1: ['z034', 0.3], eerie2: ['z035', 0.3], eerie3: ['z033', 0.25], deep: ['z036', 0.3] };
+// smyčky prostředí místo šumu: prostředí → [soubor, hlasitost]
+export const AMBS = { sun: ['z027', 0.2], jupiter: ['z028', 0.16], saturn: ['z037', 0.13], uranus: ['z038', 0.11], neptune: ['z029', 0.1], comet: ['z039', 0.1], tno: ['z029', 0.08], alien: ['z038', 0.12], rock: ['z041', 0.07], centaur: ['z041', 0.06],
+  ice: ['z032', 0.06], earth: ['z032', 0.07], venus: ['z042', 0.05], mars: ['z043', 0.04], titan: ['z039', 0.07], moon_j: ['z028', 0.06], moon_s: ['z037', 0.06], moon_u: ['z038', 0.05], moon_n: ['z029', 0.05], pluto: ['z031', 0.08] };
+export const FLY = ['z030', 0.13];
+export const COUNT = new Set([...Object.values(SMP), ...Object.values(AMBS), FLY].map(v => v[0])).size + Object.keys(SFX).length + Object.keys(AMB).length + 4 + Object.keys(MYST).length; // + smyčka času a smyčka letu
 const AMB_ID = { sun: 'sun', mercury: 'mercury', venus: 'venus', earth: 'earth', moon: 'moon', mars: 'mars', jupiter: 'jupiter', io: 'io', europa: 'europa', ganymede: 'ganymede', callisto: 'callisto', saturn: 'saturn', titan: 'titan', enceladus: 'enceladus', uranus: 'uranus', neptune: 'neptune', triton: 'triton', pluto: 'pluto' };
 export const ambOf = (i) => { const b = B[i]; if (AMB_ID[b.id]) return AMB_ID[b.id]; if (b.type === 'moon') { const p = b.parent; if (p === 'saturn' && B[i].R < 60) return 'ring'; return { jupiter: 'moon_j', saturn: 'moon_s', uranus: 'moon_u', neptune: 'moon_n' }[p] || ((b.albedo || 0) > 0.4 ? 'ice' : 'moon_x'); }
   return { comet: 'comet', tno: 'tno', dwarf: 'ice', centaur: 'centaur', interstellar: 'alien' }[b.type] || 'rock'; };
@@ -86,30 +95,37 @@ export function createAudio(S) {
   const save = () => { try { localStorage.setItem('s200snd', JSON.stringify({ on: A.on, vol: A.vol })); } catch (e) { /* nic */ } };
   A.unlock = () => { if (A.ctx) { if (A.ctx.state === 'suspended') A.ctx.resume(); return; } const C = window.AudioContext || window.webkitAudioContext; if (!C) return; try { A.ctx = new C(); } catch (e) { return; }
     master = A.ctx.createGain(); master.gain.value = A.on ? A.vol : 0; const cmp = A.ctx.createDynamicsCompressor(); master.connect(cmp); cmp.connect(A.ctx.destination);
-    nbuf = A.ctx.createBuffer(1, A.ctx.sampleRate * 2, A.ctx.sampleRate); const d = nbuf.getChannelData(0); for (let k = 0; k < d.length; k++) d[k] = Math.random() * 2 - 1; };
+    nbuf = A.ctx.createBuffer(1, A.ctx.sampleRate * 2, A.ctx.sampleRate); const d = nbuf.getChannelData(0); for (let k = 0; k < d.length; k++) d[k] = Math.random() * 2 - 1; setTimeout(A.preload, 300); };
   const env = (g, t, v, dur) => { g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + Math.min(0.012, dur * 0.3)); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); };
   function voice(v, out, t0, pitch = 1, gain = 1) {
     const c = A.ctx, g = c.createGain(); g.connect(out);
     if (v[0] === 't') { const o = c.createOscillator(), t = t0 + v[6]; o.type = v[1]; o.frequency.setValueAtTime(v[2] * pitch, t); o.frequency.exponentialRampToValueAtTime(Math.max(20, v[3] * pitch), t + v[4]); env(g, t, v[5] * gain, v[4]); o.connect(g); o.start(t); o.stop(t + v[4] + 0.05); }
     else { const s = c.createBufferSource(), f = c.createBiquadFilter(), t = t0 + v[7]; s.buffer = nbuf; s.loop = true; f.type = v[1]; f.Q.value = v[4]; f.frequency.setValueAtTime(v[2] * pitch, t); f.frequency.exponentialRampToValueAtTime(Math.max(30, v[3] * pitch), t + v[5]); env(g, t, v[6] * gain, v[5]); s.connect(f); f.connect(g); s.start(t, Math.random()); s.stop(t + v[5] + 0.05); }
   }
-  A.play = (name, pitch = 1, gain = 1) => { if (!A.ctx || !A.on || !SFX[name] || A.ctx.state !== 'running') return; const t = A.ctx.currentTime + 0.005; for (const v of SFX[name]) voice(v, master, t, pitch, gain); };
+  // nahrané zvuky: načtení na vyžádání, jednorázové přehrání a smyčka s prolnutím konce do začátku
+  const BUF = {}, LOADING = {};
+  const load = (id) => BUF[id] ? Promise.resolve(BUF[id]) : (LOADING[id] || (LOADING[id] = fetch('zvuky/' + id + '.mp3').then(r => r.ok ? r.arrayBuffer() : Promise.reject()).then(a => new Promise((ok, no) => A.ctx.decodeAudioData(a, ok, no))).then(b => (BUF[id] = b)).catch(() => { delete LOADING[id]; return null; })));
+  function smp(m, pitch, gain) { const b = BUF[m[0]]; if (!b) { load(m[0]); return false; } const c = A.ctx, s = c.createBufferSource(), g = c.createGain(); s.buffer = b; s.playbackRate.value = pitch * (m[2] || 1); g.gain.value = m[1] * gain; s.connect(g); g.connect(master); s.start(); return true; }
+  function loopS(m, out) { let dead = false, tm = 0; const go = () => { if (dead) return; const b = BUF[m[0]]; if (!b) { load(m[0]).then(x => { if (x) go(); }); return; } const c = A.ctx, s = c.createBufferSource(), g = c.createGain(), t = c.currentTime + 0.02, d = b.duration, f = Math.min(1.5, d * 0.25);
+      s.buffer = b; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(m[1], t + f); g.gain.setValueAtTime(m[1], t + d - f); g.gain.linearRampToValueAtTime(0, t + d); s.connect(g); g.connect(out); s.start(t); s.stop(t + d + 0.05); tm = setTimeout(go, (d - f) * 1000); }; go(); return () => { dead = true; clearTimeout(tm); }; }
+  A.preload = () => { if (!A.ctx) return; const ids = [...new Set(Object.values(SMP).map(v => v[0]))]; let k = 0; const next = () => { if (k < ids.length) load(ids[k++]).then(next); }; next(); next(); next(); };
+  A.play = (name, pitch = 1, gain = 1) => { if (!A.ctx || !A.on || A.ctx.state !== 'running') return; if (SMP[name] && smp(SMP[name], pitch, gain)) return; if (!SFX[name]) return; const t = A.ctx.currentTime + 0.005; for (const v of SFX[name]) voice(v, master, t, pitch, gain); };
   // události prostředí
   const EV = {
-    crackle: (o, v) => { for (let k = 0; k < 5; k++) voice(Nz('highpass', 2500 + Math.random() * 3000, 1500, 1, 0.03, v * Math.random(), Math.random() * 0.4), o, A.ctx.currentTime); },
+    crackle: (o, v) => { for (let k = 0; k < 4; k++) voice(Nz('bandpass', 1200 + Math.random() * 1500, 900, 2, 0.03, v * 0.5 * Math.random(), Math.random() * 0.4), o, A.ctx.currentTime); },
     tick: (o, v) => voice(T('sine', 2400, 1800, 0.03, v), o, A.ctx.currentTime), chorus: (o, v) => { const f = 900 + Math.random() * 1500, up = Math.random() < 0.75; for (let k = 0; k < 3; k++) voice(T('sine', up ? f : f * 2.2, up ? f * 1.9 : f * 0.6, up ? 0.14 : 0.9, v, k * 0.11), o, A.ctx.currentTime); },
-    burst: (o, v) => { for (let k = 0; k < 9; k++) voice(Nz('bandpass', 700 + Math.random() * 1600, 400, 6, 0.05, v * (0.4 + Math.random()), k * 0.035 + Math.random() * 0.02), o, A.ctx.currentTime); },
+    burst: (o, v) => { for (let k = 0; k < 9; k++) voice(Nz('bandpass', 700 + Math.random() * 1000, 400, 6, 0.05, v * 0.55 * (0.4 + Math.random()), k * 0.035 + Math.random() * 0.02), o, A.ctx.currentTime); },
     rumble: (o, v) => { voice(Nz('lowpass', 160, 60, 1, 1.6, v), o, A.ctx.currentTime); voice(T('sawtooth', 44, 28, 1.4, v * 0.5), o, A.ctx.currentTime); }, crack: (o, v) => { voice(Nz('highpass', 3000, 900, 1, 0.08, v), o, A.ctx.currentTime); voice(T('sine', 900 + Math.random() * 900, 200, 0.35, v * 0.5, 0.02), o, A.ctx.currentTime); },
-    eerie: (o, v) => { const f = 300 + Math.random() * 500; voice(T('sine', f, f * (0.7 + Math.random() * 0.7), 1.8, v), o, A.ctx.currentTime); voice(T('sine', f * 1.5, f * 1.48, 1.8, v * 0.5, 0.1), o, A.ctx.currentTime); },
+    eerie: (o, v) => { const m = SMP['eerie' + (1 + Math.floor(Math.random() * 3))]; if (BUF[m[0]]) { const c = A.ctx, s = c.createBufferSource(), g = c.createGain(); s.buffer = BUF[m[0]]; g.gain.value = m[1] * v * 6; s.connect(g); g.connect(o); s.start(); return; } load(m[0]); const f = 300 + Math.random() * 500; voice(T('sine', f, f * (0.7 + Math.random() * 0.7), 1.8, v), o, A.ctx.currentTime); voice(T('sine', f * 1.5, f * 1.48, 1.8, v * 0.5, 0.1), o, A.ctx.currentTime); },
     drip: (o, v) => voice(T('sine', 500 + Math.random() * 300, 1300, 0.07, v), o, A.ctx.currentTime), heart: (o, v) => { voice(T('sine', 62, 40, 0.16, v), o, A.ctx.currentTime); voice(T('sine', 55, 36, 0.2, v * 0.8, 0.26), o, A.ctx.currentTime); },
     tinkle: (o, v) => voice(T('sine', 2200 + Math.random() * 3000, 2000, 0.25, v * Math.random()), o, A.ctx.currentTime), tumble: (o, v) => voice(Nz('bandpass', 250 + Math.random() * 200, 120, 3, 0.12, v), o, A.ctx.currentTime),
   };
   function startAmb(key) {
     const c = A.ctx, r = AMB[key], g = c.createGain(), nodes = []; g.gain.value = 0; g.connect(master);
     for (const d of r.d || []) { const o = c.createOscillator(), og = c.createGain(), l = c.createOscillator(), lg = c.createGain(); o.type = d[2]; o.frequency.value = d[0]; og.gain.value = d[1]; l.frequency.value = 0.07 + Math.random() * 0.2; lg.gain.value = d[1] * 0.5; l.connect(lg); lg.connect(og.gain); o.connect(og); og.connect(g); o.start(); l.start(); nodes.push(o, l); }
-    if (r.n) { const s = c.createBufferSource(), f = c.createBiquadFilter(), ng = c.createGain(), l = c.createOscillator(), lg = c.createGain(); s.buffer = nbuf; s.loop = true; f.type = r.n[0]; f.frequency.value = r.n[1]; f.Q.value = r.n[2]; ng.gain.value = r.n[3]; l.frequency.value = 1 / r.n[4]; lg.gain.value = r.n[1] * 0.45; l.connect(lg); lg.connect(f.frequency); s.connect(f); f.connect(ng); ng.connect(g); s.start(); l.start(); nodes.push(s, l); }
+    let stopL = null; if (AMBS[key]) stopL = loopS(AMBS[key], g); else if (r.n) { const s = c.createBufferSource(), f = c.createBiquadFilter(), ng = c.createGain(), l = c.createOscillator(), lg = c.createGain(); s.buffer = nbuf; s.loop = true; f.type = r.n[0]; f.frequency.value = r.n[1]; f.Q.value = r.n[2]; ng.gain.value = r.n[3] * 0.45; l.frequency.value = 1 / r.n[4]; lg.gain.value = r.n[1] * 0.45; l.connect(lg); lg.connect(f.frequency); s.connect(f); f.connect(ng); ng.connect(g); s.start(); l.start(); nodes.push(s, l); }
     let tm = 0; if (r.ev) { const tick = () => { if (A.on && c.state === 'running' && g.gain.value > 0.05) EV[r.ev[0]](g, r.ev[2]); tm = setTimeout(tick, r.ev[1] * 1000 * (0.4 + Math.random() * 1.2)); }; tm = setTimeout(tick, 600); }
-    return { g, stop() { clearTimeout(tm); g.gain.setTargetAtTime(0, c.currentTime, 0.4); setTimeout(() => { nodes.forEach(n => { try { n.stop(); } catch (e) { /* nic */ } }); g.disconnect(); }, 2500); } };
+    return { g, stop() { clearTimeout(tm); if (stopL) stopL(); g.gain.setTargetAtTime(0, c.currentTime, 0.4); setTimeout(() => { nodes.forEach(n => { try { n.stop(); } catch (e) { /* nic */ } }); g.disconnect(); }, 2500); } };
   }
   // průběžně: prostředí podle tělesa a blízkosti, svist času, šum letu
   setInterval(() => {
@@ -118,13 +134,13 @@ export function createAudio(S) {
     if (key !== ambKey) { if (amb) amb.stop(); amb = key ? startAmb(key) : null; ambKey = key; }
     const mk = !fly && near > 0.22 && MYST[B[i].id] ? B[i].id : ''; if (mk !== mystKey) { if (myst) myst.stop(); myst = mk ? startMyst(mk) : null; mystKey = mk; }
     if (myst) myst.vol(near); if (mus) mus.g.gain.setTargetAtTime(myst ? 0.06 : 0.5, t, 1.2);
-    if (amb) amb.g.gain.setTargetAtTime(near * (myst ? 0.3 : 0.9), t, 0.5);
+    if (amb) amb.g.gain.setTargetAtTime(near * (myst ? 0.2 : 0.6), t, 0.6);
     if (!whirr) { const o = c.createOscillator(), o2 = c.createOscillator(), f = c.createBiquadFilter(), g = c.createGain(), l = c.createOscillator(), lg = c.createGain(); o.type = 'sawtooth'; o2.type = 'sawtooth'; f.type = 'lowpass'; f.frequency.value = 500; g.gain.value = 0; l.connect(lg); lg.connect(g.gain); o.connect(f); o2.connect(f); f.connect(g); g.connect(master); o.start(); o2.start(); l.start(); whirr = { o, o2, f, g, l, lg }; }
     const r = S.paused ? 0 : Math.abs(S.rateIdx) - 1, wv = r > 0 ? 0.017 * Math.exp(-Math.max(0, r - 3) * 0.36) : 0, wf = 38 * Math.pow(1.3, Math.min(r, 4)) * Math.pow(1.1, Math.max(0, r - 4)) * (S.rateIdx < 0 ? 0.84 : 1); // od 4. stupně výš slábne a přestává stoupat
     whirr.o.frequency.setTargetAtTime(wf, t, 0.15); whirr.o2.frequency.setTargetAtTime(wf * 1.507, t, 0.15); whirr.f.frequency.setTargetAtTime(260 + Math.min(r, 4) * 150, t, 0.2); whirr.l.frequency.setTargetAtTime(0.6 + r * 1.4, t, 0.2); whirr.lg.gain.setTargetAtTime(wv * 0.6, t, 0.2); whirr.g.gain.setTargetAtTime(wv, t, 0.2);
-    if (!wind) { const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); s.buffer = nbuf; s.loop = true; f.type = 'bandpass'; f.Q.value = 1.4; g.gain.value = 0; s.connect(f); f.connect(g); g.connect(master); s.start(); wind = { f, g }; }
+    if (!wind) { const g = c.createGain(); g.gain.value = 0; g.connect(master); wind = { g, stop: null }; }
     const now = performance.now(), sp = Math.abs(Math.log(alt / (lastAlt || alt))) / Math.max(0.02, (now - lastT) / 1000); lastAlt = alt; lastT = now;
-    wind.g.gain.setTargetAtTime(Math.min(0.2, sp * 0.03), t, 0.12); wind.f.frequency.setTargetAtTime(300 + Math.min(4000, sp * 500), t, 0.12);
+    const wg = fly ? Math.min(1, sp * 0.25) : 0; if (wg > 0.02 && !wind.stop) wind.stop = loopS(FLY, wind.g); if (!fly && wind.stop && wind.g.gain.value < 0.01) { wind.stop(); wind.stop = null; } wind.g.gain.setTargetAtTime(wg, t, 0.35);
   }, 110);
   // generativní hudba: pomalé akordy (dospělé: hluboké plochy; dětské: o oktávu výš a pentatonické zvonky)
   let mus = null;
