@@ -1,5 +1,6 @@
 // Soustava 200 – vykreslování a kamera. Skutečná měřítka: 1 jednotka = 1 km, kamera je vždy v počátku (plovoucí počátek),
 // polohy těles se odečítají v 64 bitech. Těleso menší než ~1 px se nekreslí jako koule, ale jako značka na 2D plátně.
+import { AS } from './asset.js';
 import * as THREE from 'three';
 import { B, N, P, idx, par, kids, root, SUN, EARTH, AU, updateAll, local, orbitSamples, period, semi, basis, spinRate, shape, jdNow, RING } from './sim.js';
 import * as SH from './shaders.js';
@@ -29,7 +30,7 @@ export function createEngine(canvas, overlay) {
 
   // ---------- obloha: Mléčná dráha + 7 000 hvězd (Yale BSC) ----------
   const loader = new THREE.TextureLoader();
-  const loadTex = (name, cb, srgb = true) => loader.load('maps/' + name + '.avif', (t) => { t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace; t.wrapS = THREE.RepeatWrapping; t.anisotropy = 4; try { renderer.initTexture(t); } catch (e) { /* nahraje se při prvním kreslení */ } cb(t); wake(); }, undefined, () => cb(null));
+  const loadTex = (name, cb, srgb = true) => loader.load(AS('maps/' + name + '.webp'), (t) => { t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace; t.wrapS = THREE.RepeatWrapping; t.anisotropy = 4; try { renderer.initTexture(t); } catch (e) { /* nahraje se při prvním kreslení */ } cb(t); wake(); }, undefined, () => cb(null));
   const ce = Math.cos(23.4392911 * DEG), se = Math.sin(23.4392911 * DEG);
   const s2eq = new THREE.Matrix3().set(1, 0, 0, 0, -se, -ce, 0, ce, -se); // scéna (x, y, z) → ekliptika (x, −z, y) → rovník
   const skyMat = new THREE.ShaderMaterial({ uniforms: { tSky: { value: null }, uS2Eq: { value: s2eq }, uGain: { value: 0.9 } }, vertexShader: SH.SKY_VS, fragmentShader: SH.SKY_FS, side: THREE.BackSide, depthTest: false, depthWrite: false });

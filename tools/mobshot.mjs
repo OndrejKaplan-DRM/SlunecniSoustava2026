@@ -1,7 +1,7 @@
 // snímky v emulaci telefonu a tabletu: node tools/mobshot.mjs <složka> [phone|land|tab|tabl]
 import { chromium } from '/home/claude/.npm-global/lib/node_modules/playwright/index.mjs';
 import http from 'http'; import fs from 'fs'; import path from 'path';
-const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.avif': 'image/avif', '.webp': 'image/webp', '.mp3': 'audio/mpeg' };
+const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.webp': 'image/webp', '.avif': 'image/avif', '.webp': 'image/webp', '.mp3': 'audio/mpeg' };
 const srv = http.createServer((q, r) => { const f = path.join('dist', decodeURIComponent(q.url.split('?')[0] === '/' ? '/index.html' : q.url.split('?')[0])); fs.readFile(f, (e, d) => { if (e) { r.writeHead(404); r.end(); } else { r.writeHead(200, { 'content-type': MIME[path.extname(f)] || 'application/octet-stream' }); r.end(d); } }); }).listen(0);
 const out = process.argv[2] || '/tmp/mob', which = process.argv[3] || 'phone'; fs.mkdirSync(out, { recursive: true });
 const VP = { phone: [390, 844, 2], land: [844, 390, 2], tab: [820, 1180, 1.5], tabl: [1180, 820, 1.5] }[which];

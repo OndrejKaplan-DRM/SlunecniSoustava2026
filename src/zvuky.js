@@ -1,6 +1,7 @@
 // Zkušebna zvuků: 256 zvuků z volných balíčků (CC0, opengameart.org) k poslechu a zaškrtání. Soubory dist/zvuky/zNNN.mp3
 // se stahují až při přehrání. Výběr se pamatuje v prohlížeči a dá se zkopírovat jako text.
 import Z from './zvuky.json';
+import { AS } from './asset.js';
 export function createZvuky(A, ui) {
   const $ = (s) => document.querySelector(s), box = $('#zv'), list = $('#zv-list'), L = Z.list, cats = [...new Set(L.map(z => z[1]))];
   let sel = new Set(), cat = '', cur = 0, au = null, playing = 0;
@@ -9,7 +10,7 @@ export function createZvuky(A, ui) {
   const id = (n) => 'z' + String(n).padStart(3, '0'), vis = () => L.filter(z => cat === '' || (cat === '✔' ? sel.has(z[0]) : z[1] === cat));
   const line = (z) => `${id(z[0])} | ${z[1]} | ${z[2]} | ${z[3]} s | ${Z.packs[z[4]][1]}`;
   function stop() { if (au) { au.pause(); au = null; } playing = 0; list.querySelectorAll('.play').forEach(e => e.classList.remove('play')); }
-  function play(n) { stop(); A.unlock(); au = new Audio('zvuky/' + id(n) + '.mp3'); au.volume = Math.min(1, (A.vol || 0.5) * 1.3); au.loop = $('#zv-loop').checked; playing = n; const r = list.querySelector(`[data-n="${n}"]`); if (r) r.classList.add('play');
+  function play(n) { stop(); A.unlock(); au = new Audio(AS('zvuky/' + id(n) + '.mp3')); au.volume = Math.min(1, (A.vol || 0.5) * 1.3); au.loop = $('#zv-loop').checked; playing = n; const r = list.querySelector(`[data-n="${n}"]`); if (r) r.classList.add('play');
     const a = au; a.onended = () => { if (au === a) stop(); }; a.onerror = () => { if (au === a) { stop(); ui.toast('Zvuk ' + id(n) + ' se nepodařilo načíst.'); } }; a.play().catch(() => {}); }
   function head() { $('#zv-n').textContent = `${L.length} zvuků · vybráno ${sel.size}`; $('#zv-cats').innerHTML = [['', 'Vše ' + L.length], ['✔', '✔ Vybrané ' + sel.size], ...cats.map(c => [c, c + ' ' + L.filter(z => z[1] === c).length])].map(c => `<button data-c="${c[0]}" class="${c[0] === cat ? 'sel' : ''}">${c[1]}</button>`).join('');
     if ($('#zv-out').classList.contains('on')) out(); }

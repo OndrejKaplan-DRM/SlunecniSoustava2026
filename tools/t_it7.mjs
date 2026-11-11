@@ -1,7 +1,7 @@
 // iterace 7: lišta (Saturn, posuvník), zajímavosti, HUD, talíř, hudba podle místa, konfety
 import { chromium } from '/home/claude/.npm-global/lib/node_modules/playwright/index.mjs';
 import http from 'http'; import fs from 'fs'; import path from 'path';
-const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.avif': 'image/avif', '.mp3': 'audio/mpeg' };
+const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.webp': 'image/webp', '.avif': 'image/avif', '.mp3': 'audio/mpeg' };
 const srv = http.createServer((q, r) => { const f = path.join('dist', decodeURIComponent(q.url.split('?')[0] === '/' ? '/index.html' : q.url.split('?')[0])); fs.readFile(f, (e, d) => { if (e) { r.writeHead(404); r.end(); } else { r.writeHead(200, { 'content-type': MIME[path.extname(f)] || 'application/octet-stream' }); r.end(d); } }); }).listen(0);
 const port = srv.address().port, out = process.argv[2] || '/tmp/it7'; fs.mkdirSync(out, { recursive: true });
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--autoplay-policy=no-user-gesture-required'] });

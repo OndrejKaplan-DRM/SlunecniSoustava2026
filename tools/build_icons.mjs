@@ -7,7 +7,7 @@ const CENTER = { earth: 15, jupiter: 200, mars: -75, moon: 0, pluto: 180, saturn
 const RINGS = { saturn: [1.24, 2.33, 0.9, [214, 196, 160]], uranus: [1.9, 2.02, 0.75, [190, 205, 215]], chariklo: [1.5, 1.7, 0.8, [210, 210, 210]], haumea: [1.9, 2.05, 0.6, [200, 200, 200]] };
 const h = (x, y) => { const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return s - Math.floor(s); };
 for (let i = 0; i < B.length; i++) {
-  const b = B[i], f = `dist/maps/${b.id}.avif`; let W = 128, H = 64, map = null;
+  const b = B[i], f = `dist/maps/${b.id}.webp`; let W = 128, H = 64, map = null;
   if (fs.existsSync(f)) map = await sharp(f).resize(W, H, { fit: 'fill' }).removeAlpha().raw().toBuffer();
   const ring = RINGS[b.id], comet = b.type === 'comet' || b.id === 'borisov';
   let ax = 1, ay = 1; if (b.abc) { const m = Math.max(...b.abc); ax = b.abc[0] / m; ay = Math.max(0.3, b.abc[2] / m); } else if (b.flat) ay = 1 - b.flat;
@@ -45,7 +45,7 @@ for (let i = 0; i < B.length; i++) {
 const out = await sharp(atlas, { raw: { width: COLS * S, height: rows * S, channels: 4 } }).webp({ quality: 82, alphaQuality: 90 }).toBuffer();
 fs.writeFileSync('dist/icons.webp', out); await sharp(atlas, { raw: { width: COLS * S, height: rows * S, channels: 4 } }).png().toFile('/tmp/icons.png');
 // aktivní oblasti Slunce
-{ const W = 96, H = 48, m = await sharp('dist/maps/sun.avif').resize(W, H, { fit: 'fill' }).greyscale().raw().toBuffer(), ar = [], used = [];
+{ const W = 96, H = 48, m = await sharp('dist/maps/sun.webp').resize(W, H, { fit: 'fill' }).greyscale().raw().toBuffer(), ar = [], used = [];
   const cand = []; for (let y = 8; y < H - 8; y++) for (let x = 0; x < W; x++) cand.push([m[y * W + x], x, y]); cand.sort((p, q) => q[0] - p[0]);
   for (const [v, x, y] of cand) { if (ar.length >= 16) break; if (used.some(u => Math.hypot(Math.min(Math.abs(u[0] - x), W - Math.abs(u[0] - x)), u[1] - y) < 7)) continue; used.push([x, y]); ar.push([+(((x + 0.5) / W - 0.5) * 360).toFixed(1), +((0.5 - (y + 0.5) / H) * 180).toFixed(1), +(v / 255).toFixed(2)]); }
   cat.sunAR = ar; cat.iconCols = COLS; fs.writeFileSync('src/cat.json', JSON.stringify(cat)); console.log('AR', JSON.stringify(ar)); }
