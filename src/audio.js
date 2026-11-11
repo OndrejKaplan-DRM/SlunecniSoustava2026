@@ -76,17 +76,19 @@ export const MYST = {
   '67p': { name: 'Zpívající kometa', root: 220, sc: [0, 1, 2, 3, 5], step: 0.45, dens: 0.8, wave: 'triangle', dur: 0.5, att: 0.03, drone: [0], dly: 0.3, fb: 0.3, x: 'gliss', why: 'podle skutečného měření: magnetometr sondy Rosetta zachytil kmity pole kolem komety (40–50 mHz), po zrychlení znějí jako cvrlikání.' },
 };
 // skladby ze Suno (dist/music/, dvě verze na slot, střídají se). Slot hraje jako téma u „svých“ těles a jako hudba na pozadí (M) podle oblasti.
-export const TRACKS = { mezihvezdni: ['mezihvezdni1', 'mezihvezdni2'], daleko: ['daleko1', 'daleko2'], ocean: ['ocean1', 'ocean2'], slunce: ['slunce1', 'slunce2'] };
-export const TRACK_NAME = { mezihvezdni: 'Návštěvník', daleko: 'Na okraji', ocean: 'Oceán pod ledem', slunce: 'Hvězda' };
+export const TRACKS = { mezihvezdni: ['mezihvezdni1', 'mezihvezdni2'], daleko: ['daleko1', 'daleko2'], ocean: ['ocean1', 'ocean2'], slunce: ['slunce1', 'slunce2'],
+  kameny: ['kameny1', 'kameny2'], obri: ['obri1', 'obri2'], pas: ['pas1', 'pas2'], komety: ['komety1', 'komety2'] };
+export const TRACK_NAME = { mezihvezdni: 'Návštěvník', daleko: 'Na okraji', ocean: 'Oceán pod ledem', slunce: 'Hvězda', kameny: 'Kamenné světy', obri: 'Obři', pas: 'Pás planetek', komety: 'Komety' };
 const OCEAN = new Set(['europa', 'enceladus', 'ganymede', 'callisto', 'titan', 'mimas', 'dione', 'ceres']);
 // tělesa, která mají skladbu „navíc“: průletáři těsně kolem Slunce a Merkur → Hvězda; komety z Oortova oblaku, které přiletí jednou za tisíce let → Návštěvník
-const HOT = new Set(['mercury', 'ikeya_seki', 'lovejoy', 'neat']), FARCOM = new Set(['hale_bopp', 'hyakutake', 'neowise', 'mcnaught', 'west', 'kirch_great_comet_of_1680', 'bennett', 'arend_roland']);
+const ROCKY = new Set(['mercury', 'venus', 'mars', 'moon']), GIANT = new Set(['jupiter', 'saturn', 'uranus', 'neptune']);
+const HOT = new Set(['ikeya_seki', 'lovejoy', 'neat']), FARCOM = new Set(['hale_bopp', 'hyakutake', 'neowise', 'mcnaught', 'west', 'kirch_great_comet_of_1680', 'bennett', 'arend_roland']);
 // dospělé rozhraní: časté zvuky ovládání nahradí jedna tichá rodina (ťuknutí, zapnuto, vypnuto); null = ticho
 const ADULT = { click: 'a_tick', click2: 'a_tick', select: 'a_tick', key: 'a_tick', enter: 'a_tick', tab_next: 'a_tick', tab_prev: 'a_tick', closeup: 'a_tick', ruler: 'a_tick', compare: 'a_tick', hint: 'a_tick', skip: 'a_tick', shutter: 'a_tick', now: 'a_tick', search: 'a_tick',
   orbit_on: 'a_on', orbit_all: 'a_on', labels_on: 'a_on', play: 'a_on', sun_white: 'a_on', sun_halpha: 'a_on', sun_euv: 'a_on', orbit_off: 'a_off', labels_off: 'a_off', back: 'a_off', pause: 'a_off', reverse: 'a_off', zoom_in: null, zoom_out: null, guide: null,
   ...Object.fromEntries(Array.from({ length: 10 }, (_, k) => ['rate' + (k + 1), 'a_tick'])) };
 // oblast pro hudbu: Slunce · světy s oceánem pod ledem · daleko za Neptunem · návštěvníci od jiných hvězd · jinde '' (hraje cokoli)
-export const zoneOf = (i) => { const b = B[i], m = MYST[b.id], r = B[root[i]]; if (m && m.slot) return m.slot; if (i === SUN || HOT.has(b.id)) return 'slunce'; if (OCEAN.has(b.id)) return 'ocean'; if (FARCOM.has(b.id)) return 'mezihvezdni';
+export const zoneOf = (i) => { const b = B[i], m = MYST[b.id], r = B[root[i]]; if (m && m.slot) return m.slot; if (i === SUN || HOT.has(b.id)) return 'slunce'; if (OCEAN.has(b.id)) return 'ocean'; if (FARCOM.has(b.id)) return 'mezihvezdni'; if (ROCKY.has(b.id)) return 'kameny'; if (GIANT.has(b.id)) return 'obri'; if (b.type === 'comet') return 'komety'; if (b.type === 'asteroid' && b.fame >= 3) return 'pas';
   return r.type === 'interstellar' ? 'mezihvezdni' : r.type === 'tno' || (r.type === 'dwarf' && r.id !== 'ceres') ? 'daleko' : ''; };
 // Nahrané zvuky (CC0, dist/zvuky/) vybrané ve zkušebně: efekt → [soubor, hlasitost, rychlost]. Dokud se soubor nenačte, hraje syntéza.
 export const SMP = { click: ['z013', 0.5], click2: ['z017', 0.55], select: ['z016', 0.5], panel_open: ['z012', 0.5], panel_close: ['z003', 0.5],
@@ -98,7 +100,7 @@ export const AMBS = { sun: ['z027', 0.2], jupiter: ['z028', 0.16], saturn: ['z03
   ice: ['z032', 0.06], venus: ['z042', 0.05], mars: ['z043', 0.04], titan: ['z039', 0.07], moon_j: ['z028', 0.06], moon_s: ['z037', 0.06], moon_u: ['z038', 0.05], moon_n: ['z029', 0.05], pluto: ['z031', 0.08] };
 export const FLY = ['z030', 0.13];
 // vlastní skladba u tělesa (hraje i s vypnutou hudbou): dětské rozhraní všude, kde je oblast; dospělé jen u hlavních těles oblasti (bez malých měsíců a „navíc“)
-export const themeOf = (i, kid) => { const b = B[i], z = i === SUN ? '' : zoneOf(i); if (!z || (MYST[b.id] && !MYST[b.id].slot)) return ''; if (kid) return z; return (b.type === 'moon' && !OCEAN.has(b.id)) || HOT.has(b.id) || FARCOM.has(b.id) || ['mimas', 'dione', 'ceres'].includes(b.id) ? (MYST[b.id] ? z : '') : z; };
+export const themeOf = (i, kid) => { const b = B[i], z = i === SUN ? '' : zoneOf(i); if (!z || (MYST[b.id] && !MYST[b.id].slot)) return ''; if (kid) return z; if (z === 'pas') return b.fame >= 4 ? z : ''; if (z === 'komety') return b.fame >= 5 ? z : ''; return (b.type === 'moon' && !OCEAN.has(b.id)) || HOT.has(b.id) || FARCOM.has(b.id) || ['mimas', 'dione', 'ceres'].includes(b.id) ? (MYST[b.id] ? z : '') : z; };
 export const COUNT = new Set([...Object.values(SMP), ...Object.values(AMBS), FLY].map(v => v[0])).size + Object.keys(SFX).length + Object.keys(AMB).length + 4 + Object.keys(MYST).length; // + smyčka času a smyčka letu
 const AMB_ID = { sun: 'sun', mercury: 'mercury', venus: 'venus', earth: 'earth', moon: 'moon', mars: 'mars', jupiter: 'jupiter', io: 'io', europa: 'europa', ganymede: 'ganymede', callisto: 'callisto', saturn: 'saturn', titan: 'titan', enceladus: 'enceladus', uranus: 'uranus', neptune: 'neptune', triton: 'triton', pluto: 'pluto' };
 export const ambOf = (i) => { const b = B[i]; if (AMB_ID[b.id]) return AMB_ID[b.id]; if (b.type === 'moon') { const p = b.parent; if (p === 'saturn' && B[i].R < 60) return 'ring'; return { jupiter: 'moon_j', saturn: 'moon_s', uranus: 'moon_u', neptune: 'moon_n' }[p] || ((b.albedo || 0) > 0.4 ? 'ice' : 'moon_x'); }
@@ -156,13 +158,13 @@ export function createAudio(S) {
     if (!A.ctx || A.ctx.state !== 'running') return; const c = A.ctx, t = c.currentTime, i = S.focus, alt = S.cam.alt, near = Math.max(0, Math.min(1, 1.15 - Math.log10(1 + alt / shape[i].rmax) / 1.6)), fly = S.cam.fly && S.cam.fly.ph !== 2;
     const key = fly ? '' : ambOf(i);
     if (key !== ambKey) { if (amb) amb.stop(); amb = key ? startAmb(key) : null; ambKey = key; }
-    const nearB = !fly && near > 0.22, mm = nearB ? MYST[B[i].id] : null, theme = nearB && !MU.bad ? themeOf(i, A.kidMood) : '', mk = mm && !theme ? B[i].id : ''; if (mk !== mystKey) { if (myst) myst.stop(); myst = mk ? startMyst(mk) : null; mystKey = mk; }
+    const nearB = !fly && near > 0.22, mm = nearB ? MYST[B[i].id] : null, th0 = nearB && !MU.bad ? themeOf(i, A.kidMood) : '', own = !!(mm && mm.slot), theme = th0 && performance.now() - focT > (own ? 5000 : A.kidMood ? 20000 : 40000) ? th0 : '', mk = mm && !th0 ? B[i].id : ''; if (mk !== mystKey) { if (myst) myst.stop(); myst = mk ? startMyst(mk) : null; mystKey = mk; }
     if (myst) myst.vol(near);
     // skladby: téma tělesa hraje vždy (hlasitost podle blízkosti); hudba na pozadí (M) podle oblasti, mezi skladbami pauza
     if (i !== focI) { focI = i; focT = performance.now(); } const zone = zoneOf(i), bg = A.music && !MU.bad && !myst, nowm = performance.now();
-    if (theme) { if (MU.slot !== theme) muPlay(theme); MU.tv = A.kidMood ? 0.22 + 0.5 * near : 0.18 + 0.42 * near; MU.bgm = false; }
-    else if (bg) { if (!MU.slot) { if (nowm > MU.gapUntil && !fly) muPlay(zone || MU.any()); } else if (zone && MU.slot !== zone && !fly && nowm - focT > 5000) muPlay(zone); MU.tv = A.kidMood ? 0.34 : 0.24; MU.bgm = true; }
-    else if (MU.slot && !(fly && A.music)) muStop();
+    if (theme) { if (MU.slot !== theme && nowm > MU.gapUntil && (!MU.slot || !A.music)) muPlay(theme); MU.tv = (own ? 0.2 + 0.45 * near : 0.14 + 0.3 * near) * (A.kidMood ? 1 : 0.85); MU.bgm = false; }
+    else if (bg) { if (th0) { /* skladba tělesa teprve přijde: co hraje, nechat dohrát, nic nového nezačínat */ } else if (!MU.slot) { if (nowm > MU.gapUntil && !fly) muPlay(zone || MU.any()); } /* hrající skladbu při přeletu nestříháme; oblast se uplatní až u další */ MU.tv = A.kidMood ? 0.34 : 0.24; MU.bgm = true; }
+    else if (MU.slot && !(fly && A.music) && !(th0 && MU.slot === th0)) muStop();
     muTick(t);
     if (amb) amb.g.gain.setTargetAtTime(near * (myst || theme ? 0.2 : MU.slot ? 0.42 : 0.6), t, 0.6);
     if (!whirr) { const o = c.createOscillator(), o2 = c.createOscillator(), f = c.createBiquadFilter(), g = c.createGain(), l = c.createOscillator(), lg = c.createGain(); o.type = 'sawtooth'; o2.type = 'sawtooth'; f.type = 'lowpass'; f.frequency.value = 500; g.gain.value = 0; l.connect(lg); lg.connect(g.gain); o.connect(f); o2.connect(f); f.connect(g); g.connect(master); o.start(); o2.start(); l.start(); whirr = { o, o2, f, g, l, lg }; }
@@ -177,7 +179,7 @@ export function createAudio(S) {
   const MU = { els: [], gs: [], cur: -1, slot: '', tv: 0, bgm: false, last: {}, gapUntil: 0, bad: false, tok: 0, url: {}, any: () => { const k = Object.keys(TRACKS); let s; do { s = k[Math.floor(Math.random() * k.length)]; } while (s === MU.prev && k.length > 1); return s; } };
   function muInit() { if (MU.els.length) return; for (let k = 0; k < 2; k++) { const el = new Audio(); el.preload = 'auto'; let g = null; try { const src = A.ctx.createMediaElementSource(el); g = A.ctx.createGain(); g.gain.value = 0; src.connect(g); g.connect(master); } catch (e) { g = null; el.volume = 0; }
       try { el.src = SIL; const p = el.play(); if (p && p.catch) p.catch(() => {}); } catch (e) { /* nic */ }
-      el.addEventListener('ended', () => { if (MU.cur === k && MU.slot) { MU.prev = MU.slot; MU.slot = ''; MU.gapUntil = performance.now() + (MU.bgm ? (A.kidMood ? 8000 + Math.random() * 10000 : 35000 + Math.random() * 25000) : 3000); } });
+      el.addEventListener('ended', () => { if (MU.cur === k && MU.slot) { MU.prev = MU.slot; MU.slot = ''; MU.gapUntil = performance.now() + (MU.bgm ? (A.kidMood ? 30000 + Math.random() * 30000 : 60000 + Math.random() * 60000) : 120000 + Math.random() * 120000); } });
       MU.els.push(el); MU.gs.push(g); } }
   const muUrl = (f) => MU.url[f] || (MU.url[f] = fetch(AS('music/' + f + '.mp3')).then(r => r.ok ? r.blob() : Promise.reject()).then(b => URL.createObjectURL(new Blob([b], { type: 'audio/mpeg' }))));
   function muPlay(slot) { const list = TRACKS[slot]; if (!list || !MU.els.length) return; const n = MU.last[slot] = ((MU.last[slot] === undefined ? Math.floor(Math.random() * list.length) : MU.last[slot]) + 1) % list.length, tok = ++MU.tok, old = MU.cur; MU.slot = slot; A.track = slot;
