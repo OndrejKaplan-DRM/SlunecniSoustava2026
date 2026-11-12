@@ -48,6 +48,7 @@ const PTS = { star: 10, planet: 10, dwarf: 15, moon: 10, asteroid: 15, comet: 20
 
 // Poznámka na kartě u těles, kde mapa není úplná nebo ukazuje něco jiného než pohled okem – aby prázdná místa nevypadala jako chyba.
 const COVER = {
+  saturn: 'Mapa z Cassini (2011) s pásem velké bouře; rovníkový pás a póly zakrývaly prstence a stín – jsou doplněné hladce. Kontrast je zesílený.',
   venus: 'Z dálky oblačnost; zblízka radarová mapa povrchu (Magellan), barvy jsou dodané uměle.',
   pluto: 'Jižní třetinu žádná sonda neviděla – je vyplněná hladce, bez kresby.', charon: 'Jih žádná sonda neviděla – je vyplněný hladce. Odvrácená strana je vyfocená jen z dálky.',
   triton: 'Voyager 2 vyfotil jen asi 60 % povrchu; zbytek je vyplněný hladce.', europa: 'Mapa je složená ze snímků různé ostrosti; okolí jižního pólu chybí.',
@@ -194,7 +195,7 @@ export function createUI(S, A) {
   const act = { orb() { S.orbMode = (S.orbMode + 1) % 3; A.play(['orbit_off', 'orbit_on', 'orbit_all'][S.orbMode]); toast('Dráhy: ' + ['vypnuté', 'planety a blízké měsíce', 'všech 200 těles'][S.orbMode]); }, lab() { S.labMode = (S.labMode + 1) % 3; A.play(S.labMode ? 'labels_on' : 'labels_off'); toast('Popisky: ' + ['vypnuté', 'hlavní', 'všechny'][S.labMode]); }, lock() { S.lock = !S.lock; ui2(S.lock); toast(S.lock ? 'Kamera se otáčí s tělesem (stojíš nad jedním místem).' : 'Kamera stojí vůči hvězdám.'); },
     gam() { const g = S.gamma < 0.2 ? 0.45 : S.gamma < 0.7 ? 1 : 0; S.setGamma(g); A.play(UI3[g === 0 ? 0 : g < 0.7 ? 1 : 2]); toast(['Přisvětlení vypnuto – skutečný kontrast.', 'Přisvětlení: noční strany jsou trochu vidět.', 'Přisvětlení naplno: vidíš i neosvětlené strany.'][g === 0 ? 0 : g < 0.7 ? 1 : 2]); },
     help() { toggle('#help'); }, game() { toggle('#gamebox'); }, list() { toggle('#list'); }, home() { S.home(); A.play('orbit_all'); },
-    con(v) { S.conMode = typeof v === 'number' ? v : (S.conMode + (act.back ? 4 : 1)) % 5; A.play(UI3[Math.min(2, S.conMode)]); toast('Souhvězdí: ' + (K() ? ['schovaná', 'jen náznak čar', 'čáry', 'čáry a zářící hvězdy', 'čáry, zářící hvězdy a jména'] : ['vypnutá', 'náznak (1/4)', 'čáry (2/4)', 'čáry a zvýrazněné hvězdy (3/4)', 'čáry, hvězdy a jména (4/4)'])[S.conMode]); },
+    con(v) { S.conMode = typeof v === 'number' ? v : (S.conMode + (act.back ? 4 : 1)) % 5; A.play(UI3[Math.min(2, S.conMode)]); toast('Souhvězdí: ' + (K() ? ['schovaná', 'jemné čáry a hvězdičky', 'jasnější čáry a hvězdy', 'zářící hvězdy', 'zářící hvězdy a jména'] : ['vypnutá', 'slabě (1/4)', 'středně (2/4)', 'naplno (3/4)', 'naplno se jmény (4/4)'])[S.conMode]); },
     stars() { S.starNames = !S.starNames; ui2(S.starNames); toast(S.starNames ? 'Jména nejjasnějších hvězd zapnuta.' : 'Jména hvězd vypnuta.'); },
     snd() { A.unlock(); A.setOn(!A.on); if (A.on) A.play('orbit_on'); toast(A.on ? `Zvuk zapnut (${A.count} zvuků).` : 'Zvuk vypnut.'); },
     more() { toggle('#more'); }, mini() { api.X.mini = !api.X.mini; $('#mini').style.display = api.X.mini ? '' : 'none'; api.X.drawMini(); ui2(api.X.mini); },

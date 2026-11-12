@@ -352,33 +352,33 @@ void main(){ vec3 e = uS2Eq * normalize(vD); float ra = atan(e.y, e.x), de = asi
 export const CON_VS = /* glsl */`
 attribute float aT; attribute float aLen; attribute float aDel; uniform vec2 uOff; varying float vT; varying float vL; varying float vD;
 void main(){ gl_Position = projectionMatrix * vec4(mat3(viewMatrix) * position, 1.0); gl_Position.z = gl_Position.w * 0.9993; gl_Position.xy += uOff * gl_Position.w; vT = aT; vL = aLen; vD = aDel; }`;
-// Souhvězdí ve čtyřech stupních (uLv 0–4): 1 náznak – slabá čára, která končí kus před hvězdou; 2 čáry; 3 čáry a zvýrazněné hvězdy; 4 navíc jména.
+// Souhvězdí ve čtyřech stupních (uLv 0–4): čáry vedou až do hvězd a sílí (1 slabé, 2 střední, 3 plné), hvězdy na koncích jsou zvýrazněné úměrně stupni; 4 navíc jména. uC = barva (Velký vůz má teplejší).
 export const CON_FS = /* glsl */`
-uniform float uA; uniform float uG; uniform float uKid; uniform float uFr; uniform float uLv; varying float vT; varying float vL; varying float vD;
+uniform float uA; uniform float uG; uniform float uKid; uniform float uFr; uniform float uLv; uniform vec3 uC; varying float vT; varying float vL; varying float vD;
 void main(){ float e = min(vT, 1.0 - vT), dur = mix(0.8, 1.2, uKid), t0 = vD * mix(0.3, 0.6, uKid), g = clamp((uG - t0) / dur, 0.0, 1.0); g = g * g * (3.0 - 2.0 * g);
   if (e > g * 0.5 + 0.0005) discard;
   float s1 = clamp(uLv, 0.0, 1.0), s2 = clamp(uLv - 1.0, 0.0, 1.0), s3 = clamp(uLv - 2.0, 0.0, 1.0);
   float tip = (1.0 - g) * smoothstep(0.07, 0.0, g * 0.5 - e);
   float flash = g >= 1.0 ? exp(-(uG - t0 - dur) * 2.2) : 0.0;
-  float g0 = min(mix(0.017, 0.0085, s2), vL * 0.3), gap = smoothstep(g0 * 0.75, g0 * 1.25, e * vL);   // mezera u hvězdy v úhlu, ne v podílu délky
+  float gap = 1.0;   // iterace 11: čáry vedou až do hvězd (Ondřej), mezera zrušena
   vec3 c = mix(vec3(0.58, 0.72, 1.0), vec3(0.74, 0.86, 1.0), uKid); c = mix(c, vec3(1.0, 0.98, 0.94), min(1.0, flash * 0.5 + tip));
   float k = uA * uFr * gap * (0.36 * s1 + 0.40 * s2 + 0.26 * s3) * (1.0 + flash * 0.6 + tip * 1.6) * mix(1.0, 1.12, uKid);
-  gl_FragColor = vec4(c * k, 1.0);
+  gl_FragColor = vec4(c * uC * k, 1.0);
   #include <colorspace_fragment>
 }`;
 // Zvýrazněné hvězdy souhvězdí: jádro, měkká zář a čtyři paprsky jako na snímku z dalekohledu (u nejjasnějších i slabé úhlopříčné).
 export const CST_VS = /* glsl */`
-attribute float aMag; attribute vec3 aCol; uniform float uPx; uniform float uS; uniform float uKid; varying vec3 vCol; varying float vB;
+attribute float aMag; attribute vec3 aCol; uniform float uPx; uniform float uS; uniform float uKid; varying vec3 vCol; varying float vB; varying float vK;
 void main(){ gl_Position = projectionMatrix * vec4(mat3(viewMatrix) * position, 1.0); gl_Position.z = gl_Position.w * 0.9992;
-  float L = clamp((5.2 - aMag) / 5.5, 0.0, 1.0); vB = L; vCol = mix(aCol, vec3(1.0), 0.45);
-  gl_PointSize = (9.0 + 30.0 * L * L + 8.0 * L) * uPx * mix(1.0, 1.2, uKid) * (0.55 + 0.45 * uS); }`;
+  float L = clamp((5.2 - aMag) / 5.5, 0.0, 1.0); vB = L; vK = uKid; vCol = mix(aCol, vec3(1.0), mix(0.55, 0.3, uKid));   // děti: sytější barva hvězd
+  gl_PointSize = (9.0 + 30.0 * L * L + 8.0 * L) * uPx * mix(1.3, 1.5, uKid) * (0.42 + 0.58 * uS); }`;   // dospělí střídměji, děti odvážněji
 export const CST_FS = /* glsl */`
-uniform float uS; varying vec3 vCol; varying float vB;
+uniform float uS; varying vec3 vCol; varying float vB; varying float vK;
 void main(){ vec2 q = gl_PointCoord * 2.0 - 1.0; float r = length(q), w = mix(9.0, 20.0, vB);
   float core = exp(-r * r * w * w * 0.5), halo = (0.10 + 0.16 * vB) * exp(-r * 5.0);
   float sp = exp(-abs(q.x) * w * 1.6) * exp(-abs(q.y) * 3.0) + exp(-abs(q.y) * w * 1.6) * exp(-abs(q.x) * 3.0);
   vec2 d = vec2(q.x + q.y, q.x - q.y) * 0.7071; float sd = exp(-abs(d.x) * w * 2.0) * exp(-abs(d.y) * 6.0) + exp(-abs(d.y) * w * 2.0) * exp(-abs(d.x) * 6.0);
-  float a = (core + halo + sp * (0.22 + 0.5 * vB) + sd * 0.3 * vB * vB) * uS * (1.0 - smoothstep(0.8, 1.0, r)); if (a < 0.004) discard;
+  float a = (core + halo * mix(0.8, 1.1, vK) + sp * (0.22 + 0.5 * vB) * mix(1.0, 1.5, vK) * smoothstep(0.25, 0.9, uS + vB * 0.4) + sd * mix(0.2, 0.6, vK) * vB * vB * smoothstep(0.6, 1.0, uS)) * mix(0.55, 1.0, uS) * step(0.001, uS) * (1.0 - smoothstep(0.4, 1.0, r)); if (a < 0.004) discard;
   gl_FragColor = vec4(mix(vCol, vec3(1.0), min(1.0, core + sp * 0.4)) * a, 1.0);
   #include <colorspace_fragment>
 }`;

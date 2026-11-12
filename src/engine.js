@@ -46,7 +46,7 @@ export function createEngine(canvas, overlay) {
     const pts = new THREE.Points(g, starMat); pts.frustumCulled = false; pts.renderOrder = -20; scene.add(pts); }
 
   const eq2s = (ra, de) => { const x = Math.cos(de) * Math.cos(ra), y = Math.cos(de) * Math.sin(ra), z = Math.sin(de); return new THREE.Vector3(x, -se * y + ce * z, -(ce * y + se * z)); };
-  const cons = [], starLab = []; let conMat, cstMat, conT = -1e9, conLv = 0, conPrev = 0; S.eq2s = (ra, de) => eq2s(ra, de);
+  const cons = [], starLab = []; let conMat, cstMat, conSeg = null, dipMat = [], conT = -1e9, conLv = 0, conPrev = 0; S.eq2s = (ra, de) => eq2s(ra, de);
   { const li = dec64(CON_LINES, Int16Array), LP = new Float32Array(li.length / 4 * 6), LT = new Float32Array(li.length / 4 * 2), LS = new Float32Array(li.length / 4 * 2), ends = new Map(), LD = new Float32Array(li.length / 4 * 2), del = {}; let k = 0;
     for (const part of CON_IDS.split(',')) { const [id, cnt] = part.split(':'), c = new THREE.Vector3();
       for (let j = 0; j < +cnt; j++, k++) { const a = eq2s((li[k * 4] / 100 + 180) * DEG, li[k * 4 + 1] / 100 * DEG), b = eq2s((li[k * 4 + 2] / 100 + 180) * DEG, li[k * 4 + 3] / 100 * DEG); LP.set([a.x, a.y, a.z, b.x, b.y, b.z], k * 6); c.add(a).add(b); LT[k * 2 + 1] = 1; LS[k * 2] = LS[k * 2 + 1] = a.angleTo(b); ends.set(li[k * 4] + ',' + li[k * 4 + 1], a); ends.set(li[k * 4 + 2] + ',' + li[k * 4 + 3], b); if (del[id] === undefined) del[id] = Math.random(); LD[k * 2] = LD[k * 2 + 1] = del[id]; }
@@ -54,9 +54,18 @@ export function createEngine(canvas, overlay) {
     cons.forEach(x => x.c.normalize());
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(LP, 3)); g.setAttribute('aT', new THREE.BufferAttribute(LT, 1)); g.setAttribute('aLen', new THREE.BufferAttribute(LS, 1)); g.setAttribute('aDel', new THREE.BufferAttribute(LD, 1));
     // jádro čáry + čtyři kopie posunuté o pixel se slabou intenzitou = jemný lem
-    const cu = { uA: { value: 0.5 }, uG: { value: 99 }, uKid: { value: 0 }, uLv: { value: 0 } }, mk = (fr) => new THREE.ShaderMaterial({ uniforms: { uA: cu.uA, uG: cu.uG, uKid: cu.uKid, uLv: cu.uLv, uFr: { value: fr }, uOff: { value: new THREE.Vector2() } }, vertexShader: SH.CON_VS, fragmentShader: SH.CON_FS, transparent: true, depthTest: true, depthWrite: false, blending: THREE.AdditiveBlending });
+    const cu = { uA: { value: 0.5 }, uG: { value: 99 }, uKid: { value: 0 }, uLv: { value: 0 } }, mk = (fr) => new THREE.ShaderMaterial({ uniforms: { uA: cu.uA, uG: cu.uG, uKid: cu.uKid, uLv: cu.uLv, uFr: { value: fr }, uOff: { value: new THREE.Vector2() }, uC: { value: new THREE.Vector3(1, 1, 1) } }, vertexShader: SH.CON_VS, fragmentShader: SH.CON_FS, transparent: true, depthTest: true, depthWrite: false, blending: THREE.AdditiveBlending });
     conMat = mk(1); conMat.cu = cu; S.conLines = new THREE.Group(); S.conLines.visible = false; conMat.fringe = [];
     for (let q = 0; q < 5; q++) { const m = q ? mk(0.13) : conMat, l = new THREE.LineSegments(g, m); l.frustumCulled = false; l.renderOrder = -15; S.conLines.add(l); if (q) conMat.fringe.push(m); } scene.add(S.conLines);
+    conSeg = LP;
+    // Velký vůz: sedm hvězd Velké medvědice, v Česku vnímaných jako samostatný obrazec – silnější, teplejší čára a vlastní jméno.
+    { const DIP = [[206.885, 49.313], [200.981, 54.925], [193.507, 55.960], [183.857, 57.033], [178.458, 53.695], [165.460, 56.382], [165.932, 61.751], [183.857, 57.033]], ev = [...ends.values()];   // Alkaid, Mizar, Alioth, Megrez, Phecda, Merak, Dubhe, Megrez (RA, Dec J2000)
+      const pt = DIP.map(([ra, de]) => { const v = eq2s(ra * DEG, de * DEG); let b = v, bd = Math.cos(0.6 * DEG); for (const e of ev) { const d = e.dot(v); if (d > bd) { bd = d; b = e; } } return b; });   // přichytit na konce stávajících čar
+      const n = pt.length - 1, P = new Float32Array(n * 6), T = new Float32Array(n * 2), L = new Float32Array(n * 2), D = new Float32Array(n * 2), c = new THREE.Vector3();
+      for (let j = 0; j < n; j++) { P.set([pt[j].x, pt[j].y, pt[j].z, pt[j + 1].x, pt[j + 1].y, pt[j + 1].z], j * 6); T[j * 2 + 1] = 1; L[j * 2] = L[j * 2 + 1] = pt[j].angleTo(pt[j + 1]); D[j * 2] = D[j * 2 + 1] = 0.2; c.add(pt[j]); }
+      const dg = new THREE.BufferGeometry(); dg.setAttribute('position', new THREE.BufferAttribute(P, 3)); dg.setAttribute('aT', new THREE.BufferAttribute(T, 1)); dg.setAttribute('aLen', new THREE.BufferAttribute(L, 1)); dg.setAttribute('aDel', new THREE.BufferAttribute(D, 1));
+      S.conDip = new THREE.Group(); S.conDip.visible = false; dipMat = []; for (let q = 0; q < 5; q++) { const m = mk(q ? 0.42 : 0.9), l = new THREE.LineSegments(dg, m); l.frustumCulled = false; l.renderOrder = -14.5; S.conDip.add(l); dipMat.push(m); } scene.add(S.conDip);
+      cons.push({ id: 'dip', name: 'Velký vůz', c: c.normalize(), dip: true }); }
     const sp = dec64(STAR_POS, Float32Array), seen = new Set();
     // hvězdy na koncích čar: dohledat v katalogu (nejjasnější do 0,3°), aby zář seděla přesně na hvězdě a měla její jas a barvu
     { const smag = dec64(STAR_MAG, Uint8Array), stk = dec64(STAR_TK, Uint8Array), SV = new Float32Array(STAR_N * 3), ev = [...ends.values()], n = ev.length, EP = new Float32Array(n * 3), EM = new Float32Array(n), EC = new Float32Array(n * 3), lim = Math.cos(0.3 * DEG);
@@ -173,6 +182,7 @@ export function createEngine(canvas, overlay) {
     cam.fly = { ph: 0, t: 0, to: j, alt0: cam.alt, altA: Math.max(cam.alt, Math.min(D * 0.3, shape[i].rmax * 400)), ly: cam.ly, lp: cam.lp, arr: opts.alt || arriveAlt(j), f0: null };
   };
   S.flying = () => !!cam.fly;
+  S.cons = cons; S.lookSky = (c) => { cam.pitch = Math.asin(Math.max(-1, Math.min(1, -c.y))); cam.yaw = Math.atan2(-c.z, -c.x); cam.ly = cam.lp = 0; wake(); };   // zkušební háček: natočit pohled na místo na obloze
   S.jump = (j) => { S.focus = S.sel = j; cam.fly = null; cam.alt = cam.altT = arriveAlt(j); const s = sunSide(j); cam.yaw = s[0]; cam.pitch = s[1]; cam.ly = cam.lp = 0; S.on.focus(j); S.on.select(j); wake(); };
   S.home = () => { S.flyTo(SUN, { alt: 42 * AU }); cam.homePitch = true; };
   S.select = (j) => { S.sel = j; S.on.select(j); wake(); };
@@ -277,7 +287,8 @@ export function createEngine(canvas, overlay) {
     }
     { if (S.conMode > 0 && conLv < 0.01 && conPrev === 0) conT = now; conPrev = S.conMode;
       const dl = S.conMode - conLv; conLv = Math.abs(dl) < 0.004 ? S.conMode : conLv + dl * Math.min(1, dtR * 7); const on = conLv > 0.004, g = (now - conT) / 1000, s2 = Math.min(1, Math.max(0, conLv - 1)), s3 = Math.min(1, Math.max(0, conLv - 2));
-      S.conLines.visible = on; S.conStars.visible = s3 > 0.004; conMat.cu.uLv.value = conLv; conMat.cu.uA.value = 0.5 + S.gamma * 0.25; conMat.cu.uKid.value = S.kid ? 1 : 0; conMat.cu.uG.value = g; cstMat.uniforms.uS.value = s3;
+      const sK = Math.min(1, 0.34 * Math.min(conLv, 1) + 0.28 * s2 + 0.38 * s3);   // zvýraznění hvězd roste se stupněm
+      S.conLines.visible = on; S.conStars.visible = on; S.conDip.visible = on; { const ox = 1.3 / W, oy = 1.3 / H, o = [[0, 0], [ox, 0], [-ox, 0], [0, oy], [0, -oy]]; dipMat.forEach((m, q) => { m.uniforms.uOff.value.set(o[q][0], o[q][1]); if (S.kid) m.uniforms.uC.value.set(1.25, 0.95, 0.5); else m.uniforms.uC.value.set(1.1, 1.0, 0.82); }); } conMat.cu.uLv.value = conLv; conMat.cu.uA.value = 0.5 + S.gamma * 0.25; conMat.cu.uKid.value = S.kid ? 1 : 0; conMat.cu.uG.value = g; cstMat.uniforms.uS.value = sK;
       if (on && (g < 4 || conLv !== S.conMode)) wake();
       const fr = 0.06 * s2 + 0.09 * s3 + (S.kid ? 0.05 * s2 : 0), ox = 2.2 / W, oy = 2.2 / H, f = conMat.fringe; for (const m of f) { m.uniforms.uFr.value = fr; } f[0].uniforms.uOff.value.set(ox, 0); f[1].uniforms.uOff.value.set(-ox, 0); f[2].uniforms.uOff.value.set(0, oy); f[3].uniforms.uOff.value.set(0, -oy);
       for (let q = 1; q < 5; q++) S.conLines.children[q].visible = fr > 0.004; }
@@ -299,7 +310,19 @@ export function createEngine(canvas, overlay) {
         for (const j of big) { const q = R[j]; if (Math.hypot(q.sx - x, q.sy - y) < q.pr + 6) return; }
         if (star) { ctx.font = 'italic 11.5px system-ui, sans-serif'; ctx.fillStyle = 'rgba(255,236,170,0.85)'; ctx.fillText(o.name, x + 7, y - 6); ctx.strokeStyle = 'rgba(255,236,170,0.5)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x, y, 4.5, 0, 6.2832); ctx.stroke(); }
         else { ctx.font = '600 10.5px system-ui, sans-serif'; ctx.fillStyle = 'rgba(120,160,255,0.8)'; const t = o.name.toUpperCase().split('').join('\u200a'); ctx.fillText(t, x - ctx.measureText(t).width / 2, y); } };
-      if (S.conMode === 4) for (const c of cons) put(c, false); if (S.starNames) for (const s of starLab) put(s, true); }
+      if (S.conMode === 4) { // jména souhvězdí: nesmí ležet přes čáry – hledá se nejbližší volné místo u těžiště; jednou nalezené se drží, dokud vyhovuje
+        const sg = []; for (let k = 0; k < conSeg.length; k += 6) { const z1 = conSeg[k] * fwd.x + conSeg[k + 1] * fwd.y + conSeg[k + 2] * fwd.z, z2 = conSeg[k + 3] * fwd.x + conSeg[k + 4] * fwd.y + conSeg[k + 5] * fwd.z; if (z1 < 0.2 || z2 < 0.2) continue;
+          const x1 = W / 2 + (conSeg[k] * right.x + conSeg[k + 1] * right.y + conSeg[k + 2] * right.z) / z1 * F, y1 = H / 2 - (conSeg[k] * up.x + conSeg[k + 1] * up.y + conSeg[k + 2] * up.z) / z1 * F, x2 = W / 2 + (conSeg[k + 3] * right.x + conSeg[k + 4] * right.y + conSeg[k + 5] * right.z) / z2 * F, y2 = H / 2 - (conSeg[k + 3] * up.x + conSeg[k + 4] * up.y + conSeg[k + 5] * up.z) / z2 * F;
+          if (Math.max(x1, x2) < -150 || Math.min(x1, x2) > W + 150 || Math.max(y1, y2) < -150 || Math.min(y1, y2) > H + 150) continue; sg.push(x1, y1, x2, y2); }
+        const cut = (a, b, c, d, x0, y0, x1, y1) => { let t0 = 0, t1 = 1; const dx = c - a, dy = d - b, P = [-dx, dx, -dy, dy], Q = [a - x0, x1 - a, b - y0, y1 - b]; for (let i = 0; i < 4; i++) { if (P[i] === 0) { if (Q[i] < 0) return false; } else { const r = Q[i] / P[i]; if (P[i] < 0) { if (r > t1) return false; if (r > t0) t0 = r; } else { if (r < t0) return false; if (r < t1) t1 = r; } } } return true; };
+        const placed = [], free = (x0, y0, x1, y1) => { for (const q of placed) if (x0 < q[2] && x1 > q[0] && y0 < q[3] && y1 > q[1]) return false; for (let i = 0; i < sg.length; i += 4) if (cut(sg[i], sg[i + 1], sg[i + 2], sg[i + 3], x0, y0, x1, y1)) return false; return true; };
+        ctx.font = '600 10.5px system-ui, sans-serif';
+        for (const o of cons) { const z = o.c.dot(fwd); if (z < 0.25) continue; const x = W / 2 + o.c.dot(right) / z * F, y = H / 2 - o.c.dot(up) / z * F; if (x < 0 || x > W || y < 50 || y > H - 90) continue;
+          let hid = false; for (const j of big) { const q = R[j]; if (Math.hypot(q.sx - x, q.sy - y) < q.pr + 6) { hid = true; break; } } if (hid) continue;
+          const t = o.name.toUpperCase().split('').join('\u200a'), w = ctx.measureText(t).width, m = 5, ok = (dx, dy) => free(x + dx - w / 2 - m, y + dy - 7 - m, x + dx + w / 2 + m, y + dy + 7 + m);
+          let off = o.off || [0, 0]; if (!ok(off[0], off[1])) { let best = null; for (let r = 0; r <= 130 && !best; r += 10) for (let a = 0; a < (r ? 12 : 1); a++) { const dx = Math.cos(a * 0.5236 + 0.26) * r * 1.5, dy = Math.sin(a * 0.5236 + 0.26) * r; if (ok(dx, dy)) { best = [dx, dy]; break; } } off = best || [0, 0]; } o.off = off;
+          ctx.fillStyle = o.dip ? (S.kid ? 'rgba(255,205,110,0.95)' : 'rgba(240,215,160,0.9)') : 'rgba(120,160,255,0.8)'; ctx.fillText(t, x + off[0] - w / 2, y + off[1]); placed.push([x + off[0] - w / 2 - m, y + off[1] - 7 - m, x + off[0] + w / 2 + m, y + off[1] + 7 + m]); } }
+      if (S.starNames) for (const s of starLab) put(s, true); }
     collect(big, S.labMode > 0 || S.hover >= 0);
     if (S.on.overlay) S.on.overlay(ctx, { W, H, F, fwd, right, up, big, R });
   }
