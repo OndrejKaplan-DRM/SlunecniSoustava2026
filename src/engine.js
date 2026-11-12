@@ -46,18 +46,27 @@ export function createEngine(canvas, overlay) {
     const pts = new THREE.Points(g, starMat); pts.frustumCulled = false; pts.renderOrder = -20; scene.add(pts); }
 
   const eq2s = (ra, de) => { const x = Math.cos(de) * Math.cos(ra), y = Math.cos(de) * Math.sin(ra), z = Math.sin(de); return new THREE.Vector3(x, -se * y + ce * z, -(ce * y + se * z)); };
-  const cons = [], starLab = []; let conMat, conT = -1e9; S.eq2s = (ra, de) => eq2s(ra, de);
-  { const li = dec64(CON_LINES, Int16Array), LP = new Float32Array(li.length / 4 * 6), LT = new Float32Array(li.length / 4 * 2), LS = new Float32Array(li.length / 4 * 2), LD = new Float32Array(li.length / 4 * 2), del = {}; let k = 0;
+  const cons = [], starLab = []; let conMat, cstMat, conT = -1e9, conLv = 0, conPrev = 0; S.eq2s = (ra, de) => eq2s(ra, de);
+  { const li = dec64(CON_LINES, Int16Array), LP = new Float32Array(li.length / 4 * 6), LT = new Float32Array(li.length / 4 * 2), LS = new Float32Array(li.length / 4 * 2), ends = new Map(), LD = new Float32Array(li.length / 4 * 2), del = {}; let k = 0;
     for (const part of CON_IDS.split(',')) { const [id, cnt] = part.split(':'), c = new THREE.Vector3();
-      for (let j = 0; j < +cnt; j++, k++) { const a = eq2s((li[k * 4] / 100 + 180) * DEG, li[k * 4 + 1] / 100 * DEG), b = eq2s((li[k * 4 + 2] / 100 + 180) * DEG, li[k * 4 + 3] / 100 * DEG); LP.set([a.x, a.y, a.z, b.x, b.y, b.z], k * 6); c.add(a).add(b); LT[k * 2 + 1] = 1; LS[k * 2] = LS[k * 2 + 1] = Math.random(); if (del[id] === undefined) del[id] = Math.random(); LD[k * 2] = LD[k * 2 + 1] = del[id]; }
+      for (let j = 0; j < +cnt; j++, k++) { const a = eq2s((li[k * 4] / 100 + 180) * DEG, li[k * 4 + 1] / 100 * DEG), b = eq2s((li[k * 4 + 2] / 100 + 180) * DEG, li[k * 4 + 3] / 100 * DEG); LP.set([a.x, a.y, a.z, b.x, b.y, b.z], k * 6); c.add(a).add(b); LT[k * 2 + 1] = 1; LS[k * 2] = LS[k * 2 + 1] = a.angleTo(b); ends.set(li[k * 4] + ',' + li[k * 4 + 1], a); ends.set(li[k * 4 + 2] + ',' + li[k * 4 + 3], b); if (del[id] === undefined) del[id] = Math.random(); LD[k * 2] = LD[k * 2 + 1] = del[id]; }
       const prev = cons.find(x => x.id === id); if (prev) prev.c.add(c); else cons.push({ id, name: CON_CZ[id] || id, c }); }
     cons.forEach(x => x.c.normalize());
-    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(LP, 3)); g.setAttribute('aT', new THREE.BufferAttribute(LT, 1)); g.setAttribute('aSeed', new THREE.BufferAttribute(LS, 1)); g.setAttribute('aDel', new THREE.BufferAttribute(LD, 1));
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(LP, 3)); g.setAttribute('aT', new THREE.BufferAttribute(LT, 1)); g.setAttribute('aLen', new THREE.BufferAttribute(LS, 1)); g.setAttribute('aDel', new THREE.BufferAttribute(LD, 1));
     // jádro čáry + čtyři kopie posunuté o pixel se slabou intenzitou = jemný lem
-    const cu = { uA: { value: 0.5 }, uG: { value: 99 }, uKid: { value: 0 } }, mk = (fr) => new THREE.ShaderMaterial({ uniforms: { uA: cu.uA, uG: cu.uG, uKid: cu.uKid, uFr: { value: fr }, uOff: { value: new THREE.Vector2() } }, vertexShader: SH.CON_VS, fragmentShader: SH.CON_FS, transparent: true, depthTest: true, depthWrite: false, blending: THREE.AdditiveBlending });
+    const cu = { uA: { value: 0.5 }, uG: { value: 99 }, uKid: { value: 0 }, uLv: { value: 0 } }, mk = (fr) => new THREE.ShaderMaterial({ uniforms: { uA: cu.uA, uG: cu.uG, uKid: cu.uKid, uLv: cu.uLv, uFr: { value: fr }, uOff: { value: new THREE.Vector2() } }, vertexShader: SH.CON_VS, fragmentShader: SH.CON_FS, transparent: true, depthTest: true, depthWrite: false, blending: THREE.AdditiveBlending });
     conMat = mk(1); conMat.cu = cu; S.conLines = new THREE.Group(); S.conLines.visible = false; conMat.fringe = [];
     for (let q = 0; q < 5; q++) { const m = q ? mk(0.13) : conMat, l = new THREE.LineSegments(g, m); l.frustumCulled = false; l.renderOrder = -15; S.conLines.add(l); if (q) conMat.fringe.push(m); } scene.add(S.conLines);
-    const sp = dec64(STAR_POS, Float32Array), seen = new Set(); for (const [i, n] of STAR_NAMES) { if (i > 60 || seen.has(n)) continue; seen.add(n); starLab.push({ name: STAR_CZ[n] || n, c: eq2s(sp[i * 2] * DEG, sp[i * 2 + 1] * DEG) }); } }
+    const sp = dec64(STAR_POS, Float32Array), seen = new Set();
+    // hvězdy na koncích čar: dohledat v katalogu (nejjasnější do 0,3°), aby zář seděla přesně na hvězdě a měla její jas a barvu
+    { const smag = dec64(STAR_MAG, Uint8Array), stk = dec64(STAR_TK, Uint8Array), SV = new Float32Array(STAR_N * 3), ev = [...ends.values()], n = ev.length, EP = new Float32Array(n * 3), EM = new Float32Array(n), EC = new Float32Array(n * 3), lim = Math.cos(0.3 * DEG);
+      for (let i = 0; i < STAR_N; i++) { const v = eq2s(sp[i * 2] * DEG, sp[i * 2 + 1] * DEG); SV[i * 3] = v.x; SV[i * 3 + 1] = v.y; SV[i * 3 + 2] = v.z; }
+      let hit = 0; for (let j = 0; j < n; j++) { const v = ev[j]; let best = -1, bm = 99; for (let i = 0; i < STAR_N; i++) { if (SV[i * 3] * v.x + SV[i * 3 + 1] * v.y + SV[i * 3 + 2] * v.z < lim) continue; const m = smag[i] / 30 - 2; if (m < bm) { bm = m; best = i; } }
+        if (best >= 0) { hit++; EP[j * 3] = SV[best * 3]; EP[j * 3 + 1] = SV[best * 3 + 1]; EP[j * 3 + 2] = SV[best * 3 + 2]; EM[j] = bm; EC.set(tempRGB(Math.exp(Math.log(2000) + stk[best] / 255 * Math.log(20))), j * 3); } else { EP[j * 3] = v.x; EP[j * 3 + 1] = v.y; EP[j * 3 + 2] = v.z; EM[j] = 4.8; EC.set([0.85, 0.9, 1], j * 3); } }
+      const sg = new THREE.BufferGeometry(); sg.setAttribute('position', new THREE.BufferAttribute(EP, 3)); sg.setAttribute('aMag', new THREE.BufferAttribute(EM, 1)); sg.setAttribute('aCol', new THREE.BufferAttribute(EC, 3));
+      cstMat = new THREE.ShaderMaterial({ uniforms: { uPx: { value: PR }, uS: { value: 0 }, uKid: cu.uKid }, vertexShader: SH.CST_VS, fragmentShader: SH.CST_FS, transparent: true, depthTest: true, depthWrite: false, blending: THREE.AdditiveBlending });
+      S.conStars = new THREE.Points(sg, cstMat); S.conStars.frustumCulled = false; S.conStars.renderOrder = -14; S.conStars.visible = false; scene.add(S.conStars); S.conStat = { ends: n, hit }; }
+    for (const [i, n] of STAR_NAMES) { if (i > 60 || seen.has(n)) continue; seen.add(n); starLab.push({ name: STAR_CZ[n] || n, c: eq2s(sp[i * 2] * DEG, sp[i * 2 + 1] * DEG) }); } }
   // ---------- tělesa ----------
   const GEO = [new THREE.SphereGeometry(1, 32, 16), new THREE.SphereGeometry(1, 96, 48), new THREE.SphereGeometry(1, 256, 128)];
   const QUAD = new THREE.PlaneGeometry(2, 2), RIBBON = new THREE.PlaneGeometry(1, 1, 1, 32); RIBBON.translate(0, 0.5, 0);
@@ -263,15 +272,19 @@ export function createEngine(canvas, overlay) {
       if (age > Pd * (chain ? 2e-6 : 0.0015) && (chain || orbBudget-- > 0)) buildOrbit(i);
       o.line.visible = true; o.line.material.opacity = a; if (S.disco) o.line.material.color.setHSL(((now * 0.0002) + i * 0.031) % 1, 0.9, 0.6); else if (o.base !== undefined && o.line.material.color.getHex() !== o.base) o.line.material.color.setHex(o.base); const px = p === SUN ? -C[0] : R[p].rel.x, py = p === SUN ? -C[1] : R[p].rel.y, pz = p === SUN ? -C[2] : R[p].rel.z; o.line.matrix.makeTranslation(px, py, pz); o.line.matrixWorldNeedsUpdate = true;
     }
-    if (S.conMode > 0 && !S.conLines.visible) conT = now; S.conLines.visible = S.conMode > 0; conMat.cu.uA.value = 0.42 + S.gamma * 0.3; conMat.cu.uKid.value = S.kid ? 1 : 0;
-    if (S.conMode > 0) { const g = (now - conT) / 1000; conMat.cu.uG.value = g; if (g < 5) wake(); const ox = 2.4 / W, oy = 2.4 / H; conMat.fringe[0].uniforms.uOff.value.set(ox, 0); conMat.fringe[1].uniforms.uOff.value.set(-ox, 0); conMat.fringe[2].uniforms.uOff.value.set(0, oy); conMat.fringe[3].uniforms.uOff.value.set(0, -oy); }
+    { if (S.conMode > 0 && conLv < 0.01 && conPrev === 0) conT = now; conPrev = S.conMode;
+      const dl = S.conMode - conLv; conLv = Math.abs(dl) < 0.004 ? S.conMode : conLv + dl * Math.min(1, dtR * 7); const on = conLv > 0.004, g = (now - conT) / 1000, s2 = Math.min(1, Math.max(0, conLv - 1)), s3 = Math.min(1, Math.max(0, conLv - 2));
+      S.conLines.visible = on; S.conStars.visible = s3 > 0.004; conMat.cu.uLv.value = conLv; conMat.cu.uA.value = 0.5 + S.gamma * 0.25; conMat.cu.uKid.value = S.kid ? 1 : 0; conMat.cu.uG.value = g; cstMat.uniforms.uS.value = s3;
+      if (on && (g < 4 || conLv !== S.conMode)) wake();
+      const fr = 0.06 * s2 + 0.09 * s3 + (S.kid ? 0.05 * s2 : 0), ox = 2.2 / W, oy = 2.2 / H, f = conMat.fringe; for (const m of f) { m.uniforms.uFr.value = fr; } f[0].uniforms.uOff.value.set(ox, 0); f[1].uniforms.uOff.value.set(-ox, 0); f[2].uniforms.uOff.value.set(0, oy); f[3].uniforms.uOff.value.set(0, -oy);
+      for (let q = 1; q < 5; q++) S.conLines.children[q].visible = fr > 0.004; }
     starMat.uniforms.uGain.value = (1 + S.gamma * 1.2) * (S.disco ? 1.3 + 0.5 * Math.sin(now * 0.008) : 1); skyMat.uniforms.uGain.value = 0.5 + S.gamma * 1.2;
     renderer.render(scene, camera);
     drawOverlay(big);
     // návštěva, HUD, výkon
     if (!cam.fly && cam.alt < shape[fi].rmax * 14) S.on.visit(fi);
     frames++; acc += now - (frame.t0 || now); frame.t0 = now;
-    if (frames >= 30) { const ms = acc / frames; S.fps = 1000 / ms; if (!idle) { if (ms > 42) slow++; else slow = Math.max(0, slow - 1); if (slow >= 3 && S.quality > 0) { S.quality--; PR = S.quality === 1 ? 1 : 0.75; renderer.setPixelRatio(PR); starMat.uniforms.uPx.value = Math.max(1, PR); resize(); slow = 0; } } frames = 0; acc = 0; dropTex(now); }
+    if (frames >= 30) { const ms = acc / frames; S.fps = 1000 / ms; if (!idle) { if (ms > 42) slow++; else slow = Math.max(0, slow - 1); if (slow >= 3 && S.quality > 0) { S.quality--; PR = S.quality === 1 ? 1 : 0.75; renderer.setPixelRatio(PR); starMat.uniforms.uPx.value = Math.max(1, PR); cstMat.uniforms.uPx.value = Math.max(1, PR); resize(); slow = 0; } } frames = 0; acc = 0; dropTex(now); }
     if (now - hudT > 180) { hudT = now; S.on.hud(); }
   }
 
@@ -279,11 +292,11 @@ export function createEngine(canvas, overlay) {
   const rects = [];
   function drawOverlay(big) {
     ctx.clearRect(0, 0, W, H);
-    if (S.conMode === 2 || S.starNames) { ctx.textBaseline = 'middle'; const put = (o, star) => { const z = o.c.dot(fwd); if (z < 0.25) return; const x = W / 2 + o.c.dot(right) / z * F, y = H / 2 - o.c.dot(up) / z * F; if (x < 0 || x > W || y < 50 || y > H - 90) return;
+    if (S.conMode === 4 || S.starNames) { ctx.textBaseline = 'middle'; const put = (o, star) => { const z = o.c.dot(fwd); if (z < 0.25) return; const x = W / 2 + o.c.dot(right) / z * F, y = H / 2 - o.c.dot(up) / z * F; if (x < 0 || x > W || y < 50 || y > H - 90) return;
         for (const j of big) { const q = R[j]; if (Math.hypot(q.sx - x, q.sy - y) < q.pr + 6) return; }
         if (star) { ctx.font = 'italic 11.5px system-ui, sans-serif'; ctx.fillStyle = 'rgba(255,236,170,0.85)'; ctx.fillText(o.name, x + 7, y - 6); ctx.strokeStyle = 'rgba(255,236,170,0.5)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x, y, 4.5, 0, 6.2832); ctx.stroke(); }
         else { ctx.font = '600 10.5px system-ui, sans-serif'; ctx.fillStyle = 'rgba(120,160,255,0.8)'; const t = o.name.toUpperCase().split('').join('\u200a'); ctx.fillText(t, x - ctx.measureText(t).width / 2, y); } };
-      if (S.conMode === 2) for (const c of cons) put(c, false); if (S.starNames) for (const s of starLab) put(s, true); }
+      if (S.conMode === 4) for (const c of cons) put(c, false); if (S.starNames) for (const s of starLab) put(s, true); }
     collect(big, S.labMode > 0 || S.hover >= 0);
     if (S.on.overlay) S.on.overlay(ctx, { W, H, F, fwd, right, up, big, R });
   }
