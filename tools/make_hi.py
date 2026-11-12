@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Velká mapa tělesa (dist/maps/hi/<id>.webp) ze zdrojové mozaiky.
-Použití: make_hi.py <zdroj.tif> <id> [šířka=4096] [posun=0..1] [kvalita=85] [sigma=24]
+Použití: make_hi.py <zdroj.tif> <id> [šířka=4096] [posun=0..1] [kvalita=85] [sigma=24] [režim]
+- režim: vynechán = „doladit“ (níže); „seda“ = barevný zdroj brát jako šedý; „nahradit[:šířka malé[:cílový jas]]“ = stávající mapa je jiného původu
+  (umělé bílé plochy, švy): vzhled určuje zdroj, ze stávající mapy se bere jen celkový jas a průměrná barva (šedý zdroj) a přepíše se
+  i malá mapa dist/maps/<id>.webp zmenšeninou nové; místa bez dat se vyplní rozmazaným okolím (žádná kresba).
 - posun: vodorovné pootočení zdroje ve zlomku šířky (0.5 = zdroj má střed na 0° a stávající mapa začíná na 0°);
   bez udání se zjistí korelací se stávající mapou a vypíše.
 - jas a barva se v hrubých rysech (sigma v pixelech stávající mapy) vyrovnají se stávající mapou dist/maps/<id>.webp,
@@ -15,9 +18,10 @@ W = int(sys.argv[3]) if len(sys.argv) > 3 else 4096; H = W // 2
 shift = float(sys.argv[4]) if len(sys.argv) > 4 and sys.argv[4] != 'auto' else None
 q = int(sys.argv[5]) if len(sys.argv) > 5 else 85
 sig = float(sys.argv[6]) if len(sys.argv) > 6 else 24
+mode = sys.argv[7] if len(sys.argv) > 7 else ''
 root = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'dist', 'maps')
 cur = Image.open(os.path.join(root, bid + '.webp')).convert('RGB'); cw, ch = cur.size
-im = Image.open(src); gray = im.mode not in ('RGB', 'RGBA')
+im = Image.open(src); gray = im.mode not in ('RGB', 'RGBA') or mode == 'seda'
 im = im.convert('L' if gray else 'RGB').resize((W, H), Image.LANCZOS)
 s = np.asarray(im, np.float32); s = s[..., None] if gray else s
 c = np.asarray(cur, np.float32)
@@ -34,6 +38,24 @@ S = sig * W / cw
 def blur(a, m):  # rozmazání jen přes platné body, ve vodorovném směru s přechodem přes okraj
     n = gf(a * m, S, mode=('nearest', 'wrap')); d = gf(m, S, mode=('nearest', 'wrap')); return n / np.maximum(d, 1e-3)
 out = np.empty((H, W, 3), np.float32)
+if mode.startswith('nahradit'):
+    v = valid > 0; fill = lambda a: np.where(v, a, gf(a * valid, 40, mode=('nearest', 'wrap')) / np.maximum(gf(valid, 40, mode=('nearest', 'wrap')), 1e-3))
+    wlat = np.cos((np.arange(H) + .5) / H * np.pi - np.pi / 2)[:, None] * valid; mean = lambda a: float((a * wlat).sum() / wlat.sum())
+    cm = [float(c[..., k].mean()) for k in range(3)]; cl = .299 * cm[0] + .587 * cm[1] + .114 * cm[2]
+    if mode.count(':') > 1: k_ = float(mode.split(':')[2]) / cl; cm = [x * k_ for x in cm]; cl *= k_   # třetí údaj režimu: cílový střední jas
+    if gray:
+        L = s[..., 0]; m0 = mean(L); tgt = min(cl, 205.0)
+        if tgt > m0 * 1.25:   # světlé (ledové) těleso, zdroj je tmavší: zesvětlit křivkou gama, ať se nepřepálí světla
+            gam = np.log(tgt / 255) / np.log(m0 / 255); Ln = 255 * (np.maximum(L, 0) / 255) ** gam; print(f'gama {gam:.2f}: střední jas {m0:.0f} -> {mean(Ln):.0f} (stávající {cl:.0f})')
+        else: Ln = L * min(cl / max(m0, 1), 255 / max(np.percentile(L[v], 99.7), 1)); print(f'zisk: střední jas {m0:.0f} -> {mean(Ln):.0f} (stávající {cl:.0f})')
+        for k in range(3): out[..., k] = fill(Ln * cm[k] / cl)
+    else:
+        g = min(cl / max(mean(lum(s)), 1), 255 / max(np.percentile(lum(s)[v], 99.7), 1))
+        for k in range(3): out[..., k] = fill(s[..., k] * g)
+    dst = os.path.join(root, 'hi', bid + '.webp'); res = Image.fromarray(np.clip(out + .5, 0, 255).astype(np.uint8))
+    res.save(dst, 'WEBP', quality=q, method=6); bw = int(mode.split(':')[1]) if ':' in mode else cw
+    res.resize((bw, bw // 2), Image.LANCZOS).save(os.path.join(root, bid + '.webp'), 'WEBP', quality=90, method=6)
+    print(dst, f'{W}x{H}', os.path.getsize(dst), 'B; bez dat', f'{100 * (1 - valid.mean()):.1f} %; malá mapa přepsána', bw); sys.exit()
 if gray:
     L = s[..., 0]; g = blur(lum(cu), valid) / np.maximum(blur(L, valid), 1.0); Ln = L * g
     cl = np.maximum(gf(lum(cu), 2, mode=('nearest', 'wrap')), 1.0)

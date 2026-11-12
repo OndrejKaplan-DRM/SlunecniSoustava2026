@@ -9,9 +9,9 @@ async function open(q = '') { const page = await browser.newPage({ viewport: { w
   await page.goto(`http://localhost:${srv.address().port}/${q}`); await page.waitForFunction(() => window.S200); await page.evaluate(() => { document.querySelector('#sp-go').click(); S200.S.quality = 2; }); await page.waitForTimeout(1500); return { page, errs }; }
 const fly = (page, id, alt) => page.evaluate(async ([id, alt]) => { const S = S200.S, j = S200.sim.idx.get(id), t0 = performance.now(); S.flyTo(j, alt ? { alt: alt * S200.sim.B[j].R } : {}); await new Promise((r) => { const h = setInterval(() => { if (!S.flying() && S.focus === j) { clearInterval(h); r(); } }, 50); }); return Math.round(performance.now() - t0); }, [id, alt]);
 const hiState = (page) => page.evaluate(() => S200.sim.B.map((b, i) => [b.id, S200.S.R[i].hi, S200.S.R[i].U && S200.S.R[i].U.uHi.value]).filter((x) => x[1]));
-for (const mode of ['bez', 's']) {
+const IDS = (process.argv[3] || 'mars,moon,europa').split(','); for (const mode of process.env.ONLY ? [process.env.ONLY] : ['bez', 's']) {
   const { page, errs } = await open(); if (mode === 'bez') await page.evaluate(() => { S200.S.hiOff = true; });
-  for (const id of ['mars', 'moon', 'europa']) {
+  for (const id of IDS) {
     const tA = await fly(page, id); const pr0 = await page.evaluate((id) => S200.S.R[S200.sim.idx.get(id)].pr, id);
     const tB = await fly(page, id, 1.2); await page.evaluate(() => { S200.S.quality = 2; });
     if (mode === 's') await page.waitForFunction((id) => { const r = S200.S.R[S200.sim.idx.get(id)]; return r.hi === 2 && r.U.uHi.value >= 1 || r.hi === -1; }, id, { timeout: 60000 }).catch(() => {});
