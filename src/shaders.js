@@ -31,7 +31,7 @@ void main(){
 export const BODY_FS = /* glsl */`
 #include <common>
 #include <logdepthbuf_pars_fragment>
-uniform sampler2D tMap; uniform sampler2D tAux; uniform sampler2D tRing;
+uniform sampler2D tMap; uniform sampler2D tAux; uniform sampler2D tRing; uniform sampler2D tHi; uniform float uHi;
 uniform float uHasMap; uniform float uHasAux; uniform float uKind; uniform float uDet; uniform float uSeed; uniform float uFill; uniform float uGam;
 uniform float uAtmK; uniform float uSunR; uniform float uRad; uniform float uTime;
 uniform vec3 uCol; uniform vec3 uSun; uniform vec3 uAtmCol; uniform vec3 uPole; uniform vec3 uCtr; uniform vec3 uRingSh; uniform mat3 uRot;
@@ -45,6 +45,7 @@ void main(){
   float u0 = lon * 0.15915494 + 0.5, ua = fract(u0), ub = fract(u0 + 0.5) - 0.5;
   vec2 uv = vec2(fwidth(ua) < fwidth(ub) ? ua : ub, lat * 0.31830989 + 0.5);
   vec3 alb = uHasMap > 0.0 ? mix(uCol, texture2D(tMap, uv).rgb, uHasMap) : uCol;   // mapa se po načtení plynule prolne
+  if (uHi > 0.0) alb = mix(alb, texture2D(tHi, uv).rgb, uHi);   // velká mapa (maps/hi) se zblízka prolne přes malou
   vec3 N = normalize(vN);
   if (uDet > 0.0) { // jemná kresba pod rozlišením mapy (šum podle velikosti pixelu) – jen zblízka
     float fw = length(fwidth(vO)), amp = 0.0; vec3 g = vec3(0.0);

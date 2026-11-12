@@ -1,6 +1,7 @@
 // Soustava 200 – vykreslování a kamera. Skutečná měřítka: 1 jednotka = 1 km, kamera je vždy v počátku (plovoucí počátek),
 // polohy těles se odečítají v 64 bitech. Těleso menší než ~1 px se nekreslí jako koule, ale jako značka na 2D plátně.
 import { AS } from './asset.js';
+import HI_IDS from './hi.json';
 import * as THREE from 'three';
 import { B, N, P, idx, par, kids, root, SUN, EARTH, AU, updateAll, local, orbitSamples, period, semi, basis, spinRate, shape, jdNow, RING } from './sim.js';
 import * as SH from './shaders.js';
@@ -85,7 +86,7 @@ export function createEngine(canvas, overlay) {
 
   function makeBody(i) {
     const b = B[i], sp = shape[i], r = R[i], isSun = i === SUN, col = b.col || b.color || [0.6, 0.6, 0.6];
-    const U = { tMap: { value: blank }, tAux: { value: blank }, tRing: { value: blank }, uHasMap: { value: 0 }, uHasAux: { value: 0 }, uKind: { value: kindOf(b) }, uDet: { value: 0 }, uSeed: { value: sp.seed * 7 }, uFill: gamU.fill, uGam: gamU.gam,
+    const U = { tMap: { value: blank }, tHi: { value: blank }, uHi: { value: 0 }, tAux: { value: blank }, tRing: { value: blank }, uHasMap: { value: 0 }, uHasAux: { value: 0 }, uKind: { value: kindOf(b) }, uDet: { value: 0 }, uSeed: { value: sp.seed * 7 }, uFill: gamU.fill, uGam: gamU.gam,
       uAtmK: { value: RIM[b.id] || 0 }, uSunR: { value: 0.005 }, uRad: { value: b.R }, uTime: { value: 0 }, uCol: { value: new THREE.Vector3(...col) }, uSun: { value: new THREE.Vector3(1, 0, 0) },
       uAtmCol: { value: new THREE.Vector3(...((ATM[b.id] && ATM[b.id][2]) || RIMC[b.id] || [1, 1, 1])) }, uPole: { value: new THREE.Vector3(0, 1, 0) }, uCtr: { value: r.rel }, uRingSh: { value: new THREE.Vector3(0, 1, 0) }, uRot: { value: new THREE.Matrix3() },
       uOcc: { value: [new THREE.Vector4(), new THREE.Vector4(), new THREE.Vector4(), new THREE.Vector4()] }, uAur: { value: new THREE.Vector4(...(AUR[b.id] ? AUR[b.id][0] : [0, 0.3, 0.05, 0])) }, uAurC: { value: new THREE.Vector3(...(AUR[b.id] ? AUR[b.id][1] : [0, 0, 0])) }, uExp: { value: 1 }, uAbc: { value: new THREE.Vector3(...sp.a) }, uShp: { value: new THREE.Vector3(sp.lump, sp.neck, sp.seed) }, uMode: { value: S.sunMode }, uFlare: { value: new THREE.Vector4(1, 0, 0, 0) }, uQ: { value: 2 }, uAR: { value: isSun ? Array.from({ length: 16 }, (_, k) => AR[k] || new THREE.Vector3(0, 0, 1)) : [] } };
@@ -117,7 +118,26 @@ export function createEngine(canvas, overlay) {
     loadTex(B[i].id, (t) => { if (!t) { r.tex = -1; return; } r.tex = 2; texCount++; r.U.tMap.value = t; r.U.uHasMap.value = 0.001; r.mw = t.image.width || 512; });
     if (i === EARTH) loadTex('earth_aux', (t) => { if (t) { r.U.tAux.value = t; r.U.uHasAux.value = 1; } }, false);
   }
-  function dropTex(now) { if (texCount <= 18) return; for (let i = 0; i < N; i++) { const r = R[i]; if (r.tex === 2 && now - r.used > 20000 && i !== S.focus) { r.U.tMap.value.dispose(); r.U.tMap.value = blank; r.U.uHasMap.value = 0; r.tex = 0; texCount--; } } }
+  // Velké mapy (maps/hi/<id>.webp, seznam src/hi.json): stahují se až zblízka po příletu, dekódují se mimo hlavní vlákno (createImageBitmap)
+  // a prolnou se přes malou mapu. V paměti nejvýš HI_MAX; na telefonu a tabletu a při snížené kvalitě (S.quality 0) se nenačítají.
+  const HI = new Set(HI_IDS), HI_MAX = 2, hiLog = []; let hiBusy = false; S.hiLog = hiLog; S.hiOff = false;
+  const hiCan = () => !S.hiOff && S.quality > 0 && typeof createImageBitmap === 'function' && renderer.capabilities.maxTextureSize >= 4096 && !/\b(mob|tab)\b/.test(document.body.className);
+  function dropHi(i) { const r = R[i]; if (r.hi !== 2) return; const t = r.U.tHi.value; r.U.tHi.value = blank; r.U.uHi.value = 0; r.hi = 0; t.dispose(); if (t.image && t.image.close) t.image.close(); }
+  function needHi(i) {
+    const r = R[i], id = B[i].id; if (r.hi || hiBusy || !HI.has(id) || !hiCan()) return; const url = 'maps/hi/' + id + '.webp';
+    if (typeof window !== 'undefined' && window.S200_ASSETS && !window.S200_ASSETS[url]) { r.hi = -1; return; }   // soubor na flashku bez velkých map
+    r.hi = 1; hiBusy = true; const t0 = performance.now(); let t1 = 0;
+    fetch(AS(url)).then((q) => { if (!q.ok) throw new Error('http'); return q.blob(); }).then((bl) => { t1 = performance.now(); return createImageBitmap(bl, { imageOrientation: 'flipY', premultiplyAlpha: 'none', colorSpaceConversion: 'none' }); }).then((bm) => {
+      hiBusy = false; const t2 = performance.now(); if (r.tex !== 2 || !hiCan()) { bm.close(); r.hi = 0; return; }
+      const t = new THREE.Texture(bm); t.flipY = false; t.colorSpace = THREE.SRGBColorSpace; t.wrapS = THREE.RepeatWrapping; t.anisotropy = 4; t.needsUpdate = true;
+      try { renderer.initTexture(t); } catch (e) { /* nahraje se při prvním kreslení */ }
+      r.U.tHi.value = t; r.U.uHi.value = 0.001; r.hi = 2; r.hw = bm.width;
+      hiLog.push({ id, load: Math.round(t1 - t0), decode: Math.round(t2 - t1), upload: Math.round(performance.now() - t2), w: bm.width });
+      const live = []; for (let j = 0; j < N; j++) if (R[j].hi === 2 && j !== i && j !== S.focus) live.push(j);
+      live.sort((a, b) => R[a].used - R[b].used); while (live.length > HI_MAX - 1) dropHi(live.shift()); wake();
+    }).catch(() => { hiBusy = false; r.hi = -1; });
+  }
+  function dropTex(now) { if (texCount <= 18) return; for (let i = 0; i < N; i++) { const r = R[i]; if (r.tex === 2 && now - r.used > 20000 && i !== S.focus) { dropHi(i); r.U.tMap.value.dispose(); r.U.tMap.value = blank; r.U.uHasMap.value = 0; r.tex = 0; texCount--; } } }
 
   // ---------- dráhy ----------
   const ORB_N = 320; let orbBudget = 0; const o64 = new Float64Array((ORB_N + 1) * 3);
@@ -143,6 +163,7 @@ export function createEngine(canvas, overlay) {
     S.on.fly(j); if (!R[j].mesh) makeBody(j); needTex(j);      // mapu cíle načíst už během letu, ať po příletu nic neproblikne
     cam.fly = { ph: 0, t: 0, to: j, alt0: cam.alt, altA: Math.max(cam.alt, Math.min(D * 0.3, shape[i].rmax * 400)), ly: cam.ly, lp: cam.lp, arr: opts.alt || arriveAlt(j), f0: null };
   };
+  S.flying = () => !!cam.fly;
   S.jump = (j) => { S.focus = S.sel = j; cam.fly = null; cam.alt = cam.altT = arriveAlt(j); const s = sunSide(j); cam.yaw = s[0]; cam.pitch = s[1]; cam.ly = cam.lp = 0; S.on.focus(j); S.on.select(j); wake(); };
   S.home = () => { S.flyTo(SUN, { alt: 42 * AU }); cam.homePitch = true; };
   S.select = (j) => { S.sel = j; S.on.select(j); wake(); };
@@ -199,6 +220,7 @@ export function createEngine(canvas, overlay) {
       const U = r.U, mesh = r.mesh; mesh.visible = on;
       if (on) {
         r.used = now; if (pr > 2.5) needTex(i); if (U.uHasMap.value > 0 && U.uHasMap.value < 1) { U.uHasMap.value = Math.min(1, U.uHasMap.value + dt * 2.2); wake(); }
+        if (i === S.focus && pr > 250 && !cam.fly && r.tex === 2 && !r.hi) needHi(i); if (U.uHi.value > 0 && U.uHi.value < 1) { U.uHi.value = Math.min(1, U.uHi.value + dt * 1.1); wake(); }
         if (U.uExp) U.uExp.value = S.realBright && i !== SUN ? Math.min(1, Math.pow(AU / Math.hypot(P[i * 3], P[i * 3 + 1], P[i * 3 + 2]), 2)) : 1;
         if (r.plumes) for (const m of r.plumes) { const d = m.userData.d; m.visible = pr > 25; if (m.visible) { basis(i, S.jd, m9); const u = m.material.uniforms; u.uA.value.set(m9[0] * d[0] + m9[3] * d[1] + m9[6] * d[2], m9[1] * d[0] + m9[4] * d[1] + m9[7] * d[2], m9[2] * d[0] + m9[5] * d[1] + m9[8] * d[2]); u.uN.value.copy(rel).addScaledVector(u.uA.value, b.R * 0.98); u.uB.value.crossVectors(u.uA.value, fwd).normalize(); } }
         basis(i, S.jd, m9); const s = b.R;
@@ -207,7 +229,7 @@ export function createEngine(canvas, overlay) {
         mesh.geometry = GEO[pr > 260 ? 2 : pr > 14 ? 1 : 0];
         if (i !== SUN) { const hx = P[i * 3], hy = P[i * 3 + 1], hz = P[i * 3 + 2], hd = Math.hypot(hx, hy, hz); U.uSun.value.set(-hx / hd, -hy / hd, -hz / hd); U.uSunR.value = 696000 / hd;
           const oc = occOf[i]; for (let k = 0; k < 4; k++) { const j = oc[k]; if (j === undefined) U.uOcc.value[k].w = 0; else U.uOcc.value[k].set(P[j * 3] - hx, P[j * 3 + 1] - hy, P[j * 3 + 2] - hz, B[j].R); }
-          { const th = (r.mw || 512) * 0.22; U.uDet.value = S.quality > 0 && pr > th ? Math.min(1, (pr - th) / (th * 1.5)) * (kindOf(b) === 2 || i === EARTH ? 0.25 : 1) : 0; }
+          { const th = (r.hi === 2 ? r.hw : r.mw || 512) * 0.22; U.uDet.value = S.quality > 0 && pr > th ? Math.min(1, (pr - th) / (th * 1.5)) * (kindOf(b) === 2 || i === EARTH ? 0.25 : 1) : 0; }
           if (i === EARTH) U.uTime.value = ((S.jd - 2451545) * 0.02) % 1; }
         else { U.uTime.value = (now * 0.00002) % 100; U.uMode.value = S.sunMode; U.uQ.value = S.quality;
           if (loops) { const lu = loops.material.uniforms; lu.uI.value = (S.sunMode === 0 ? 0.0 : 1.0) * Math.min(1, pr / 120); lu.uErupt.value = flare.t >= 0 ? flare.t : 0; loops.visible = lu.uI.value > 0.01 && pr > 30; }
