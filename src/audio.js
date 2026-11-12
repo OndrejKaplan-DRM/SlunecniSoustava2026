@@ -163,8 +163,8 @@ export function createAudio(S) {
     if (myst) myst.vol(near);
     // skladby: téma tělesa hraje vždy (hlasitost podle blízkosti); hudba na pozadí (M) podle oblasti, mezi skladbami pauza
     if (i !== focI) { focI = i; focT = performance.now(); } const zone = zoneOf(i), bg = A.music && !MU.bad && !myst, nowm = performance.now();
-    if (theme) { if (MU.slot !== theme && nowm > MU.gapUntil && (!MU.slot || !A.music)) muPlay(theme); MU.tv = (own ? 0.2 + 0.45 * near : 0.14 + 0.3 * near) * (A.kidMood ? 1 : 0.85); MU.bgm = false; }
-    else if (bg) { if (th0) { /* skladba tělesa teprve přijde: co hraje, nechat dohrát, nic nového nezačínat */ } else if (!MU.slot) { if (nowm > MU.gapUntil && !fly) muPlay(zone || MU.any()); } /* hrající skladbu při přeletu nestříháme; oblast se uplatní až u další */ MU.tv = A.kidMood ? 0.34 : 0.24; MU.bgm = true; }
+    if (theme) { if (MU.slot !== theme && nowm > MU.gapUntil && (!MU.slot || !A.music)) muPlay(theme); MU.tv = (own ? 0.2 + 0.45 * near : 0.14 + 0.3 * near) * (A.kidMood ? 1 : 0.85) * 0.5; /* 12. 11. 2026: hudba na polovinu (Ondřej) */ MU.bgm = false; }
+    else if (bg) { if (th0) { /* skladba tělesa teprve přijde: co hraje, nechat dohrát, nic nového nezačínat */ } else if (!MU.slot) { if (nowm > MU.gapUntil && !fly) muPlay(zone || MU.any()); } /* hrající skladbu při přeletu nestříháme; oblast se uplatní až u další */ MU.tv = A.kidMood ? 0.17 : 0.12; MU.bgm = true; }
     else if (MU.slot && !(fly && A.music) && !(th0 && MU.slot === th0)) muStop();
     muTick(t);
     if (amb) amb.g.gain.setTargetAtTime(near * (myst || theme ? 0.2 : MU.slot ? 0.42 : 0.6), t, 0.6);

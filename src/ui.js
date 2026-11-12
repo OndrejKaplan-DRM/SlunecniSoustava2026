@@ -46,6 +46,15 @@ const MISSIONS = [['sun', 'Najdi hvězdu, kolem které všechno obíhá.'], ['mo
 const RANKS = [[0, 'Zvědavec'], [80, 'Pozorovatel'], [250, 'Kadet'], [600, 'Navigátor'], [1200, 'Kapitán'], [2500, 'Admirál'], [5000, 'Vesmírný profesor']];
 const PTS = { star: 10, planet: 10, dwarf: 15, moon: 10, asteroid: 15, comet: 20, tno: 20, centaur: 20, interstellar: 30 };
 
+// Poznámka na kartě u těles, kde mapa není úplná nebo ukazuje něco jiného než pohled okem – aby prázdná místa nevypadala jako chyba.
+const COVER = {
+  venus: 'Z dálky oblačnost; zblízka radarová mapa povrchu (Magellan), barvy jsou dodané uměle.',
+  pluto: 'Jižní třetinu žádná sonda neviděla – je vyplněná hladce, bez kresby.', charon: 'Jih žádná sonda neviděla – je vyplněný hladce. Odvrácená strana je vyfocená jen z dálky.',
+  triton: 'Voyager 2 vyfotil jen asi 60 % povrchu; zbytek je vyplněný hladce.', europa: 'Mapa je složená ze snímků různé ostrosti; okolí jižního pólu chybí.',
+  ganymede: 'Okolí pólů je vyfocené jen zhruba.', callisto: 'Okolí pólů je vyfocené jen zhruba.', mercury: 'Okolí pólů leží ve stínu, mapa tam končí.',
+  miranda: 'Voyager 2 (1986) viděl jen jižní polokouli; sever byl ve tmě.', ariel: 'Voyager 2 (1986) viděl jen jižní polokouli; sever byl ve tmě.', umbriel: 'Voyager 2 (1986) viděl jen jižní polokouli; sever byl ve tmě.',
+  titania: 'Voyager 2 (1986) viděl jen jižní polokouli; sever byl ve tmě.', oberon: 'Voyager 2 (1986) viděl jen jižní polokouli; sever byl ve tmě.',
+};
 export function createUI(S, A) {
   // pořadí pro Tab: Slunce, planety se svými měsíci, trpasličí planety, planetky, kentauři, TNO, komety, mezihvězdné
   const order = [], helio = (t) => B.map((b, i) => i).filter(i => par[i] === SUN && B[i].type === t).sort((a, b) => (t === 'asteroid' || t === 'comet' ? B[b].fame - B[a].fame || B[b].R - B[a].R : semi[a] - semi[b]));
@@ -131,7 +140,7 @@ export function createUI(S, A) {
       cardExtra(i); drawSub(); return; }
     $('#card').innerHTML = `<div class="hd"><div class="ball">${ico(i, 46)}</div><div><h2>${b.cs}</h2><div class="sub">${sub}${b.name !== b.cs && !/[()]/.test(b.name) ? ' · ' + b.name.replace('`', 'ʻ') : ''}</div></div>${ib}<div class="stamp ${seen ? 'on' : ''}" title="${seen ? 'Navštíveno' : 'Ještě nenavštíveno'}">${seen ? '✓' : '?'}</div></div>
       <p class="kid">${kid}</p><table>${rows.map(r => `<tr><th>${r[0]}</th><td>${r[1]}</td></tr>`).join('')}</table>${b.adult ? `<p class="adult">${b.adult}</p>` : ''}${fbox}
-      ${sunBox}<p class="src">${b.mk === 'foto' ? '📷 Povrch: skutečné snímky ze sond.' : i === SUN ? '' : '🎨 Povrch: ilustrace – zblízka ho zatím nikdo nevyfotil celý.'}${b.src === 'pamet' ? ' Dráha jen přibližná.' : ''}<br>${A.note(i)}</p>
+      ${sunBox}<p class="src">${b.mk === 'foto' ? '📷 Povrch: skutečné snímky ze sond.' : i === SUN ? '' : '🎨 Povrch: ilustrace – zblízka ho zatím nikdo nevyfotil celý.'}${b.src === 'pamet' ? ' Dráha jen přibližná.' : ''}${COVER[b.id] ? '<br>🗺️ ' + COVER[b.id] : ''}<br>${A.note(i)}</p>
       <div class="row">${S.focus === i ? `<button data-a="close" class="pri">Přiblížit</button><button data-a="far">Oddálit</button>` : `<button data-a="go" class="pri">Leť tam ⏎</button>`}${p > 0 ? `<button data-a="parent">↑ ${B[p].cs}</button>` : ''}</div>`;
     cardExtra(i); drawSub();
   }

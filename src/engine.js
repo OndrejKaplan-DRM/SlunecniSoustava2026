@@ -129,7 +129,7 @@ export function createEngine(canvas, overlay) {
   }
   // Velké mapy (maps/hi/<id>.webp, seznam src/hi.json): stahují se až zblízka po příletu, dekódují se mimo hlavní vlákno (createImageBitmap)
   // a prolnou se přes malou mapu. V paměti nejvýš HI_MAX; na telefonu a tabletu a při snížené kvalitě (S.quality 0) se nenačítají.
-  const HI = new Set(HI_IDS), HI_MAX = 2, hiLog = []; let hiBusy = false; S.hiLog = hiLog; S.hiOff = false;
+  const HI_ZOOM = new Set(['venus']), HI = new Set(HI_IDS), HI_MAX = 2, hiLog = []; let hiBusy = false; S.hiLog = hiLog; S.hiOff = false;
   const hiCan = () => !S.hiOff && S.quality > 0 && typeof createImageBitmap === 'function' && renderer.capabilities.maxTextureSize >= 4096 && !/\b(mob|tab)\b/.test(document.body.className);
   function dropHi(i) { const r = R[i]; if (r.hi !== 2) return; const t = r.U.tHi.value; r.U.tHi.value = blank; r.U.uHi.value = 0; r.hi = 0; t.dispose(); if (t.image && t.image.close) t.image.close(); }
   function needHi(i) {
@@ -229,7 +229,10 @@ export function createEngine(canvas, overlay) {
       const U = r.U, mesh = r.mesh; mesh.visible = on;
       if (on) {
         r.used = now; if (pr > 2.5) needTex(i); if (U.uHasMap.value > 0 && U.uHasMap.value < 1) { U.uHasMap.value = Math.min(1, U.uHasMap.value + dt * 2.2); wake(); }
-        if (i === S.focus && pr > 250 && !cam.fly && r.tex === 2 && !r.hi) needHi(i); if (U.uHi.value > 0 && U.uHi.value < 1) { U.uHi.value = Math.min(1, U.uHi.value + dt * 1.1); wake(); }
+        if (i === S.focus && pr > 250 && !cam.fly && r.tex === 2 && !r.hi) needHi(i);
+        if (r.hi === 2) { // prolnutí velké mapy; u těles, kde velká mapa ukazuje jiný jev než malá (Venuše: povrch pod oblačností), řídí míru jen velikost kotouče – při oddálení se oblačnost zase zatáhne
+          const tg = HI_ZOOM.has(b.id) ? Math.max(0.001, Math.min(1, (pr - 230) / 120)) : 1, v = U.uHi.value;
+          if (Math.abs(tg - v) > 0.0005) { U.uHi.value = v + Math.sign(tg - v) * Math.min(Math.abs(tg - v), dt * 1.1); wake(); } }
         if (U.uExp) U.uExp.value = S.realBright && i !== SUN ? Math.min(1, Math.pow(AU / Math.hypot(P[i * 3], P[i * 3 + 1], P[i * 3 + 2]), 2)) : 1;
         if (r.plumes) for (const m of r.plumes) { const d = m.userData.d; m.visible = pr > 25; if (m.visible) { basis(i, S.jd, m9); const u = m.material.uniforms; u.uA.value.set(m9[0] * d[0] + m9[3] * d[1] + m9[6] * d[2], m9[1] * d[0] + m9[4] * d[1] + m9[7] * d[2], m9[2] * d[0] + m9[5] * d[1] + m9[8] * d[2]); u.uN.value.copy(rel).addScaledVector(u.uA.value, b.R * 0.98); u.uB.value.crossVectors(u.uA.value, fwd).normalize(); } }
         basis(i, S.jd, m9); const s = b.R;
