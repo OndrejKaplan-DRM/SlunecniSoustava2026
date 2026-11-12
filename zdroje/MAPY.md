@@ -22,11 +22,23 @@ Zpracování: `tools/make_hi.py` – zmenšení na 4096 × 2048 (rovnoúhlá pro
 
 „Doladit“ = stejná data jako stávající mapa, jen ostřejší. „Nahradit“ = stávající mapa byla jiného původu (umělé bílé plochy, přehnané barvy); přepsána je i malá mapa `dist/maps/<id>.webp`. „Slabá korelace“ = posun 0 vyšel shodně u šesti těles, ale jednotlivě je vrchol jen 1,5–2× nad šumem – polohu útvarů zkontrolovat.
 
+## Doplněno ve druhém kole (2026-11-12)
+Konvence modelu ověřena výpočtem: nultý poledník vázaně rotujících těles míří k mateřskému tělesu (Měsíc 1°, Pluto a Charon 3°, Europa −5°, Io −7°, Tethys −8°) a střed mapy je délka 0°, východ vpravo. Polohy útvarů v `src/extras.js` jsou ve skutečných východních délkách.
+
+| Těleso | Zdroj | Soubor | Licence | Zpracování |
+|---|---|---|---|---|
+| Mars (oprava) | jako výše | jako výše | jako výše | stávající malá mapa měla střed na 180° místo 0° (útvary o 180° vedle); malá mapa pootočena o půl šířky, velká s posunem 0 |
+| Venuše | USGS, Magellan C3-MDIR Colorized Global Mosaic 4641 m (radar, uměle obarveno) | https://planetarymaps.usgs.gov/mosaic/Venus_Magellan_C3-MDIR_Colorized_Global_Mosaic_4641m.tif | neověřeno jednotlivě | 4096; jen velká mapa – malá (oblačnost) zůstává, zblízka se prolne do radarového povrchu; střed 0° ověřen polohou Maxwell Montes (3° v. d.) |
+| Pluto | USGS, New Horizons LORRI–MVIC Global Mosaic 300 m | https://planetarymaps.usgs.gov/mosaic/Pluto_NewHorizons_Global_Mosaic_300m_Jul2017_8bit.tif | Use Constraints: „Please cite authors“ | 4096; nahradit; zdroj má střed 180° → posun 0,5; 32 % bez dat (jih) vyplněno rozmazaným okolím |
+| Charon | USGS, New Horizons LORRI–MVIC Global Mosaic 300 m | https://planetarymaps.usgs.gov/mosaic/Charon_NewHorizons_Global_Mosaic_300m_Jul2017_8bit.tif | stránka: Access „None“, Use Constraints začíná „Pl…“ (nejspíš „Please cite authors“) | 4096; nahradit; rozsah 0–360° podle stránky produktu → posun 0,5 (v GeoTIFFu je střed 0 – rozpor, zkontrolovat); 34 % bez dat vyplněno |
+| Triton | USGS, Voyager 2 Color Mosaic Global Fill 600 m | https://planetarymaps.usgs.gov/mosaic/Triton_Voyager2_ClrMosaic_GlobalFill_600m.tif | neověřeno jednotlivě | 2048; nahradit; barvy zdroje jsou nepravé → převedeno na šedou s ručním odstínem (172, 156, 150); střed 0°, posun 0; 38 % bez dat vyplněno |
+| Mimas | NASA/JPL-Caltech/Space Science Institute/Lunar and Planetary Institute, PIA18437 „Color Maps of Mimas – 2014“ | https://assets.science.nasa.gov/content/dam/science/psd/photojournal/pia/pia18/pia18437/PIA18437.tif | NASA (kredit výše) | 2048; nahradit; barvy zdroje jsou zesílené → šedá s odstínem stávající mapy; střed 180° z. d. (kráter Herschel na 69 % šířky) → posun 0,5 |
+
 ## Nepoužito
-- Venuše (Magellan, radar) a Titan (Cassini ISS, blízké infračervené): zdroj ukazuje povrch, stávající mapa oblačnost – jiný jev, rozhodnutí je na Ondřejovi.
-- Pluto, Charon, Triton: zdroje USGS staženy, ale stávající mapy s nimi nejdou spolehlivě slícovat a třetina povrchu nemá data.
-- Phobos: Viking 40 px/° není ostřejší než stávající mapa.
-- Země: eoimages.gsfc.nasa.gov (Blue Marble) ze sandboxu nedostupné.
-- Saturn, Uran, Neptun, Mimas, Deimos, měsíce Uranu: nenašla jsem volnou globální mozaiku ve vyšším rozlišení.
+- Saturn: skutečná barevná mapa z Cassini existuje v archivu NASA PDS (Cassini ISS Global Maps of Jupiter and Saturn Bundle, doi:10.17189/rkkb-6y30, https://atmos.nmsu.edu/PDS/data/PDS4/co_iss_global-maps/), ale server má vadný certifikát a ze sandboxu z něj nejde stahovat. Mapa Björna Jónssona (bjj.mmedia.is) nemá na stránce uvedenou licenci.
+- Titan: vynechán po dohodě (zdroj USGS stažen: Titan_ISS_P19658_Mosaic_Global_4km.tif).
+- Uran, Neptun: globální mapu jsem nenašla; z Voyageru 2 jsou jen jednotlivé snímky.
+- Měsíce Uranu: mozaiky USGS z Voyageru 2 mají 1440 × 720 (space.jpl.nasa.gov/tmaps) – nejsou ostřejší než stávající 1024 × 512 natolik, aby to stálo za výměnu; severní polokoule nebyly vyfotografovány.
+- Phobos, Země: beze změny (rozhodnutí Ondřeje). Deimos: nehledáno dál.
 
 Uvádět: NASA / JPL / USGS (Mars, Europa), NASA's Scientific Visualization Studio (Měsíc).

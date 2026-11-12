@@ -21,7 +21,7 @@ sig = float(sys.argv[6]) if len(sys.argv) > 6 else 24
 mode = sys.argv[7] if len(sys.argv) > 7 else ''
 root = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'dist', 'maps')
 cur = Image.open(os.path.join(root, bid + '.webp')).convert('RGB'); cw, ch = cur.size
-im = Image.open(src); gray = im.mode not in ('RGB', 'RGBA') or mode == 'seda'
+im = Image.open(src); gray = im.mode not in ('RGB', 'RGBA') or mode == 'seda' or os.environ.get('SEDA') == '1'
 im = im.convert('L' if gray else 'RGB').resize((W, H), Image.LANCZOS)
 s = np.asarray(im, np.float32); s = s[..., None] if gray else s
 c = np.asarray(cur, np.float32)
@@ -39,9 +39,21 @@ def blur(a, m):  # rozmazání jen přes platné body, ve vodorovném směru s p
     n = gf(a * m, S, mode=('nearest', 'wrap')); d = gf(m, S, mode=('nearest', 'wrap')); return n / np.maximum(d, 1e-3)
 out = np.empty((H, W, 3), np.float32)
 if mode.startswith('nahradit'):
-    v = valid > 0; fill = lambda a: np.where(v, a, gf(a * valid, 40, mode=('nearest', 'wrap')) / np.maximum(gf(valid, 40, mode=('nearest', 'wrap')), 1e-3))
+    v = valid > 0
+    def fill(a):   # místa bez dat: rozmazané okolí, dál od okraje dat čím dál hrubší, nakonec průměr – žádná kresba
+        if valid.min() > 0: return a
+        f = 8; sm = lambda x: x.reshape(H // f, f, W // f, f).mean((1, 3))   # hrubá mřížka stačí, výplň je hladká
+        w = sm(valid); o = sm(np.where(v, a, 0.0)) / np.maximum(w, 1e-6); o = np.where(w > 0, o, 0.0); w = (w > 0).astype(np.float32)
+        for sg in (2, 6, 18, 55):
+            n = gf(o * w, sg, mode=('nearest', 'wrap')); d = gf(w, sg, mode=('nearest', 'wrap')); ok = (d > 0.05) & (w < 1)
+            o = np.where(ok, n / np.maximum(d, 1e-6), o); w = np.where(ok, 1.0, w)
+        o = np.where(w < 1, float((a * valid).sum() / valid.sum()), o); o = gf(o, 1.5, mode=('nearest', 'wrap'))
+        o = np.asarray(Image.fromarray(o.astype(np.float32)).resize((W, H), Image.BICUBIC), np.float32)
+        e = np.clip(gf(valid, 10, mode=('nearest', 'wrap')) * 2 - 1, 0, 1); return a * e + o * (1 - e) if True else o
     wlat = np.cos((np.arange(H) + .5) / H * np.pi - np.pi / 2)[:, None] * valid; mean = lambda a: float((a * wlat).sum() / wlat.sum())
-    cm = [float(c[..., k].mean()) for k in range(3)]; cl = .299 * cm[0] + .587 * cm[1] + .114 * cm[2]
+    cm = [float(c[..., k].mean()) for k in range(3)]
+    if os.environ.get('TINT'): cm = [float(x) for x in os.environ['TINT'].split(',')]   # barva a jas zadané ručně (stávající mapa má nevěrohodný odstín)
+    cl = .299 * cm[0] + .587 * cm[1] + .114 * cm[2]
     if mode.count(':') > 1: k_ = float(mode.split(':')[2]) / cl; cm = [x * k_ for x in cm]; cl *= k_   # třetí údaj režimu: cílový střední jas
     if gray:
         L = s[..., 0]; m0 = mean(L); tgt = min(cl, 205.0)
@@ -54,7 +66,7 @@ if mode.startswith('nahradit'):
         for k in range(3): out[..., k] = fill(s[..., k] * g)
     dst = os.path.join(root, 'hi', bid + '.webp'); res = Image.fromarray(np.clip(out + .5, 0, 255).astype(np.uint8))
     res.save(dst, 'WEBP', quality=q, method=6); bw = int(mode.split(':')[1]) if ':' in mode else cw
-    res.resize((bw, bw // 2), Image.LANCZOS).save(os.path.join(root, bid + '.webp'), 'WEBP', quality=90, method=6)
+    if bw: res.resize((bw, bw // 2), Image.LANCZOS).save(os.path.join(root, bid + '.webp'), 'WEBP', quality=90, method=6)   # šířka 0 = malou mapu nechat
     print(dst, f'{W}x{H}', os.path.getsize(dst), 'B; bez dat', f'{100 * (1 - valid.mean()):.1f} %; malá mapa přepsána', bw); sys.exit()
 if gray:
     L = s[..., 0]; g = blur(lum(cu), valid) / np.maximum(blur(L, valid), 1.0); Ln = L * g
