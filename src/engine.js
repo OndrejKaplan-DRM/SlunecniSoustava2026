@@ -45,14 +45,17 @@ export function createEngine(canvas, overlay) {
     const pts = new THREE.Points(g, starMat); pts.frustumCulled = false; pts.renderOrder = -20; scene.add(pts); }
 
   const eq2s = (ra, de) => { const x = Math.cos(de) * Math.cos(ra), y = Math.cos(de) * Math.sin(ra), z = Math.sin(de); return new THREE.Vector3(x, -se * y + ce * z, -(ce * y + se * z)); };
-  const cons = [], starLab = []; let conMat; S.eq2s = (ra, de) => eq2s(ra, de);
-  { const li = dec64(CON_LINES, Int16Array), LP = new Float32Array(li.length / 4 * 6); let k = 0;
+  const cons = [], starLab = []; let conMat, conT = -1e9; S.eq2s = (ra, de) => eq2s(ra, de);
+  { const li = dec64(CON_LINES, Int16Array), LP = new Float32Array(li.length / 4 * 6), LT = new Float32Array(li.length / 4 * 2), LS = new Float32Array(li.length / 4 * 2), LD = new Float32Array(li.length / 4 * 2), del = {}; let k = 0;
     for (const part of CON_IDS.split(',')) { const [id, cnt] = part.split(':'), c = new THREE.Vector3();
-      for (let j = 0; j < +cnt; j++, k++) { const a = eq2s((li[k * 4] / 100 + 180) * DEG, li[k * 4 + 1] / 100 * DEG), b = eq2s((li[k * 4 + 2] / 100 + 180) * DEG, li[k * 4 + 3] / 100 * DEG); LP.set([a.x, a.y, a.z, b.x, b.y, b.z], k * 6); c.add(a).add(b); }
+      for (let j = 0; j < +cnt; j++, k++) { const a = eq2s((li[k * 4] / 100 + 180) * DEG, li[k * 4 + 1] / 100 * DEG), b = eq2s((li[k * 4 + 2] / 100 + 180) * DEG, li[k * 4 + 3] / 100 * DEG); LP.set([a.x, a.y, a.z, b.x, b.y, b.z], k * 6); c.add(a).add(b); LT[k * 2 + 1] = 1; LS[k * 2] = LS[k * 2 + 1] = Math.random(); if (del[id] === undefined) del[id] = Math.random(); LD[k * 2] = LD[k * 2 + 1] = del[id]; }
       const prev = cons.find(x => x.id === id); if (prev) prev.c.add(c); else cons.push({ id, name: CON_CZ[id] || id, c }); }
     cons.forEach(x => x.c.normalize());
-    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(LP, 3)); conMat = new THREE.ShaderMaterial({ uniforms: { uA: { value: 0.5 } }, vertexShader: SH.CON_VS, fragmentShader: SH.CON_FS, transparent: true, depthTest: true, depthWrite: false, blending: THREE.AdditiveBlending });
-    S.conLines = new THREE.LineSegments(g, conMat); S.conLines.frustumCulled = false; S.conLines.renderOrder = -15; S.conLines.visible = false; scene.add(S.conLines);
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(LP, 3)); g.setAttribute('aT', new THREE.BufferAttribute(LT, 1)); g.setAttribute('aSeed', new THREE.BufferAttribute(LS, 1)); g.setAttribute('aDel', new THREE.BufferAttribute(LD, 1));
+    // jádro čáry + čtyři kopie posunuté o pixel se slabou intenzitou = jemný lem
+    const cu = { uA: { value: 0.5 }, uG: { value: 99 }, uKid: { value: 0 } }, mk = (fr) => new THREE.ShaderMaterial({ uniforms: { uA: cu.uA, uG: cu.uG, uKid: cu.uKid, uFr: { value: fr }, uOff: { value: new THREE.Vector2() } }, vertexShader: SH.CON_VS, fragmentShader: SH.CON_FS, transparent: true, depthTest: true, depthWrite: false, blending: THREE.AdditiveBlending });
+    conMat = mk(1); conMat.cu = cu; S.conLines = new THREE.Group(); S.conLines.visible = false; conMat.fringe = [];
+    for (let q = 0; q < 5; q++) { const m = q ? mk(0.13) : conMat, l = new THREE.LineSegments(g, m); l.frustumCulled = false; l.renderOrder = -15; S.conLines.add(l); if (q) conMat.fringe.push(m); } scene.add(S.conLines);
     const sp = dec64(STAR_POS, Float32Array), seen = new Set(); for (const [i, n] of STAR_NAMES) { if (i > 60 || seen.has(n)) continue; seen.add(n); starLab.push({ name: STAR_CZ[n] || n, c: eq2s(sp[i * 2] * DEG, sp[i * 2 + 1] * DEG) }); } }
   // ---------- tělesa ----------
   const GEO = [new THREE.SphereGeometry(1, 32, 16), new THREE.SphereGeometry(1, 96, 48), new THREE.SphereGeometry(1, 256, 128)];
@@ -238,7 +241,8 @@ export function createEngine(canvas, overlay) {
       if (age > Pd * (chain ? 2e-6 : 0.0015) && (chain || orbBudget-- > 0)) buildOrbit(i);
       o.line.visible = true; o.line.material.opacity = a; if (S.disco) o.line.material.color.setHSL(((now * 0.0002) + i * 0.031) % 1, 0.9, 0.6); else if (o.base !== undefined && o.line.material.color.getHex() !== o.base) o.line.material.color.setHex(o.base); const px = p === SUN ? -C[0] : R[p].rel.x, py = p === SUN ? -C[1] : R[p].rel.y, pz = p === SUN ? -C[2] : R[p].rel.z; o.line.matrix.makeTranslation(px, py, pz); o.line.matrixWorldNeedsUpdate = true;
     }
-    S.conLines.visible = S.conMode > 0; conMat.uniforms.uA.value = 0.42 + S.gamma * 0.3;
+    if (S.conMode > 0 && !S.conLines.visible) conT = now; S.conLines.visible = S.conMode > 0; conMat.cu.uA.value = 0.42 + S.gamma * 0.3; conMat.cu.uKid.value = S.kid ? 1 : 0;
+    if (S.conMode > 0) { const g = (now - conT) / 1000; conMat.cu.uG.value = g; if (g < 5) wake(); const ox = 2.4 / W, oy = 2.4 / H; conMat.fringe[0].uniforms.uOff.value.set(ox, 0); conMat.fringe[1].uniforms.uOff.value.set(-ox, 0); conMat.fringe[2].uniforms.uOff.value.set(0, oy); conMat.fringe[3].uniforms.uOff.value.set(0, -oy); }
     starMat.uniforms.uGain.value = (1 + S.gamma * 1.2) * (S.disco ? 1.3 + 0.5 * Math.sin(now * 0.008) : 1); skyMat.uniforms.uGain.value = 0.5 + S.gamma * 1.2;
     renderer.render(scene, camera);
     drawOverlay(big);

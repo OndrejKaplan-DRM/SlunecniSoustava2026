@@ -26,9 +26,9 @@ export function drawBall(cv, b, i, dia, map) {
         else { const nl = Math.max(0, -0.45 * ex + 0.5 * ey + 0.74 * ez); L = 0.14 + 1.25 * Math.pow(nl, 0.8); if (b.id === 'earth') { q0 = q0 * 0.8 + 17 + (1 - ez) * 20; q1 = q1 * 0.8 + 27 + (1 - ez) * 50; q2 = q2 * 0.8 + 47 + (1 - ez) * 110; } }
         const bst = b.type === 'star' ? 1 : 1.15 + 0.5 * (1 - Math.min(1, (q0 + q1 + q2) / 420)), k2 = L * bst; c0 = Math.min(255, q0 * k2); c1 = Math.min(255, q1 * k2); c2 = Math.min(255, q2 * k2); al = 1; }
       if (ring) { const xq = x * cr + y * sr, yq = -x * sr + y * cr, rr = Math.hypot(xq, yq / ST);
-        if (rr > ring[0] && rr < ring[1]) { const u = (rr - ring[0]) / (ring[1] - ring[0]), o = b.id === 'saturn' ? satO(u) : ring[2], far = yq > 0, sh = far && xq > 0.1 && xq < 1.0 && rr < 2.25 ? 0.4 : 1, k = (0.88 + 0.07 * Math.sin(u * 61) + 0.05 * Math.sin(u * 23 + 1)) * sh * (b.id === 'saturn' && u >= 0.27 && u < 0.65 ? 1.06 : 0.94);
+        if (rr > ring[0] && rr < ring[1]) { const u = (rr - ring[0]) / (ring[1] - ring[0]), o = b.id === 'saturn' ? satO(u) : ring[2], far = yq > 0, sh = 1, k = (0.88 + 0.07 * Math.sin(u * 61) + 0.05 * Math.sin(u * 23 + 1)) * sh * (b.id === 'saturn' && u >= 0.27 && u < 0.65 ? 1.06 : 0.94);
           if (!(far && d2 < 1) && o > 0) { if (al >= 1) { c0 = c0 * (1 - o) + ring[3][0] * k * o; c1 = c1 * (1 - o) + ring[3][1] * k * o; c2 = c2 * (1 - o) + ring[3][2] * k * o; } else { c0 = ring[3][0] * k; c1 = ring[3][1] * k; c2 = ring[3][2] * k; al = o; } } }
-        else if (d2 < 1) { const rs = Math.hypot(xq, (yq + 0.16) / ST); if (rs > ring[0] && rs < ring[1] && yq > -0.6) { c0 *= 0.72; c1 *= 0.72; c2 *= 0.72; } } }
+        }
       if (al > 0) { r += c0 * al; g += c1 * al; bl += c2 * al; a += al; } }
     if (a > 0) { const k = (py * W + px) * 4; out[k] = r / a; out[k + 1] = g / a; out[k + 2] = bl / a; out[k + 3] = Math.min(255, a / (SS * SS) * 255); } }
   ctx.putImageData(img, 0, 0);

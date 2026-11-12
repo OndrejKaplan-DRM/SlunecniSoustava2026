@@ -17,8 +17,7 @@ const jump = (id) => { const i = S200.sim.idx.get(id); S200.S.jump(i); S200.S.se
   await ev(() => S200.ui.act('cine')); await wait(300); ok('kino: tlačítko zpět je vidět', await ev(() => getComputedStyle(document.querySelector('#cineoff')).display === 'block')); await page.click('#cineoff'); ok('kino: tlačítko vrátí ovládání', await ev(() => !document.body.classList.contains('cine')));
   const th = (id, kid) => ev(([id, kid]) => { S200.ui.setMode(kid); const i = S200.sim.idx.get(id); S200.S.jump(i); }, [id, kid]).then(() => wait(2600)).then(() => ev(() => S200.A.mu().slot));
   await ev(() => { if (S200.A.music) S200.ui.act('music'); }); await wait(600);
-  ok('dospělé: Pluto má skladbu Na okraji', await th('pluto', false) === 'daleko'); ok('dospělé: Charon bez skladby', await th('charon', false) === '');
-  ok('dětské: Charon má skladbu', await th('charon', true) === 'daleko'); ok('dětské: Hale-Bopp → Návštěvník', await th('hale_bopp', true) === 'mezihvezdni'); ok('dětské: Merkur → Hvězda', await th('mercury', true) === 'slunce'); ok('dětské: Mars bez skladby (hudba vypnutá)', await th('mars', true) === '');
+  // skladby u těles hlídá tools/t_it9.mjs (od iterace 9 začínají se zpožděním)
   const cnt = await ev(() => { const { B, idx } = S200.sim; let k = 0, a = 0; const z = {}; return [true, false].map(kid => { let n = 0; for (let i = 0; i < B.length; i++) { S200.ui.setMode(kid); } return 0; }); });
   console.log('   hudba výchozí zapnutá (nový uživatel):', await ev(() => { localStorage.removeItem('s200'); return true; })); ok('počítač bez chyb stránky', errs.length === 0, errs.join(' | ')); await page.context().close(); }
 { // ---- telefon: ukázka ----

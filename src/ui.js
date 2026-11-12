@@ -141,7 +141,7 @@ export function createUI(S, A) {
   function cardExtra(i) { const c = $('#card'), nx = S.focus === i ? nextUp(i) : [], e = el('div', 'more');
     e.innerHTML = `<div class="row"><button data-a="cmp" title="Porovnat velikost">⚖ ${K() ? 'Jak je to velké?' : 'Porovnat'}</button><button data-a="pin" title="Měřit vzdálenost odsud (Shift+D)">📏 ${api.X && api.X.ruler === i ? 'Zrušit měření' : 'Měřit odsud'}</button></div>` + (nx.length ? `<div class="next"><span>${K() ? '🧭 Kam poletíme dál?' : 'Kam dál:'}</span>${nx.map(j => `<button class="it chip" data-i="${j}"><b>${ico(j, 30)}</b><span>${B[j].cs}</span></button>`).join('')}</div>` : ''); c.appendChild(e); }
   $('#card').addEventListener('click', (e) => { const chip = e.target.closest('.chip'); if (chip) return S.flyTo(+chip.dataset.i); const a = e.target.dataset.a, i = S.sel; if (a === 'sunf') return act.sunf(); if (a === 'facts') { factsOpen = !factsOpen; drawCard(i); if (factsOpen) { const f = $('#card .facts'); if (f && f.scrollIntoView) f.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } return; } if (a === 'cmp') return act.cmp(); if (a === 'pin') { api.X.ruler = api.X.ruler === i ? -1 : i; A.play('ruler'); toast(api.X.ruler < 0 ? 'Měření zrušeno.' : `📏 Měřím od tělesa ${B[i].cs}. Vyber klikem jiné těleso.`); return drawCard(i); } if (a === 'go') S.flyTo(i); if (a === 'close') S.flyTo(i, { alt: shape[i].rmax * 0.6 }); if (a === 'far') S.flyTo(i, { alt: Math.max(shape[i].rmax * 60, semi[[...kids[i]].sort((x, y) => semi[y] - semi[x])[0]] * 2.2 || 0) }); if (a === 'parent') S.flyTo(par[i]); });
-  S.on.select = (i) => { drawCard(i); document.querySelectorAll('.it.sel').forEach(e => e.classList.remove('sel')); document.querySelectorAll(`.it[data-i="${i}"]`).forEach(e => e.classList.add('sel')); };
+  let cmpFor = -1; S.on.select = (i) => { if ($('#cmp').classList.contains('on') && i !== cmpFor) toggle('#cmp', false); drawCard(i); document.querySelectorAll('.it.sel').forEach(e => e.classList.remove('sel')); document.querySelectorAll(`.it[data-i="${i}"]`).forEach(e => e.classList.add('sel')); };
   S.on.focus = (i) => { drawCard(S.sel); drawSub(); };
   S.on.arrive = (i) => { drawCard(S.sel); A.play('arrive'); if (api.onArrive) api.onArrive(i); const from = flyFrom; flyFrom = -1; if (!(from >= 0 && from !== i && hop(from, i))) guide(i); try { history.replaceState(null, '', '#' + B[i].id.replace(/_/g, '-')); } catch (e) { /* nic */ } };
   let flyFrom = -1; S.on.fly = (j) => { A.play(j === S.focus ? 'closeup' : 'launch'); if (j !== S.focus && flyFrom < 0) flyFrom = S.focus; };
@@ -173,7 +173,7 @@ export function createUI(S, A) {
   $('#time').addEventListener('click', (e) => (e.target.dataset.a === 'tm' ? act.tm() : timeAct(e.target.dataset.a)));
 
   // ---------- HUD ----------
-  S.on.hud = () => { drawTime(); const inf = S.info(S.focus), b = B[S.focus];
+  const SUNN = ['bílé světlo', 'H-alfa', 'EUV 304 Å']; S.on.hud = () => { drawTime(); { const c = $('#sunchip'), on = S.focus === SUN && !S.cam.fly; c.classList.toggle('on', on); if (on) c.lastChild.textContent = ' Filtr: ' + SUNN[S.sunMode] + ' → ' + SUNN[(S.sunMode + 1) % 3]; } const inf = S.info(S.focus), b = B[S.focus];
     $('#alt').innerHTML = `<b>${b.cs}</b><br><span>${K() ? 'jsi ' : 'výška '}${fmtDist(inf.alt).replace(/ \(.*/, '')}${K() ? ' nad povrchem' : ''}</span><br><span class="hw">${K() ? (S.focus === EARTH ? '☀ od Slunce ' + fmtDist(inf.sun).replace(/ \(.*/, '') : '🌍 od Země ' + fmtDist(inf.earth).replace(/ \(.*/, '')) : (S.focus === SUN ? '' : '☀ ' + sig(inf.sun / AU) + ' AU') + (S.focus === SUN || S.focus === EARTH ? '' : ' · ') + (S.focus === EARTH ? '' : '🌍 ' + sig(inf.earth / AU) + ' AU')}</span>`;
     let km = inf.kmPerPx * 120, p = Math.pow(10, Math.floor(Math.log10(km))), n = km / p >= 5 ? 5 : km / p >= 2 ? 2 : 1; const w = n * p / inf.kmPerPx; $('#scale i').style.width = w + 'px'; $('#scale span').textContent = fmtDist(n * p).replace(/ \(.*/, '') + (n * p > 0.05 * AU ? ` = ${sig(n * p / AU)} AU` : '');
     const s = S.info(S.sel), q = (id, t) => { const e = document.getElementById(id); if (e) e.textContent = t; }; q('c-sun', fmtDist(s.sun)); q('c-earth', fmtDist(s.earth)); q('c-light', fmtLight(s.earth)); };
@@ -190,7 +190,7 @@ export function createUI(S, A) {
     snd() { A.unlock(); A.setOn(!A.on); if (A.on) A.play('orbit_on'); toast(A.on ? `Zvuk zapnut (${A.count} zvuků).` : 'Zvuk vypnut.'); },
     more() { toggle('#more'); }, mini() { api.X.mini = !api.X.mini; $('#mini').style.display = api.X.mini ? '' : 'none'; api.X.drawMini(); ui2(api.X.mini); },
     album() { if (toggle('#album')) drawAlbum(); }, tm() { if (toggle('#tm')) $('#tm-list').innerHTML = `<button data-e="-1" class="pri">⟲ Zpět do současnosti</button>` + EVENTS.map((e, k) => `<button data-e="${k}">${e[0]}</button>`).join(''); },
-    cmp() { drawCmp(S.sel); toggle('#cmp', true); A.play('compare'); },
+    cmp() { cmpFor = S.sel; drawCmp(S.sel); toggle('#cmp', true); A.play('compare'); },
     ruler() { api.X.ruler = api.X.ruler === S.sel ? -1 : S.sel; A.play('ruler'); toast(api.X.ruler < 0 ? 'Měření zrušeno.' : `📏 Měřím od tělesa ${B[S.sel].cs}. Vyber klikem jiné těleso.`); drawCard(S.sel); },
     grid() { api.X.grid = !api.X.grid; ui2(api.X.grid); toast(api.X.grid ? 'Osa rotace, rovník a poledníky zapnuty.' : 'Osa a souřadnicová síť vypnuty.'); },
     real() { S.realBright = !S.realBright; ui2(S.realBright); toast(S.realBright ? '🔦 Reálný jas: expozice jako u Země. U Jupiteru je 27× méně světla, u Neptunu 900×.' : 'Automatická expozice: každé těleso je vidět dobře.'); },
@@ -203,10 +203,12 @@ export function createUI(S, A) {
     sunf() { S.setSunMode((S.sunMode + 1) % 3); A.play(['sun_white', 'sun_halpha', 'sun_euv'][S.sunMode]); if (S.sel === SUN) drawCard(SUN); if (S.focus !== SUN) toast('Filtr Slunce: ' + ['bílé světlo', 'H-alfa', 'EUV 304 Å'][S.sunMode]); }, full() { A.play('orbit_on'); try { (document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen()).catch(() => toast('Celou obrazovku tady prohlížeč nepovolil.')); } catch (e) { toast('Celou obrazovku tady prohlížeč nepovolil.'); } } };
   $('#tools').addEventListener('click', (e) => { const t = e.target.closest('button'); if (!t) return; A.unlock(); if (act[t.dataset.a]) { if (['help', 'game', 'list', 'home', 'full', 'orb', 'lab', 'lock', 'con', 'stars', 'snd', 'mode', 'more', 'gam'].indexOf(t.dataset.a) < 0) A.play('click'); act[t.dataset.a](); } setBtn(); S.wake(); });
   $('#gam').addEventListener('input', (e) => { S.setGamma(+e.target.value); });
-  $('#vol').addEventListener('input', (e) => { A.unlock(); A.setVol(+e.target.value); });
+  const volUI = () => { for (const [id, v] of [['#vol', A.vol], ['#vol2', A.vol], ['#mvol', A.mvol]]) { const e = $(id); if (e && document.activeElement !== e) e.value = v; } $('#vol2n').textContent = A.vol < 0.01 ? 'vypnuto' : Math.round(A.vol * 100) + ' %'; $('#mvoln').textContent = A.mvol < 0.01 ? 'vypnuto' : Math.round(A.mvol * 100) + ' %'; };
+  for (const id of ['#vol', '#vol2']) $(id).addEventListener('input', (e) => { A.unlock(); A.setVol(+e.target.value); volUI(); });
+  $('#mvol').addEventListener('input', (e) => { A.unlock(); A.setMVol(+e.target.value); if (+e.target.value > 0.01 && !A.music) { A.setMusic(true); G.music = true; save(); } volUI(); }); $('#vol2').addEventListener('change', () => A.play('click'));
   document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => { toggle(b.dataset.close, false); if (b.dataset.close === '#help') { G.help = true; save(); } }));
 
-  function setMode(k) { A.kidMood = k; G.kid = k; save(); document.body.classList.toggle('kid', k); $('#top h1').innerHTML = k ? '🚀 Vesmírná výprava <small>200</small>' : 'Sluneční soustava <small>200</small>'; A.play(k ? 'mode_kid' : 'mode_adult'); refresh(); toast(k ? '🧒 Dětské rozhraní. Ahoj, kapitáne!' : '🎓 Rozhraní pro dospělé.'); }
+  function setMode(k) { A.kidMood = k; S.kid = k; G.kid = k; save(); document.body.classList.toggle('kid', k); $('#top h1').innerHTML = k ? '🚀 Vesmírná výprava <small>200</small>' : 'Sluneční soustava <small>200</small>'; A.play(k ? 'mode_kid' : 'mode_adult'); refresh(); toast(k ? '🧒 Dětské rozhraní. Ahoj, kapitáne!' : '🎓 Rozhraní pro dospělé.'); }
   function refresh() { setBtn(); drawTime(); drawCard(S.sel); drawMission(); drawGame(); markSeen(); }
   // zvuky rozhraní: klik na tlačítko bez vlastního zvuku, přejetí přes ikonu
   document.addEventListener('click', (e) => { A.unlock(); const b = e.target.closest('button'); if (b && !b.closest('#tools') && !b.closest('#time') && !b.dataset.q) A.play(b.classList.contains('it') ? 'click2' : 'click'); }, true);
@@ -296,12 +298,12 @@ export function createUI(S, A) {
   const api = { toast, G: () => G, order, kid: K, setMode, act: (n) => { act[n](); setBtn(); S.wake(); }, time: timeAct, refresh };
   const tut = createTutorial(S, A, api); api.tut = tut;
   document.body.classList.toggle('kid', G.kid); if (G.kid) $('#top h1').innerHTML = '🚀 Vesmírná výprava <small>200</small>';
-  drawGame(); setBtn(); drawTime(); if (!G.cur) nextMission(); else drawMission(); markSeen(); $('#vol').value = A.vol; $('#sndn').textContent = A.count;
+  drawGame(); setBtn(); drawTime(); if (!G.cur) nextMission(); else drawMission(); markSeen(); volUI(); $('#sndn').textContent = A.count;
   const sp = $('#splash'), spMode = () => { $('#sp-adult').classList.toggle('sel', !G.kid); $('#sp-kid').classList.toggle('sel', G.kid); }; spMode();
   $('#sp-adult').onclick = () => { A.unlock(); setMode(false); spMode(); }; $('#sp-kid').onclick = () => { A.unlock(); setMode(true); spMode(); };
   $('#sp-tut').onclick = () => { A.unlock(); sp.classList.remove('on'); tut.start(); }; $('#sp-go').onclick = () => { A.unlock(); sp.classList.remove('on'); A.play('orbit_on'); };
   $('#help [data-a="tut"]').onclick = () => act.tut();
-  A.kidMood = G.kid; const startMusic = () => { if (G.music === undefined ? true : G.music) A.setMusic(true); }; $('#cineoff').onclick = () => act.cine();
+  A.kidMood = G.kid; S.kid = G.kid; $('#sunchip').onclick = () => { act.sunf(); setBtn(); }; const startMusic = () => { if (G.music === undefined ? true : G.music) A.setMusic(true); }; $('#cineoff').onclick = () => act.cine();
   $('#sp-tut').addEventListener('click', startMusic); $('#sp-go').addEventListener('click', startMusic);
   { const h = (location.hash || '').slice(1).replace(/-/g, '_'); if (idx.has(h)) setTimeout(() => S.jump(idx.get(h)), 50); }
   return api;

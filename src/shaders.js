@@ -311,18 +311,27 @@ void main(){
   gl_FragColor = vec4(uC * a, 1.0);
   #include <colorspace_fragment>
 }`;
+// Hvězdy: ve vesmíru neblikají (mihotání dělá až vzduch nad Zemí), proto svítí klidně. Slabé jsou ostrý bod, jasné mají malé jádro,
+// měkkou zář a u těch nejjasnějších náznak kříže jako na snímcích z dalekohledu. Barva podle teploty, o něco sytější.
 export const STAR_VS = /* glsl */`
 attribute float aMag; attribute vec3 aCol; uniform float uPx; uniform float uGain;
-varying vec3 vCol; varying float vA;
+varying vec3 vCol; varying float vA; varying float vB;
 void main(){
   gl_Position = projectionMatrix * vec4(mat3(viewMatrix) * position, 1.0); gl_Position.z = gl_Position.w * 0.999;
-  float I = pow(10.0, -0.4 * (aMag - 1.0)) * uGain;
-  vCol = aCol * (1.2 + 0.5 * min(I, 4.0)); vA = min(1.0, 0.85 * pow(I, 0.42) + 0.06);
-  gl_PointSize = clamp(1.6 + 2.6 * log(1.0 + I) / 2.302585, 1.4, 6.0) * uPx;
+  float I = pow(10.0, -0.4 * (aMag - 1.0)) * uGain;                 // 1 mag → 1, 6 mag → 0,01, Sirius → 9,6
+  float L = log(1.0 + I * 6.0) / 2.302585;
+  vB = smoothstep(0.55, 1.5, L);                                    // asi 45 nejjasnějších hvězd
+  vec3 sat = max(mix(vec3(dot(aCol, vec3(0.3333))), aCol, 1.4), 0.0);
+  vCol = sat * (1.0 + 0.55 * L); vA = clamp(0.15 + 0.75 * L, 0.0, 1.0);
+  gl_PointSize = (1.5 + 3.0 * L + 9.0 * vB) * uPx;
 }`;
 export const STAR_FS = /* glsl */`
-varying vec3 vCol; varying float vA;
-void main(){ vec2 q = gl_PointCoord * 2.0 - 1.0; float r = length(q); float a = exp(-r * r * 3.0) * vA; if (a < 0.01) discard; gl_FragColor = vec4(vCol * a, 1.0);
+varying vec3 vCol; varying float vA; varying float vB;
+void main(){ vec2 q = gl_PointCoord * 2.0 - 1.0; float r = length(q), s = 1.0 + 2.6 * vB;
+  float core = exp(-r * r * 3.2 * s * s), halo = vB * 0.2 * exp(-r * 4.6);
+  float spike = vB * vB * 0.15 * (exp(-abs(q.x) * 26.0) * exp(-abs(q.y) * 3.4) + exp(-abs(q.y) * 26.0) * exp(-abs(q.x) * 3.4));
+  float a = (core + halo + spike) * vA * (1.0 - smoothstep(0.82, 1.0, r)); if (a < 0.006) discard;
+  gl_FragColor = vec4(mix(vCol, vec3(1.0), core * 0.35) * a, 1.0);
   #include <colorspace_fragment>
 }`;
 export const SKY_VS = /* glsl */`
@@ -337,9 +346,22 @@ void main(){ vec3 e = uS2Eq * normalize(vD); float ra = atan(e.y, e.x), de = asi
   #include <colorspace_fragment>
 }`;
 
+// Souhvězdí: spojnice vyrůstá z obou hvězd a uprostřed se spojí, po dokreslení krátce zažhne. Čára má „patinu“ (místy silnější,
+// místy vybledlá) a hvězd se nedotýká. uKid = dětské rozhraní: delší nájezd, teplejší barvy, výraznější patina. uFr = slabý lem kolem čáry.
 export const CON_VS = /* glsl */`
-void main(){ gl_Position = projectionMatrix * vec4(mat3(viewMatrix) * position, 1.0); gl_Position.z = gl_Position.w * 0.9993; }`;
+attribute float aT; attribute float aSeed; attribute float aDel; uniform vec2 uOff; varying float vT; varying float vS; varying float vD;
+void main(){ gl_Position = projectionMatrix * vec4(mat3(viewMatrix) * position, 1.0); gl_Position.z = gl_Position.w * 0.9993; gl_Position.xy += uOff * gl_Position.w; vT = aT; vS = aSeed; vD = aDel; }`;
 export const CON_FS = /* glsl */`
-uniform float uA; void main(){ gl_FragColor = vec4(vec3(0.32, 0.5, 0.95) * uA, 1.0);
+uniform float uA; uniform float uG; uniform float uKid; uniform float uFr; varying float vT; varying float vS; varying float vD;
+void main(){ float e = min(vT, 1.0 - vT), dur = mix(0.9, 1.7, uKid), t0 = vD * mix(0.35, 0.9, uKid), g = clamp((uG - t0) / dur, 0.0, 1.0); g = g * g * (3.0 - 2.0 * g);
+  if (e > g * 0.5 + 0.0005) discard;
+  float tip = (1.0 - g) * smoothstep(0.07, 0.0, g * 0.5 - e);
+  float flash = g >= 1.0 ? exp(-(uG - t0 - dur) * 1.5) : 0.0;
+  float n = sin(vT * 17.0 + vS * 40.0) * 0.5 + sin(vT * 41.0 + vS * 91.0) * 0.3 + sin(vT * 7.0 + vS * 13.0) * 0.2;
+  float pat = 1.0 + n * mix(0.24, 0.44, uKid), gap = smoothstep(0.0, 0.04, e);
+  vec3 cool = vec3(0.34, 0.52, 0.96), warm = mix(vec3(0.32, 0.78, 1.0), vec3(1.0, 0.8, 0.42), 0.5 + 0.5 * sin(vS * 30.0));
+  vec3 c = mix(cool, warm, uKid); c = mix(c, vec3(1.0, 0.97, 0.9), min(1.0, flash * 0.6 + tip));
+  float k = uA * uFr * pat * gap * (1.0 + flash * mix(0.9, 1.6, uKid) + tip * 2.0) * mix(1.0, 1.15, uKid);
+  gl_FragColor = vec4(c * k, 1.0);
   #include <colorspace_fragment>
 }`;

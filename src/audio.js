@@ -107,11 +107,12 @@ export const ambOf = (i) => { const b = B[i]; if (AMB_ID[b.id]) return AMB_ID[b.
   return { comet: 'comet', tno: 'tno', dwarf: 'ice', centaur: 'centaur', interstellar: 'alien' }[b.type] || 'rock'; };
 
 export function createAudio(S) {
-  const A = { on: true, vol: 0.55, ctx: null, count: COUNT }; let master, nbuf, amb = null, ambKey = '', whirr = null, wind = null, lastAlt = 0, lastT = 0, myst = null, mystKey = '', focT = 0, focI = -1;
-  try { const s = JSON.parse(localStorage.getItem('s200snd') || 'null'); if (s) { A.on = s.on; A.vol = s.vol; } } catch (e) { /* nic */ }
-  const save = () => { try { localStorage.setItem('s200snd', JSON.stringify({ on: A.on, vol: A.vol })); } catch (e) { /* nic */ } };
+  const A = { on: true, vol: 0.55, mvol: 0.8, ctx: null, count: COUNT }; let master, musBus, nbuf, amb = null, ambKey = '', whirr = null, wind = null, lastAlt = 0, lastT = 0, myst = null, mystKey = '', focT = 0, focI = -1;
+  try { const s = JSON.parse(localStorage.getItem('s200snd') || 'null'); if (s) { A.on = s.on; A.vol = s.vol; if (typeof s.mvol === 'number') A.mvol = s.mvol; } } catch (e) { /* nic */ }
+  const save = () => { try { localStorage.setItem('s200snd', JSON.stringify({ on: A.on, vol: A.vol, mvol: A.mvol })); } catch (e) { /* nic */ } };
   A.unlock = () => { if (A.ctx) { if (A.ctx.state === 'suspended') A.ctx.resume(); return; } const C = window.AudioContext || window.webkitAudioContext; if (!C) return; try { A.ctx = new C(); } catch (e) { return; }
     master = A.ctx.createGain(); master.gain.value = A.on ? A.vol : 0; const cmp = A.ctx.createDynamicsCompressor(); master.connect(cmp); cmp.connect(A.ctx.destination);
+    musBus = A.ctx.createGain(); musBus.gain.value = A.on ? A.mvol : 0; musBus.connect(cmp); // skladby mají vlastní hlasitost, nezávislou na zvucích
     nbuf = A.ctx.createBuffer(1, A.ctx.sampleRate * 2, A.ctx.sampleRate); const d = nbuf.getChannelData(0); for (let k = 0; k < d.length; k++) d[k] = Math.random() * 2 - 1; muInit(); setTimeout(A.preload, 300); };
   const env = (g, t, v, dur) => { g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + Math.min(0.012, dur * 0.3)); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); };
   function voice(v, out, t0, pitch = 1, gain = 1) {
@@ -177,7 +178,7 @@ export function createAudio(S) {
   // skladby: dva prvky <audio> (prolínání), zdroj = blob stažený přes fetch (stejná cesta jako zvuky, žádné potíže s původem), hlasitost přes Web Audio
   const SIL = 'data:audio/wav;base64,UklGRrQBAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YZABAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA';
   const MU = { els: [], gs: [], cur: -1, slot: '', tv: 0, bgm: false, last: {}, gapUntil: 0, bad: false, tok: 0, url: {}, any: () => { const k = Object.keys(TRACKS); let s; do { s = k[Math.floor(Math.random() * k.length)]; } while (s === MU.prev && k.length > 1); return s; } };
-  function muInit() { if (MU.els.length) return; for (let k = 0; k < 2; k++) { const el = new Audio(); el.preload = 'auto'; let g = null; try { const src = A.ctx.createMediaElementSource(el); g = A.ctx.createGain(); g.gain.value = 0; src.connect(g); g.connect(master); } catch (e) { g = null; el.volume = 0; }
+  function muInit() { if (MU.els.length) return; for (let k = 0; k < 2; k++) { const el = new Audio(); el.preload = 'auto'; let g = null; try { const src = A.ctx.createMediaElementSource(el); g = A.ctx.createGain(); g.gain.value = 0; src.connect(g); g.connect(musBus); } catch (e) { g = null; el.volume = 0; }
       try { el.src = SIL; const p = el.play(); if (p && p.catch) p.catch(() => {}); } catch (e) { /* nic */ }
       el.addEventListener('ended', () => { if (MU.cur === k && MU.slot) { MU.prev = MU.slot; MU.slot = ''; MU.gapUntil = performance.now() + (MU.bgm ? (A.kidMood ? 30000 + Math.random() * 30000 : 60000 + Math.random() * 60000) : 120000 + Math.random() * 120000); } });
       MU.els.push(el); MU.gs.push(g); } }
@@ -186,7 +187,7 @@ export function createAudio(S) {
     muUrl(list[n]).then(u => { if (tok !== MU.tok) return; const k = old === 0 ? 1 : 0, el = MU.els[k]; MU.cur = k; if (old >= 0) { const oe = MU.els[old]; setTimeout(() => { if (MU.cur !== old) oe.pause(); }, 3500); } el.src = u; try { el.currentTime = 0; } catch (e) { /* nic */ } const p = el.play(); if (p && p.catch) p.catch(() => { if (tok === MU.tok) { MU.slot = ''; MU.gapUntil = performance.now() + 4000; } }); })
       .catch(() => { delete MU.url[list[n]]; if (tok === MU.tok) { MU.bad = true; MU.slot = ''; } }); }
   function muStop() { MU.tok++; MU.prev = MU.slot; MU.slot = ''; A.track = ''; const old = MU.cur; MU.cur = -1; if (old >= 0) { const oe = MU.els[old]; setTimeout(() => { if (MU.cur !== old) oe.pause(); }, 3500); } }
-  function muTick(t) { for (let k = 0; k < MU.els.length; k++) { const v = k === MU.cur && MU.slot ? MU.tv : 0, g = MU.gs[k]; if (g) g.gain.setTargetAtTime(v, t, 0.9); else { const el = MU.els[k], tv = v * (A.on ? A.vol : 0); el.volume = Math.max(0, Math.min(1, el.volume + (tv - el.volume) * 0.1)); } } }
+  function muTick(t) { for (let k = 0; k < MU.els.length; k++) { const v = k === MU.cur && MU.slot ? MU.tv : 0, g = MU.gs[k]; if (g) g.gain.setTargetAtTime(v, t, 0.9); else { const el = MU.els[k], tv = v * (A.on ? A.mvol : 0); el.volume = Math.max(0, Math.min(1, el.volume + (tv - el.volume) * 0.1)); } } }
   // záhadná témata: bzukot + řídká melodie ze stupnice přes ozvěnu; když je pro slot nahraná skladba (TRACKS), hraje místo syntézy ta
   function startMyst(id) { const c = A.ctx, m = MYST[id];
     const g = c.createGain(), bus = c.createBiquadFilter(), dl = c.createDelay(3), fb = c.createGain(), nodes = [], tms = []; g.gain.value = 0; g.connect(master); bus.type = 'lowpass'; bus.frequency.value = m.lp || 2400; bus.connect(g);
@@ -209,7 +210,8 @@ export function createAudio(S) {
   A.music = false; A.kidMood = false; A.track = '';
   A.setMusic = (v) => { A.music = v; };
   A.mu = () => ({ slot: MU.slot, cur: MU.cur, bad: MU.bad, tv: MU.tv, t: MU.cur >= 0 ? MU.els[MU.cur].currentTime : 0, paused: MU.els.map(e => e.paused), gain: MU.gs.map(g => g ? +g.gain.value.toFixed(3) : -1) });
-  A.setOn = (v) => { A.on = v; if (master) master.gain.setTargetAtTime(v ? A.vol : 0, A.ctx.currentTime, 0.05); save(); };
+  A.setOn = (v) => { A.on = v; if (master) { master.gain.setTargetAtTime(v ? A.vol : 0, A.ctx.currentTime, 0.05); musBus.gain.setTargetAtTime(v ? A.mvol : 0, A.ctx.currentTime, 0.05); } save(); };
+  A.setMVol = (v) => { A.mvol = v; if (musBus && A.on) musBus.gain.setTargetAtTime(v, A.ctx.currentTime, 0.05); save(); };
   A.setVol = (v) => { A.vol = v; if (master && A.on) master.gain.setTargetAtTime(v, A.ctx.currentTime, 0.05); save(); };
   A.note = (i) => { const r = AMB[ambOf(i)], m = MYST[B[i].id], th = !m && !MU.bad ? themeOf(i, A.kidMood) : ''; if (th) return '🎵 Hudba: skladba „' + TRACK_NAME[th] + '“ (Suno).'; if (m) return '🎵 Záhadné téma „' + m.name + '“ (' + (TRACKS[m.slot] && !MU.bad ? 'skladba ze Suno' : 'syntéza') + '): ' + m.why; return i === idx.get('earth') ? '🔊 Zvuk: příboj a ptáci – jediné těleso, kde je co slyšet (syntéza).' : r && r.real ? '🔊 Zvuk: syntéza podle skutečných měření – ' + r.real + '.' : '🔊 Zvuk: ilustrace (ve vakuu se zvuk nešíří).'; };
   return A;
