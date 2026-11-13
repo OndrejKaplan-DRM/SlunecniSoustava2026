@@ -36,8 +36,9 @@ u zatmění 1706 a 1133 uvést na kartě pravdu z pramenů. **Vybráno 60 událo
   budoucí událost, potom silnější příběh. Hranice vyšla čistě na 16 bodech.
 - Z náhradníků se do výběru dostali tři: Halleyova kometa 2134, přechod Venuše 2125 a zatmění Slunce 2151. Zbylých pět má 14–15 bodů;
   nasadit je natvrdo by znamenalo vyhodit silnější příběhy (Kirchova kometa a Newton, Duende a Čeljabinsk), proto zůstali mimo.
+- Divoká karta (Ondřej, 14. 11.): seskupení 8. 9. 2040 místo zatmění Slunce 2151.
 - **Budoucích událostí je 18 z 60 (30 %).** Cíl 40 % by šel splnit jen na úkor kvality.
-- Složení: zatmění Slunce 15, přechody 9, komety 9, zatmění Měsíce 7, průlety 6, supernovy 5, konjunkce 4, zákryty 4, seskupení 1.
+- Složení: zatmění Slunce 14, přechody 9, komety 9, zatmění Měsíce 7, průlety 6, supernovy 5, konjunkce 4, zákryty 4, seskupení 2.
 
 ## Vybraných 60 událostí
 | # | Body | Kategorie | Datum | Událost | Model | Pramen | Z | P | M | O | Poznámka |
@@ -101,7 +102,43 @@ u zatmění 1706 a 1133 uvést na kartě pravdu z pramenů. **Vybráno 60 událo
 | 57 | **16** | Průlet | 14. 12. 2093 ▸ | Phaethon, otec Geminid, těsně u Země | 2 964 109 km, 14. 12. 10:49 UT | 2 965 659 km, 10:52 UT | 3 | 3 | 5 | 5 | elementy pro rok 2093 (JPL) |
 | 58 | **16** | Zatmění Měsíce | 9. 6. 2123 ▸ | Nejdelší zatmění Měsíce 22. století | 05:03 UT, velikost 1,75, úplné 107 min | 05:02 UT, velikost 1,75, úplné 106 min | 4 | 2 | 5 | 5 |  |
 | 59 | **16** | Průlet | 25. 9. 2135 ▸ | Bennu proletí blíž než Měsíc | 213 425 km, 25. 9. 08:00 UT | 204 041 km, 07:49 UT | 4 | 3 | 4 | 5 | elementy pro rok 2135 (JPL); JPL sám uvádí 195–213 tis. km |
-| 60 | **16** | Zatmění Slunce | 14. 6. 2151 ▸ | Zatmění Slunce 14. 6. 2151 (náhradník) | 17:09 UT, osa 64,3° / −90,0°; Praha 0,97 | 17:08 UT, osa 63,7° / −89,4°; Praha 0,95 | 4 | 2 | 5 | 5 |  |
+| 60 | **15** | Seskupení | 8. 9. 2040 ▸ | Pět planet a srpek Měsíce v jednom zorném poli (8. 9. 2040) | rozpětí 9,5°, 8. 9. | jen datum | 5 | 3 | 4 | 3 | divoká karta místo zatmění 2151 |
+
+## Návrh 30 karet (ke schválení)
+Nejsilnější příběh, potom body; strop na kategorii kvůli pestrosti. Seřazeno podle času.
+
+| # | Datum | Kategorie | Karta | Body | Příběh |
+|---|---|---|---|---|---|
+| 1 | 28. 5. 585 př. n. l. | Zatmění Slunce | Thalétovo zatmění (bitva na řece Halys) | 19 | 5 |
+| 2 | 28. 8. 413 př. n. l. | Zatmění Měsíce | Níkiovo zatmění (zkáza Athéňanů u Syrakus) | 18 | 5 |
+| 3 | 20. 9. 331 př. n. l. | Zatmění Měsíce | Zatmění před bitvou u Gaugamél | 18 | 5 |
+| 4 | 29. 5. 7 př. n. l. | Konjunkce | Trojí konjunkce Jupiteru a Saturnu 7 př. n. l. (1. setkání; betlémská hvězda?) | 16 | 5 |
+| 5 | 17. 6. 2 př. n. l. | Konjunkce | Venuše a Jupiter splynuly v jednu hvězdu (2 př. n. l.) | 17 | 5 |
+| 6 | 10. 4. 837 | Kometa | Halleyova kometa 837: nejtěsnější průlet komety kolem Země v dějinách (ohon přes půl oblohy) | 19 | 4 |
+| 7 | 4. 7. 1054 | Supernova / nova | SN 1054: zrod Krabí mlhoviny, 23 dní vidět ve dne | 17 | 5 |
+| 8 | 24. 4. 1066 | Kometa | Halleyova kometa 1066 (tapisérie z Bayeux, bitva u Hastingsu) | 18 | 5 |
+| 9 | 15. 9. 1186 | Seskupení | Pět planet, Slunce a Měsíc ve Vahách (Toledský dopis, panika z konce světa) | 17 | 5 |
+| 10 | 7. 6. 1415 | Zatmění Slunce | Úplné zatmění nad Čechami měsíc před upálením Husa | 20 | 5 |
+| 11 | 22. 5. 1453 | Zatmění Měsíce | Zatmění při obléhání Konstantinopole | 18 | 5 |
+| 12 | 1. 3. 1504 | Zatmění Měsíce | Kolumbovo zatmění na Jamajce | 19 | 5 |
+| 13 | 25. 8. 1563 | Konjunkce | Konjunkce 1563: tabulky se spletly o měsíc a Tycho Brahe se rozhodl měřit sám | 18 | 5 |
+| 14 | 11. 11. 1572 | Supernova / nova | Tychonova supernova 1572: konec neměnných nebes | 17 | 5 |
+| 15 | 9. 10. 1604 | Supernova / nova | Keplerova supernova 1604: poslední v Galaxii, Kepler ji sledoval v Praze | 17 | 5 |
+| 16 | 4. 1. 1613 | Zákryt | Galileo zakreslil Neptun vedle Jupiteru 234 let před objevem | 17 | 5 |
+| 17 | 7. 11. 1631 | Přechod | První pozorovaný přechod Merkuru (Gassendi) | 19 | 5 |
+| 18 | 4. 12. 1639 | Přechod | První pozorovaný přechod Venuše (Horrocks) | 20 | 5 |
+| 19 | 18. 12. 1680 | Kometa | Kirchova kometa 1680: první objevená dalekohledem, Newton na ní ověřil gravitaci | 16 | 5 |
+| 20 | 3. 5. 1715 | Zatmění Slunce | Halleyovo zatmění (první mapa pásu totality) | 19 | 5 |
+| 21 | 13. 3. 1759 | Kometa | První předpovězený návrat Halleyovy komety (Palitzsch, Clairaut) | 19 | 5 |
+| 22 | 6. 6. 1761 | Přechod | Přechod Venuše 1761 (Lomonosov: atmosféra) | 20 | 5 |
+| 23 | 3. 6. 1769 | Přechod | Přechod Venuše 1769 (Cook na Tahiti, Hell ve Vardø) | 20 | 5 |
+| 24 | 18. 8. 1868 | Zatmění Slunce | Zatmění, při kterém bylo objeveno helium | 19 | 5 |
+| 25 | 20. 5. 1910 | Kometa | Halleyova kometa 1910: Země prošla jejím ohonem | 20 | 5 |
+| 26 | 29. 5. 1919 | Zatmění Slunce | Eddingtonovo zatmění (ohyb světla, Einstein) | 20 | 5 |
+| 27 | 11. 8. 1999 | Zatmění Slunce | Zatmění 11. 8. 1999 (střední Evropa) | 20 | 5 |
+| 28 | 15. 2. 2013 | Průlet | Planetka Duende pod dráhou družic – v den čeljabinského meteoru | 16 | 5 |
+| 29 | 13. 4. 2029 ▸ | Průlet | Apophis proletí blíž než stacionární družice (pátek 13. 4. 2029) | 19 | 4 |
+| 30 | 7. 10. 2135 ▸ | Zatmění Slunce | Příští úplné zatmění v Česku | 19 | 4 |
 
 ## Vyřazených 28
 | # | Body | Kategorie | Datum | Událost | Model | Pramen | Z | P | M | O | Poznámka |
@@ -110,16 +147,16 @@ u zatmění 1706 a 1133 uvést na kartě pravdu z pramenů. **Vybráno 60 událo
 | 2 | **16** | Průlet | 30. 1. 1931 | Eros 1931: průlet, ze kterého se změřila vzdálenost Slunce | 0,1741 AU, 30. 1. 05:24 UT | 0,1741 AU, 04:07 UT | 3 | 4 | 4 | 5 | elementy pro rok 1931 (JPL) |
 | 3 | **16** | Seskupení | 5. 2. 1962 | Pět planet, Slunce a Měsíc v Kozorohu při úplném zatmění Slunce | rozpětí 16,1°, 5. 2. | jen datum | 5 | 4 | 4 | 3 |  |
 | 4 | **16** | Zatmění Měsíce | 27. 7. 2018 | Nejdelší úplné zatmění Měsíce 21. století | 20:23 UT, velikost 1,62, úplné 104 min | 20:22 UT, velikost 1,61, úplné 103 min | 4 | 2 | 5 | 5 |  |
-| 5 | **15** | Zatmění Slunce | 3. 8. 431 př. n. l. | Zatmění z Thúkydida (peloponéská válka) | 14:52 UT, osa 68,2° / 8,3°; Praha 0,90 | 14:55 UT, osa 68,0° / 5,9°; Praha 0,92 | 3 | 4 | 4 | 4 |  |
-| 6 | **15** | Zatmění Slunce | 2. 8. 1133 | Zatmění krále Jindřicha I. | 12:09 UT, osa 46,5° / 17,3°; Praha 1,00 | 12:09 UT, osa 45,8° / 16,5°; Praha 0,97 | 4 | 3 | 3 | 5 | model dává v Praze úplné, NASA 0,973 – karta podle pramene |
-| 7 | **15** | Konjunkce | 4. 3. 1226 | Nejtěsnější konjunkce Jupiteru a Saturnu středověku | 2,21′, 5. 3. 07:41 UT | 2,10′ | 4 | 2 | 5 | 4 |  |
-| 8 | **15** | Seskupení | 22. 3. 1345 | Mars, Jupiter a Saturn ve Vodnáři – pařížská fakulta jim přičetla černou smrt | rozpětí 2,0°, 5. 3. | jen datum | 4 | 5 | 4 | 2 | nejtěsněji 5. 3.; fakulta uvádí 20. 3. |
-| 9 | **15** | Seskupení | 20. 2. 1524 | Všechny planety v Rybách – Evropa čekala potopu | rozpětí 12,0°, 17. 2. | jen datum | 4 | 5 | 4 | 2 |  |
-| 10 | **15** | Zákryt | 28. 5. 1737 | Venuše zakryla Merkur (John Bevis, Greenwich) – jediný podrobně pozorovaný vzájemný zákryt planet | 0,63′, 28. 5. 21:44 UT | jen datum | 5 | 4 | 3 | 3 | ze středu Země 0,63′; zákryt viděn z Greenwiche |
-| 11 | **15** | Přechod | 11. 11. 2019 | Přechod Merkuru 2019 | 1,26′, 15:13 UT | 1,26′, 15:20 UT | 3 | 2 | 5 | 5 |  |
-| 12 | **15** | Přechod | 13. 11. 2032 ▸ | Příští přechod Merkuru | 9,52′, 08:48 UT | 9,54′, 08:54 UT | 3 | 2 | 5 | 5 |  |
-| 13 | **15** | Přechod | 7. 11. 2039 ▸ | Přechod Merkuru 2039 (náhradník) | 13,72′, 08:39 UT | 13,71′, 08:46 UT | 3 | 2 | 5 | 5 |  |
-| 14 | **15** | Seskupení | 8. 9. 2040 ▸ | Pět planet a srpek Měsíce v jednom zorném poli (8. 9. 2040) | rozpětí 9,5°, 8. 9. | jen datum | 5 | 3 | 4 | 3 |  |
+| 5 | **16** | Zatmění Slunce | 14. 6. 2151 ▸ | Zatmění Slunce 14. 6. 2151 (náhradník) | 17:09 UT, osa 64,3° / −90,0°; Praha 0,97 | 17:08 UT, osa 63,7° / −89,4°; Praha 0,95 | 4 | 2 | 5 | 5 |  |
+| 6 | **15** | Zatmění Slunce | 3. 8. 431 př. n. l. | Zatmění z Thúkydida (peloponéská válka) | 14:52 UT, osa 68,2° / 8,3°; Praha 0,90 | 14:55 UT, osa 68,0° / 5,9°; Praha 0,92 | 3 | 4 | 4 | 4 |  |
+| 7 | **15** | Zatmění Slunce | 2. 8. 1133 | Zatmění krále Jindřicha I. | 12:09 UT, osa 46,5° / 17,3°; Praha 1,00 | 12:09 UT, osa 45,8° / 16,5°; Praha 0,97 | 4 | 3 | 3 | 5 | model dává v Praze úplné, NASA 0,973 – karta podle pramene |
+| 8 | **15** | Konjunkce | 4. 3. 1226 | Nejtěsnější konjunkce Jupiteru a Saturnu středověku | 2,21′, 5. 3. 07:41 UT | 2,10′ | 4 | 2 | 5 | 4 |  |
+| 9 | **15** | Seskupení | 22. 3. 1345 | Mars, Jupiter a Saturn ve Vodnáři – pařížská fakulta jim přičetla černou smrt | rozpětí 2,0°, 5. 3. | jen datum | 4 | 5 | 4 | 2 | nejtěsněji 5. 3.; fakulta uvádí 20. 3. |
+| 10 | **15** | Seskupení | 20. 2. 1524 | Všechny planety v Rybách – Evropa čekala potopu | rozpětí 12,0°, 17. 2. | jen datum | 4 | 5 | 4 | 2 |  |
+| 11 | **15** | Zákryt | 28. 5. 1737 | Venuše zakryla Merkur (John Bevis, Greenwich) – jediný podrobně pozorovaný vzájemný zákryt planet | 0,63′, 28. 5. 21:44 UT | jen datum | 5 | 4 | 3 | 3 | ze středu Země 0,63′; zákryt viděn z Greenwiche |
+| 12 | **15** | Přechod | 11. 11. 2019 | Přechod Merkuru 2019 | 1,26′, 15:13 UT | 1,26′, 15:20 UT | 3 | 2 | 5 | 5 |  |
+| 13 | **15** | Přechod | 13. 11. 2032 ▸ | Příští přechod Merkuru | 9,52′, 08:48 UT | 9,54′, 08:54 UT | 3 | 2 | 5 | 5 |  |
+| 14 | **15** | Přechod | 7. 11. 2039 ▸ | Přechod Merkuru 2039 (náhradník) | 13,72′, 08:39 UT | 13,71′, 08:46 UT | 3 | 2 | 5 | 5 |  |
 | 15 | **15** | Konjunkce | 15. 3. 2080 ▸ | Velká konjunkce 2080 | 5,98′, 14. 3. 23:48 UT | 6,00′ | 4 | 2 | 5 | 4 |  |
 | 16 | **15** | Zatmění Slunce | 23. 9. 2090 ▸ | Zatmění Slunce 23. 9. 2090 (náhradník) | 16:55 UT, osa 58,4° / −43,9°; Praha 0,98 | 16:54 UT, osa 60,7° / −40,5°; Praha pod obzorem | 4 | 2 | 4 | 5 | v Praze Slunce už pod obzorem |
 | 17 | **15** | Průlet | 28. 8. 2287 ▸ | Mars ještě blíž než v roce 2003 | 0,3722 AU, 28. 8. 22:10 UT | 0,3723 AU, 22:20 UT | 3 | 2 | 5 | 5 |  |

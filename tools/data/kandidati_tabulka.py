@@ -60,7 +60,7 @@ for c in K:
     z,p,o=ZPO[i]
     tot=z+p+o+m if m else round((z+p+o)*20/15)
     y=c['datum'][0]; bud=(y,c['datum'][1],c['datum'][2])>(2026,11,13)
-    rows.append(dict(id=i,kat=kat,datum=den(c['datum']),y=y,nazev=c['nazev'],mod=mod,pr=pr,Z=z,P=p,M=m,O=o,tot=tot,bud=bud,id=i,pozn=PZ.get(i,''),pramen=c['pramen'],nahr=bool(c.get('nahradnik'))))
+    rows.append(dict(id=i,kat=kat,datum=den(c['datum']),y=y,nazev=c['nazev'],mod=mod,pr=pr,Z=z,P=p,M=m,O=o,tot=tot,bud=bud,pozn=PZ.get(i,''),pramen=c['pramen'],nahr=bool(c.get('nahradnik'))))
 # výběr 60: podle bodů ze všech 88 (80 kandidátů + 8 náhradníků do budoucnosti); při shodě bodů má přednost budoucí událost, potom silnější příběh
 rows.sort(key=lambda r:(-r['tot'],not r['bud'],-r['P'],r['y']))
 vyber=rows[:60]; ven=rows[60:]
