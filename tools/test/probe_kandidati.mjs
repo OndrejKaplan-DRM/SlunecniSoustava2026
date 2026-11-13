@@ -152,9 +152,9 @@ function lunar(c, t0) {
   return { t, umag: a.umag, pmag: a.pmag, tot };
 }
 // --- dvojice a skupiny ze středu Země
-function dirs(ids, jd) {
+function dirs(ids, jd, helio) {
   updateAll(jd);
-  const e = pos(E);
+  const e = helio ? pos(S) : pos(E);
   return ids.map((id) => sub(pos(idx.get(id)), e));
 }
 function pair(c, t0) {
@@ -168,13 +168,13 @@ function pair(c, t0) {
 }
 function group(c, t0) {
   const f = (x) => {
-    const d = dirs(c.telesa, x);
+    const d = dirs(c.telesa, x, c.helio);
     let mx = 0;
     for (let i = 0; i < d.length; i++) for (let j = i + 1; j < d.length; j++) mx = Math.max(mx, ang(d[i], d[j]));
     return mx;
   };
   const [v, t] = minimize(f, t0, c.okno || 20, 0.05);
-  const d = dirs([...c.telesa, 'sun'], t),
+  const d = dirs([...c.telesa.filter((x) => x !== 'sun' && x !== 'earth'), 'sun'], t),
     s = d.pop();
   const el = d.map((x) => ang(x, s) * DEG);
   return { t, spread: v * DEG, elMin: Math.min(...el), elMax: Math.max(...el) };

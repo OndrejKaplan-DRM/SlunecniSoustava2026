@@ -772,5 +772,442 @@
    "sep": 12.06
   },
   "pramen": "Espenak, Six Millennium Catalog of Venus Transits"
+ },
+ {
+  "id": "k-0006a",
+  "typ": "dvojice",
+  "druh": "konjunkce",
+  "nazev": "Trojí konjunkce Jupiteru a Saturnu 7 př. n. l. (1. setkání; betlémská hvězda?)",
+  "datum": [
+   -6,
+   5,
+   29
+  ],
+  "a": "jupiter",
+  "b": "saturn",
+  "okno": 25,
+  "ref": {},
+  "pramen": "Kepler 1614; Hughes 1979, The Star of Bethlehem"
+ },
+ {
+  "id": "k-0006b",
+  "typ": "dvojice",
+  "druh": "konjunkce",
+  "nazev": "Trojí konjunkce 7 př. n. l. (2. setkání)",
+  "datum": [
+   -6,
+   10,
+   1
+  ],
+  "a": "jupiter",
+  "b": "saturn",
+  "okno": 25,
+  "ref": {},
+  "pramen": "dtto"
+ },
+ {
+  "id": "k-0006c",
+  "typ": "dvojice",
+  "druh": "konjunkce",
+  "nazev": "Trojí konjunkce 7 př. n. l. (3. setkání)",
+  "datum": [
+   -6,
+   12,
+   5
+  ],
+  "a": "jupiter",
+  "b": "saturn",
+  "okno": 25,
+  "ref": {},
+  "pramen": "dtto"
+ },
+ {
+  "id": "k-0001",
+  "typ": "dvojice",
+  "druh": "konjunkce",
+  "nazev": "Venuše a Jupiter splynuly v jednu hvězdu (2 př. n. l.)",
+  "datum": [
+   -1,
+   6,
+   17
+  ],
+  "a": "venus",
+  "b": "jupiter",
+  "okno": 5,
+  "ref": {},
+  "pramen": "Sinnott 1968, Sky & Telescope 36, 384"
+ },
+ {
+  "id": "k1170",
+  "typ": "dvojice",
+  "druh": "zakryt",
+  "nazev": "Mars přešel přes Jupiter (viděl mnich Gervase v Canterbury)",
+  "datum": [
+   1170,
+   9,
+   12
+  ],
+  "a": "mars",
+  "b": "jupiter",
+  "okno": 5,
+  "ref": {},
+  "pramen": "Gervase of Canterbury; Hilton, Seidelmann & Liu 1988, AJ 96, 1482"
+ },
+ {
+  "id": "k1226",
+  "typ": "dvojice",
+  "druh": "konjunkce",
+  "nazev": "Nejtěsnější konjunkce Jupiteru a Saturnu středověku",
+  "datum": [
+   1226,
+   3,
+   4
+  ],
+  "a": "jupiter",
+  "b": "saturn",
+  "okno": 15,
+  "ref": {
+   "sep": 2.1
+  },
+  "pramen": "Wikipedia: Great conjunction (tabulka; výpočet podle JPL Horizons)"
+ },
+ {
+  "id": "k1563",
+  "typ": "dvojice",
+  "druh": "konjunkce",
+  "nazev": "Konjunkce 1563: tabulky se spletly o měsíc a Tycho Brahe se rozhodl měřit sám",
+  "datum": [
+   1563,
+   8,
+   25
+  ],
+  "a": "jupiter",
+  "b": "saturn",
+  "okno": 15,
+  "ref": {
+   "sep": 6.8
+  },
+  "pramen": "Wikipedia: Great conjunction (tabulka; výpočet podle JPL Horizons)"
+ },
+ {
+  "id": "k1590",
+  "typ": "dvojice",
+  "druh": "zakryt",
+  "nazev": "Venuše zakryla Mars (viděl Michael Mästlin v Heidelbergu)",
+  "datum": [
+   1590,
+   10,
+   13
+  ],
+  "a": "venus",
+  "b": "mars",
+  "okno": 5,
+  "ref": {},
+  "pramen": "Albers 1979, Sky & Telescope 57, 220 (Mutual Occultations of Planets: 1557–2230); přes Wikipedii"
+ },
+ {
+  "id": "k1613",
+  "typ": "dvojice",
+  "druh": "zakryt",
+  "nazev": "Galileo zakreslil Neptun vedle Jupiteru 234 let před objevem",
+  "datum": [
+   1613,
+   1,
+   4
+  ],
+  "a": "jupiter",
+  "b": "neptune",
+  "okno": 10,
+  "ref": {},
+  "pramen": "Kowal & Drake 1980, Nature 287, 311"
+ },
+ {
+  "id": "k1737",
+  "typ": "dvojice",
+  "druh": "zakryt",
+  "nazev": "Venuše zakryla Merkur (John Bevis, Greenwich) – jediný podrobně pozorovaný vzájemný zákryt planet",
+  "datum": [
+   1737,
+   5,
+   28
+  ],
+  "a": "venus",
+  "b": "mercury",
+  "okno": 4,
+  "ref": {},
+  "pramen": "Albers 1979, Sky & Telescope 57, 220 (Mutual Occultations of Planets: 1557–2230); přes Wikipedii"
+ },
+ {
+  "id": "k1818",
+  "typ": "dvojice",
+  "druh": "zakryt",
+  "nazev": "Venuše přešla přes Jupiter – poslední vzájemný zákryt planet",
+  "datum": [
+   1818,
+   1,
+   3
+  ],
+  "a": "venus",
+  "b": "jupiter",
+  "okno": 4,
+  "ref": {},
+  "pramen": "Albers 1979, Sky & Telescope 57, 220 (Mutual Occultations of Planets: 1557–2230); přes Wikipedii",
+  "ut": "21:52"
+ },
+ {
+  "id": "k2020",
+  "typ": "dvojice",
+  "druh": "konjunkce",
+  "nazev": "Velká konjunkce 21. 12. 2020",
+  "datum": [
+   2020,
+   12,
+   21
+  ],
+  "a": "jupiter",
+  "b": "saturn",
+  "okno": 10,
+  "ref": {
+   "sep": 6.1
+  },
+  "pramen": "Wikipedia: Great conjunction (tabulka; výpočet podle JPL Horizons)",
+  "ut": "18:20"
+ },
+ {
+  "id": "k2026",
+  "typ": "dvojice",
+  "druh": "konjunkce",
+  "nazev": "Mars u Jupiteru 16. 11. 2026 (právě teď na ranní obloze)",
+  "datum": [
+   2026,
+   11,
+   16
+  ],
+  "a": "mars",
+  "b": "jupiter",
+  "okno": 8,
+  "ref": {},
+  "pramen": "ověřit v ročence (Hvězdářská ročenka 2026)"
+ },
+ {
+  "id": "k2065",
+  "typ": "dvojice",
+  "druh": "zakryt",
+  "nazev": "Venuše přejde přes Jupiter – první vzájemný zákryt planet po 247 letech",
+  "datum": [
+   2065,
+   11,
+   22
+  ],
+  "a": "venus",
+  "b": "jupiter",
+  "okno": 4,
+  "ref": {},
+  "pramen": "Albers 1979, Sky & Telescope 57, 220 (Mutual Occultations of Planets: 1557–2230); přes Wikipedii",
+  "ut": "12:45"
+ },
+ {
+  "id": "k2080",
+  "typ": "dvojice",
+  "druh": "konjunkce",
+  "nazev": "Velká konjunkce 2080",
+  "datum": [
+   2080,
+   3,
+   15
+  ],
+  "a": "jupiter",
+  "b": "saturn",
+  "okno": 15,
+  "ref": {
+   "sep": 6.0
+  },
+  "pramen": "Wikipedia: Great conjunction (tabulka; výpočet podle JPL Horizons)"
+ },
+ {
+  "id": "k2133",
+  "typ": "dvojice",
+  "druh": "zakryt",
+  "nazev": "Venuše zakryje Merkur",
+  "datum": [
+   2133,
+   12,
+   3
+  ],
+  "a": "venus",
+  "b": "mercury",
+  "okno": 4,
+  "ref": {},
+  "pramen": "Albers 1979, Sky & Telescope 57, 220 (Mutual Occultations of Planets: 1557–2230); přes Wikipedii"
+ },
+ {
+  "id": "g1186",
+  "typ": "skupina",
+  "nazev": "Pět planet, Slunce a Měsíc ve Vahách (Toledský dopis, panika z konce světa)",
+  "datum": [
+   1186,
+   9,
+   15
+  ],
+  "telesa": [
+   "mercury",
+   "venus",
+   "mars",
+   "jupiter",
+   "saturn",
+   "sun",
+   "moon"
+  ],
+  "okno": 5,
+  "ref": {},
+  "pramen": "Meeus 1997, Mathematical Astronomy Morsels; De Meis & Meeus 1994, JBAA 104, 293"
+ },
+ {
+  "id": "g1345",
+  "typ": "skupina",
+  "nazev": "Mars, Jupiter a Saturn ve Vodnáři – pařížská fakulta jim přičetla černou smrt",
+  "datum": [
+   1345,
+   3,
+   22
+  ],
+  "telesa": [
+   "mars",
+   "jupiter",
+   "saturn"
+  ],
+  "okno": 25,
+  "ref": {},
+  "pramen": "Compendium de epidemia, Paříž 1348"
+ },
+ {
+  "id": "g1524",
+  "typ": "skupina",
+  "nazev": "Všechny planety v Rybách – Evropa čekala potopu",
+  "datum": [
+   1524,
+   2,
+   20
+  ],
+  "telesa": [
+   "mercury",
+   "venus",
+   "mars",
+   "jupiter",
+   "saturn",
+   "sun"
+  ],
+  "okno": 20,
+  "ref": {},
+  "pramen": "Stöffler & Pflaum, Almanach 1499; Thorndike, History of Magic V"
+ },
+ {
+  "id": "g1962",
+  "typ": "skupina",
+  "nazev": "Pět planet, Slunce a Měsíc v Kozorohu při úplném zatmění Slunce",
+  "datum": [
+   1962,
+   2,
+   5
+  ],
+  "telesa": [
+   "mercury",
+   "venus",
+   "mars",
+   "jupiter",
+   "saturn",
+   "sun",
+   "moon"
+  ],
+  "okno": 4,
+  "ref": {},
+  "pramen": "De Meis & Meeus 1994, JBAA 104, 293"
+ },
+ {
+  "id": "g2000",
+  "typ": "skupina",
+  "nazev": "Pět planet, Slunce a Měsíc pohromadě (květen 2000)",
+  "datum": [
+   2000,
+   5,
+   5
+  ],
+  "telesa": [
+   "mercury",
+   "venus",
+   "mars",
+   "jupiter",
+   "saturn",
+   "sun",
+   "moon"
+  ],
+  "okno": 5,
+  "ref": {},
+  "pramen": "De Meis & Meeus 1994, JBAA 104, 293"
+ },
+ {
+  "id": "g2022",
+  "typ": "skupina",
+  "nazev": "Pět planet na ranní obloze v pořadí od Slunce",
+  "datum": [
+   2022,
+   6,
+   24
+  ],
+  "telesa": [
+   "mercury",
+   "venus",
+   "mars",
+   "jupiter",
+   "saturn"
+  ],
+  "okno": 20,
+  "ref": {},
+  "pramen": "Sky & Telescope, červen 2022"
+ },
+ {
+  "id": "g2040",
+  "typ": "skupina",
+  "nazev": "Pět planet a srpek Měsíce v jednom zorném poli (8. 9. 2040)",
+  "datum": [
+   2040,
+   9,
+   8
+  ],
+  "telesa": [
+   "mercury",
+   "venus",
+   "mars",
+   "jupiter",
+   "saturn",
+   "moon"
+  ],
+  "okno": 4,
+  "ref": {},
+  "pramen": "Meeus 1997, Mathematical Astronomy Morsels; De Meis & Meeus 1994"
+ },
+ {
+  "id": "g2161",
+  "typ": "skupina",
+  "nazev": "Všech osm planet na jedné straně Slunce",
+  "datum": [
+   2161,
+   5,
+   19
+  ],
+  "telesa": [
+   "mercury",
+   "venus",
+   "earth",
+   "mars",
+   "jupiter",
+   "saturn",
+   "uranus",
+   "neptune"
+  ],
+  "okno": 60,
+  "ref": {},
+  "pramen": "Meeus 1997, Mathematical Astronomy Morsels",
+  "helio": 1
  }
 ]
