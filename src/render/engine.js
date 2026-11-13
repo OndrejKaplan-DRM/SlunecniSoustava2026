@@ -643,6 +643,7 @@ export function createEngine(canvas, overlay) {
       uMode: { value: S.sunMode },
       uFlare: { value: new THREE.Vector4(1, 0, 0, 0) },
       uQ: { value: 2 },
+      uCor: { value: 0 },
       uAR: { value: isSun ? Array.from({ length: 16 }, (_, k) => AR[k] || new THREE.Vector3(0, 0, 1)) : [] },
     };
     const mat = new THREE.ShaderMaterial({
@@ -717,6 +718,10 @@ export function createEngine(canvas, overlay) {
           uI: { value: 1 },
           uCore: { value: 0.1 },
           uRay: { value: isSun ? 1 : 0 },
+          uCor: { value: 0 },
+          uCR: { value: 0.06 },
+          uAx: { value: new THREE.Vector2(0, 1) },
+          uSt: { value: Array.from({ length: 8 }, () => new THREE.Vector4()) },
         },
         vertexShader: SH.GLOW_VS,
         fragmentShader: SH.GLOW_FS,
@@ -795,6 +800,21 @@ export function createEngine(canvas, overlay) {
     const lo = a[0] * DEG,
       la = a[1] * DEG;
     return new THREE.Vector3(Math.cos(la) * Math.cos(lo), Math.cos(la) * Math.sin(lo), Math.sin(la));
+  });
+  /* koronograf: přilbové paprsky v soustavě Slunce [šířka °, délka °, šířka rad, síla] – ilustrace, rozložení jako kolem maxima cyklu */
+  const STREAM = [
+    [8, 20, 0.3, 1],
+    [-14, 200, 0.28, 1],
+    [38, 110, 0.22, 0.8],
+    [-42, 290, 0.24, 0.8],
+    [-5, 115, 0.2, 0.6],
+    [24, 300, 0.2, 0.7],
+    [57, 240, 0.17, 0.5],
+    [-60, 60, 0.17, 0.5],
+  ].map((a) => {
+    const lo = a[1] * DEG,
+      la = a[0] * DEG;
+    return [Math.cos(la) * Math.cos(lo), Math.cos(la) * Math.sin(lo), Math.sin(la), a[2], a[3]];
   });
   let loops = null;
   function makeLoops(mesh) {
@@ -1357,10 +1377,11 @@ export function createEngine(canvas, overlay) {
         } else {
           U.uTime.value = (now * 0.00002) % 100;
           U.uMode.value = S.sunMode;
+          U.uCor.value = S.sunMode === 3 ? sstep(5, 16, pr) : 0; /* z dálky zůstává Slunce vidět jako hvězda */
           U.uQ.value = S.quality;
           if (loops) {
             const lu = loops.material.uniforms;
-            lu.uI.value = (S.sunMode === 0 ? 0.0 : 1.0) * Math.min(1, pr / 120);
+            lu.uI.value = (S.sunMode === 0 ? 0.0 : 1.0) * Math.min(1, pr / (S.sunMode === 3 ? 50 : 120));
             lu.uErupt.value = flare.t >= 0 ? flare.t : 0;
             loops.visible = lu.uI.value > 0.01 && pr > 30;
           }
@@ -1375,7 +1396,7 @@ export function createEngine(canvas, overlay) {
           if (flare.t >= 0) {
             flare.t += dt / 3.5;
             const e = flare.t < 0.12 ? flare.t / 0.12 : Math.max(0, 1 - (flare.t - 0.12) / 0.88);
-            U.uFlare.value.w = e * e * (S.sunMode === 0 ? 0.35 : 1);
+            U.uFlare.value.w = e * e * (S.sunMode === 0 || S.sunMode === 3 ? 0.35 : 1);
             if (flare.t >= 1) {
               flare.t = -1;
               flare.next = 6 + Math.random() * 9;
@@ -1396,6 +1417,29 @@ export function createEngine(canvas, overlay) {
             (S.sunMode === 2 ? 0.8 : S.sunMode === 1 ? 0.35 : 0.3) *
             (0.08 + 0.92 * Math.min(1, Math.max(0, dist / b.R - 1) / 7));
           g.uC.value.set(1, S.sunMode === 1 ? 0.45 : 0.74, S.sunMode === 1 ? 0.25 : 0.42);
+          const kc = r.U.uCor.value;
+          g.uCor.value = kc;
+          if (kc > 0) {
+            /* průmět osy Slunce a přilbových paprsků na obrazovku (sloupce uRot = osy tělesa ve scéně) */
+            const e = r.U.uRot.value.elements,
+              c = camera.matrixWorld.elements;
+            const pj = (x, y, z, o) => {
+              const wx = e[0] * x + e[3] * y + e[6] * z,
+                wy = e[1] * x + e[4] * y + e[7] * z,
+                wz = e[2] * x + e[5] * y + e[8] * z;
+              o.x = wx * c[0] + wy * c[1] + wz * c[2];
+              o.y = wx * c[4] + wy * c[5] + wz * c[6];
+            };
+            pj(0, 0, 1, g.uAx.value);
+            for (let k = 0; k < 8; k++) {
+              const s = STREAM[k],
+                o = g.uSt.value[k];
+              pj(s[0], s[1], s[2], o);
+              o.z = s[3];
+              o.w = s[4];
+            }
+            g.uCR.value = b.R / g.uS.value;
+          }
         } else {
           const hd = Math.hypot(P[i * 3], P[i * 3 + 1], P[i * 3 + 2]) / AU,
             A = Math.pow(Math.min(1, Math.max(0, (3.6 - hd) / 2.6)), 1.5);

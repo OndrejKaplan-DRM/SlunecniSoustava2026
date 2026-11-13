@@ -13,6 +13,7 @@ const $ = (s) => document.querySelector(s),
     if (h !== undefined) e.innerHTML = h;
     return e;
   };
+const SUNN = ['bílé světlo', 'H-alfa', 'EUV 304 Å', 'koronograf'];
 const nf = (x, d = 0) => x.toLocaleString('cs-CZ', { maximumFractionDigits: d, minimumFractionDigits: 0 });
 const sig = (x) => (x >= 100 ? nf(x) : x >= 10 ? nf(x, 1) : x >= 1 ? nf(x, 2) : nf(x, 3));
 const TYPE = {
@@ -586,10 +587,11 @@ export function createUI(S, A) {
         'Bílé světlo: fotosféra. Zblízka je vidět granulace – vršky stoupajícího horkého plynu, každé zrno velké asi jako Česko až Francie. Skvrny mají tmavé jádro (umbru) a vláknitý lem (penumbru).',
         'H-alfa (656 nm): chromosféra – tmavá vlákna (filamenty), světlé plochy kolem skvrn a protuberance nad okrajem.',
         'EUV 304 Å: vrstva nad chromosférou, asi 50 000 °C. Září aktivní oblasti, oblouky plazmatu podél magnetického pole a protuberance nad okrajem. Barva je dohodnutá – tohle světlo oko nevidí.',
+        'Koronograf: kotouč je zakrytý, jako když Slunce při úplném zatmění schová Měsíc. Vynikne korona – řídký plyn horký přes milion stupňů, který magnetické pole češe do paprsků. Růžové výběžky na okraji jsou protuberance. Tvar korony je ilustrace.',
       ];
     const sunBox =
       i === SUN
-        ? `<div class="sunf"><button data-a="sunf" class="pri">🔆 Filtr: ${['bílé světlo', 'H-alfa', 'EUV 304 Å'][S.sunMode]} (V)</button><p>${SUNF[S.sunMode]} <small>Skvrny a erupce jsou ilustrace: poloha podle aktivních oblastí snímku SDO, ne dnešní stav.</small></p></div>`
+        ? `<div class="sunf"><button data-a="sunf" class="pri">🔆 Filtr: ${SUNN[S.sunMode]} (V)</button><p>${SUNF[S.sunMode]} <small>Skvrny a erupce jsou ilustrace: poloha podle aktivních oblastí snímku SDO, ne dnešní stav.</small></p></div>`
         : '';
     const fx = factsOf(b, { moons: MOONS[b.id], sunAU: inf.sun / AU, isSun: i === SUN }),
       ib = fx.length
@@ -876,14 +878,13 @@ export function createUI(S, A) {
   $('#time').addEventListener('click', (e) => (e.target.dataset.a === 'tm' ? act.tm() : timeAct(e.target.dataset.a)));
 
   // ---------- HUD ----------
-  const SUNN = ['bílé světlo', 'H-alfa', 'EUV 304 Å'];
   S.on.hud = () => {
     drawTime();
     {
       const c = $('#sunchip'),
         on = S.focus === SUN && !S.cam.fly;
       c.classList.toggle('on', on);
-      if (on) c.lastChild.textContent = ' Filtr: ' + SUNN[S.sunMode] + ' → ' + SUNN[(S.sunMode + 1) % 3];
+      if (on) c.lastChild.textContent = ' Filtr: ' + SUNN[S.sunMode] + ' → ' + SUNN[(S.sunMode + 1) % 4];
     }
     const inf = S.info(S.focus),
       b = B[S.focus];
@@ -1092,10 +1093,10 @@ export function createUI(S, A) {
       tut.start();
     },
     sunf() {
-      S.setSunMode((S.sunMode + 1) % 3);
-      A.play(['sun_white', 'sun_halpha', 'sun_euv'][S.sunMode]);
+      S.setSunMode((S.sunMode + 1) % 4);
+      A.play(['sun_white', 'sun_halpha', 'sun_euv', 'sun_white'][S.sunMode]);
       if (S.sel === SUN) drawCard(SUN);
-      if (S.focus !== SUN) toast('Filtr Slunce: ' + ['bílé světlo', 'H-alfa', 'EUV 304 Å'][S.sunMode]);
+      if (S.focus !== SUN) toast('Filtr Slunce: ' + SUNN[S.sunMode]);
     },
     full() {
       A.play('orbit_on');

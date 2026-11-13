@@ -198,9 +198,9 @@ export function createTutorial(S, A, ui) {
     },
     async sun() {
       await say(
-        'Slunce má tři filtry (klávesa V): bílé světlo se skvrnami, H-alfa s protuberancemi a EUV s magnetickými smyčkami.',
+        'Slunce má čtyři pohledy (klávesa V): bílé světlo se skvrnami, H-alfa s protuberancemi, EUV s magnetickými smyčkami a koronograf s koronou.',
         'Na Slunce se díváme přes kouzelné filtry: uvidíš skvrny, ohnivé oblouky i smyčky magnetů. Klávesa V!',
-        'Slunce má tři filtry (tlačítko na jeho kartě nebo ☰ → Filtr Slunce): bílé světlo se skvrnami, H-alfa s protuberancemi a EUV s magnetickými smyčkami.',
+        'Slunce má čtyři pohledy (tlačítko na jeho kartě nebo ☰ → Filtr Slunce): bílé světlo se skvrnami, H-alfa s protuberancemi, EUV s magnetickými smyčkami a koronograf s koronou.',
         'Na Slunce se díváme přes kouzelné filtry: uvidíš skvrny, ohnivé oblouky i smyčky magnetů. Přepneš je na kartě Slunce.'
       );
       await key('0');

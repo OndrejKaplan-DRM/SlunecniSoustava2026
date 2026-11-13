@@ -388,6 +388,7 @@ export function createExtras(S, A, api) {
       sn.sy > -50 &&
       sn.sy < H + 50 &&
       sn.pr < 160 &&
+      !(S.sunMode === 3 && sn.pr > 5) /* koronograf: zakrytý kotouč odlesk nedělá */ &&
       !hidden(sn.sx, sn.sy, sn.dist)
     ) {
       const k = (kid ? 0.6 : 1) * Math.min(1, 1.3 - sn.pr / 160) * (0.55 + 0.45 * Math.min(1, (20 * AU) / sn.dist)),

@@ -82,7 +82,8 @@ void main(){
   gl_FragColor = vec4(col, 1.0);
   #include <colorspace_fragment>
 }`;
-// Slunce: uMode 0 = bílé světlo (fotosféra se skvrnami), 1 = H-alfa (chromosféra, filamenty), 2 = EUV 304 Å (aktivní oblasti, oblouky)
+// Slunce: uMode 0 = bílé světlo (fotosféra se skvrnami), 1 = H-alfa (chromosféra, filamenty), 2 = EUV 304 Å (aktivní oblasti, oblouky),
+// 3 = koronograf (kotouč zakrytý jako při úplném zatmění; koronu kreslí GLOW_FS, protuberance PROM_FS)
 // Slunce: vše procedurálně (mapa SDO jen určuje jas koróny v EUV). Tři měřítka buněk: supergranule (~25 000 km),
 // mezogranule (~6 000 km) a granule (~1 200 km) – každé se zapne, až když je buňka větší než pár pixelů.
 // Skvrny: dvojice (vedoucí + následující) v aktivní oblasti, umbra, penumbra s radiálními vlákny.
@@ -106,7 +107,7 @@ vec3 spot(vec2 p, float s, float seed){ float r = length(p) / s; if (r > 1.5) re
 export const SUN_FS = /* glsl */ `
 #include <common>
 #include <logdepthbuf_pars_fragment>
-uniform sampler2D tMap; uniform float uHasMap; uniform vec3 uCtr; uniform float uTime; uniform float uMode; uniform vec4 uFlare; uniform vec3 uAR[16]; uniform float uQ;
+uniform sampler2D tMap; uniform float uHasMap; uniform vec3 uCtr; uniform float uTime; uniform float uMode; uniform vec4 uFlare; uniform vec3 uAR[16]; uniform float uQ; uniform float uCor;
 varying vec3 vO; varying vec3 vN; varying vec3 vP;
 ${NOISE}
 ${SUNLIB}
@@ -138,7 +139,7 @@ void main(){
   float bS = cellB(cS), bM = cellB(cM), bG = cellB(cG), eS = cS.y - cS.x;
   float big = vn(o * 3.0 + 1.7) * 0.6 + vn(o * 9.0 + uTime * 0.2) * 0.4, mid = vn(o * 45.0 + 3.0);
   vec3 col;
-  if (uMode < 0.5) {                                   // bílé světlo: fotosféra
+  if (uMode < 0.5 || uMode > 2.5) {                    // bílé světlo: fotosféra (koronograf ji pak zakryje)
     float v = 0.60 + (big - 0.5) * 0.12 + (mid - 0.5) * 0.06;
     v += wS * (bS - 0.62) * 0.26;
     v += wM * mix((bM - 0.62) * 0.48, (0.5 - cM.x) * 0.16, wG);
@@ -171,6 +172,7 @@ void main(){
     col += vec3(1.0, 0.9, 0.6) * max(0.0, v - 1.05) * 0.9; col *= 0.78 + 0.5 * pow(1.0 - mu, 2.0);
   }
   col += vec3(1.0, 0.95, 0.85) * uFlare.w * exp(-(1.0 - dot(o, uFlare.xyz)) * 900.0) * 6.0;
+  col *= 1.0 - uCor;                                   // koronograf: zakrytý kotouč
   gl_FragColor = vec4(col, 1.0);
   #include <colorspace_fragment>
 }`;
@@ -213,7 +215,8 @@ void main(){
   }
   I = I * 0.34 + hot; if (I * uI < 0.004) discard;
   vec3 ca = uMode < 1.5 ? vec3(1.0, 0.16, 0.07) : vec3(1.0, 0.50, 0.12), cb = uMode < 1.5 ? vec3(1.0, 0.62, 0.42) : vec3(1.0, 0.90, 0.60);
-  gl_FragColor = vec4(mix(ca, cb, clamp(I - 0.55, 0.0, 1.0)) * min(I, 1.5) * uI, 1.0);
+  if (uMode > 2.5) { ca = vec3(1.0, 0.14, 0.26); cb = vec3(1.0, 0.62, 0.66); }   // při zatmění: růžová (H-alfa + další čáry vodíku)
+  gl_FragColor = vec4(mix(ca, cb, clamp(I - 0.55, 0.0, 1.0)) * min(I, 1.5) * uI * (uMode > 2.5 ? 0.8 : 1.0), 1.0);
   #include <colorspace_fragment>
 }`;
 // záře: čtverec natočený ke kameře; uS = poloměr v km
@@ -228,6 +231,28 @@ export const GLOW_FS = /* glsl */ `
 #include <common>
 #include <logdepthbuf_pars_fragment>
 uniform vec3 uC; uniform float uI; uniform float uCore; uniform float uRay; varying vec2 vQ;
+// koronograf: uCor 0–1, uCR = poloměr kotouče v jednotkách čtverce, uAx = průmět severní osy Slunce na obrazovku,
+// uSt[k] = (průmět směru přilbového paprsku x, y; šířka v rad; síla)
+uniform float uCor; uniform float uCR; uniform vec2 uAx; uniform vec4 uSt[8];
+float h1(float n){ return fract(sin(n * 127.1 + 3.7) * 43758.5453); }
+float n1(float x, float P){ float i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f); return mix(h1(mod(i, P)), h1(mod(i + 1.0, P)), f); }
+float corona(vec2 q){
+  float x = length(q); if (x < 0.97) return 0.0; vec2 d = q / x;
+  float al = length(uAx), t = atan(d.y, d.x) * 0.15915494 + 0.5;
+  // jemné radiální žíhání
+  float fs = n1(t * 90.0, 90.0) * n1(t * 37.0 + 5.0, 37.0) * 1.9 + 0.35 * n1(t * 211.0, 211.0) + 0.3;
+  float a = (0.60 / pow(x, 7.0) + 0.050 / pow(x, 2.6)) * (0.75 + 0.25 * fs);
+  // polární chocholy: krátké, rozbíhají se víc než radiálně (siločáry dipólu)
+  if (al > 0.05) { vec2 ax = uAx / al; float ca = dot(d, ax), sg = ax.x * d.y - ax.y * d.x;
+    float sp = acos(clamp(abs(ca), 0.0, 1.0)) / (1.0 + 0.45 * (x - 1.0)) * (sg < 0.0 ? -1.0 : 1.0);
+    float pn = n1(sp * 44.0 + (ca > 0.0 ? 200.0 : 500.0), 4096.0) * n1(sp * 17.0 + (ca > 0.0 ? 90.0 : 40.0), 4096.0);
+    a += smoothstep(0.62, 0.18, abs(sp)) * al * pn * pn * 1.5 / pow(x, 3.6); }
+  // přilbové paprsky: široká základna, nahoře úzký stvol; nejlépe vidět, když míří kolmo k zornému paprsku
+  for (int k = 0; k < 8; k++) { vec4 s = uSt[k]; float L = length(s.xy); if (L < 0.08) continue; float c = dot(d, s.xy / L); if (c < 0.3) continue;
+    float dp = acos(min(c, 1.0)), w = s.z * (0.22 + 0.78 / (x * x)), len = 1.6 + 5.5 * L * s.w;
+    float e = dp / w; a += s.w * L * L * exp(-e * e) * (0.55 + 0.45 * fs) * 0.30 / pow(x, 2.1) * smoothstep(len, 1.0 + 0.3 * len, x); }
+  return a;
+}
 void main(){
   #include <logdepthbuf_fragment>
   float r = length(vQ); if (r > 1.0) discard;
@@ -235,7 +260,9 @@ void main(){
   float a = uI * (1.6 / (x * x * x) + 0.05 / x) * pow(1.0 - r, 1.5);
   float ang = atan(vQ.y, vQ.x); float st = pow(abs(cos(ang + 0.2)), 5.0) * 0.9 + 0.22 * sin(ang * 11.0 + 1.3) + 0.14 * sin(ang * 23.0 + 4.0) + 0.1 * sin(ang * 47.0);
   a *= 1.0 + uRay * st * smoothstep(1.0, 3.0, x) + uRay * 0.25 * smoothstep(1.0, 2.0, x);
-  gl_FragColor = vec4(uC * a, 1.0);
+  vec3 col = uC * a;
+  if (uCor > 0.0) col = mix(col, vec3(1.0, 0.97, 0.93) * corona(vQ / uCR) * pow(1.0 - r, 1.2), uCor);
+  gl_FragColor = vec4(col, 1.0);
   #include <colorspace_fragment>
 }`;
 export const RING_VS = /* glsl */ `
