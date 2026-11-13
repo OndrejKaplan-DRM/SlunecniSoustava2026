@@ -1,0 +1,776 @@
+[
+ {
+  "id": "s-0584",
+  "typ": "slunce",
+  "nazev": "Thalétovo zatmění (bitva na řece Halys)",
+  "datum": [
+   -584,
+   5,
+   28
+  ],
+  "td": "19:28:50",
+  "dT": 18384,
+  "ref": {
+   "gamma": 0.3201,
+   "lat": 38.2,
+   "lon": -45.0,
+   "trvani": "6m04s",
+   "druh": "T",
+   "misto": {
+    "faze": 0.831,
+    "uplne": false,
+    "prstencove": false,
+    "ut": 15.702,
+    "vyska": 26.8
+   }
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Solar Eclipses"
+ },
+ {
+  "id": "s-0430",
+  "typ": "slunce",
+  "nazev": "Zatmění z Thúkydida (peloponéská válka)",
+  "datum": [
+   -430,
+   8,
+   3
+  ],
+  "td": "19:20:15",
+  "dT": 15923,
+  "ref": {
+   "gamma": 0.8388,
+   "lat": 68.0,
+   "lon": 5.9,
+   "trvani": "1m04s",
+   "druh": "A",
+   "misto": {
+    "faze": 0.921,
+    "uplne": false,
+    "prstencove": false,
+    "ut": 15.563,
+    "vyska": 29.2
+   }
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Solar Eclipses"
+ },
+ {
+  "id": "s1133",
+  "typ": "slunce",
+  "nazev": "Zatmění krále Jindřicha I.",
+  "datum": [
+   1133,
+   8,
+   2
+  ],
+  "td": "12:24:26",
+  "dT": 948,
+  "ref": {
+   "gamma": 0.5423,
+   "lat": 45.8,
+   "lon": 16.5,
+   "trvani": "4m38s",
+   "druh": "T",
+   "misto": {
+    "faze": 0.973,
+    "uplne": false,
+    "prstencove": false,
+    "ut": 11.993,
+    "vyska": 54.4
+   }
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Solar Eclipses"
+ },
+ {
+  "id": "s1415",
+  "typ": "slunce",
+  "nazev": "Úplné zatmění nad Čechami měsíc před upálením Husa",
+  "datum": [
+   1415,
+   6,
+   7
+  ],
+  "td": "07:22:41",
+  "dT": 296,
+  "ref": {
+   "gamma": 0.5827,
+   "lat": 59.2,
+   "lon": 73.7,
+   "trvani": "4m51s",
+   "druh": "T",
+   "misto": {
+    "faze": 1.014,
+    "uplne": true,
+    "prstencove": false,
+    "ut": 6.188,
+    "vyska": 28.7
+   }
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Solar Eclipses"
+ },
+ {
+  "id": "s1706",
+  "typ": "slunce",
+  "nazev": "Poslední úplné zatmění v Praze",
+  "datum": [
+   1706,
+   5,
+   12
+  ],
+  "td": "09:35:09",
+  "dT": 9,
+  "ref": {
+   "gamma": 0.5984,
+   "lat": 51.5,
+   "lon": 15.2,
+   "trvani": "4m06s",
+   "druh": "T",
+   "misto": {
+    "faze": 1.011,
+    "uplne": true,
+    "prstencove": false,
+    "ut": 9.531,
+    "vyska": 53.6
+   }
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Solar Eclipses"
+ },
+ {
+  "id": "s1715",
+  "typ": "slunce",
+  "nazev": "Halleyovo zatmění (první mapa pásu totality)",
+  "datum": [
+   1715,
+   5,
+   3
+  ],
+  "td": "09:36:30",
+  "dT": 10,
+  "ref": {
+   "gamma": 0.7112,
+   "lat": 59.4,
+   "lon": 17.9,
+   "trvani": "4m14s",
+   "druh": "T",
+   "misto": {
+    "faze": 0.857,
+    "uplne": false,
+    "prstencove": false,
+    "ut": 9.351,
+    "vyska": 50.2
+   }
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Solar Eclipses"
+ },
+ {
+  "id": "s1842",
+  "typ": "slunce",
+  "nazev": "Zatmění 1842 (Vídeň, Baily, Stifter)",
+  "datum": [
+   1842,
+   7,
+   8
+  ],
+  "td": "07:06:27",
+  "dT": 6,
+  "ref": {
+   "gamma": 0.4727,
+   "lat": 50.1,
+   "lon": 83.6,
+   "trvani": "4m05s",
+   "druh": "T",
+   "misto": {
+    "faze": 0.947,
+    "uplne": false,
+    "prstencove": false,
+    "ut": 5.78,
+    "vyska": 23.3
+   }
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Solar Eclipses"
+ },
+ {
+  "id": "s1868",
+  "typ": "slunce",
+  "nazev": "Zatmění, při kterém bylo objeveno helium",
+  "datum": [
+   1868,
+   8,
+   18
+  ],
+  "td": "05:12:10",
+  "dT": 2,
+  "ref": {
+   "gamma": -0.0443,
+   "lat": 10.6,
+   "lon": 102.2,
+   "trvani": "6m47s",
+   "druh": "T",
+   "misto": {
+    "faze": 0,
+    "uplne": false,
+    "prstencove": false,
+    "ut": 3.939,
+    "vyska": -0.9
+   }
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Solar Eclipses"
+ },
+ {
+  "id": "s1919",
+  "typ": "slunce",
+  "nazev": "Eddingtonovo zatmění (ohyb světla, Einstein)",
+  "datum": [
+   1919,
+   5,
+   29
+  ],
+  "td": "13:08:55",
+  "dT": 21,
+  "ref": {
+   "gamma": -0.2955,
+   "lat": 4.4,
+   "lon": -16.7,
+   "trvani": "6m51s",
+   "druh": "T",
+   "misto": {
+    "faze": 0,
+    "uplne": false,
+    "prstencove": false,
+    "ut": 13.861,
+    "vyska": 45.8
+   }
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Solar Eclipses"
+ },
+ {
+  "id": "s1999",
+  "typ": "slunce",
+  "nazev": "Zatmění 11. 8. 1999 (střední Evropa)",
+  "datum": [
+   1999,
+   8,
+   11
+  ],
+  "td": "11:04:09",
+  "dT": 64,
+  "ref": {
+   "gamma": 0.5062,
+   "lat": 45.1,
+   "lon": 24.3,
+   "trvani": "2m23s",
+   "druh": "T",
+   "misto": {
+    "faze": 0.952,
+    "uplne": false,
+    "prstencove": false,
+    "ut": 10.707,
+    "vyska": 54.9
+   }
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Solar Eclipses"
+ },
+ {
+  "id": "s2026",
+  "typ": "slunce",
+  "nazev": "Zatmění 12. 8. 2026 (Island, Španělsko)",
+  "datum": [
+   2026,
+   8,
+   12
+  ],
+  "td": "17:47:06",
+  "dT": 75,
+  "ref": {
+   "gamma": 0.8977,
+   "lat": 65.2,
+   "lon": -25.2,
+   "trvani": "2m18s",
+   "druh": "T",
+   "misto": {
+    "faze": 0.885,
+    "uplne": false,
+    "prstencove": false,
+    "ut": 18.196,
+    "vyska": 1.3
+   }
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Solar Eclipses"
+ },
+ {
+  "id": "s2027",
+  "typ": "slunce",
+  "nazev": "Zatmění 2. 8. 2027 (Luxor, 6 minut)",
+  "datum": [
+   2027,
+   8,
+   2
+  ],
+  "td": "10:07:50",
+  "dT": 76,
+  "ref": {
+   "gamma": 0.1421,
+   "lat": 25.5,
+   "lon": 33.2,
+   "trvani": "6m23s",
+   "druh": "T",
+   "misto": {
+    "faze": 0.516,
+    "uplne": false,
+    "prstencove": false,
+    "ut": 9.246,
+    "vyska": 50.5
+   }
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Solar Eclipses"
+ },
+ {
+  "id": "s2045",
+  "typ": "slunce",
+  "nazev": "Zatmění 12. 8. 2045 (napříč USA, 6 minut)",
+  "datum": [
+   2045,
+   8,
+   12
+  ],
+  "td": "17:42:39",
+  "dT": 89,
+  "ref": {
+   "gamma": 0.2116,
+   "lat": 25.9,
+   "lon": -78.5,
+   "trvani": "6m06s",
+   "druh": "T",
+   "misto": {
+    "faze": 0,
+    "uplne": false,
+    "prstencove": false,
+    "ut": 18.075,
+    "vyska": 2.3
+   }
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Solar Eclipses"
+ },
+ {
+  "id": "s2081",
+  "typ": "slunce",
+  "nazev": "Zatmění 3. 9. 2081 (střední Evropa)",
+  "datum": [
+   2081,
+   9,
+   3
+  ],
+  "td": "09:07:31",
+  "dT": 160,
+  "ref": {
+   "gamma": 0.3378,
+   "lat": 24.6,
+   "lon": 53.6,
+   "trvani": "5m33s",
+   "druh": "T",
+   "misto": {
+    "faze": 0.921,
+    "uplne": false,
+    "prstencove": false,
+    "ut": 7.775,
+    "vyska": 31.1
+   }
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Solar Eclipses"
+ },
+ {
+  "id": "s2135",
+  "typ": "slunce",
+  "nazev": "Příští úplné zatmění v Česku",
+  "datum": [
+   2135,
+   10,
+   7
+  ],
+  "td": "09:00:03",
+  "dT": 291,
+  "ref": {
+   "gamma": 0.4884,
+   "lat": 20.3,
+   "lon": 57.6,
+   "trvani": "4m50s",
+   "druh": "T",
+   "misto": {
+    "faze": 0.988,
+    "uplne": false,
+    "prstencove": false,
+    "ut": 7.531,
+    "vyska": 20.1
+   }
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Solar Eclipses"
+ },
+ {
+  "id": "s2186",
+  "typ": "slunce",
+  "nazev": "Nejdelší úplné zatmění v pěti tisíciletích",
+  "datum": [
+   2186,
+   7,
+   16
+  ],
+  "td": "15:14:54",
+  "dT": 409,
+  "ref": {
+   "gamma": -0.2396,
+   "lat": 7.4,
+   "lon": -46.5,
+   "trvani": "7m29s",
+   "druh": "T",
+   "misto": {
+    "faze": 0,
+    "uplne": false,
+    "prstencove": false,
+    "ut": 15.911,
+    "vyska": 27.8
+   }
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Solar Eclipses"
+ },
+ {
+  "id": "m-0412",
+  "typ": "mesic",
+  "nazev": "Níkiovo zatmění (zkáza Athéňanů u Syrakus)",
+  "datum": [
+   -412,
+   8,
+   28
+  ],
+  "td": "01:15:33",
+  "dT": 15636,
+  "ref": {
+   "umag": 1.0804,
+   "tot": 43.4,
+   "lat": -12,
+   "lon": 46
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Lunar Eclipses"
+ },
+ {
+  "id": "m-0330",
+  "typ": "mesic",
+  "nazev": "Zatmění před bitvou u Gaugamél",
+  "datum": [
+   -330,
+   9,
+   20
+  ],
+  "td": "22:24:32",
+  "dT": 14417,
+  "ref": {
+   "umag": 1.2105,
+   "tot": 64.1,
+   "lat": -3,
+   "lon": 83
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Lunar Eclipses"
+ },
+ {
+  "id": "m1453",
+  "typ": "mesic",
+  "nazev": "Zatmění při obléhání Konstantinopole",
+  "datum": [
+   1453,
+   5,
+   22
+  ],
+  "td": "17:19:57",
+  "dT": 248,
+  "ref": {
+   "umag": 0.7446,
+   "tot": 0,
+   "lat": -23,
+   "lon": 100
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Lunar Eclipses"
+ },
+ {
+  "id": "m1504",
+  "typ": "mesic",
+  "nazev": "Kolumbovo zatmění na Jamajce",
+  "datum": [
+   1504,
+   3,
+   1
+  ],
+  "td": "00:44:47",
+  "dT": 191,
+  "ref": {
+   "umag": 1.0956,
+   "tot": 47.6,
+   "lat": 4,
+   "lon": -8
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Lunar Eclipses"
+ },
+ {
+  "id": "m2018",
+  "typ": "mesic",
+  "nazev": "Nejdelší úplné zatmění Měsíce 21. století",
+  "datum": [
+   2018,
+   7,
+   27
+  ],
+  "td": "20:22:54",
+  "dT": 71,
+  "ref": {
+   "umag": 1.6087,
+   "tot": 103.0,
+   "lat": -19,
+   "lon": 56
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Lunar Eclipses"
+ },
+ {
+  "id": "m2028",
+  "typ": "mesic",
+  "nazev": "Silvestrovské zatmění Měsíce",
+  "datum": [
+   2028,
+   12,
+   31
+  ],
+  "td": "16:53:15",
+  "dT": 77,
+  "ref": {
+   "umag": 1.2463,
+   "tot": 71.3,
+   "lat": 23,
+   "lon": 108
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Lunar Eclipses"
+ },
+ {
+  "id": "m2029",
+  "typ": "mesic",
+  "nazev": "Nejhlubší zatmění Měsíce 21. století",
+  "datum": [
+   2029,
+   6,
+   26
+  ],
+  "td": "03:23:22",
+  "dT": 77,
+  "ref": {
+   "umag": 1.8436,
+   "tot": 101.9,
+   "lat": -23,
+   "lon": -50
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Lunar Eclipses"
+ },
+ {
+  "id": "m2123",
+  "typ": "mesic",
+  "nazev": "Nejdelší zatmění Měsíce 22. století",
+  "datum": [
+   2123,
+   6,
+   9
+  ],
+  "td": "05:06:28",
+  "dT": 259,
+  "ref": {
+   "umag": 1.7487,
+   "tot": 106.1,
+   "lat": -23,
+   "lon": -76
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Lunar Eclipses"
+ },
+ {
+  "id": "pM1631",
+  "typ": "dvojice",
+  "druh": "prechod",
+  "nazev": "První pozorovaný přechod Merkuru (Gassendi)",
+  "datum": [
+   1631,
+   11,
+   7
+  ],
+  "ut": "07:20",
+  "a": "sun",
+  "b": "mercury",
+  "okno": 2,
+  "ref": {
+   "sep": 2.44
+  },
+  "pramen": "Espenak, Seven Century Catalog of Mercury Transits"
+ },
+ {
+  "id": "pV1639",
+  "typ": "dvojice",
+  "druh": "prechod",
+  "nazev": "První pozorovaný přechod Venuše (Horrocks)",
+  "datum": [
+   1639,
+   12,
+   4
+  ],
+  "ut": "18:25",
+  "a": "sun",
+  "b": "venus",
+  "okno": 2,
+  "ref": {
+   "sep": 8.727
+  },
+  "pramen": "Espenak, Six Millennium Catalog of Venus Transits"
+ },
+ {
+  "id": "pV1761",
+  "typ": "dvojice",
+  "druh": "prechod",
+  "nazev": "Přechod Venuše 1761 (Lomonosov: atmosféra)",
+  "datum": [
+   1761,
+   6,
+   6
+  ],
+  "ut": "05:19",
+  "a": "sun",
+  "b": "venus",
+  "okno": 2,
+  "ref": {
+   "sep": 9.507
+  },
+  "pramen": "Espenak, Six Millennium Catalog of Venus Transits"
+ },
+ {
+  "id": "pV1769",
+  "typ": "dvojice",
+  "druh": "prechod",
+  "nazev": "Přechod Venuše 1769 (Cook na Tahiti, Hell ve Vardø)",
+  "datum": [
+   1769,
+   6,
+   3
+  ],
+  "ut": "22:25",
+  "a": "sun",
+  "b": "venus",
+  "okno": 2,
+  "ref": {
+   "sep": 10.155
+  },
+  "pramen": "Espenak, Six Millennium Catalog of Venus Transits"
+ },
+ {
+  "id": "pV1882",
+  "typ": "dvojice",
+  "druh": "prechod",
+  "nazev": "Přechod Venuše 1882",
+  "datum": [
+   1882,
+   12,
+   6
+  ],
+  "ut": "17:06",
+  "a": "sun",
+  "b": "venus",
+  "okno": 2,
+  "ref": {
+   "sep": 10.622
+  },
+  "pramen": "Espenak, Six Millennium Catalog of Venus Transits"
+ },
+ {
+  "id": "pV2004",
+  "typ": "dvojice",
+  "druh": "prechod",
+  "nazev": "Přechod Venuše 2004",
+  "datum": [
+   2004,
+   6,
+   8
+  ],
+  "ut": "08:20",
+  "a": "sun",
+  "b": "venus",
+  "okno": 2,
+  "ref": {
+   "sep": 10.448
+  },
+  "pramen": "Espenak, Six Millennium Catalog of Venus Transits"
+ },
+ {
+  "id": "pV2012",
+  "typ": "dvojice",
+  "druh": "prechod",
+  "nazev": "Přechod Venuše 2012",
+  "datum": [
+   2012,
+   6,
+   6
+  ],
+  "ut": "01:29",
+  "a": "sun",
+  "b": "venus",
+  "okno": 2,
+  "ref": {
+   "sep": 9.24
+  },
+  "pramen": "Espenak, Six Millennium Catalog of Venus Transits"
+ },
+ {
+  "id": "pM2019",
+  "typ": "dvojice",
+  "druh": "prechod",
+  "nazev": "Přechod Merkuru 2019",
+  "datum": [
+   2019,
+   11,
+   11
+  ],
+  "ut": "15:20",
+  "a": "sun",
+  "b": "mercury",
+  "okno": 2,
+  "ref": {
+   "sep": 1.265
+  },
+  "pramen": "Espenak, Seven Century Catalog of Mercury Transits"
+ },
+ {
+  "id": "pM2032",
+  "typ": "dvojice",
+  "druh": "prechod",
+  "nazev": "Příští přechod Merkuru",
+  "datum": [
+   2032,
+   11,
+   13
+  ],
+  "ut": "08:54",
+  "a": "sun",
+  "b": "mercury",
+  "okno": 2,
+  "ref": {
+   "sep": 9.535
+  },
+  "pramen": "Espenak, Seven Century Catalog of Mercury Transits"
+ },
+ {
+  "id": "pV2117",
+  "typ": "dvojice",
+  "druh": "prechod",
+  "nazev": "Příští přechod Venuše",
+  "datum": [
+   2117,
+   12,
+   11
+  ],
+  "ut": "02:48",
+  "a": "sun",
+  "b": "venus",
+  "okno": 2,
+  "ref": {
+   "sep": 12.06
+  },
+  "pramen": "Espenak, Six Millennium Catalog of Venus Transits"
+ }
+]
