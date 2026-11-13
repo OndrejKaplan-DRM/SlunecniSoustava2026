@@ -4,7 +4,7 @@
 // Časy jsou světový čas (UT); datum v souboru je juliánské před 15. 10. 1582 a gregoriánské potom (tak je uvádějí prameny).
 // Spuštění: npx esbuild tools/test/probe_kandidati.mjs --bundle --platform=node --format=esm --outfile=/tmp/k.mjs && node /tmp/k.mjs [typ] [--json soubor]
 import { readFileSync, writeFileSync } from 'node:fs';
-import { idx, P, updateAll, basis, deltaT } from '../../src/core/sim.js';
+import { idx, P, updateAll, basis, deltaT, ttOf, conicPos, AU } from '../../src/core/sim.js';
 const E = idx.get('earth'),
   S = idx.get('sun'),
   M = idx.get('moon'),
@@ -179,7 +179,24 @@ function group(c, t0) {
   const el = d.map((x) => ang(x, s) * DEG);
   return { t, spread: v * DEG, elMin: Math.min(...el), elMax: Math.max(...el) };
 }
-const F = { slunce: solar, mesic: lunar, dvojice: pair, skupina: group };
+// --- nejmenší vzdálenost dvou těles (průlety, komety u Země, přísluní); těleso a je z katalogu, nebo má vlastní elementy dráhy (el)
+const cv = [0, 0, 0];
+function bodyPos(c, jd) {
+  if (!c.el) return pos(idx.get(c.a));
+  const o = c.el;
+  conicPos(o.q, o.e, o.i, o.O, o.w, o.Tp, ttOf(jd), cv);
+  return [cv[0] * AU, cv[2] * AU, -cv[1] * AU]; // ekliptika → scéna (x, z, −y)
+}
+function near(c, t0) {
+  const B2 = idx.get(c.b || 'earth');
+  const f = (x) => {
+    updateAll(x);
+    return len(sub(bodyPos(c, x), pos(B2)));
+  };
+  const [v, t] = minimize(f, t0, c.okno || 5, c.krok || 0.02);
+  return { t, km: v, au: v / AU };
+}
+const F = { slunce: solar, mesic: lunar, dvojice: pair, skupina: group, blizko: near };
 export function run(c) {
   const [y, m, d] = c.datum,
     hms = (x) => x.split(':').reduce((a, v, k) => a + v / 60 ** k, 0),
@@ -208,9 +225,12 @@ if (process.argv[1] && process.argv[1].endsWith('k.mjs')) {
       s =
         `osa ${f1(r.lat)}° š. ${f1(r.lon)}° d. (pramen ${f1(ref.lat)} / ${f1(ref.lon)}) γ ${f1(r.gamma, 3)} (${f1(ref.gamma, 3)})` +
         ` | místo: fáze ${f1(r.loc.mag, 3)}${r.loc.tot ? ' ÚPLNÉ' : ''} (pramen ${f1(ref.misto?.faze, 3)}${ref.misto?.uplne ? ' ÚPLNÉ' : ''}) v ${dateOf(r.loc.t).slice(-5)} UT, Slunce ${f1(r.loc.alt, 0)}°`;
-    if (c.typ === 'mesic') s = `plný stín ${f1(r.umag, 3)} (pramen ${f1(ref.umag, 3)}) úplné ${f1(r.tot, 0)} min (${f1(ref.tot, 0)})`;
+    if (c.typ === 'mesic')
+      s = `plný stín ${f1(r.umag, 3)} (pramen ${f1(ref.umag, 3)}) úplné ${f1(r.tot, 0)} min (${f1(ref.tot, 0)})`;
     if (c.typ === 'dvojice') s = `vzdálenost ${f1(r.sep, 2)}′ (pramen ${f1(ref.sep, 2)}′) elongace ${f1(r.elong, 0)}°`;
-    if (c.typ === 'skupina') s = `rozpětí ${f1(r.spread, 2)}° (pramen ${f1(ref.spread, 2)}°) od Slunce ${f1(r.elMin, 0)}–${f1(r.elMax, 0)}°`;
+    if (c.typ === 'skupina')
+      s = `rozpětí ${f1(r.spread, 2)}° (pramen ${f1(ref.spread, 2)}°) od Slunce ${f1(r.elMin, 0)}–${f1(r.elMax, 0)}°`;
+    if (c.typ === 'blizko') s = `vzdálenost ${f1(r.au, 5)} AU = ${f1(r.km, 0)} km (pramen ${f1(ref.au, 5)} AU)`;
     console.log(c.id.padEnd(22), r.kdy, `Δt ${r.dt >= 0 ? '+' : ''}${f1(r.dt, 1)} min`.padEnd(16), s);
     out.push({ id: c.id, ...r });
   }

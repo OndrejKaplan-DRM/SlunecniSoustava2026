@@ -1209,5 +1209,500 @@
   "ref": {},
   "pramen": "Meeus 1997, Mathematical Astronomy Morsels",
   "helio": 1
+ },
+ {
+  "id": "c837",
+  "typ": "blizko",
+  "druh": "kometa",
+  "nazev": "Halleyova kometa 837: nejtěsnější průlet komety kolem Země v dějinách (ohon přes půl oblohy)",
+  "datum": [
+   837,
+   4,
+   10
+  ],
+  "ut": "12:00",
+  "b": "earth",
+  "okno": 10,
+  "ref": {
+   "au": 0.0334
+  },
+  "pramen": "JPL CNEOS, Historic Comet Close Approaches; JPL Horizons, elementy návratu (záznam 90000015)",
+  "el": {
+   "q": 0.5823199349280865,
+   "e": 0.9678102598788678,
+   "i": 163.4470052457781,
+   "O": 44.92996209111386,
+   "w": 100.1009202608914,
+   "Tp": 2026830.7699864712
+  }
+ },
+ {
+  "id": "c1066",
+  "typ": "blizko",
+  "druh": "kometa",
+  "nazev": "Halleyova kometa 1066 (tapisérie z Bayeux, bitva u Hastingsu)",
+  "datum": [
+   1066,
+   4,
+   24
+  ],
+  "ut": "12:00",
+  "b": "earth",
+  "okno": 20,
+  "ref": {
+   "au": null
+  },
+  "pramen": "Yeomans & Kiang 1981, MNRAS 197, 633 (přísluní 20. 3. 1066); JPL Horizons, elementy návratu (záznam 90000018)",
+  "el": {
+   "q": 0.5744999999999997,
+   "e": 0.9688699999999933,
+   "i": 163.112,
+   "O": 47.624,
+   "w": 102.4730000000001,
+   "Tp": 2110493.434
+  }
+ },
+ {
+  "id": "c1680",
+  "typ": "blizko",
+  "druh": "kometa",
+  "nazev": "Kirchova kometa 1680: první objevená dalekohledem, Newton na ní ověřil gravitaci",
+  "datum": [
+   1680,
+   12,
+   18
+  ],
+  "ut": "11:42",
+  "b": "sun",
+  "okno": 3,
+  "ref": {
+   "au": 0.006222
+  },
+  "pramen": "JPL SBDB, C/1680 V1 (přísluní)",
+  "a": "kirch_great_comet_of_1680",
+  "krok": 0.002
+ },
+ {
+  "id": "c1759",
+  "typ": "blizko",
+  "druh": "kometa",
+  "nazev": "První předpovězený návrat Halleyovy komety (Palitzsch, Clairaut)",
+  "datum": [
+   1759,
+   3,
+   13
+  ],
+  "ut": "01:30",
+  "b": "sun",
+  "okno": 5,
+  "ref": {
+   "au": 0.584466
+  },
+  "pramen": "JPL Horizons (přísluní 13. 3. 1759); JPL Horizons, elementy návratu (záznam 90000027)",
+  "el": {
+   "q": 0.5844660463314414,
+   "e": 0.9676841134898977,
+   "i": 162.3725098608124,
+   "O": 57.24574106336321,
+   "w": 110.7092790707537,
+   "Tp": 2363592.562309949
+  }
+ },
+ {
+  "id": "c1910",
+  "typ": "blizko",
+  "druh": "kometa",
+  "nazev": "Halleyova kometa 1910: Země prošla jejím ohonem",
+  "datum": [
+   1910,
+   5,
+   20
+  ],
+  "ut": "12:50",
+  "b": "earth",
+  "okno": 10,
+  "ref": {
+   "au": 0.151351753
+  },
+  "pramen": "JPL SBDB Close-Approach Data; JPL Horizons, elementy návratu (záznam 90000029)",
+  "el": {
+   "q": 0.5872083658444395,
+   "e": 0.9672963918296447,
+   "i": 162.2188742267401,
+   "O": 58.56233325841767,
+   "w": 111.7365670729917,
+   "Tp": 2418781.6784899505
+  }
+ },
+ {
+  "id": "c1996",
+  "typ": "blizko",
+  "druh": "kometa",
+  "nazev": "Kometa Hjakutake těsně u Země (ohon přes 100° oblohy)",
+  "datum": [
+   1996,
+   3,
+   25
+  ],
+  "ut": "07:02",
+  "b": "earth",
+  "okno": 5,
+  "ref": {
+   "au": 0.101743365
+  },
+  "pramen": "JPL SBDB Close-Approach Data",
+  "a": "hyakutake"
+ },
+ {
+  "id": "c2061",
+  "typ": "blizko",
+  "druh": "kometa",
+  "nazev": "Příští návrat Halleyovy komety",
+  "datum": [
+   2061,
+   7,
+   28
+  ],
+  "ut": "17:17",
+  "b": "sun",
+  "okno": 5,
+  "ref": {
+   "au": 0.592782
+  },
+  "pramen": "JPL Horizons (přísluní 28. 7. 2061); JPL Horizons, elementy návratu (záznam 90000030)",
+  "el": {
+   "q": 0.592781912669959,
+   "e": 0.9665760727968148,
+   "i": 161.9651253026204,
+   "O": 59.39226865572634,
+   "w": 112.0521163494312,
+   "Tp": 2474034.220144649
+  }
+ },
+ {
+  "id": "c2126",
+  "typ": "blizko",
+  "druh": "kometa",
+  "nazev": "Návrat komety Swift–Tuttle, matky Perseid",
+  "datum": [
+   2126,
+   8,
+   5
+  ],
+  "ut": "15:50",
+  "b": "earth",
+  "okno": 10,
+  "ref": {
+   "au": 0.15337495
+  },
+  "pramen": "JPL SBDB Close-Approach Data; JPL Horizons, elementy návratu (záznam 90000985)",
+  "el": {
+   "q": 0.9562702682484286,
+   "e": 0.9638814810404882,
+   "i": 113.408956949763,
+   "O": 139.6089347604945,
+   "w": 153.1187287856873,
+   "Tp": 2497757.9053696427
+  }
+ },
+ {
+  "id": "p1931",
+  "typ": "blizko",
+  "druh": "prulet",
+  "nazev": "Eros 1931: průlet, ze kterého se změřila vzdálenost Slunce",
+  "datum": [
+   1931,
+   1,
+   30
+  ],
+  "ut": "04:07",
+  "b": "earth",
+  "okno": 10,
+  "ref": {
+   "au": 0.174073146
+  },
+  "pramen": "JPL SBDB Close-Approach Data",
+  "a": "eros"
+ },
+ {
+  "id": "p2003",
+  "typ": "blizko",
+  "druh": "prulet",
+  "nazev": "Mars nejblíž Zemi za 60 000 let",
+  "datum": [
+   2003,
+   8,
+   27
+  ],
+  "ut": "09:46",
+  "b": "earth",
+  "okno": 5,
+  "ref": {
+   "au": 0.37271867
+  },
+  "pramen": "JPL Horizons (vzdálenost Mars–Země)",
+  "a": "mars"
+ },
+ {
+  "id": "p2013",
+  "typ": "blizko",
+  "druh": "prulet",
+  "nazev": "Planetka Duende pod dráhou družic – v den čeljabinského meteoru",
+  "datum": [
+   2013,
+   2,
+   15
+  ],
+  "ut": "19:26",
+  "b": "earth",
+  "okno": 1,
+  "ref": {
+   "au": 0.000227628667
+  },
+  "pramen": "JPL SBDB Close-Approach Data",
+  "a": "duende",
+  "krok": 0.0005
+ },
+ {
+  "id": "p2025",
+  "typ": "blizko",
+  "druh": "prulet",
+  "nazev": "Mezihvězdná kometa 3I/ATLAS v přísluní",
+  "datum": [
+   2025,
+   10,
+   29
+  ],
+  "ut": "10:36",
+  "b": "sun",
+  "okno": 5,
+  "ref": {
+   "au": 1.3519986
+  },
+  "pramen": "JPL SBDB, C/2025 N1 (ATLAS)",
+  "a": "atlas3i"
+ },
+ {
+  "id": "p2029",
+  "typ": "blizko",
+  "druh": "prulet",
+  "nazev": "Apophis proletí blíž než stacionární družice (pátek 13. 4. 2029)",
+  "datum": [
+   2029,
+   4,
+   13
+  ],
+  "ut": "21:46",
+  "b": "earth",
+  "okno": 1,
+  "ref": {
+   "au": 0.00025409091
+  },
+  "pramen": "JPL SBDB Close-Approach Data",
+  "a": "apophis",
+  "krok": 0.0005
+ },
+ {
+  "id": "p2093",
+  "typ": "blizko",
+  "druh": "prulet",
+  "nazev": "Phaethon, otec Geminid, těsně u Země",
+  "datum": [
+   2093,
+   12,
+   14
+  ],
+  "ut": "10:52",
+  "b": "earth",
+  "okno": 5,
+  "ref": {
+   "au": 0.0198242034
+  },
+  "pramen": "JPL SBDB Close-Approach Data",
+  "a": "phaethon",
+  "krok": 0.005
+ },
+ {
+  "id": "p2135",
+  "typ": "blizko",
+  "druh": "prulet",
+  "nazev": "Bennu proletí blíž než Měsíc",
+  "datum": [
+   2135,
+   9,
+   25
+  ],
+  "ut": "07:49",
+  "b": "earth",
+  "okno": 10,
+  "ref": {
+   "au": 0.00136392715
+  },
+  "pramen": "JPL SBDB Close-Approach Data",
+  "a": "bennu",
+  "krok": 0.002
+ },
+ {
+  "id": "p2287",
+  "typ": "blizko",
+  "druh": "prulet",
+  "nazev": "Mars ještě blíž než v roce 2003",
+  "datum": [
+   2287,
+   8,
+   28
+  ],
+  "ut": "22:20",
+  "b": "earth",
+  "okno": 5,
+  "ref": {
+   "au": 0.37225401
+  },
+  "pramen": "JPL Horizons (vzdálenost Mars–Země)",
+  "a": "mars"
+ },
+ {
+  "id": "h0185",
+  "typ": "hvezda",
+  "nazev": "SN 185: nejstarší zaznamenaná supernova (čínská „hvězda-host“)",
+  "datum": [
+   185,
+   12,
+   7
+  ],
+  "souhvezdi": "Kružítko / Kentaur",
+  "ra": "14h43m",
+  "dec": "−62°30′",
+  "ref": {
+   "mag": null,
+   "viditelnost": "8 měsíců"
+  },
+  "pramen": "Wikipedie (infobox; Green & Stephenson 2003, Historical Supernovae)"
+ },
+ {
+  "id": "h1006",
+  "typ": "hvezda",
+  "nazev": "SN 1006: nejjasnější hvězda dějin, vrhala stíny",
+  "datum": [
+   1006,
+   5,
+   1
+  ],
+  "souhvezdi": "Vlk",
+  "ra": "15h02m08s",
+  "dec": "−41°57′",
+  "ref": {
+   "mag": -7.5,
+   "viditelnost": "přes rok"
+  },
+  "pramen": "Wikipedie (infobox; Green & Stephenson 2003, Historical Supernovae)"
+ },
+ {
+  "id": "h1054",
+  "typ": "hvezda",
+  "nazev": "SN 1054: zrod Krabí mlhoviny, 23 dní vidět ve dne",
+  "datum": [
+   1054,
+   7,
+   4
+  ],
+  "souhvezdi": "Býk",
+  "ra": "5h34,5m",
+  "dec": "+22°01′",
+  "ref": {
+   "mag": -6,
+   "viditelnost": "23 dní ve dne, 21 měsíců v noci"
+  },
+  "pramen": "Wikipedie (infobox; Green & Stephenson 2003, Historical Supernovae)"
+ },
+ {
+  "id": "h1572",
+  "typ": "hvezda",
+  "nazev": "Tychonova supernova 1572: konec neměnných nebes",
+  "datum": [
+   1572,
+   11,
+   11
+  ],
+  "souhvezdi": "Kasiopeja",
+  "ra": "0h25,3m",
+  "dec": "+64°09′",
+  "ref": {
+   "mag": -4,
+   "viditelnost": "do března 1574"
+  },
+  "pramen": "Wikipedie (infobox; Green & Stephenson 2003, Historical Supernovae)"
+ },
+ {
+  "id": "h1604",
+  "typ": "hvezda",
+  "nazev": "Keplerova supernova 1604: poslední v Galaxii, Kepler ji sledoval v Praze",
+  "datum": [
+   1604,
+   10,
+   9
+  ],
+  "souhvezdi": "Hadonoš",
+  "ra": "17h30m42s",
+  "dec": "−21°29′",
+  "ref": {
+   "mag": -2.5,
+   "viditelnost": "18 měsíců"
+  },
+  "pramen": "Wikipedie (infobox; Green & Stephenson 2003, Historical Supernovae)"
+ },
+ {
+  "id": "h1843",
+  "typ": "hvezda",
+  "nazev": "Velká erupce Eta Carinae: na čas druhá nejjasnější hvězda oblohy",
+  "datum": [
+   1843,
+   3,
+   11
+  ],
+  "souhvezdi": "Lodní kýl",
+  "ra": "10h45m04s",
+  "dec": "−59°41′",
+  "ref": {
+   "mag": -0.8,
+   "viditelnost": "jasná 1837–1856"
+  },
+  "pramen": "Wikipedie (infobox; Green & Stephenson 2003, Historical Supernovae)"
+ },
+ {
+  "id": "h1918",
+  "typ": "hvezda",
+  "nazev": "Nova Aquilae 1918: nejjasnější nova éry dalekohledů",
+  "datum": [
+   1918,
+   6,
+   9
+  ],
+  "souhvezdi": "Orel",
+  "ra": "18h48m55s",
+  "dec": "+0°35′",
+  "ref": {
+   "mag": -0.5,
+   "viditelnost": "týdny pouhým okem"
+  },
+  "pramen": "Wikipedie (infobox; Green & Stephenson 2003, Historical Supernovae)"
+ },
+ {
+  "id": "h1987",
+  "typ": "hvezda",
+  "nazev": "SN 1987A: nejbližší supernova od vynálezu dalekohledu, zachycena neutrina",
+  "datum": [
+   1987,
+   2,
+   24
+  ],
+  "souhvezdi": "Mečoun (Velké Magellanovo mračno)",
+  "ra": "5h35m28s",
+  "dec": "−69°16′",
+  "ref": {
+   "mag": 2.9,
+   "viditelnost": "pouhým okem několik měsíců"
+  },
+  "pramen": "Wikipedie (infobox; Green & Stephenson 2003, Historical Supernovae)"
  }
 ]
