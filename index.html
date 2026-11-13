@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<!-- Sluneční soustava 200 · © 2026 Ondřej Kaplan · kód: licence MIT (SPDX-License-Identifier: MIT) · obsah třetích stran: viz CREDITS.md v repozitáři -->
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Sluneční soustava 200 – 3D model ve skutečném měřítku</title>
+<meta name="description" content="Interaktivní 3D model Sluneční soustavy v prohlížeči: přes 200 těles ve skutečném měřítku a na skutečných drahách, dospělé a dětské rozhraní. Zdarma, bez reklam, bez sběru dat.">
+<meta name="author" content="Ing. Ondřej Kaplan, Ph.D.">
+<meta name="theme-color" content="#090d16">
+<meta name="color-scheme" content="dark">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="cs_CZ">
+<meta property="og:title" content="Sluneční soustava 200">
+<meta property="og:description" content="Interaktivní 3D model Sluneční soustavy v prohlížeči: přes 200 těles ve skutečném měřítku a na skutečných drahách, dospělé a dětské rozhraní. Zdarma, bez reklam, bez sběru dat.">
+<meta property="og:url" content="https://ondrejkaplan-drm.github.io/SlunecniSoustava2026/">
+<meta property="og:image" content="https://ondrejkaplan-drm.github.io/SlunecniSoustava2026/nahled.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Soustava 200">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23090d16'/%3E%3Cellipse cx='32' cy='32' rx='25' ry='10' fill='none' stroke='%238ca5d2' stroke-width='2' transform='rotate%28-24 32 32%29'/%3E%3Ccircle cx='32' cy='32' r='11' fill='%23ffc857'/%3E%3Ccircle cx='53' cy='21' r='4.5' fill='%236fb2ff'/%3E%3C/svg%3E">
+<style>
+@font-face { font-family: "Baloo 2"; font-weight: 500 700; font-style: normal; font-display: swap; src: url(fonts/baloo2.woff2) format("woff2"); } /* písmo dětského rozhraní, licence SIL OFL 1.1 (fonts/OFL.txt) */
+:root { --bg: rgba(9, 13, 22, 0.86); --ln: rgba(140, 165, 210, 0.22); --tx: #dfe7f5; --mu: #8f9cb5; --ac: #ffc857; --ok: #6fdc8c; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #000; color: var(--tx); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; overflow: hidden; overscroll-behavior: none; -webkit-user-select: none; user-select: none; }
+#gl, #ov { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+#gl { cursor: grab; } #ov { pointer-events: none; }
+button { font: inherit; color: var(--tx); background: rgba(120, 150, 210, 0.13); border: 1px solid var(--ln); border-radius: 8px; padding: 5px 10px; cursor: pointer; }
+button:hover { background: rgba(120, 150, 210, 0.28); } button:focus-visible, input:focus-visible { outline: 2px solid var(--ac); outline-offset: 1px; }
+button.pri { background: rgba(255, 200, 87, 0.18); border-color: rgba(255, 200, 87, 0.55); color: #ffe7ad; }
+.panel { position: fixed; background: var(--bg); border: 1px solid var(--ln); border-radius: 12px; }
+#top { top: 10px; left: 10px; padding: 8px 12px; display: flex; gap: 14px; align-items: center; }
+#top h1 { font-size: 15px; margin: 0; font-weight: 650; letter-spacing: 0.02em; } #top h1 small { color: var(--ac); font-weight: 600; }
+#time { display: flex; gap: 6px; align-items: center; } #time button { padding: 3px 9px; min-width: 32px; }
+#date { font-variant-numeric: tabular-nums; min-width: 190px; } #rate { color: var(--mu); min-width: 105px; font-size: 12.5px; }
+#tools { top: 10px; right: 10px; padding: 6px; display: flex; gap: 5px; align-items: center; }
+#tools button { padding: 5px 8px; white-space: nowrap; } #tools button span { font-size: 12.5px; } #tools button[data-m="0"] { opacity: 0.5; } #tools button[data-m="2"] { border-color: var(--ac); color: #ffe7ad; }
+#b-con { position: relative; } #b-con::after { content: ""; position: absolute; left: 7px; bottom: 2px; height: 2px; border-radius: 1px; width: calc((100% - 14px) * var(--lv, 0) / 4); background: var(--ac); transition: width .25s; }
+#tools label { display: flex; align-items: center; gap: 5px; color: var(--mu); font-size: 12.5px; padding: 0 2px; } #gam { width: 62px; accent-color: var(--ac); } #vol { width: 120px; accent-color: var(--ac); vertical-align: middle; }
+#score { color: #ffe7ad; font-weight: 600; }
+#mission { top: 62px; left: 50%; transform: translateX(-50%); padding: 7px 8px 7px 14px; max-width: min(640px, 60vw); display: flex; gap: 8px; align-items: center; border-color: rgba(255, 200, 87, 0.4); }
+#mission button { padding: 1px 8px; } #mission i { color: var(--ac); }
+#card { top: 62px; right: 10px; width: 318px; max-height: calc(100vh - var(--dk, 120px) - 80px); overflow: auto; padding: 12px 14px; -webkit-user-select: text; user-select: text; }
+#card .hd { display: flex; gap: 11px; align-items: center; } #card h2 { margin: 0; font-size: 19px; line-height: 1.2; } .sub { color: var(--mu); font-size: 12.5px; }
+.ball { width: 58px; height: 50px; flex: none; display: grid; place-items: center; }
+.ic { display: block; background-image: url(icons.webp); background-repeat: no-repeat; flex: none; }
+.ib { margin-left: auto; width: 22px; height: 22px; padding: 0; border-radius: 50%; font: italic 700 13px Georgia, 'Times New Roman', serif; color: var(--mu); border: 1px solid var(--ln); background: none; flex: none; line-height: 1; opacity: 0.85; } .ib:hover, .ib.on { color: #ffe7ad; border-color: var(--ac); opacity: 1; } .ib + .stamp { margin-left: 0; }
+.facts { margin: 8px 0; padding: 7px 10px 8px; border: 1px solid var(--ln); border-radius: 9px; background: rgba(120, 150, 210, 0.07); } .facts h4 { margin: 0 0 4px; font-size: 12.5px; font-weight: 600; color: #ffe7ad; } .facts ul { margin: 0; padding-left: 17px; } .facts li { font-size: 12.5px; line-height: 1.4; color: #c9d3e6; margin: 3px 0; } body.kid .facts li { font-size: 14px; color: #f0ecff; } body.mob #card:not(.open) .facts { display: none; }
+.about { color: var(--mu); font-size: 11.5px; line-height: 1.45; margin: 10px 0 0; padding-top: 8px; border-top: 1px solid var(--ln); } .about a { color: #a9c4ff; }
+.stamp { margin-left: auto; width: 30px; height: 30px; border-radius: 50%; border: 2px dashed var(--mu); color: var(--mu); display: grid; place-items: center; font-weight: 700; flex: none; }
+.stamp.on { border: 2px solid var(--ok); color: var(--ok); }
+.kid { font-size: 15px; margin: 10px 0 8px; color: #fff; } .adult { color: #c3cde0; margin: 8px 0 4px; font-size: 13px; } .src { color: var(--mu); font-size: 12px; margin: 6px 0; }
+#card table { width: 100%; border-collapse: collapse; font-size: 13px; } #card th { text-align: left; color: var(--mu); font-weight: 400; padding: 2px 8px 2px 0; white-space: nowrap; vertical-align: top; } #card td { padding: 2px 0; font-variant-numeric: tabular-nums; } #card small { color: var(--mu); }
+.row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+#hud { left: 190px; bottom: 10px; max-width: 215px; white-space: nowrap; position: fixed; color: #c9d3e6; font-size: 12.5px; text-shadow: 0 0 4px #000, 0 0 2px #000; pointer-events: none; }
+#scale { margin-top: 5px; display: flex; align-items: center; gap: 8px; } #scale i { display: block; height: 6px; border: 1px solid #c9d3e6; border-top: 0; min-width: 10px; }
+#dockwrap { position: fixed; left: 400px; right: 20px; bottom: 10px; display: flex; flex-direction: column; align-items: center; gap: 6px; pointer-events: none; } #dockwrap > * { pointer-events: auto; }
+#dock, #sub { position: static; display: flex; gap: 2px; padding: 5px 7px; max-width: 100%; overflow-x: auto; overflow-y: hidden; scrollbar-width: thin; }
+.it { background: none; border: 1px solid transparent; padding: 4px 5px 2px; display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 52px; border-radius: 9px; }
+.it b { height: 50px; min-width: 34px; display: grid; place-items: center; } .it.sm b { height: 36px; min-width: 26px; } .it.li b { height: 26px; width: 44px; min-width: 44px; overflow: hidden; }
+.it i.menu { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-style: normal; background: rgba(120, 150, 210, 0.2); }
+.it:hover .ic { filter: brightness(1.25); }
+.it span { font-size: 11px; color: #c3cde0; white-space: nowrap; max-width: 62px; overflow: hidden; text-overflow: ellipsis; } .it.sm { min-width: 44px; } .it.sm span { font-size: 10.5px; }
+.it.sel { border-color: var(--ac); background: rgba(255, 200, 87, 0.1); } .it.seen span::after { content: " ✓"; color: var(--ok); }
+#list { top: 62px; left: 10px; bottom: 96px; width: 268px; padding: 10px; display: none; flex-direction: column; } #list.on { display: flex; }
+#search { width: 100%; padding: 6px 9px; border-radius: 8px; border: 1px solid var(--ln); background: rgba(0, 0, 0, 0.4); color: var(--tx); font: inherit; -webkit-user-select: text; user-select: text; }
+#items { overflow: auto; margin-top: 8px; flex: 1; } #items h4 { margin: 10px 0 3px; font-size: 12px; color: var(--ac); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; } #items h4 small { color: var(--mu); }
+.it.li { flex-direction: row; width: 100%; gap: 8px; padding: 3px 6px; min-width: 0; }  .it.li span { font-size: 13px; max-width: none; } .it.li small { color: var(--mu); }
+#gamebox { right: 10px; bottom: 10px; width: 318px; padding: 12px 14px; display: none; max-height: calc(100vh - 80px); overflow: auto; z-index: 5; } #gamebox.on { display: block; }
+#game h3 { margin: 0 0 6px; font-size: 16px; } #game p { margin: 8px 0; font-size: 13px; } .rank small { color: var(--mu); }
+.bar { height: 6px; background: rgba(120, 150, 210, 0.2); border-radius: 3px; overflow: hidden; margin: 4px 0; } .bar i { display: block; height: 100%; background: var(--ac); }
+.cats div { display: grid; grid-template-columns: 118px 1fr 44px; gap: 8px; align-items: center; font-size: 12.5px; } .cats em { font-style: normal; color: var(--mu); text-align: right; }
+#quiz { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; } #quiz .q { font-size: 15px; } #quiz button.ok { border-color: var(--ok); color: var(--ok); } #quiz button.bad { border-color: #ff7b72; color: #ff7b72; } .res { color: var(--ac); }
+.x { position: absolute; top: 6px; right: 6px; padding: 0 7px; border: 0; background: none; font-size: 18px; color: var(--mu); }
+#help { inset: 0; margin: auto; width: min(720px, 94vw); height: fit-content; max-height: 92vh; overflow: auto; padding: 18px 22px; display: none; z-index: 10; } #help.on { display: block; }
+#help h2 { margin: 0 0 4px; } #help .g { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 22px; margin: 10px 0; } #help .g div { display: flex; gap: 8px; align-items: baseline; }
+kbd { background: rgba(120, 150, 210, 0.2); border: 1px solid var(--ln); border-bottom-width: 2px; border-radius: 5px; padding: 0 6px; font: 12px ui-monospace, Menlo, Consolas, monospace; white-space: nowrap; }
+#help p { color: #c3cde0; margin: 6px 0; }
+#toast { position: fixed; left: 50%; top: 112px; transform: translate(-50%, -12px); background: rgba(20, 26, 40, 0.95); border: 1px solid rgba(255, 200, 87, 0.5); border-radius: 10px; padding: 8px 16px; opacity: 0; transition: opacity 0.25s, transform 0.25s; pointer-events: none; z-index: 20; }
+#toast.on { opacity: 1; transform: translate(-50%, 0); }
+.sunf { margin: 8px 0; padding: 8px 10px; border: 1px solid rgba(255, 200, 87, 0.35); border-radius: 10px; } .sunf p { margin: 6px 0 0; font-size: 12.5px; color: #c3cde0; }
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 8px 0; } .tiles div { background: rgba(124, 108, 255, 0.16); border: 1px solid rgba(124, 108, 255, 0.4); border-radius: 12px; padding: 6px 8px; display: flex; gap: 7px; align-items: flex-start; } .tiles span { font-size: 20px; line-height: 1.1; } .tiles p { margin: 0; font-size: 13px; line-height: 1.3; } .tiles b { color: #ffe27a; }
+/* iterace 3 */
+#mini { position: fixed; left: 10px; bottom: 10px; width: 168px; height: 168px; cursor: pointer; z-index: 2; }
+.pop { display: none; z-index: 12; padding: 14px 16px; overflow: auto; } .pop.on { display: block; } .pop h3 { margin: 0 0 8px; font-size: 17px; } .pop h3 small { color: var(--mu); font-weight: 400; } .pop h4 { margin: 12px 0 4px; font-size: 12px; color: var(--ac); text-transform: uppercase; letter-spacing: 0.06em; }
+#more { top: 62px; right: 10px; width: 300px; z-index: 14; padding: 8px;  max-height: calc(100vh - 80px); overflow-y: auto; } #more button { display: flex; width: 100%; justify-content: space-between; gap: 10px; margin: 3px 0; text-align: left; background: none; border-color: transparent; } #more button:hover { background: rgba(120, 150, 210, 0.2); }
+#album { inset: 62px 340px 110px 10px; } .grid { display: flex; flex-wrap: wrap; gap: 4px; } .st { width: 74px; padding: 4px 2px; display: flex; flex-direction: column; align-items: center; background: rgba(120, 150, 210, 0.07); border-color: transparent; } .st b { height: 44px; display: grid; place-items: center; } .st span { font-size: 10.5px; color: var(--mu); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70px; }
+.st:not(.on) .ic { filter: grayscale(1) brightness(0.45); opacity: 0.75; } .st.on { background: rgba(255, 200, 87, 0.1); } .st.on span { color: var(--tx); } body.kid .st:not(.on) .ic { filter: brightness(0) invert(0.35); }
+#tm { top: 62px; left: 10px; width: 400px; max-height: calc(100vh - 180px); } #tm-list button { display: block; width: 100%; text-align: left; margin: 4px 0; }
+#cmp { left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(760px, 92vw); } .cmp { display: flex; align-items: center; justify-content: center; gap: 16px; min-height: 150px; margin: 10px 0; } .cmp div { display: flex; flex-direction: column; align-items: center; gap: 3px; } .cmp b { display: grid; place-items: center; min-height: 12px; } .cmp canvas { display: block; } .cmp div { min-width: 62px; text-align: center; } .cmp span { white-space: nowrap; } .cmp small { color: var(--mu); } .cmp .me span { color: var(--ac); font-weight: 600; } .cmp .dot { width: 3px; height: 3px; border-radius: 50%; background: #fff; display: block; }
+#dev { left: 50%; top: 90px; transform: translateX(-50%); width: min(560px, 92vw); border-color: #7dffb0; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; } #dev h3 { color: #7dffb0; } #dev input { background: #000; color: #7dffb0; border: 1px solid #7dffb0; border-radius: 6px; padding: 3px 6px; font: inherit; }
+.more .row { margin-top: 6px; } .next { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--ln); } .next > span { color: var(--mu); font-size: 12.5px; width: 100%; } .chip { flex-direction: row; gap: 6px; min-width: 0; border-color: var(--ln); padding: 2px 8px 2px 4px; } .chip b { height: 30px; min-width: 22px; }
+#guide { position: fixed; left: 196px; bottom: 150px; max-width: 330px; display: none; align-items: flex-end; gap: 8px; z-index: 6; cursor: pointer; } #guide.on { display: flex; animation: hop 0.5s; } #guide .bot { font-size: 46px; line-height: 1; filter: drop-shadow(0 0 8px #7c6cff); animation: bob 2.4s ease-in-out infinite; }
+#guide p { margin: 0 0 14px; background: #fff; color: #23164a; border-radius: 18px 18px 18px 4px; padding: 9px 13px; font-size: 15.5px; line-height: 1.35; box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5); }
+@keyframes hop { 0% { transform: translateY(40px) scale(0.6); opacity: 0; } 70% { transform: translateY(-6px) scale(1.04); } } @keyframes bob { 50% { transform: translateY(-6px) rotate(-5deg); } }
+#ufo { position: fixed; left: -270px; top: 18%; width: 250px; z-index: 8; display: none; flex-direction: column; align-items: center; pointer-events: none; } #ufo.fly { display: flex; animation: ufo 14s linear forwards; }
+#ufo span { font-size: 44px; line-height: 1.1; filter: drop-shadow(0 0 10px #8fffb5); animation: ufow 1.7s ease-in-out infinite alternate; } #ufo p { margin: 2px 0 0; padding: 7px 11px; border-radius: 13px; background: rgba(24, 17, 58, 0.93); border: 1px solid rgba(143, 255, 181, 0.55); font-size: 13.5px; line-height: 1.35; text-align: center; color: #eafff2; } #ufo p b { color: #ffe27a; }
+@keyframes ufo { 0% { transform: translate(0, 0); } 16% { transform: translate(calc(50vw + 105px), -14px); } 84% { transform: translate(calc(50vw + 185px), 10px); } 100% { transform: translate(calc(100vw + 290px), -10px); } } @keyframes ufow { from { transform: rotate(-9deg); } to { transform: rotate(9deg); } }
+body.cine .panel, body.cine #hud, body.cine #dockwrap, body.cine #mini, body.cine #ov { opacity: 0; pointer-events: none; transition: opacity 0.5s; } body.cine #toast { opacity: 0; } body.cine #toast.on { opacity: 1; }
+body::before, body::after { content: ""; position: fixed; left: 0; right: 0; height: 0; background: #000; z-index: 9; transition: height 0.6s; pointer-events: none; } body::before { top: 0; } body::after { bottom: 0; } body.cine::before, body.cine::after { height: 9vh; }
+body.kid .pop h3 { color: #ffe27a; font-size: 21px; } body.kid #mini { filter: hue-rotate(40deg) saturate(1.3); } body.kid .panel { box-shadow: 0 0 22px rgba(124, 108, 255, 0.25); } body.kid .it.sel { animation: glowk 2.2s ease-in-out infinite; } @keyframes glowk { 50% { box-shadow: 0 0 14px rgba(255, 210, 63, 0.7); } }
+body.tutoring #guide, body.tutoring #ufo { display: none !important; }
+@media (max-width: 900px) { #mini { display: none; } #album { inset: 62px 6px 100px 6px; } #guide { left: 10px; } }
+/* ukázka */
+.volrow { display: flex; align-items: center; gap: 8px; padding: 5px 10px; font-size: 13px; } .volrow span { width: 74px; white-space: nowrap; } .volrow input { flex: 1; min-width: 90px; accent-color: var(--ac); } .volrow em { width: 58px; text-align: right; font-style: normal; color: var(--mu); font-size: 12px; }
+#sunchip { display: none; position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(var(--dk, 150px) + 14px); z-index: 6; padding: 6px 14px; border-radius: 18px; font-size: 13px; background: rgba(9, 13, 22, 0.72); border: 1px solid rgba(255, 200, 87, 0.5); color: #ffe7ad; white-space: nowrap; } #sunchip.on { display: block; } body.cine #sunchip, body.tutoring #sunchip { display: none; } body.kid #sunchip { font-size: 15px; }
+#cineoff { display: none; position: fixed; top: calc(10px + env(safe-area-inset-top)); right: 12px; z-index: 45; padding: 7px 13px; border-radius: 18px; font-size: 14px; background: rgba(9, 13, 22, 0.55); border: 1px solid rgba(140, 165, 210, 0.45); color: #dfe7f7; opacity: 0.6; } #cineoff:hover { opacity: 1; } body.cine #cineoff { display: block; } body.tutoring #cineoff { display: none; }
+body.mob #tut { bottom: calc(var(--dk, 84px) + 10px); width: 95vw; padding: 8px 10px 9px; font-size: 13px; } body.mob.kid #tut { font-size: 14.5px; } body.mob.tutoring #card, body.mob.tutoring #minfo, body.mob.tutoring #mission { display: none !important; } body.mob #sp-tut { font-size: 16px; padding: 9px 18px; }
+#tut { left: 50%; bottom: 150px; transform: translateX(-50%); width: min(760px, 78vw); padding: 9px 12px 11px; display: none; z-index: 30; border-color: rgba(255, 200, 87, 0.55); font: 13.5px/1.4 ui-monospace, Menlo, Consolas, monospace; } #tut.on { display: block; }
+#tut .r { display: flex; gap: 10px; align-items: flex-start; } #tut-n { color: var(--ac); white-space: nowrap; } #tut-txt { flex: 1; min-height: 38px; } #tut-txt::after { content: "▍"; color: var(--ac); animation: bl 0.8s steps(2) infinite; } #tut-skip { padding: 1px 9px; font: 12px system-ui, sans-serif; }
+#tut-bar { height: 3px; background: rgba(120, 150, 210, 0.2); border-radius: 2px; margin-top: 7px; } #tut-bar i { display: block; height: 100%; width: 0; background: var(--ac); border-radius: 2px; transition: width 0.4s; }
+#tut-key { display: inline-block; margin-left: 8px; font-size: 14px; padding: 1px 9px; } #tut-key.pop { animation: pop 0.5s; }
+#cur { position: fixed; left: 0; top: 0; width: 0; height: 0; z-index: 40; pointer-events: none; opacity: 0; transition: transform 0.6s cubic-bezier(0.3, 0.8, 0.3, 1), opacity 0.3s; }
+#cur::before { content: ""; position: absolute; left: -2px; top: -2px; border: 9px solid transparent; border-left-color: #fff; border-top-color: #fff; filter: drop-shadow(0 0 3px #000); }
+#cur::after { content: ""; position: absolute; left: -16px; top: -16px; width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--ac); opacity: 0; } #cur.tap::after { animation: tap 0.6s; }
+.blink { animation: blink 0.33s 3 !important; position: relative; z-index: 31; }
+@keyframes blink { 50% { box-shadow: 0 0 0 3px var(--ac), 0 0 22px 6px rgba(255, 200, 87, 0.8); background: rgba(255, 200, 87, 0.45); } }
+@keyframes tap { 0% { opacity: 1; transform: scale(0.3); } 100% { opacity: 0; transform: scale(1.6); } } @keyframes bl { 50% { opacity: 0; } } @keyframes pop { 0% { transform: scale(1.7); background: var(--ac); color: #000; } }
+/* úvod */
+#splash { position: fixed; inset: 0; z-index: 50; display: none; place-items: center; background: radial-gradient(ellipse at center, rgba(5, 8, 16, 0.55), rgba(0, 0, 0, 0.88)); } #splash.on { display: grid; }
+#splash .in { text-align: center; max-width: 620px; padding: 20px; } #splash h1 { font-size: 40px; margin: 0; letter-spacing: 0.01em; } #splash h1 small { color: var(--ac); } #splash p { color: #c3cde0; margin: 8px 0 16px; }
+.modes { display: flex; gap: 12px; justify-content: center; margin: 14px 0 18px; } .modes button { width: 250px; padding: 12px; text-align: left; border-radius: 14px; } .modes button b { display: block; font-size: 17px; } .modes button small { color: var(--mu); } .modes button.sel { border-color: var(--ac); background: rgba(255, 200, 87, 0.14); }
+#sp-tut { font-size: 18px; padding: 10px 26px; border-radius: 12px; } #sp-go { padding: 10px 18px; border-radius: 12px; margin-left: 8px; } #splash .fine { font-size: 12px; color: var(--mu); margin-top: 16px; } #splash .ver { font-size: 11px; color: var(--mu); opacity: 0.75; margin-top: 10px; }
+/* dětské rozhraní */
+body.kid { font: 500 15.5px/1.4 "Baloo 2", "Comic Sans MS", system-ui, sans-serif; --bg: rgba(24, 17, 58, 0.9); --ln: rgba(140, 124, 255, 0.6); --ac: #ffd23f; }
+body.kid .panel { border-width: 2px; border-radius: 20px; } body.kid button { border-radius: 14px; } body.kid button.pri { background: linear-gradient(180deg, #ffd23f, #ff9f1c); color: #2b1a00; border-color: #ffe79a; font-weight: 700; }
+body.kid #tools button { font-size: 18px; padding: 4px 9px; } body.kid #tools button span { font-size: 13px; } body.kid #top h1 { font-size: 18px; } body.kid #time button { font-size: 17px; }
+body.kid #card { width: 350px; } body.kid #card h2 { font-size: 26px; color: #ffe27a; } body.kid .kid { font-size: 17.5px; } body.kid .adult { font-size: 14px; } body.kid #card .row button { font-size: 17px; padding: 7px 14px; }
+body.kid #mission { font-size: 16.5px; border-color: #ff7ac8; background: rgba(60, 20, 70, 0.92); } body.kid #dock { zoom: 1.16; } @media (max-width: 1500px) { body.kid:not(.mob) #dock { zoom: 1; } } body.kid .it span { color: #fff; font-size: 12px; } body.kid .it.sel { background: rgba(255, 210, 63, 0.22); } body.kid .it:hover .ic { transform: scale(1.15) rotate(-6deg); transition: transform 0.15s; }
+body.kid #hud { font-size: 14px; } body.kid #game h3 { color: #ffe27a; font-size: 21px; } body.kid .bar i { background: linear-gradient(90deg, #ff7ac8, #ffd23f); } body.kid #toast { font-size: 17px; border-color: #ff7ac8; } body.kid #tut { font-family: inherit; font-size: 16px; }
+/* horní lišta: stupeň úspornosti nastavuje src/ui/mobile.js podle skutečné šířky (1 = bez nadpisu, 2–3 = bez popisků méně důležitých tlačítek, 4 = jen ikony) */
+body:not([data-tl="0"]) #top h1 { display: none; }
+body[data-tl="2"] #tools :is([data-a="stars"], [data-a="mode"], [data-a="game"]) span, body[data-tl="3"] #tools :is([data-a="stars"], [data-a="mode"], [data-a="game"], [data-a="lab"], [data-a="con"]) span, body[data-tl="4"] #tools button span { display: none; }
+body[data-tl="3"] #gam, body[data-tl="4"] #gam { width: 54px; }
+@media (max-width: 900px) { #card { width: 260px; } #top h1 { display: none; } #dockwrap { left: 4px; right: 4px; bottom: 6px; } #hud { bottom: 76px; } #card { max-height: 40vh; } #tools label { display: none; } #rate { display: none; } }
+
+/* ---------- telefon a tablet (třídy nastavuje src/mobile.js; bez nich se nic z toho nepoužije) ---------- */
+.mo, .tg, #minfo { display: none; }
+.mctl { display: flex; position: absolute; top: 3px; right: 3px; gap: 0; z-index: 2; } #card .hd { padding-right: 30px; } .hw { color: #aeb9cf; }
+#card.dock { transform: translateX(calc(100% + 16px)); pointer-events: none; }
+#cardtab { position: fixed; right: 0; top: 118px; writing-mode: vertical-rl; padding: 10px 5px 10px 6px; border-radius: 10px 0 0 10px; border-right: 0; background: var(--bg); transform: translateX(110%); transition: transform 0.45s 0.12s; z-index: 3; max-height: 230px; overflow: hidden; white-space: nowrap; font-size: 12.5px; } #cardtab.on { transform: none; animation: tabhi 1.4s 0.5s 2; } @keyframes tabhi { 50% { box-shadow: 0 0 0 2px var(--ac), 0 0 16px rgba(255, 200, 87, 0.7); } }
+body.cine #cardtab { opacity: 0; pointer-events: none; } body.mob #cardtab, body.tab #cardtab { display: none; }
+#card.gone { opacity: 0; pointer-events: none; } #card { transition: opacity 1.1s, transform 0.45s cubic-bezier(0.3, 0.8, 0.3, 1); }
+body.touch { overscroll-behavior: none; } body.touch .panel, body.touch button { touch-action: manipulation; }
+body.touch:not(.kbd) kbd, body.touch:not(.kbd) #help .g, body.touch:not(.kbd) #splash .fine, body.mob #splash .fine, body.nofs [data-a="full"], body.mob [data-a="full"] { display: none; }
+body.touch .tg, body.mob #splash .tg { display: block; } #help .tg p { margin: 5px 0; } #splash .tg { font-size: 12.5px; color: var(--mu); margin-top: 14px; line-height: 1.6; }
+body.touch #more .mo, body.mob #more .mo, body.stack #more .mo { display: flex; }
+.mctl button { border: 0; background: none; color: var(--mu); font-size: 19px; padding: 2px 9px; line-height: 1.2; }
+body.touch #card .hd, body.mob #card .hd { padding-right: 62px; }
+body.touch #minfo.on, body.mob #minfo.on { display: grid; position: fixed; right: 8px; bottom: calc(var(--dk, 84px) + 10px); width: 38px; height: 38px; place-items: center; border-radius: 50%; padding: 0; font-size: 17px; background: rgba(9, 13, 22, 0.7); z-index: 3; }
+/* tablet a úzké okno: lišta nástrojů pod horní lištou */
+body.stack #tools { top: 58px; } body.stack #mission, body.stack #card, body.stack #more { top: 108px; } body.stack #list, body.stack #tm { top: 108px; } body.stack #tools button[data-a="game"] span { display: none; }
+body.tab #card { width: 270px; font-size: 13px; max-height: 46vh; background: rgba(9, 13, 22, 0.72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); } body.tab #card h2 { font-size: 17px; } body.tab.kid #card { width: 290px; } body.tab.kid #card h2 { font-size: 21px; } body.tab.kid .kid { font-size: 15px; }
+body.tab #mission, body.stack #mission { left: 10px; transform: none; max-width: calc(100vw - 310px); font-size: 13px; }
+@media (max-width: 900px) { body.tab #hud { left: 12px; bottom: calc(var(--dk, 84px) + 8px); } } body.tab #guide p { font-size: 14px; }
+/* telefon */
+body.mob { font-size: 13px; } body.mob.kid { font-size: 14px; }
+body.mob #top { top: calc(6px + env(safe-area-inset-top)); left: 6px; right: 6px; padding: 5px 6px; gap: 6px; } body.mob #time { gap: 4px; width: 100%; } body.mob #time button { padding: 4px 8px; min-width: 30px; } body.mob #date { min-width: 0; flex: 1; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; } body.mob #time [data-a="tm"] { display: none; }
+body.mob #tools { top: calc(50px + env(safe-area-inset-top)); right: 6px; padding: 4px; gap: 4px; background: rgba(9, 13, 22, 0.6); } body.mob #tools > button, body.mob #tools > label { display: none; } body.mob #tools > button[data-a="snd"], body.mob #tools > button[data-a="mode"], body.mob #tools > button[data-a="more"], body.mob #tools > button[data-a="help"], body.mob #tools > button.mo { display: inline-block; padding: 5px 9px; } body.mob #score { font-size: 12.5px; padding: 0 3px; }
+body.mob.kid #tools button { font-size: 15px; padding: 4px 8px; } body.mob.kid #time button { font-size: 14px; }
+body.mob #hud { left: 10px; top: calc(54px + env(safe-area-inset-top)); bottom: auto; font-size: 11px; max-width: calc(100vw - 250px); overflow: hidden; } body.mob #scale span { font-size: 10.5px; }
+body.mob #mission { top: calc(114px + env(safe-area-inset-top)); left: 6px; right: 6px; transform: none; max-width: none; font-size: 12.5px; padding: 6px 8px 6px 10px; background: rgba(9, 13, 22, 0.72); transition: opacity 0.8s; } body.mob #mission:not(.show) { display: none !important; } body.mob.kid #mission { font-size: 13.5px; }
+body.mob #more { top: calc(92px + env(safe-area-inset-top)); right: 6px; width: min(300px, calc(100vw - 12px)); max-height: 68vh; max-height: 68dvh; }
+body.mob #dockwrap { left: 4px; right: 4px; bottom: calc(5px + env(safe-area-inset-bottom)); gap: 4px; } body.mob #dock, body.mob #sub { zoom: 0.84; padding: 4px 5px; background: rgba(9, 13, 22, 0.7); } body.mob.kid #dock { zoom: 0.92; }
+body.mob #card { top: auto; left: 6px; right: 6px; bottom: calc(var(--dk, 84px) + 8px); width: auto; max-height: none; padding: 8px 10px; font-size: 12.5px; background: rgba(9, 13, 22, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 2; }
+body.mob #card h2 { font-size: 16px; } body.mob .sub { font-size: 11.5px; } body.mob .ball { zoom: 0.72; } body.mob .stamp { width: 24px; height: 24px; font-size: 12px; }
+body.mob #card:not(.open) table, body.mob #card:not(.open) .adult, body.mob #card:not(.open) .sunf, body.mob #card:not(.open) .src, body.mob #card:not(.open) .more, body.mob #card:not(.open) .tiles { display: none; }
+body.mob #card:not(.open) .kid { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+body.mob .kid { font-size: 12.5px; margin: 5px 0 4px; } body.mob #card .row { margin-top: 6px; } body.mob #card .row button { padding: 4px 10px; font-size: 12.5px; } body.mob #card table { font-size: 12px; } body.mob .adult { font-size: 12px; } body.mob .src { font-size: 11px; }
+body.mob #card.open { max-height: 50vh; max-height: 50dvh; overflow: auto; background: rgba(9, 13, 22, 0.86); }
+body.mob.kid #card { width: auto; } body.mob.kid #card h2 { font-size: 18px; } body.mob.kid .kid { font-size: 13.5px; } body.mob.kid .adult { font-size: 12.5px; } body.mob.kid #card .row button { font-size: 13.5px; padding: 5px 11px; } body.mob .tiles p { font-size: 12px; } body.mob .tiles span { font-size: 16px; }
+body.mob #toast { top: calc(116px + env(safe-area-inset-top)); font-size: 12.5px; padding: 6px 12px; width: max-content; max-width: 92vw; background: rgba(20, 26, 40, 0.86); } body.mob.kid #toast { font-size: 13.5px; }
+body.mob #guide { left: 6px; right: 6px; top: calc(116px + env(safe-area-inset-top)); bottom: auto; max-width: none; align-items: flex-start; } body.mob #guide .bot { font-size: 28px; } body.mob #guide p { font-size: 13px; padding: 7px 10px; margin: 0; background: rgba(255, 255, 255, 0.92); }
+body.mob #list, body.mob #tm, body.mob #album, body.mob #gamebox, body.mob #cmp, body.mob #dev, body.mob #help, body.mob #zv { inset: calc(50px + env(safe-area-inset-top)) 6px calc(var(--dk, 84px) + 8px) 6px; width: auto; height: auto; max-height: none; transform: none; margin: 0; padding: 12px; font-size: 13px; z-index: 15; }
+body.mob .cmp { overflow-x: auto; } body.mob #help h2 { font-size: 18px; } body.mob .pop h3 { font-size: 15px; } body.mob.kid .pop h3 { font-size: 17px; } body.mob .x { font-size: 24px; padding: 2px 10px; }
+body.mob #splash .in { padding: 14px; } body.mob #splash h1 { font-size: 27px; } body.mob #splash p { font-size: 13px; margin: 6px 0 10px; } body.mob .modes { flex-direction: column; gap: 8px; margin: 10px 0 14px; } body.mob .modes button { width: 100%; padding: 9px 12px; } body.mob .modes button b { font-size: 15px; } body.mob #sp-go { margin: 0; font-size: 16px; padding: 10px 22px; background: rgba(255, 200, 87, 0.18); border-color: rgba(255, 200, 87, 0.55); color: #ffe7ad; }
+body.touch #sp-go { margin: 0; font-size: 17px; padding: 10px 24px; background: rgba(255, 200, 87, 0.18); border-color: rgba(255, 200, 87, 0.55); color: #ffe7ad; }
+/* telefon naležato: karta vpravo, lišty v jedné řadě */
+body.mob.land #top { right: auto; } body.mob.land #time { width: auto; } body.mob.land #date { flex: none; min-width: 150px; } body.mob.land #tools { top: calc(6px + env(safe-area-inset-top)); }
+body.mob.land #hud { top: auto; bottom: calc(var(--dk, 84px) + 6px); max-width: 200px; } body.mob.land #mission, body.mob.land #toast, body.mob.land #guide, body.mob.land #more { top: 50px; } body.mob.land #mission, body.mob.land #guide { right: 290px; }
+body.mob.land #card { left: auto; right: 6px; top: 50px; bottom: auto; width: 270px; } body.mob.land #card.open { max-height: calc(100vh - var(--dk, 84px) - 62px); max-height: calc(100dvh - var(--dk, 84px) - 62px); } body.mob.land #dock, body.mob.land #sub { zoom: 0.74; }
+body.mob.land #list, body.mob.land #tm, body.mob.land #album, body.mob.land #gamebox, body.mob.land #cmp, body.mob.land #dev, body.mob.land #help, body.mob.land #zv { top: 46px; bottom: 6px; z-index: 16; } body.mob.land #zv h3 { margin-bottom: 4px; } body.mob.land #zv-foot .sub, body.mob #zv-foot .sub { display: none; }
+body.mob.land .modes { flex-direction: row; } body.mob.land #splash h1 { font-size: 22px; } body.mob.land #splash p, body.mob.land #splash .tg { margin: 4px 0; }
+/* zkušebna zvuků */
+#zvb { display: none; position: fixed; right: 1px; bottom: 1px; width: 17px; height: 17px; padding: 0; border: 0; background: none; color: #8f9cb5; opacity: 0.22; font-size: 11px; z-index: 4; } #zvb:hover { opacity: 0.9; } body.zvuky #zvb { display: block; }
+#zv { left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(880px, 94vw); height: min(84vh, 760px); z-index: 16; background: rgba(9, 13, 22, 0.97); } body.kid #zv { background: rgba(24, 17, 58, 0.97); } #zv.on { display: flex; flex-direction: column; } #zv h3 { margin-right: 30px; }
+#zv-cats { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; } #zv-cats button { padding: 2px 9px; font-size: 12px; } #zv-cats button.sel { border-color: var(--ac); color: #ffe7ad; background: rgba(255, 200, 87, 0.14); }
+#zv-list { flex: 1; overflow: auto; border-top: 1px solid var(--ln); border-bottom: 1px solid var(--ln); } .zr { display: flex; align-items: center; gap: 8px; padding: 3px 4px; border-bottom: 1px solid rgba(140, 165, 210, 0.08); font-size: 13px; } .zr.cur { background: rgba(255, 200, 87, 0.12); } .zr.play .zp { background: var(--ac); color: #000; }
+.zr .zp { width: 34px; padding: 3px 0; flex: none; } .zr i { color: var(--mu); font-style: normal; font-size: 11.5px; width: 34px; flex: none; } .zr b { font-weight: 500; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .zr small { color: var(--mu); font-size: 11.5px; white-space: nowrap; } .zr em { color: var(--mu); font-style: normal; font-size: 11.5px; width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.zr input { width: 20px; height: 20px; accent-color: var(--ok); flex: none; } .zr.ok b { color: var(--ok); } #zv-foot { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 8px; font-size: 12.5px; } #zv-out { width: 100%; height: 70px; display: none; background: #000; color: #cfe; border: 1px solid var(--ln); border-radius: 6px; font: 11.5px ui-monospace, Menlo, Consolas, monospace; -webkit-user-select: text; user-select: text; } #zv-out.on { display: block; }
+body.mob .zr em { display: none; } body.mob #zv-cats { flex-wrap: nowrap; overflow-x: auto; } body.mob #zv-cats button { white-space: nowrap; }
+/* ---------- velká obrazovka (třídu big a měřítko --bk nastavuje src/ui/mobile.js) ---------- */
+body.big #top, body.big #tools, body.big #more, body.big #album, body.big #tm, body.big #cmp, body.big #dev, body.big #mission, body.big #card, body.big #list, body.big #gamebox, body.big #help, body.big #tut, body.big #zv, body.big #dockwrap, body.big #hud, body.big #guide, body.big #ufo, body.big #toast, body.big #sunchip, body.big #cardtab, body.big #cineoff, body.big #mini, body.big #splash .in { zoom: var(--bk, 1.4); }
+body.touch #tools .pc, body.mob #tools .pc { display: none; }
+body.mob.land #dockwrap { left: calc(4px + env(safe-area-inset-left)); right: calc(4px + env(safe-area-inset-right)); }
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas><canvas id="ov"></canvas>
+<div id="top" class="panel"><h1>Sluneční soustava <small>200</small></h1>
+  <div id="time"><button data-a="slow" title="Zpomalit / couvat (,)">⏪</button><button data-a="play" id="b-play" title="Zastavit čas (mezerník)">⏸</button><button data-a="fast" title="Zrychlit (.)">⏩</button><span id="date"></span><span id="rate"></span><button data-a="now" title="Zpět do současnosti (T)">Teď</button><button data-a="tm" title="Stroj času: slavné okamžiky (Shift+T)">🕰</button></div></div>
+<div id="tools" class="panel"><span id="score">⭐ 0</span><button data-a="list" class="pc" title="Seznam všech těles a hledání (B, /)">🔎 <span>Hledat</span></button><button data-a="game" title="Deník astronoma (J)">📓 <span>Deník</span></button><label title="Přisvětlení nočních stran (G)">☀ <input id="gam" type="range" min="0" max="1" step="0.05" value="0"></label>
+  <button data-a="orb" id="b-orb" title="Dráhy (O)">◯ <span>Dráhy</span></button><button data-a="lab" id="b-lab" title="Popisky (L)">🏷 <span>Popisky</span></button><button data-a="con" id="b-con" title="Souhvězdí (U) – čtyři stupně: náznak, čáry, zvýrazněné hvězdy, jména; se Shiftem o stupeň zpět">✨ <span>Souhvězdí</span></button><button data-a="stars" id="b-star" title="Jména hvězd (N)">⭐ <span>Hvězdy</span></button>
+  <button data-a="lock" id="b-lock" title="Otáčet kameru s tělesem (R)">⟳</button><button data-a="home" title="Celá soustava (Home)">⌂</button><button data-a="snd" id="b-snd" title="Zvuk (X)">🔊</button><button data-a="mode" id="b-mode" title="Přepnout dětské / dospělé rozhraní (K)">🧒 <span>Dětské</span></button><button data-a="full" title="Celá obrazovka (F)">⛶</button><button data-m="mis" class="mo" title="Hádanka">🎯</button><button data-a="more" title="Další funkce">☰</button><button data-a="help" title="Nápověda (H)">?</button></div>
+<div id="more" class="panel pop"><div class="volrow"><span>🔊 Zvuky</span><input id="vol2" type="range" min="0" max="1" step="0.05" aria-label="Hlasitost zvuků"><em id="vol2n"></em></div><div class="volrow"><span>🎵 Hudba</span><input id="mvol" type="range" min="0" max="1" step="0.05" aria-label="Hlasitost hudby"><em id="mvoln"></em></div><button class="mo" data-a="game">📓 Deník astronoma</button><button class="mo" data-a="list">🔎 Seznam a hledání</button><button class="mo" data-a="home">⌂ Celá soustava</button><button class="mo" data-a="orb">◯ Dráhy</button><button class="mo" data-a="lab">🏷 Popisky</button><button class="mo" data-a="con">✨ Souhvězdí</button><button class="mo" data-a="stars">⭐ Jména hvězd</button><button class="mo" data-a="gam">☀ Přisvětlení</button><button class="mo" data-a="sunf">🔆 Filtr Slunce</button><button class="mo" data-a="lock">⟳ Otáčet se s tělesem</button><button data-a="album">🗂 Album / atlas těles <kbd>Z</kbd></button><button data-a="tm">🕰 Stroj času <kbd>Shift+T</kbd></button><button data-a="cmp">⚖ Porovnat velikost</button><button data-a="ruler">📏 Měřit vzdálenost <kbd>Shift+D</kbd></button><button data-a="grid">🌐 Osa, rovník, poledníky <kbd>Shift+A</kbd></button><button data-a="real">🔦 Reálný jas <kbd>Shift+G</kbd></button><button data-a="cine">🎬 Kino (skrýt rozhraní) <kbd>I</kbd></button><button data-a="autorot">🔄 Pomalé otáčení <kbd>Y</kbd></button><button data-a="music">🎵 Hudba podle místa <kbd>M</kbd></button><button data-a="tut">▶ Ukázka ovládání (1 min)</button><button data-m="where">📍 Kde jsem? (orientační body)</button><button data-a="mini">🧭 Minimapa</button><button data-m="view" id="b-view">📱 Zobrazení: automaticky</button></div>
+<div id="album" class="panel pop"><button class="x" data-close="#album">×</button><div id="album-in"></div></div>
+<div id="tm" class="panel pop"><button class="x" data-close="#tm">×</button><h3>🕰 Stroj času</h3><div id="tm-list"></div></div>
+<div id="cmp" class="panel pop"><button class="x" data-close="#cmp">×</button><div id="cmp-in"></div></div>
+<div id="dev" class="panel pop"><button class="x" data-close="#dev">×</button><div id="dev-in"></div></div>
+<canvas id="mini" title="Kde právě jsi (pohled shora, klikni na planetu)"></canvas>
+<div id="guide"><span class="bot">🤖</span><p></p></div>
+<div id="ufo" aria-live="polite"><span>🛸</span><p></p></div>
+<div id="mission" class="panel" style="display:none"></div>
+<div id="card" class="panel"></div>
+<div id="list" class="panel"><button class="x" data-close="#list">×</button><input id="search" type="search" placeholder="Hledat těleso…" aria-label="Hledat těleso"><div id="items"></div></div>
+<div id="gamebox" class="panel"><button class="x" data-close="#gamebox">×</button><div id="game"></div></div>
+<button id="minfo" title="Ukázat kartu tělesa">ⓘ</button><button id="cardtab" title="Ukázat kartu tělesa">ⓘ</button><button id="zvb" title="Zkušebna zvuků" aria-label="Zkušebna zvuků">♪</button>
+<div id="zv" class="panel pop"><button class="x" data-zx="1">×</button><h3>🎧 Zkušebna zvuků <small id="zv-n"></small></h3><div id="zv-cats"></div><div id="zv-list"></div><div id="zv-foot"><button id="zv-copy" class="pri">Zkopírovat výběr</button><button id="zv-stop">■ Ticho</button><label><input type="checkbox" id="zv-loop"> opakovat</label><label><input type="checkbox" id="zv-auto" checked> šipky rovnou přehrávají</label><span class="sub">↑↓ další · mezerník znovu · Enter fajfka</span><textarea id="zv-out" readonly></textarea></div></div>
+<div id="hud"><div id="alt"></div><div id="scale"><i></i><span></span></div></div>
+<div id="dockwrap"><div id="sub" class="panel" style="display:none"></div><div id="dock" class="panel"></div></div>
+<div id="help" class="panel"><button class="x" data-close="#help">×</button>
+  <h2>Vítej, mladý astronome!</h2>
+  <p>Tohle je Sluneční soustava ve <b>skutečném měřítku</b>: přes 200 těles tam, kde právě teď opravdu jsou. Vesmír je hlavně prázdno – proto jsou tělesa z dálky jen tečky se jménem. Doleť k nim a uvidíš je zblízka.</p>
+  <div class="g">
+    <div><kbd>dvojklik</kbd> leť k tělesu</div><div><kbd>Tab</kbd> / <kbd>Shift+Tab</kbd> další / předchozí těleso</div>
+    <div><kbd>kolečko</kbd> <kbd>Q</kbd> <kbd>E</kbd> přiblížit / oddálit</div><div><kbd>0</kbd> Slunce, <kbd>1</kbd>–<kbd>8</kbd> planety, <kbd>9</kbd> Pluto (znovu = měsíce)</div>
+    <div><kbd>levé tlačítko</kbd> <kbd>šipky</kbd> <kbd>WASD</kbd> otáčet</div><div><kbd>Enter</kbd> leť k vybranému / přiblížit</div>
+    <div><kbd>pravé tlačítko</kbd> rozhlédnout se, <kbd>C</kbd> zpět</div><div><kbd>mezerník</kbd> zastavit čas, <kbd>,</kbd> <kbd>.</kbd> rychlost, <kbd>T</kbd> teď</div>
+    <div><kbd>klik</kbd> vybrat těleso (karta vpravo)</div><div><kbd>G</kbd> přisvětlení, <kbd>O</kbd> dráhy, <kbd>L</kbd> popisky</div>
+    <div><kbd>Home</kbd> celá soustava, <kbd>P</kbd> k mateřskému tělesu</div><div><kbd>B</kbd> seznam, <kbd>J</kbd> deník, <kbd>R</kbd> otáčet se s tělesem, <kbd>F</kbd> celá obrazovka</div>
+    <div><kbd>U</kbd> souhvězdí, <kbd>N</kbd> jména hvězd</div><div><kbd>V</kbd> filtr Slunce, <kbd>K</kbd> dětské / dospělé, <kbd>X</kbd> zvuk</div>
+    <div><kbd>Z</kbd> album, <kbd>/</kbd> hledat, <kbd>M</kbd> hudba</div><div><kbd>I</kbd> kino, <kbd>Y</kbd> otáčení, <kbd>Shift+T</kbd> stroj času</div>
+    <div><kbd>Shift+D</kbd> měřit, <kbd>Shift+A</kbd> osa a rovník</div><div><kbd>Shift+G</kbd> reálný jas, <kbd>☰</kbd> další funkce</div>
+  </div>
+  <div class="tg"><p>👆 <b>Jeden prst</b> otáčí pohled kolem tělesa.</p><p>🤏 <b>Dva prsty</b> k sobě a od sebe: oddálit a přiblížit.</p><p>👉 <b>Ťuknutí</b> na těleso nebo ikonu dole ho vybere, <b>dvojí ťuknutí</b> k němu doletí.</p><p>☰ Další funkce (dráhy, souhvězdí, deník, stroj času…) jsou v nabídce vpravo nahoře. 🎯 ukáže hádanku.</p><p>ⓘ Karta tělesa po chvíli sama zmizí; křížkem ji zavřeš, šipkou rozbalíš.</p></div>
+  <p>🔊 Zvuků: <b id="sndn"></b> – syntéza v prohlížeči a nahrané zvuky z volných balíčků (CC0). Hudba: 16 skladeb, hrají podle místa, řídce a potichu (☰ → Hudba). Hlasitost zvuků a hudby se nastavuje zvlášť v nabídce ☰.</p>
+  <p>🎯 Nahoře je <b>hádanka</b>. Najdi těleso, o kterém mluví, a doleť k němu. Za každé nově navštívené těleso dostaneš razítko do deníku a body.</p>
+  <div class="row"><button class="pri" data-close="#help">Letíme!</button><button data-a="tut">▶ Přehrát ukázku (1 min)</button></div>
+  <p class="about"><b>O aplikaci.</b> Sluneční soustava 200, verze 1.2 (13. 11. 2026). Námět, zadání, odborná kontrola a testování: <span class="autor">Ing. Ondřej Kaplan, Ph.D.</span> (<a href="mailto:ondrej.kaplan@gmail.com">ondrej.kaplan@gmail.com</a>). Kód napsal podle jeho zadání model Claude Fable 5.2 (Anthropic) s knihovnou Three.js; aplikace vznikala postupně, iteraci po iteraci, a každá verze prochází automatickými testy.<br><b>Soukromí.</b> Zdarma, bez reklam a bez registrace. Aplikace neodesílá žádné údaje; nastavení a postup hry si ukládá jen do tohoto prohlížeče. Verze v jednom souboru běží i bez internetu.<br><b>Licence a zdroje.</b> Kód je pod licencí MIT. Polohy těles: vlastní výpočet podle elementů JPL a efemeridy DE421. Mapy těles: NASA, JPL, USGS a Stellarium (O. Pluton a další, CC BY 4.0); Země a malá mapa Marsu: J. Hastings-Trew; Mléčná dráha: A. Mellinger. Povrchy označené 🎨 jsou ilustrace. Hudba: skladby autora vytvořené ve službě Suno (placený tarif s právy ke komerčnímu užití). Zvuky: syntéza a nahrávky CC0. Úplný přehled zdrojů a zdrojový kód: <a href="https://github.com/OndrejKaplan-DRM/SlunecniSoustava2026" target="_blank" rel="noopener">github.com/OndrejKaplan-DRM/SlunecniSoustava2026</a></p>
+</div>
+<button id="sunchip" title="Přepnout filtr Slunce (V)"><b>🔆</b><span></span></button><div id="toast"></div><button id="cineoff" title="Ukončit kino a vrátit ovládání (I, Esc)">✕ <span>ovládání</span></button>
+<div id="tut" class="panel"><div class="r"><span id="tut-n">1/9</span><span id="tut-txt"></span><kbd id="tut-key" style="display:none"></kbd><button id="tut-skip" title="Ukončit ukázku (Esc)">Přeskočit ✕</button></div><div id="tut-bar"><i></i></div></div>
+<div id="cur"></div>
+<div id="splash" class="on"><div class="in">
+  <h1>Sluneční soustava <small>200</small></h1>
+  <p>Přes 200 těles ve skutečném měřítku, tam, kde právě teď jsou.</p>
+  <div class="modes"><button id="sp-adult"><b>🎓 Dospělé rozhraní</b><small>Věcné údaje, jednotky, zdroje.</small></button><button id="sp-kid"><b>🧒 Dětské rozhraní</b><small>Hravé karty, tykání, zajímavosti.</small></button></div>
+  <button id="sp-tut" class="pri">▶ Ukázka ovládání (1 min)</button><button id="sp-go">Rovnou do vesmíru</button>
+  <div class="tg">👆 jeden prst otáčí · 🤏 dva prsty přibližují<br>ťuknutí vybere · dvojí ťuknutí letí k tělesu</div>
+  <div class="fine">Se zvukem. Rozhraní i zvuk jde kdykoli přepnout (K, X). Enter = ukázka, Esc = přeskočit.</div>
+  <div class="ver">Verze 1.2 · <span class="autor">Ondřej Kaplan</span>, 2026 · zdarma, bez reklam a bez sběru dat · více v nápovědě (?)</div>
+</div></div>
+<script src="app.js"></script>
+</body>
+</html>
