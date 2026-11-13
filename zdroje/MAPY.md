@@ -45,4 +45,4 @@ Konvence modelu ověřena výpočtem: nultý poledník vázaně rotujících tě
 - Měsíce Uranu: mozaiky USGS z Voyageru 2 mají 1440 × 720 (space.jpl.nasa.gov/tmaps) – nejsou ostřejší než stávající 1024 × 512 natolik, aby to stálo za výměnu; severní polokoule nebyly vyfotografovány.
 - Phobos, Země: beze změny (rozhodnutí Ondřeje). Deimos: nehledáno dál.
 
-Uvádět: NASA / JPL / USGS (Mars, Europa), NASA's Scientific Visualization Studio (Měsíc).
+Přehled autorů a licencí všech map (i malých, převzatých ze Stellaria) je od verze 1.2 v `CREDITS.md` v kořeni repozitáře.

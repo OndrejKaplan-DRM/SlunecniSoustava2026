@@ -4,7 +4,7 @@ export function createMobile(S, A, ui) {
   const B = document.body,
     $ = (s) => document.querySelector(s),
     mq = matchMedia('(pointer: coarse)'),
-    M = { mob: false, tab: false, touch: false, force: 'auto' };
+    M = { mob: false, tab: false, touch: false, big: false, force: 'auto' };
   try {
     M.force = localStorage.getItem('s200view') || 'auto';
   } catch (e) {
@@ -12,8 +12,18 @@ export function createMobile(S, A, ui) {
   }
   {
     const q = new URLSearchParams(location.search).get('view');
-    if (q === 'mob' || q === 'pc' || q === 'tab') M.force = q;
+    if (q === 'mob' || q === 'pc' || q === 'tab' || q === 'big') M.force = q;
   }
+  /* celá obrazovka: tlačítko se schová jen tam, kde ji prohlížeč opravdu neumí (iPhone) */
+  if (!(document.fullscreenEnabled || document.webkitFullscreenEnabled)) B.classList.add('nofs');
+  /* klávesové zkratky v nápovědě: na dotykovém zařízení se ukážou, jakmile někdo stiskne skutečnou klávesu (tabule, notebook s dotykem) */
+  addEventListener(
+    'keydown',
+    (e) => {
+      if (e.isTrusted && !/^(INPUT|TEXTAREA)$/.test((e.target && e.target.tagName) || '')) B.classList.add('kbd');
+    },
+    { passive: true }
+  );
   const card = $('#card'),
     minfo = $('#minfo'),
     mis = $('#mission');
@@ -29,19 +39,29 @@ export function createMobile(S, A, ui) {
     M.mob = f === 'mob' || (f === 'auto' && (w < 700 || (coarse && Math.min(w, h) < 520)));
     M.tab = !M.mob && (f === 'tab' || (f === 'auto' && coarse));
     M.touch = (coarse && f !== 'pc') || f === 'tab';
+    /* velká obrazovka (4K televize, tabule bez zvětšení v systému): rozhraní se zvětší, aby bylo čitelné z dálky */
+    M.big = f === 'big' || (f === 'auto' && !M.mob && w >= 2400);
+    const bk = !M.big ? 1 : f === 'big' ? Math.min(2.4, Math.max(1.25, w / 1500)) : Math.min(2.2, w / 1750);
+    B.classList.toggle('big', M.big);
+    B.style.setProperty('--bk', bk.toFixed(2));
+    S.txtK = bk;
     B.classList.toggle('mob', M.mob);
     B.classList.toggle('tab', M.tab);
     B.classList.toggle('touch', M.touch);
     B.classList.toggle('land', M.mob && w > h);
+    /* horní lišta: popisky tlačítek se schovávají postupně (stupně 0–4 v data-tl), teprve pak se lišta zalomí na druhý řádek */
     B.classList.remove('stack');
+    B.dataset.tl = 0;
     if (!M.mob) {
-      const a = $('#top').getBoundingClientRect(),
-        b = $('#tools').getBoundingClientRect();
-      if (a.right + 8 > b.left) B.classList.add('stack');
+      const clash = () => $('#top').getBoundingClientRect().right + 8 > $('#tools').getBoundingClientRect().left;
+      let tl = 0;
+      while (tl < 4 && clash()) B.dataset.tl = ++tl;
+      if (clash()) B.classList.add('stack');
     }
     S.pickR = M.touch ? 24 : 12;
     $('#b-view').textContent =
-      '📱 Zobrazení: ' + { auto: 'automaticky', mob: 'telefon', tab: 'tablet', pc: 'počítač' }[f];
+      '📱 Zobrazení: ' +
+      { auto: 'automaticky', mob: 'telefon', tab: 'tablet', pc: 'počítač', big: 'velká obrazovka' }[f];
     dock();
     if (!M.mob && !M.tab) {
       card.classList.remove('gone', 'open');
@@ -95,7 +115,7 @@ export function createMobile(S, A, ui) {
       if (dismissed !== S.sel) show();
     } else if (!card.classList.contains('gone')) arm();
   }
-  new MutationObserver(decorate).observe(card, { childList: true });
+  S.bus.on('card', decorate);
   card.addEventListener(
     'click',
     (e) => {
@@ -137,14 +157,17 @@ export function createMobile(S, A, ui) {
   tab.addEventListener('click', () => {
     dockCard(false, false);
     gb.classList.remove('on');
+    gbSync();
     A.play('panel_open');
   });
-  new MutationObserver(() => {
+  /* deník a karta sdílejí pravý okraj: když se deník otevře, karta se odklidí do ouška, a po zavření se vrátí */
+  const gbSync = () => {
     if (M.mob) return;
     const on = gb.classList.contains('on');
     if (on && !card.classList.contains('dock')) dockCard(true, true);
     else if (!on && autoDock) dockCard(false, false);
-  }).observe(gb, { attributes: true, attributeFilter: ['class'] });
+  };
+  S.bus.on('panel', (sel) => sel === '#gamebox' && gbSync());
   // hádanka: na telefonu se ukáže na 7 s při změně a na ťuknutí na 🎯
   const misShow = (ms) => {
     if (!M.mob || !mis.innerHTML) return;
@@ -152,7 +175,7 @@ export function createMobile(S, A, ui) {
     clearTimeout(misT);
     misT = setTimeout(() => mis.classList.remove('show'), ms);
   };
-  new MutationObserver(() => misShow(7000)).observe(mis, { childList: true });
+  S.bus.on('mission', () => setTimeout(() => misShow(7000), 0));
   $('#tools [data-m="mis"]').addEventListener('click', () => {
     if (mis.classList.contains('show')) {
       mis.classList.remove('show');
@@ -165,7 +188,7 @@ export function createMobile(S, A, ui) {
   mis.addEventListener('click', () => misShow(12000));
   // ruční přepnutí zobrazení (pojistka, kdyby rozpoznání nesedělo)
   $('#b-view').addEventListener('click', () => {
-    const o = ['auto', 'mob', 'tab', 'pc'];
+    const o = ['auto', 'mob', 'tab', 'pc', 'big'];
     M.force = o[(o.indexOf(M.force) + 1) % o.length];
     try {
       localStorage.setItem('s200view', M.force);
@@ -175,7 +198,14 @@ export function createMobile(S, A, ui) {
     $('#more').classList.remove('on');
     layout();
     ui.toast(
-      'Zobrazení: ' + { auto: 'automaticky podle zařízení', mob: 'telefon', tab: 'tablet', pc: 'počítač' }[M.force]
+      'Zobrazení: ' +
+        {
+          auto: 'automaticky podle zařízení',
+          mob: 'telefon',
+          tab: 'tablet',
+          pc: 'počítač',
+          big: 'velká obrazovka (televize, tabule)',
+        }[M.force]
     );
   });
   for (const s of ['#sp-go', '#sp-tut'])
@@ -184,6 +214,7 @@ export function createMobile(S, A, ui) {
       misShow(7000);
     });
   addEventListener('resize', layout);
+  S.bus.on('mode', () => setTimeout(layout, 0)); /* dětské písmo je širší – lišta se přeměří */
   addEventListener('orientationchange', () => setTimeout(layout, 250));
   if (mq.addEventListener) mq.addEventListener('change', layout);
   layout();

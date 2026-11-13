@@ -1,11 +1,28 @@
 # Sluneční soustava 200
 
-Realistický model Sluneční soustavy v prohlížeči (Three.js): 200 těles ve skutečném měřítku a na skutečných drahách,
-dospělé a dětské rozhraní, ukázka ovládání, zvuky a hudba, hra pro mladého astronoma.
+![Sluneční soustava 200 – Saturn s měsíci](dist/nahled.jpg)
 
-- Veřejná stránka: https://ondrejkaplan-drm.github.io/SlunecniSoustava2026/ (větev `gh-pages` = obsah `dist/`)
-- Artefakt: https://claude.ai/artifact/ELrVkgtSrBnAAveX332y2o
-- Autor: Ondřej Kaplan; experimentální aplikace psaná s Claude.
+Interaktivní 3D model Sluneční soustavy v prohlížeči: 201 těles ve skutečném měřítku a na skutečných drahách,
+dospělé a dětské rozhraní, minutová ukázka ovládání, čtyři pohledy na Slunce, zvuky, hudba a hra pro mladého astronoma.
+
+- **Spustit:** https://ondrejkaplan-drm.github.io/SlunecniSoustava2026/
+- **Verze:** 1.2 (13. 11. 2026) · zdarma, bez reklam, bez registrace a bez sběru dat
+- **Bez internetu:** `npm run offline:hi` vyrobí jeden soubor HTML, který se otevře dvojklikem (na flashku, do školy)
+- **Autor:** Ondřej Kaplan – námět, zadání, odborná kontrola a testování. Kód napsal podle jeho zadání model Claude Fable 5.2 (Anthropic).
+- **Licence:** kód MIT (`LICENSE`); mapy, písmo, zvuky a hudba mají vlastní licence – přehled v `CREDITS.md`
+
+## Co aplikace umí
+- Skutečné měřítko 1 : 1 a skutečné polohy těles pro libovolné datum (stroj času se slavnými okamžiky).
+- 44 těles se skutečnou mapou ze snímků sond, 21 z nich s velkou mapou načítanou až zblízka; ostatní povrchy jsou označené ilustrace.
+- Slunce počítané za běhu: bílé světlo, H-alfa, EUV 304 Å a koronograf.
+- Dětské rozhraní s přirovnáními, hádankami, deníkem a albem; dospělé s jednotkami a zdroji.
+- Počítač, tablet, telefon i velká obrazovka (☰ → Zobrazení).
+
+## Jak se hlídá správnost
+- `npm test` – regresní ukázka ovládání v prohlížeči (10 kroků, bez chyb v konzoli).
+- `npm run test:fakta` – shoda dat, textů a výpočtů (hustoty, rozměry, výstřednosti, průlet Apophisu 2029).
+- `docs/VYDANI.md` – kontrolní seznam před každým zveřejněním.
+- Co je skutečné a co ilustrace, říká aplikace na kartě každého tělesa; přesnost a meze výpočtů jsou v `CREDITS.md`.
 
 ## Rychlý start
 
@@ -43,7 +60,7 @@ src/                  zdrojový kód (ES moduly)
   audio/
     audio.js          syntéza, nahrávky, prostředí těles, hudba
   data/               data (negenerují se při sestavení, neformátují se)
-    cat.json          katalog 200 těles
+    cat.json          katalog těles (201)
     hi.json           seznam těles s velkou mapou (dist/maps/hi/)
     stardata.js       hvězdy a čáry souhvězdí
     connames.js       česká jména souhvězdí a hvězd
@@ -57,12 +74,12 @@ dist/                 hotová aplikace
   music/, zvuky/      skladby a zvuky (MP3)
 tools/                nástroje (spouštět z kořene repa)
   build/              build_offline.mjs – verze v jednom souboru
-  test/               tut.mjs (regrese), t_hi.mjs (velké mapy), shot.mjs, mobshot.mjs, sunshot.sh, t_*.mjs
+  test/               tut.mjs (regrese), t_fakta.mjs (shoda dat a textů), t_hi.mjs (velké mapy), shot.mjs, mobshot.mjs, sunshot.sh, t_*.mjs
   maps/               make_hi.py (velká mapa z mozaiky), make_saturn.py, tone_proc.py, starší převody
   data/               stavba katalogu, ikon a dat (část potřebuje repo Oliverovy Planetky 8)
   zvuky/              výběr a převod zvuků CC0
   archiv/             zastaralé skripty, nepoužívat
-zdroje/               původ dat: MAPY.md (mapy a licence), ZVUKY.md
+zdroje/               původ dat: MAPY.md (zpracování map), ZVUKY.md; licence všech podkladů shrnuje CREDITS.md
 docs/                 poznámky k architektuře
 ```
 

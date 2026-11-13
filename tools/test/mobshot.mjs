@@ -86,6 +86,7 @@ await w(700);
 await shot('8napoveda');
 await page.tap('#help .x');
 await w(300);
+await page.evaluate(() => document.body.classList.add('zvuky'));
 await page.tap('#zvb', { force: true });
 await w(600);
 await shot('9zkusebna');

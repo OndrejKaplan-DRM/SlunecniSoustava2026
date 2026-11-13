@@ -299,8 +299,9 @@ export function spinRate(i) {
   if (par[i] !== SUN && par[i] >= 0) return (2 * Math.PI) / period[i];
   return (2 * Math.PI * 24) / (b.rot || 10);
 } // rad/den
+const _pm = new Array(9);
 export function poleOf(i, jd, out) {
-  const m = basis(i, jd, new Array(9));
+  const m = basis(i, jd, _pm);
   out[0] = m[6];
   out[1] = m[7];
   out[2] = m[8];

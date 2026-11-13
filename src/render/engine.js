@@ -106,7 +106,20 @@ export function createEngine(canvas, overlay) {
     fps: 60,
     quality: 2,
     R: null,
-    on: { focus() {}, select() {}, visit() {}, hud() {}, arrive() {}, flare() {}, fly() {}, overlay: null },
+    on: { focus() {}, select() {}, visit() {}, hud() {}, arrive() {}, flare() {}, fly() {} },
+    overlays: [] /* kreslicí funkce 2D vrstvy (ctx, e) – moduly se přidávají přes push, pořadí = pořadí kreslení */,
+    ticks: [] /* funkce volané jednou za snímek (dt v sekundách), před pohybem kamery – např. držené klávesy */,
+    bus: {
+      /* jednoduchá sběrnice událostí mezi moduly rozhraní: 'card' (karta překreslena), 'panel' (okno otevřeno/zavřeno), 'mission', 'mode' */
+      h: {},
+      on(ev, fn) {
+        (this.h[ev] || (this.h[ev] = [])).push(fn);
+      },
+      emit(ev, a, b) {
+        const l = this.h[ev];
+        if (l) for (const fn of l) fn(a, b);
+      },
+    },
     items: [],
     camPos: new Float64Array(3),
   };
@@ -1253,6 +1266,7 @@ export function createEngine(canvas, overlay) {
     raf = requestAnimationFrame(frame);
     const dtR = Math.min(0.1, (now - last) / 1000),
       rate = S.paused ? 0 : Math.sign(S.rateIdx) * RATES[Math.abs(S.rateIdx) - 1];
+    for (const fn of S.ticks) fn(Math.min(0.05, dtR)); /* vstup z klávesnice dřív než rozhodnutí o klidu */
     const idle =
       now - lastInput > 2500 && !cam.fly && Math.abs(rate) <= 60 && Math.abs(Math.log(cam.alt / cam.altT)) < 1e-3;
     if (idle && ++skip % 4) return; // v klidu jen ~15 snímků/s (šetří starý notebook)
@@ -1334,7 +1348,6 @@ export function createEngine(canvas, overlay) {
                 m9[2] * d[0] + m9[5] * d[1] + m9[8] * d[2]
               );
               u.uN.value.copy(rel).addScaledVector(u.uA.value, b.R * 0.98);
-              u.uB.value.crossVectors(u.uA.value, fwd).normalize();
             }
           }
         basis(i, S.jd, m9);
@@ -1624,6 +1637,7 @@ export function createEngine(canvas, overlay) {
   // ---------- značky a popisky (2D) ----------
   const rects = [];
   function drawOverlay(big) {
+    const tk = S.txtK || 1; /* měřítko písma ve 2D vrstvě (režim velké obrazovky) */
     ctx.clearRect(0, 0, W, H);
     if (S.conMode === 4 || S.starNames) {
       ctx.textBaseline = 'middle';
@@ -1638,7 +1652,7 @@ export function createEngine(canvas, overlay) {
           if (Math.hypot(q.sx - x, q.sy - y) < q.pr + 6) return;
         }
         if (star) {
-          ctx.font = 'italic 11.5px system-ui, sans-serif';
+          ctx.font = 'italic ' + 11.5 * tk + 'px system-ui, sans-serif';
           ctx.fillStyle = 'rgba(255,236,170,0.85)';
           ctx.fillText(o.name, x + 7, y - 6);
           ctx.strokeStyle = 'rgba(255,236,170,0.5)';
@@ -1647,7 +1661,7 @@ export function createEngine(canvas, overlay) {
           ctx.arc(x, y, 4.5, 0, 6.2832);
           ctx.stroke();
         } else {
-          ctx.font = '600 10.5px system-ui, sans-serif';
+          ctx.font = '600 ' + 10.5 * tk + 'px system-ui, sans-serif';
           ctx.fillStyle = 'rgba(120,160,255,0.8)';
           const t = o.name.toUpperCase().split('').join('\u200a');
           ctx.fillText(t, x - ctx.measureText(t).width / 2, y);
@@ -1703,7 +1717,7 @@ export function createEngine(canvas, overlay) {
               if (cut(sg[i], sg[i + 1], sg[i + 2], sg[i + 3], x0, y0, x1, y1)) return false;
             return true;
           };
-        ctx.font = '600 10.5px system-ui, sans-serif';
+        ctx.font = '600 ' + 10.5 * tk + 'px system-ui, sans-serif';
         for (const o of cons) {
           const z = o.c.dot(fwd);
           if (z < 0.25) continue;
@@ -1750,7 +1764,10 @@ export function createEngine(canvas, overlay) {
       if (S.starNames) for (const s of starLab) put(s, true);
     }
     collect(big, S.labMode > 0 || S.hover >= 0);
-    if (S.on.overlay) S.on.overlay(ctx, { W, H, F, fwd, right, up, big, R });
+    if (S.overlays.length) {
+      const e = { W, H, F, fwd, right, up, big, R };
+      for (const fn of S.overlays) fn(ctx, e);
+    }
   }
   function collect(big, draw) {
     const fi = S.focus,
@@ -1777,17 +1794,13 @@ export function createEngine(canvas, overlay) {
       }
       if (hid) continue;
       const small = !(b.type === 'planet' || b.type === 'star' || b.type === 'dwarf' || b.type === 'moon');
-      let pri = hot
-        ? 1000 + (i === S.hover ? 50 : 0)
-        : b.type === 'star'
-          ? 300
-          : b.type === 'planet'
-            ? 200
-            : b.type === 'dwarf'
-              ? 120 + b.fame
-              : b.type === 'moon'
-                ? 60 + Math.log10(b.R) * 12 + (root[i] === root[fi] ? 40 : 0)
-                : 20 + b.fame * 8 + (r.pr > 1.5 ? 60 : 0);
+      let pri;
+      if (hot) pri = 1000 + (i === S.hover ? 50 : 0);
+      else if (b.type === 'star') pri = 300;
+      else if (b.type === 'planet') pri = 200;
+      else if (b.type === 'dwarf') pri = 120 + b.fame;
+      else if (b.type === 'moon') pri = 60 + Math.log10(b.R) * 12 + (root[i] === root[fi] ? 40 : 0);
+      else pri = 20 + b.fame * 8 + (r.pr > 1.5 ? 60 : 0);
       const lab =
         hot || S.labMode === 2 || (S.labMode === 1 && (!small || b.fame >= 4 || r.pr > 1.5 || r.dist < 0.05 * AU));
       items.push({ i, sx: r.sx, sy: r.sy, pr: r.pr, pri, lab, dist: r.dist });
@@ -1822,7 +1835,9 @@ export function createEngine(canvas, overlay) {
       if (!it.lab || (S.labMode === 0 && it.i !== S.hover)) continue;
       if (!hot && nlab > 46) continue;
       const big2 = hot || b.type === 'planet' || b.type === 'star';
-      ctx.font = (big2 ? '600 13px ' : '12px ') + 'system-ui, -apple-system, Segoe UI, sans-serif';
+      ctx.font =
+        (big2 ? '600 ' + 13 * (S.txtK || 1) + 'px ' : 12 * (S.txtK || 1) + 'px ') +
+        'system-ui, -apple-system, Segoe UI, sans-serif';
       const name = b.cs,
         w = ctx.measureText(name).width,
         off = it.pr > 3.5 ? Math.min(it.pr, 220) * 0.72 + 7 : 9,

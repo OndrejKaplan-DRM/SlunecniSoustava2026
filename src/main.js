@@ -12,6 +12,8 @@ const ui = createUI(S, A);
 ui.X = createExtras(S, A, ui);
 const mob = createMobile(S, A, ui);
 const zv = createZvuky(A, ui);
+/* zkušebna zvuků je nástroj autora: tlačítko se ukáže jen s parametrem ?zvuky v adrese */
+if (new URLSearchParams(location.search).has('zvuky')) document.body.classList.add('zvuky');
 const orient = createOrient(S, A, ui);
 S.start();
 window.S200 = { S, ui, sim, A, mob, zv, orient };

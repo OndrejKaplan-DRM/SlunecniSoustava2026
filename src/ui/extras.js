@@ -106,7 +106,7 @@ export function createExtras(S, A, api) {
     } else ring = { t: 0 };
     S.wake();
   };
-  S.on.overlay = (ctx, e) => {
+  S.overlays.push((ctx, e) => {
     const { W, H, F, fwd, right, up, big, R } = e,
       C = S.camPos,
       kid = api.kid(),
@@ -463,7 +463,7 @@ export function createExtras(S, A, api) {
         S.wake();
       }
     }
-  };
+  });
   X.pickProbe = (x, y) => X.probes.find((p) => Math.hypot(p.x - x, p.y - y) < 14) || null;
   // --- minimapa: pohled shora na ekliptiku, vzdálenost od Slunce logaritmicky ---
   const mc = document.getElementById('mini'),
@@ -478,7 +478,8 @@ export function createExtras(S, A, api) {
   mx.setTransform(d, 0, 0, d, 0, 0);
   const rad = (au) => (Math.log10(1 + au / 0.25) / Math.log10(1 + 60 / 0.25)) * (MS / 2 - 8);
   X.drawMini = () => {
-    if (!X.mini) return;
+    if (!X.mini || document.hidden || !mc.offsetParent || document.body.classList.contains('cine'))
+      return; /* skrytá minimapa se nekreslí */
     mx.clearRect(0, 0, MS, MS);
     const c = MS / 2;
     spots = [];

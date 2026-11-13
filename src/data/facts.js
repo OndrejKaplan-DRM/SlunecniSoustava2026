@@ -54,13 +54,15 @@ const FACTS = {
   pallas: ['Třetí největší planetka; srážky na šikmé dráze ji poďobaly víc než ostatní.'],
   ida: ['Měsíček Dactyl se našel náhodou až na snímcích, které sonda Galileo poslala s půlročním zpožděním.'],
 };
+/* slovní popis hustoty: [horní mez v g/cm³, text] */
+const RHO = [[1, 'méně než voda'], [2.2, 'jako směs ledu a kamení (voda má 1)'], [3.6, 'jako kámen (žula má 2,7)'], [5, 'víc než kámen, je tu hodně kovu'], [99, 'kámen s velkým kovovým jádrem (železo má 7,9)']];
 const cz = (x, d = 1) => x.toLocaleString('cs-CZ', { maximumFractionDigits: d });
 // b = těleso z katalogu, o = { moons: známý počet měsíců, sunAU: vzdálenost od Slunce teď, isSun }
 export function factsOf(b, o) {
   const out = [...(FACTS[b.id] || [])];
   if (b.mass && b.R && !b.abc && b.id !== 'earth') { const rho = b.mass / (4 / 3 * Math.PI * Math.pow(b.R * 1e5, 3) * (1 - (b.flat || 0))) * 1000;                    // g/cm³
     const gas = b.type === 'star' || ['jupiter', 'saturn', 'uranus', 'neptune'].includes(b.id);
-    if (rho > 0.2 && rho < 9) out.push(gas ? `Průměrná hustota ${cz(rho, 2)} g/cm³ (voda má 1) – směrem do nitra ale prudce roste.` : `Průměrná hustota ${cz(rho, 2)} g/cm³ – ${rho < 1 ? 'méně než voda' : rho < 2.2 ? 'jako směs ledu a kamení (voda má 1)' : rho < 3.6 ? 'jako kámen (žula má 2,7)' : rho < 5 ? 'víc než kámen, je tu hodně kovu' : 'kámen s velkým kovovým jádrem (železo má 7,9)'}.`); }
+    if (rho > 0.2 && rho < 9) out.push(gas ? `Průměrná hustota ${cz(rho, 2)} g/cm³ (voda má 1) – směrem do nitra ale prudce roste.` : `Průměrná hustota ${cz(rho, 2)} g/cm³ – ${RHO.find((x) => rho < x[0])[1]}.`); }
   if (b.vesc) { const v = b.vesc / 1000; out.push(v >= 1 ? `Úniková rychlost ${cz(v)} km/s${o.isSun ? '' : ' – tak rychle musí letět raketa, aby odtud odletěla'}.` : v * 3600 > 3 ? `Úniková rychlost jen ${cz(v * 3600, 0)} km/h${v * 3600 < 40 ? ' – stačilo by se rozběhnout a skočit' : v * 3600 < 180 ? ' – jako hodně rychlé auto' : ''}.` : v * 1000 >= 0.1 ? `Úniková rychlost jen ${cz(v * 1000, 1)} m/s – pomalejší než chůze.` : `Úniková rychlost jen ${cz(v * 1e5, 1)} cm/s – odletěl bys i při opatrném kroku.`); }
   if (!o.isSun && o.sunAU > 0 && b.id !== 'earth' && b.id !== 'moon') { const k = 1 / (o.sunAU * o.sunAU); out.push(k >= 1.15 ? `Slunce tu teď svítí ${cz(k)}× silněji než na Zemi.` : k > 0.87 ? 'Slunce tu svítí skoro stejně silně jako na Zemi.' : k > 0.001 ? `Slunce tu teď svítí ${cz(1 / k, 1 / k < 10 ? 1 : 0)}× slaběji než na Zemi.` : `Slunce je odtud jen velmi jasná hvězda: svítí ${cz(1 / k, 0)}× slaběji než na Zemi.`); }
   if (b.albedo && !o.isSun && b.id !== 'earth') { const a = b.albedo; out.push(`Odráží asi ${cz(a * 100, 0)} % dopadajícího světla – ${a < 0.08 ? 'je tmavší než uhlí' : a < 0.2 ? 'asi jako tmavá hornina' : a < 0.45 ? 'asi jako suchý písek' : a < 0.75 ? 'asi jako mraky' : 'jako čerstvý sníh'}.`); }

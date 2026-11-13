@@ -91,9 +91,7 @@ export function createOrient(S, A, ui) {
       return;
     if (performance.now() - O.last > 150000) O.pulse(false);
   }, 5000);
-  const prev = S.on.overlay;
-  S.on.overlay = (ctx, e) => {
-    if (prev) prev(ctx, e);
+  S.overlays.push((ctx, e) => {
     if (!O.on) return;
     const { W, H, F, fwd, right, up } = e,
       C = S.camPos,
@@ -268,6 +266,6 @@ export function createOrient(S, A, ui) {
         if (!hid(p[0], p[1])) label(p[0], p[1], name, sub, '#ffe9a8', pa);
       } else arrow(p, '#ffe9a8', name, pa * 0.85);
     }
-  };
+  });
   return O;
 }

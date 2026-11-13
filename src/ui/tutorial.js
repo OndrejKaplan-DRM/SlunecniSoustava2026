@@ -120,9 +120,9 @@ export function createTutorial(S, A, ui) {
     },
     async orbits() {
       await say(
-        'Tlačítko Dráhy (klávesa O): vypnuté → hlavní → dráhy všech 200 těles.',
+        'Tlačítko Dráhy (klávesa O): vypnuté → hlavní → dráhy všech těles.',
         'Čáry ukazují, kudy tělesa létají. Tlačítkem Dráhy je schováš, nebo ukážeš úplně všechny!',
-        'Dráhy najdeš v nabídce ☰ vpravo nahoře: vypnuté → hlavní → dráhy všech 200 těles.',
+        'Dráhy najdeš v nabídce ☰ vpravo nahoře: vypnuté → hlavní → dráhy všech těles.',
         'Čáry ukazují, kudy tělesa létají. V nabídce ☰ je schováš, nebo ukážeš úplně všechny!'
       );
       S.zoom(pick([40, 400, 3000]));
@@ -249,7 +249,7 @@ export function createTutorial(S, A, ui) {
         ['enc', 'enceladus'],
       ]);
       await say(
-        `Všech 200 těles je v seznamu (B). Stačí psát: „${t[0]}“ a Enter.`,
+        `Všechna tělesa jsou v seznamu (B). Stačí psát: „${t[0]}“ a Enter.`,
         `Hledáš něco? Otevři seznam a napiš začátek jména: „${t[0]}“…`
       );
       await point('#dock .all');
@@ -350,7 +350,10 @@ export function createTutorial(S, A, ui) {
     $('#gam').value = keep.gamma;
     S.setSunMode(keep.sun);
     if (ui.kid() !== keep.kid) ui.setMode(keep.kid);
-    ['#list', '#gamebox'].forEach((s) => $(s).classList.remove('on'));
+    ['#list', '#gamebox'].forEach((s) => {
+      $(s).classList.remove('on');
+      S.bus.emit('panel', s, false);
+    });
     cur.style.opacity = 0;
     box.classList.remove('on');
     document.body.classList.remove('tutoring');

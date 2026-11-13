@@ -16,10 +16,19 @@ const used = new Set(
 for (const z of used) A[`zvuky/${z}.mp3`] = uri(`zvuky/${z}.mp3`);
 let html = fs.readFileSync('dist/index.html', 'utf8');
 const app = fs.readFileSync('dist/app.js', 'utf8').replace(/<\/script/gi, '<\\/script');
-if (!html.includes('url(icons.webp)') || !html.includes('<script src="app.js"></script>'))
+if (
+  !html.includes('url(icons.webp)') ||
+  !html.includes('url(fonts/baloo2.woff2)') ||
+  !html.includes('<script src="app.js"></script>')
+)
   throw new Error('index.html má jinou podobu, než čekám');
 html = html
   .replace('url(icons.webp)', `url(${uri('icons.webp')})`)
+  .replace(
+    'url(fonts/baloo2.woff2)',
+    `url(data:font/woff2;base64,${fs.readFileSync('dist/fonts/baloo2.woff2').toString('base64')})`
+  )
+  .replace(/<meta property="og:(url|image)[^>]*>\n/g, '')
   .replace('<body>', '<body class="offline">')
   .replace('</style>', '#zvb { display: none !important; }\n</style>')
   .replace(

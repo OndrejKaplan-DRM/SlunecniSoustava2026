@@ -88,26 +88,19 @@ const fmtPer = (d) =>
         : d < 365.25 * 2000
           ? sig(d / 365.25) + ' roku'
           : nf(Math.round(d / 365.25 / 100) * 100) + ' let';
-const sizeLike = (D) =>
-  D < 0.06
-    ? 'jako velký dům'
-    : D < 0.4
-      ? 'jako stadion'
-      : D < 2
-        ? 'jako kopec'
-        : D < 15
-          ? 'jako velké město'
-          : D < 80
-            ? 'jako Praha s okolím'
-            : D < 600
-              ? 'jako Česká republika'
-              : D < 1800
-                ? 'jako střední Evropa'
-                : D < 6000
-                  ? 'jako celá Evropa'
-                  : D < 16000
-                    ? 'podobně jako Země'
-                    : nf(D / 12742, 1) + '× větší než Země';
+/* přirovnání velikosti: [horní mez průměru v km, text] */
+const SIZES = [
+  [0.06, 'jako velký dům'],
+  [0.4, 'jako stadion'],
+  [2, 'jako kopec'],
+  [15, 'jako velké město'],
+  [80, 'jako Praha s okolím'],
+  [600, 'jako Česká republika'],
+  [1800, 'jako střední Evropa'],
+  [6000, 'jako celá Evropa'],
+  [16000, 'podobně jako Země'],
+];
+const sizeLike = (D) => (SIZES.find((x) => D < x[0]) || [0, nf(D / 12742, 1) + '× větší než Země'])[1];
 const ICOLS = CAT.iconCols || 16,
   FRAC = { saturn: 0.42, uranus: 0.42, chariklo: 0.42, haumea: 0.42 };
 // ikona = výřez z atlasu podobizen. Průměr kotouče roste s logaritmem poloměru: t = (log10 R + 1) / 6,84, průměr = base · (0,16 + 0,84 · t^2,2)
@@ -386,10 +379,11 @@ export function createUI(S, A) {
         ? ` <i>Nápověda: ${TYPE[b.type]}${par[idx.get(m[0])] > 0 ? ' ' + (GEN[b.parent] || '') : ''}, začíná na „${b.cs[0]}“.</i>`
         : '';
     e.style.display = '';
+    S.bus.emit('mission');
     e.innerHTML = `<span>🎯 <b>${K() ? 'Úkol pro tebe:' : 'Hádanka:'}</b> ${m[1]}${hint}</span> <button data-a="hint" title="Nápověda">?</button><button data-a="skip" title="Jiná hádanka">↻</button>`;
   }
   $('#mission').addEventListener('click', (e) => {
-    const a = e.target.dataset.a;
+    const a = (e.target.closest('[data-a]') || e.target).dataset.a;
     if (a === 'hint') {
       G.hint = true;
       drawMission();
@@ -490,8 +484,9 @@ export function createUI(S, A) {
       $('#score').innerHTML = `⭐ ${nf(G.pts)}`;
     };
   }
-  $('#game').addEventListener('click', (e) => {
-    const a = e.target.dataset.a;
+  $('#game').addEventListener('click', (ev) => {
+    const e = { target: ev.target.closest('[data-a]') || ev.target },
+      a = e.target.dataset.a;
     if (a === 'quiz') quiz();
     if (a === 'reset') {
       if (e.target.dataset.sure) {
@@ -533,19 +528,29 @@ export function createUI(S, A) {
   };
   let factsOpen = false;
   function drawCard(i) {
+    drawCardRaw(i);
+    S.bus.emit('card', i);
+  }
+  function drawCardRaw(i) {
     const b = B[i],
       p = par[i],
       D = b.R * 2,
       inf = S.info(i),
       rows = [];
     const sub = b.type === 'moon' ? `měsíc ${GEN[b.parent] || B[p].cs}` : TYPE[b.type];
-    const kid =
+    const kid0 =
       b.kid ||
       (b.type === 'moon'
         ? `${b.cs} je měsíc ${GEN[b.parent] || B[p].cs}. Velikostí ${sizeLike(D)}.`
         : b.type === 'comet'
           ? `${b.cs} je kometa – špinavá ledová koule. U Slunce jí naroste ohon.`
           : `${b.cs} je ${TYPE[b.type]}. Velikostí ${sizeLike(D)}.`);
+    /* kometa daleko od Slunce nemá ohon (v modelu od 3,6 au) – ať to nevypadá jako chyba */
+    const kid =
+      kid0 +
+      ((b.type === 'comet' || b.coma) && inf.sun > 3.6 * AU
+        ? ' Teď je daleko od Slunce, zmrzlá a bez ohonu. Stroj času (🕰) ji ukáže u Slunce.'
+        : '');
     rows.push([
       'Průměr',
       (b.abc && Math.max(...b.abc) / Math.min(...b.abc) > 1.15
@@ -681,7 +686,7 @@ export function createUI(S, A) {
   $('#card').addEventListener('click', (e) => {
     const chip = e.target.closest('.chip');
     if (chip) return S.flyTo(+chip.dataset.i);
-    const a = e.target.dataset.a,
+    const a = (e.target.closest('[data-a]') || e.target).dataset.a,
       i = S.sel;
     if (a === 'sunf') return act.sunf();
     if (a === 'facts') {
@@ -745,7 +750,7 @@ export function createUI(S, A) {
     `<button class="it ${small ? 'sm' : ''}" data-i="${i}" title="${B[i].cs}"><b>${ico(i, small ? 34 : 46, small ? 34 : 48)}</b><span>${B[i].id === 'halley' ? 'Halley' : B[i].cs.replace(/^Kometa /, '')}</span></button>`;
   $('#dock').innerHTML =
     dockIds.map((i) => icon(i)).join('') +
-    `<button class="it all" data-a="list" title="Všech 200 těles (B)"><b><i class="menu">☰</i></b><span>Všechna</span></button>`;
+    `<button class="it all" data-a="list" title="Všechna tělesa (B)"><b><i class="menu">☰</i></b><span>Všechna</span></button>`;
   function drawSub() {
     const r = root[S.focus],
       ks = r === SUN ? [] : [r, ...[...kids[r]].sort((a, b) => semi[a] - semi[b])];
@@ -878,7 +883,11 @@ export function createUI(S, A) {
       A.play('now');
     }
   };
-  $('#time').addEventListener('click', (e) => (e.target.dataset.a === 'tm' ? act.tm() : timeAct(e.target.dataset.a)));
+  $('#time').addEventListener('click', (e) => {
+    const a = (e.target.closest('[data-a]') || e.target).dataset.a;
+    if (a === 'tm') act.tm();
+    else timeAct(a);
+  });
 
   // ---------- HUD ----------
   S.on.hud = () => {
@@ -920,8 +929,14 @@ export function createUI(S, A) {
     const was = e.classList.contains('on'),
       v = on === undefined ? !was : on;
     if (v !== was) A.play(v ? PSND[sel] || 'panel_open' : 'panel_close');
-    if (v) for (const o of POPS) if (o !== sel) $(o).classList.remove('on');
+    if (v)
+      for (const o of POPS)
+        if (o !== sel && $(o).classList.contains('on')) {
+          $(o).classList.remove('on');
+          S.bus.emit('panel', o, false);
+        }
     e.classList.toggle('on', v);
+    if (v !== was) S.bus.emit('panel', sel, v);
     if (sel === '#list' && v) {
       drawList($('#search').value);
     }
@@ -946,7 +961,7 @@ export function createUI(S, A) {
     orb() {
       S.orbMode = (S.orbMode + 1) % 3;
       A.play(['orbit_off', 'orbit_on', 'orbit_all'][S.orbMode]);
-      toast('Dráhy: ' + ['vypnuté', 'planety a blízké měsíce', 'všech 200 těles'][S.orbMode]);
+      toast('Dráhy: ' + ['vypnuté', 'planety a blízké měsíce', 'všech těles'][S.orbMode]);
     },
     lab() {
       S.labMode = (S.labMode + 1) % 3;
@@ -1148,7 +1163,6 @@ export function createUI(S, A) {
   });
   const volUI = () => {
     for (const [id, v] of [
-      ['#vol', A.vol],
       ['#vol2', A.vol],
       ['#mvol', A.mvol],
     ]) {
@@ -1158,12 +1172,11 @@ export function createUI(S, A) {
     $('#vol2n').textContent = A.vol < 0.01 ? 'vypnuto' : Math.round(A.vol * 100) + ' %';
     $('#mvoln').textContent = A.mvol < 0.01 ? 'vypnuto' : Math.round(A.mvol * 100) + ' %';
   };
-  for (const id of ['#vol', '#vol2'])
-    $(id).addEventListener('input', (e) => {
-      A.unlock();
-      A.setVol(+e.target.value);
-      volUI();
-    });
+  $('#vol2').addEventListener('input', (e) => {
+    A.unlock();
+    A.setVol(+e.target.value);
+    volUI();
+  });
   $('#mvol').addEventListener('input', (e) => {
     A.unlock();
     A.setMVol(+e.target.value);
@@ -1191,6 +1204,7 @@ export function createUI(S, A) {
     G.kid = k;
     save();
     document.body.classList.toggle('kid', k);
+    S.bus.emit('mode', k);
     $('#top h1').innerHTML = k ? '🚀 Vesmírná výprava <small>200</small>' : 'Sluneční soustava <small>200</small>';
     A.play(k ? 'mode_kid' : 'mode_adult');
     refresh();
@@ -1487,11 +1501,8 @@ export function createUI(S, A) {
   const seq = [];
   let t42 = 0;
   const cur = () => (S.cam.fly && S.cam.fly.to !== undefined ? S.cam.fly.to : S.focus);
-  let kt = performance.now();
-  (function kloop(now) {
-    requestAnimationFrame(kloop);
-    const dt = Math.min(0.05, (now - kt) / 1000);
-    kt = now;
+  /* držené klávesy a pomalé otáčení: volá hlavní smyčka enginu jednou za snímek */
+  S.ticks.push((dt) => {
     if (S.autoRot && !S.cam.fly) S.rotate(-38 * dt, 0);
     if (!keys.size) return;
     const v = 520 * dt,
@@ -1505,7 +1516,7 @@ export function createUI(S, A) {
     if (dx || dy) S.rotate(dx, dy);
     if (has('q', '+', '=', 'PageUp')) S.zoom(Math.exp(-dt * 1.6));
     if (has('e', '-', 'PageDown')) S.zoom(Math.exp(dt * 1.6));
-  })(kt);
+  });
 
   // ---------- iterace 3: album, stroj času, porovnání, průvodce, tajné menu, UFO ----------
   function drawAlbum() {
@@ -1628,7 +1639,7 @@ export function createUI(S, A) {
       save();
       markSeen();
       drawGame();
-      toast('Všech 200 razítek odemčeno. Podvodníčku!');
+      toast('Všechna razítka odemčena. Podvodníčku!');
     }
     if (d === 'go') {
       const v = $('#dev-date').value;
