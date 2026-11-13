@@ -1278,9 +1278,17 @@
   "ref": {
    "au": 0.006222
   },
-  "pramen": "JPL SBDB, C/1680 V1 (přísluní)",
+  "pramen": "JPL SBDB, C/1680 V1 (přísluní); JPL Horizons, elementy pro událost",
   "a": "kirch_great_comet_of_1680",
-  "krok": 0.002
+  "krok": 0.002,
+  "el": {
+   "q": 0.006221875074312723,
+   "e": 0.9999857344537532,
+   "i": 60.67911549867113,
+   "O": 276.6339242655329,
+   "w": 350.6129590201903,
+   "Tp": 2335019.987615847
+  }
  },
  {
   "id": "c1759",
@@ -1421,8 +1429,16 @@
   "ref": {
    "au": 0.174073146
   },
-  "pramen": "JPL SBDB Close-Approach Data",
-  "a": "eros"
+  "pramen": "JPL SBDB Close-Approach Data; JPL Horizons, elementy pro událost",
+  "a": "eros",
+  "el": {
+   "q": 1.133079313318566,
+   "e": 0.2228749248587642,
+   "i": 10.83529308279005,
+   "O": 304.7962372163902,
+   "w": 177.9061052918232,
+   "Tp": 2426358.4566053823
+  }
  },
  {
   "id": "p2003",
@@ -1459,9 +1475,17 @@
   "ref": {
    "au": 0.000227628667
   },
-  "pramen": "JPL SBDB Close-Approach Data",
+  "pramen": "JPL SBDB Close-Approach Data; JPL Horizons, elementy pro událost",
   "a": "duende",
-  "krok": 0.0005
+  "krok": 0.0005,
+  "el": {
+   "q": 0.8922809569885386,
+   "e": 0.1103413221613173,
+   "i": 10.57644004498764,
+   "O": 147.1674577605511,
+   "w": 271.3267005574729,
+   "Tp": 2456261.832547726
+  }
  },
  {
   "id": "p2025",
@@ -1473,13 +1497,13 @@
    10,
    29
   ],
-  "ut": "10:36",
+  "ut": "11:35",
   "b": "sun",
   "okno": 5,
   "ref": {
-   "au": 1.3519986
+   "au": 1.356449295925802
   },
-  "pramen": "JPL SBDB, C/2025 N1 (ATLAS)",
+  "pramen": "JPL Horizons, C/2025 N1 (ATLAS), přísluní",
   "a": "atlas3i"
  },
  {
@@ -1518,9 +1542,17 @@
   "ref": {
    "au": 0.0198242034
   },
-  "pramen": "JPL SBDB Close-Approach Data",
+  "pramen": "JPL SBDB Close-Approach Data; JPL Horizons, elementy pro událost",
   "a": "phaethon",
-  "krok": 0.005
+  "krok": 0.005,
+  "el": {
+   "q": 0.1411161514521457,
+   "e": 0.8890310061731125,
+   "i": 22.71150086556323,
+   "O": 264.1756662771969,
+   "w": 323.1901178986919,
+   "Tp": 2485898.245779048
+  }
  },
  {
   "id": "p2135",
@@ -1538,9 +1570,17 @@
   "ref": {
    "au": 0.00136392715
   },
-  "pramen": "JPL SBDB Close-Approach Data",
+  "pramen": "JPL SBDB Close-Approach Data; JPL Horizons, elementy pro událost",
   "a": "bennu",
-  "krok": 0.002
+  "krok": 0.002,
+  "el": {
+   "q": 0.89067947712381,
+   "e": 0.1989912630415068,
+   "i": 6.299239795989009,
+   "O": 0.2630271924870841,
+   "w": 70.67775000036856,
+   "Tp": 2501179.987097898
+  }
  },
  {
   "id": "p2287",
@@ -1704,5 +1744,181 @@
    "viditelnost": "pouhým okem několik měsíců"
   },
   "pramen": "Wikipedie (infobox; Green & Stephenson 2003, Historical Supernovae)"
+ },
+ {
+  "id": "s2090",
+  "typ": "slunce",
+  "nazev": "Zatmění Slunce 23. 9. 2090",
+  "datum": [
+   2090,
+   9,
+   23
+  ],
+  "td": "16:56:36",
+  "dT": 181,
+  "ref": {
+   "gamma": 0.9157,
+   "lat": 60.7,
+   "lon": -40.5,
+   "trvani": "3m36s",
+   "druh": "T",
+   "misto": {
+    "faze": 1.015,
+    "uplne": true,
+    "prstencove": false,
+    "ut": 17.528,
+    "vyska": -6.3
+   }
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Solar Eclipses",
+  "nahradnik": 1
+ },
+ {
+  "id": "s2151",
+  "typ": "slunce",
+  "nazev": "Zatmění Slunce 14. 6. 2151",
+  "datum": [
+   2151,
+   6,
+   14
+  ],
+  "td": "17:13:45",
+  "dT": 331,
+  "ref": {
+   "gamma": 0.6561,
+   "lat": 63.7,
+   "lon": -89.4,
+   "trvani": "3m48s",
+   "druh": "T",
+   "misto": {
+    "faze": 0.955,
+    "uplne": false,
+    "prstencove": false,
+    "ut": 18.373,
+    "vyska": 5.8
+   }
+  },
+  "pramen": "NASA/Espenak & Meeus, Five Millennium Catalog of Solar Eclipses",
+  "nahradnik": 1
+ },
+ {
+  "id": "pM2039",
+  "typ": "dvojice",
+  "druh": "prechod",
+  "nazev": "Přechod Merkuru 2039",
+  "datum": [
+   2039,
+   11,
+   7
+  ],
+  "ut": "08:46",
+  "a": "sun",
+  "b": "mercury",
+  "okno": 2,
+  "ref": {
+   "sep": 13.705
+  },
+  "pramen": "Espenak, Seven Century Catalog of Mercury Transits",
+  "nahradnik": 1
+ },
+ {
+  "id": "pV2125",
+  "typ": "dvojice",
+  "druh": "prechod",
+  "nazev": "Přechod Venuše 2125 (druhý z dvojice)",
+  "datum": [
+   2125,
+   12,
+   8
+  ],
+  "ut": "16:01",
+  "a": "sun",
+  "b": "venus",
+  "okno": 2,
+  "ref": {
+   "sep": 12.273
+  },
+  "pramen": "Espenak, Six Millennium Catalog of Venus Transits",
+  "nahradnik": 1
+ },
+ {
+  "id": "k2067",
+  "typ": "dvojice",
+  "druh": "zakryt",
+  "nazev": "Merkur zakryje Neptun",
+  "datum": [
+   2067,
+   7,
+   15
+  ],
+  "ut": "11:56",
+  "a": "mercury",
+  "b": "neptune",
+  "okno": 4,
+  "ref": {},
+  "pramen": "Albers 1979, Sky & Telescope 57, 220; přes Wikipedii",
+  "nahradnik": 1
+ },
+ {
+  "id": "k2079",
+  "typ": "dvojice",
+  "druh": "zakryt",
+  "nazev": "Merkur zakryje Mars",
+  "datum": [
+   2079,
+   8,
+   11
+  ],
+  "ut": "01:30",
+  "a": "mercury",
+  "b": "mars",
+  "okno": 4,
+  "ref": {},
+  "pramen": "Albers 1979, Sky & Telescope 57, 220; přes Wikipedii",
+  "nahradnik": 1
+ },
+ {
+  "id": "k2123",
+  "typ": "dvojice",
+  "druh": "zakryt",
+  "nazev": "Venuše přejde přes Jupiter (2123)",
+  "datum": [
+   2123,
+   9,
+   14
+  ],
+  "a": "venus",
+  "b": "jupiter",
+  "okno": 4,
+  "ref": {},
+  "pramen": "Albers 1979, Sky & Telescope 57, 220; přes Wikipedii",
+  "nahradnik": 1
+ },
+ {
+  "id": "c2134",
+  "typ": "blizko",
+  "druh": "kometa",
+  "nazev": "Halleyova kometa 2134: nejblíž Zemi od roku 837",
+  "datum": [
+   2134,
+   5,
+   7
+  ],
+  "ut": "12:15",
+  "b": "earth",
+  "okno": 10,
+  "ref": {
+   "au": 0.0915875374
+  },
+  "el": {
+   "q": 0.5932124778411879,
+   "e": 0.9666433034451101,
+   "i": 161.748192972691,
+   "O": 61.30834772955996,
+   "w": 114.0070021574446,
+   "Tp": 2500573.3903175727
+  },
+  "pramen": "JPL SBDB Close-Approach Data; JPL Horizons, elementy návratu",
+  "nahradnik": 1
  }
 ]
