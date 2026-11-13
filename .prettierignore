@@ -1,0 +1,6 @@
+dist/
+node_modules/
+src/data/
+tools/out/
+tools/archiv/
+package-lock.json

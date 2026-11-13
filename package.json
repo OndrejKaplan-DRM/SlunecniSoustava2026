@@ -1,1 +1,21 @@
-{"name":"soustava200","private":true,"type":"module","dependencies":{"esbuild":"^0.28.2","sharp":"^0.35.5","three":"^0.187.0"}}
+{
+  "name": "soustava200",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "esbuild": "^0.28.2",
+    "sharp": "^0.35.5",
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.10.1"
+  },
+  "scripts": {
+    "build": "./build.sh",
+    "test": "node tools/test/tut.mjs /tmp/tut",
+    "test:mapy": "node tools/test/t_hi.mjs /tmp/hi",
+    "offline": "node tools/build/build_offline.mjs SlunecniSoustava200.html",
+    "offline:hi": "node tools/build/build_offline.mjs SlunecniSoustava200.html --hi",
+    "format": "prettier --write \"src/**/*.js\" \"tools/**/*.mjs\""
+  }
+}
