@@ -35,8 +35,9 @@ const FACTS = {
   dimorphos: ['Náraz sondy DART vyrazil přes milion kilogramů horniny a vytvořil ohon dlouhý přes 10 000 km.', 'Sonda Hera (ESA) k němu přilétá v listopadu 2026.'],
   halley: ['Jádro je jedno z nejtmavších těles vůbec: odráží jen asi 4 % světla.', 'Nejstarší jistý záznam je z Číny z roku 240 př. n. l.', 'Edmond Halley spočítal, že komety z let 1531, 1607 a 1682 jsou jedna a tatáž, a předpověděl návrat na rok 1758.'],
   '67p': ['Voda z komety má jiný podíl těžkého vodíku než voda v pozemských oceánech.', 'Modul Philae dosedl 12. listopadu 2014 do stínu útesu; baterie mu vydržely asi dva a půl dne.', 'Sonda Rosetta na kometě našla aminokyselinu glycin.'],
-  oumuamua: ['Jméno je havajské a znamená zhruba „posel zdaleka, který dorazil první“.', 'Objevili ji až 40 dní po průletu kolem Slunce, když už odlétala.', 'Zrychlovala nepatrně víc, než odpovídá gravitaci – nejspíš z ní unikal plyn, i když žádný ohon nebyl vidět.', 'V roce 2025 přibyl třetí známý návštěvník od jiné hvězdy, kometa 3I/ATLAS (v modelu není).'],
-  borisov: ['Složením se podobala kometám Sluneční soustavy, jen měla nezvykle hodně oxidu uhelnatého.', 'V roce 2025 přibyl třetí známý návštěvník od jiné hvězdy, kometa 3I/ATLAS (v modelu není).'],
+  oumuamua: ['Jméno je havajské a znamená zhruba „posel zdaleka, který dorazil první“.', 'Objevili ji až 40 dní po průletu kolem Slunce, když už odlétala.', 'Zrychlovala nepatrně víc, než odpovídá gravitaci – nejspíš z ní unikal plyn, i když žádný ohon nebyl vidět.', 'V roce 2025 přibyl třetí známý návštěvník od jiné hvězdy, kometa 3I/ATLAS.'],
+  borisov: ['Složením se podobala kometám Sluneční soustavy, jen měla nezvykle hodně oxidu uhelnatého.', 'V roce 2025 přibyl třetí známý návštěvník od jiné hvězdy, kometa 3I/ATLAS.'],
+  atlas3i: ['Vůči Slunci letí rychlostí 58 km/s – skoro dvakrát rychleji než kometa Borisov.', 'Dráhu má skloněnou o 175°, takže soustavou proletěla téměř v rovině planet, ale v protisměru.', 'V říjnu 2025 minula Mars ve vzdálenosti 0,19 au; sledovaly ji i sondy na jeho oběžné dráze.', 'Zemi se nepřiblížila víc než na 1,8 au (19. 12. 2025).'],
   eris: ['Povrch odráží 96 % světla – skoro jako čerstvý sníh.', 'Má měsíc Dysnomia. Díky němu známe hmotnost Eris: je o čtvrtinu těžší než Pluto.'],
   haumea: ['Rychlé otáčení ji roztáhlo do tvaru vejce: nejdelší osa je skoro dvakrát delší než nejkratší.', 'Je první trpasličí planetou, u které byl objeven prstenec (2017).'],
   makemake: ['Byla objevena krátce po Velikonocích 2005, odtud jméno boha z Velikonočního ostrova.'],
@@ -57,7 +58,7 @@ const cz = (x, d = 1) => x.toLocaleString('cs-CZ', { maximumFractionDigits: d })
 // b = těleso z katalogu, o = { moons: známý počet měsíců, sunAU: vzdálenost od Slunce teď, isSun }
 export function factsOf(b, o) {
   const out = [...(FACTS[b.id] || [])];
-  if (b.mass && b.R && !b.abc && b.id !== 'earth') { const rho = b.mass / (4 / 3 * Math.PI * Math.pow(b.R * 1e5, 3)) * 1000;                    // g/cm³
+  if (b.mass && b.R && !b.abc && b.id !== 'earth') { const rho = b.mass / (4 / 3 * Math.PI * Math.pow(b.R * 1e5, 3) * (1 - (b.flat || 0))) * 1000;                    // g/cm³
     const gas = b.type === 'star' || ['jupiter', 'saturn', 'uranus', 'neptune'].includes(b.id);
     if (rho > 0.2 && rho < 9) out.push(gas ? `Průměrná hustota ${cz(rho, 2)} g/cm³ (voda má 1) – směrem do nitra ale prudce roste.` : `Průměrná hustota ${cz(rho, 2)} g/cm³ – ${rho < 1 ? 'méně než voda' : rho < 2.2 ? 'jako směs ledu a kamení (voda má 1)' : rho < 3.6 ? 'jako kámen (žula má 2,7)' : rho < 5 ? 'víc než kámen, je tu hodně kovu' : 'kámen s velkým kovovým jádrem (železo má 7,9)'}.`); }
   if (b.vesc) { const v = b.vesc / 1000; out.push(v >= 1 ? `Úniková rychlost ${cz(v)} km/s${o.isSun ? '' : ' – tak rychle musí letět raketa, aby odtud odletěla'}.` : v * 3600 > 3 ? `Úniková rychlost jen ${cz(v * 3600, 0)} km/h${v * 3600 < 40 ? ' – stačilo by se rozběhnout a skočit' : v * 3600 < 180 ? ' – jako hodně rychlé auto' : ''}.` : v * 1000 >= 0.1 ? `Úniková rychlost jen ${cz(v * 1000, 1)} m/s – pomalejší než chůze.` : `Úniková rychlost jen ${cz(v * 1e5, 1)} cm/s – odletěl bys i při opatrném kroku.`); }

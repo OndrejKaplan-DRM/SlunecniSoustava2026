@@ -16,6 +16,7 @@
     "test:mapy": "node tools/test/t_hi.mjs /tmp/hi",
     "offline": "node tools/build/build_offline.mjs SlunecniSoustava200.html",
     "offline:hi": "node tools/build/build_offline.mjs SlunecniSoustava200.html --hi",
-    "format": "prettier --write \"src/**/*.js\" \"tools/**/*.mjs\""
+    "format": "prettier --write \"src/**/*.js\" \"tools/**/*.mjs\"",
+    "test:fakta": "esbuild tools/test/t_fakta.mjs --bundle --platform=node --format=esm --outfile=/tmp/t_fakta.mjs --log-level=error && node /tmp/t_fakta.mjs"
   }
 }

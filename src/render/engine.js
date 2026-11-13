@@ -537,6 +537,13 @@ export function createEngine(canvas, overlay) {
     neptune: 0.25,
     pluto: 0.06,
   };
+  /* sklon magnetického dipólu k ose rotace ve stupních (Země 9,4; Jupiter 9,6; Saturn < 1; Uran 59; Neptun 47) */
+  const MAGTILT = { earth: 9.4, jupiter: 9.6, saturn: 0, uranus: 59, neptune: 47 };
+  const magPole = (deg) => {
+    const t = deg * DEG,
+      az = -1.87; /* směr náklonu v souřadnicích tělesa – stejný jako dřív u Země */
+    return new THREE.Vector3(Math.sin(t) * Math.cos(az), Math.sin(t) * Math.sin(az), Math.cos(t));
+  };
   const AUR = {
     earth: [
       [0.55, 0.36, 0.035, 0],
@@ -637,6 +644,7 @@ export function createEngine(canvas, overlay) {
       uOcc: { value: [new THREE.Vector4(), new THREE.Vector4(), new THREE.Vector4(), new THREE.Vector4()] },
       uAur: { value: new THREE.Vector4(...(AUR[b.id] ? AUR[b.id][0] : [0, 0.3, 0.05, 0])) },
       uAurC: { value: new THREE.Vector3(...(AUR[b.id] ? AUR[b.id][1] : [0, 0, 0])) },
+      uAurP: { value: magPole(MAGTILT[b.id] || 0) },
       uExp: { value: 1 },
       uAbc: { value: new THREE.Vector3(...sp.a) },
       uShp: { value: new THREE.Vector3(sp.lump, sp.neck, sp.seed) },
@@ -710,7 +718,7 @@ export function createEngine(canvas, overlay) {
       a.frustumCulled = false;
       mesh.add(a);
     }
-    if (isSun || b.type === 'comet' || b.id === 'borisov') {
+    if (isSun || b.type === 'comet' || b.coma) {
       const gm = new THREE.ShaderMaterial({
         uniforms: {
           uS: { value: 1 },
@@ -763,7 +771,7 @@ export function createEngine(canvas, overlay) {
         m.userData.d = q[0];
         return m;
       });
-    if (b.type === 'comet' || b.id === 'borisov') {
+    if (b.type === 'comet' || b.coma) {
       r.tails = [
         [0.45, 0.68, 1],
         [1, 0.9, 0.72],
@@ -1281,7 +1289,7 @@ export function createEngine(canvas, overlay) {
         (z <= 0 ||
           (r.sx > -pr * 1.5 - 60 && r.sx < W + pr * 1.5 + 60 && r.sy > -pr * 1.5 - 60 && r.sy < H + pr * 1.5 + 60) ||
           dist < rm * 4);
-      const active = b.type === 'comet' || b.id === 'borisov' || i === SUN;
+      const active = b.type === 'comet' || b.coma || i === SUN;
       if (!on && !active) {
         if (r.mesh) r.mesh.visible = false;
         if (r.plumes) for (const m of r.plumes) m.visible = false;

@@ -117,7 +117,7 @@ export const icoDia = (b, base) =>
   base * (0.16 + 0.84 * Math.pow(Math.min(1, Math.max(0, (Math.log10(b.R) + 1) / 6.84)), 2.2));
 const ico = (i, base, fit) => {
   const b = B[i],
-    comet = b.type === 'comet' || b.id === 'borisov',
+    comet = b.type === 'comet' || b.coma,
     sz = Math.round(comet ? base * 0.72 : icoDia(b, base) / (FRAC[b.id] || 0.94));
   return `<i class="ic" style="width:${sz}px;height:${sz}px;${fit && sz > fit ? `margin:${-Math.ceil((sz - fit) / 2)}px 0;` : ''}background-size:${ICOLS * sz}px auto;background-position:-${(i % ICOLS) * sz}px -${Math.floor(i / ICOLS) * sz}px"></i>`;
 };
@@ -204,6 +204,7 @@ const MISSIONS = [
   ['sedna', 'Jedno z nejvzdálenějších těles – jeden oběh mu trvá přes 11 000 let.'],
   ['hyperion', 'Měsíc Saturnu podobný mořské houbě.'],
   ['borisov', 'Kometa, která přiletěla od jiné hvězdy.'],
+  ['atlas3i', 'Nejrychlejší návštěvník od jiné hvězdy.'],
   ['deimos', 'Menší ze dvou měsíců Marsu.'],
   ['callisto', 'Jupiterův měsíc s nejvíc krátery ze všech.'],
 ].filter((m) => idx.has(m[0]));
@@ -621,7 +622,9 @@ export function createUI(S, A) {
           '🎂',
           yrs > 8
             ? `Rok tu trvá <b>${sig(yrs)} pozemských let</b>. Osmiletý by neoslavil ani první narozeniny.`
-            : `Osmiletý by tu slavil už <b>${nf(Math.floor(8 / yrs))}. narozeniny</b>.`,
+            : yrs > 1.02
+              ? `Rok tu trvá <b>${sig(yrs)} pozemského roku</b>. Osmiletý by tu měl teprve <b>${nf(Math.floor(8 / yrs))}. narozeniny</b>.`
+              : `Osmiletý by tu slavil už <b>${nf(Math.floor(8 / yrs))}. narozeniny</b>.`,
         ]);
       if (i !== EARTH)
         tiles.push(

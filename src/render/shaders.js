@@ -35,7 +35,7 @@ uniform sampler2D tMap; uniform sampler2D tAux; uniform sampler2D tRing; uniform
 uniform float uHasMap; uniform float uHasAux; uniform float uKind; uniform float uDet; uniform float uSeed; uniform float uFill; uniform float uGam;
 uniform float uAtmK; uniform float uSunR; uniform float uRad; uniform float uTime;
 uniform vec3 uCol; uniform vec3 uSun; uniform vec3 uAtmCol; uniform vec3 uPole; uniform vec3 uCtr; uniform vec3 uRingSh; uniform mat3 uRot;
-uniform vec4 uOcc[4]; uniform vec4 uAur; uniform vec3 uAurC; uniform float uExp;
+uniform vec4 uOcc[4]; uniform vec4 uAur; uniform vec3 uAurC; uniform vec3 uAurP; uniform float uExp;
 varying vec3 vO; varying vec3 vN; varying vec3 vP;
 ${NOISE}
 void main(){
@@ -75,7 +75,7 @@ void main(){
   else { float ls = 2.0 * m0 / (m0 + mu + 0.03); lit = mix(m0, min(ls, 1.5) * 0.62, 0.6) * step(0.0, mu0); }
   vec3 col = alb * (lit * sh * uExp + uFill) + add * uExp;
   if (uAur.x > 0.0) { // polární záře: ovál kolem magnetického pólu, záclony ze šumu
-    vec3 mp = normalize(vec3(-0.05, -0.16, 0.985)); float cl2 = acos(clamp(abs(dot(o, mp)), 0.0, 1.0)), ring = exp(-pow((cl2 - uAur.y) / uAur.z, 2.0));
+    vec3 mp = uAurP; float cl2 = acos(clamp(abs(dot(o, mp)), 0.0, 1.0)), ring = exp(-pow((cl2 - uAur.y) / uAur.z, 2.0));
     float cur = 0.35 + 0.65 * vn(vec3(atan(o.y, o.x) * 9.0, uSeed + uTime * 300.0 + uAur.w, cl2 * 30.0)); col += uAurC * ring * cur * uAur.x * mix(1.0, smoothstep(0.12, -0.18, mu0), step(3.5, uKind)); }
   if (uAtmK > 0.0) col += uAtmCol * pow(1.0 - mu, 3.0) * uAtmK * (smoothstep(-0.12, 0.3, mu0) * sh + uFill);
   col = pow(max(col, vec3(0.0)), vec3(1.0 / uGam));

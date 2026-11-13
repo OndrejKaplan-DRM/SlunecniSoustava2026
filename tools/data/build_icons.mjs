@@ -39,7 +39,7 @@ for (let i = 0; i < B.length; i++) {
     map = null;
   if (fs.existsSync(f)) map = await sharp(f).resize(W, H, { fit: 'fill' }).removeAlpha().raw().toBuffer();
   const ring = RINGS[b.id],
-    comet = b.type === 'comet' || b.id === 'borisov';
+    comet = b.type === 'comet' || b.coma;
   let ax = 1,
     ay = 1;
   if (b.abc) {
