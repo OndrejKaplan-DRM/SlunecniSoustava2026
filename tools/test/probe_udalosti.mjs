@@ -3,11 +3,43 @@
 // Spuštění: npx esbuild tools/test/probe_udalosti.mjs --bundle --platform=node --format=esm --outfile=/tmp/p.mjs && node /tmp/p.mjs
 import { B, idx, P, updateAll, AU } from '../../src/core/sim.js';
 // kalendář: před 15. 10. 1582 juliánský
-function jd(y, m, d, h = 0, mi = 0) { let Y = y, M = m; if (M <= 2) { Y--; M += 12; } const greg = y > 1582 || (y === 1582 && (m > 10 || (m === 10 && d >= 15))); const A = Math.floor(Y / 100), Bc = greg ? 2 - A + Math.floor(A / 4) : 0; return Math.floor(365.25 * (Y + 4716)) + Math.floor(30.6001 * (M + 1)) + d + Bc - 1524.5 + (h + mi / 60) / 24; }
-const i = (id) => idx.get(id), E = i('earth');
+function jd(y, m, d, h = 0, mi = 0) {
+  let Y = y,
+    M = m;
+  if (M <= 2) {
+    Y--;
+    M += 12;
+  }
+  const greg = y > 1582 || (y === 1582 && (m > 10 || (m === 10 && d >= 15)));
+  const A = Math.floor(Y / 100),
+    Bc = greg ? 2 - A + Math.floor(A / 4) : 0;
+  return Math.floor(365.25 * (Y + 4716)) + Math.floor(30.6001 * (M + 1)) + d + Bc - 1524.5 + (h + mi / 60) / 24;
+}
+const i = (id) => idx.get(id),
+  E = i('earth');
 const R = { sun: 696000, moon: 1737.4 };
-function sep(a, b, t) { updateAll(t); const v = (k) => [P[k * 3] - P[E * 3], P[k * 3 + 1] - P[E * 3 + 1], P[k * 3 + 2] - P[E * 3 + 2]]; const x = v(i(a)), y = v(i(b)); const c = (x[0] * y[0] + x[1] * y[1] + x[2] * y[2]) / Math.hypot(...x) / Math.hypot(...y); return Math.acos(Math.min(1, c)) * 180 / Math.PI; }
-function best(a, b, t0, win = 4) { let bt = t0, bs = 1e9; for (let t = t0 - win; t <= t0 + win; t += 0.01) { const s = sep(a, b, t); if (s < bs) (bs = s), (bt = t); } for (let st = 0.005; st > 2e-5; st /= 2) for (const t of [bt - st, bt + st]) { const s = sep(a, b, t); if (s < bs) (bs = s), (bt = t); } return [bs, bt]; }
+function sep(a, b, t) {
+  updateAll(t);
+  const v = (k) => [P[k * 3] - P[E * 3], P[k * 3 + 1] - P[E * 3 + 1], P[k * 3 + 2] - P[E * 3 + 2]];
+  const x = v(i(a)),
+    y = v(i(b));
+  const c = (x[0] * y[0] + x[1] * y[1] + x[2] * y[2]) / Math.hypot(...x) / Math.hypot(...y);
+  return (Math.acos(Math.min(1, c)) * 180) / Math.PI;
+}
+function best(a, b, t0, win = 4) {
+  let bt = t0,
+    bs = 1e9;
+  for (let t = t0 - win; t <= t0 + win; t += 0.01) {
+    const s = sep(a, b, t);
+    if (s < bs) ((bs = s), (bt = t));
+  }
+  for (let st = 0.005; st > 2e-5; st /= 2)
+    for (const t of [bt - st, bt + st]) {
+      const s = sep(a, b, t);
+      if (s < bs) ((bs = s), (bt = t));
+    }
+  return [bs, bt];
+}
 const T = [
   ['2026-11-16 Mars–Jupiter konjunkce', 'mars', 'jupiter', jd(2026, 11, 16, 5), null, 10],
   ['2020-12-21 Jupiter–Saturn', 'jupiter', 'saturn', jd(2020, 12, 21, 18, 20), 0.102, 10],
@@ -30,4 +62,14 @@ const T = [
   ['2065-11-22 Venuše zakryje Jupiter', 'venus', 'jupiter', jd(2065, 11, 22, 12, 45), 0.004, 5],
   ['2117-12-11 přechod Venuše', 'sun', 'venus', jd(2117, 12, 11, 2, 48), 724 / 3600, 3],
 ];
-for (const [n, a, b, t0, ref, w] of T) { const [s, t] = best(a, b, t0, w); console.log(n.padEnd(40), 'model', (s * 60).toFixed(2).padStart(8) + "'", ref == null ? '   ref —    ' : 'ref ' + (ref * 60).toFixed(2).padStart(7) + "'", 'čas', ((t - t0) * 24 >= 0 ? '+' : '') + ((t - t0) * 24).toFixed(1) + ' h'); }
+for (const [n, a, b, t0, ref, w] of T) {
+  const [s, t] = best(a, b, t0, w);
+  console.log(
+    n.padEnd(40),
+    'model',
+    (s * 60).toFixed(2).padStart(8) + "'",
+    ref == null ? '   ref —    ' : 'ref ' + (ref * 60).toFixed(2).padStart(7) + "'",
+    'čas',
+    ((t - t0) * 24 >= 0 ? '+' : '') + ((t - t0) * 24).toFixed(1) + ' h'
+  );
+}
