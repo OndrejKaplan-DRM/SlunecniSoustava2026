@@ -42,8 +42,8 @@ Aplikaci tvoří složka `dist/` – stačí ji vystavit libovolným statickým 
 src/                  zdrojový kód (ES moduly)
   main.js             vstupní bod: sestaví engine, zvuk, rozhraní a spustí smyčku
   core/               výpočty bez vykreslování
-    sim.js            katalog těles, polohy, natočení (IAU), tvary
-    ephem.js          efemeridy planet a Měsíce
+    sim.js            katalog těles, polohy, Měsíc, čas (ΔT), natočení (IAU; Země s precesí), tvary
+    ephem.js          efemeridy: planety (přesný fit 1900–2050 + dlouhodobá teorie −1000 až 3000), malá tělesa, měsíce
     shape.js          trojosé tvary malých těles
     asset.js          adresa souboru (nebo data URI ve verzi v jednom souboru)
   render/             vykreslování (WebGL, Three.js)
@@ -74,8 +74,9 @@ dist/                 hotová aplikace
   music/, zvuky/      skladby a zvuky (MP3)
 tools/                nástroje (spouštět z kořene repa)
   build/              build_offline.mjs – verze v jednom souboru
-  test/               tut.mjs (regrese), t_fakta.mjs (shoda dat a textů), t_hi.mjs (velké mapy), shot.mjs, mobshot.mjs, sunshot.sh, t_*.mjs
+  test/               tut.mjs (regrese), t_fakta.mjs (shoda dat a textů), t_model.mjs (věrohodnost poloh proti JPL DE422), t_hi.mjs (velké mapy), shot.mjs, mobshot.mjs, sunshot.sh, t_*.mjs
   maps/               make_hi.py (velká mapa z mozaiky), make_saturn.py, tone_proc.py, starší převody
+  model/              dlouhodobá teorie planet: fit na JPL DE422, měření věrohodnosti (viz docs/VEROHODNOST.md)
   data/               stavba katalogu, ikon a dat (část potřebuje repo Oliverovy Planetky 8)
   zvuky/              výběr a převod zvuků CC0
   archiv/             zastaralé skripty, nepoužívat

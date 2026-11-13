@@ -112,6 +112,92 @@ export function jplCorrPos(C, jd, out) {
   out[2] = rr * Math.sin(la);
   return out;
 }
+// verze 1.3: dlouhodobá teorie planet a Pluta (fit na JPL DE422, −1000 až 3000) pro časy mimo okno 1900–2050.
+// Model L (orbit.long): el, rate, quad = polynomy elementů; lp = dlouhoperiodické členy (velká nerovnost Jupiter–Saturn apod.):
+// [úhlová rychlost rad/stol., pak dvojice (cos, sin) pro střední délku °, velkou poloosu AU, výstřednost a délku perihelu °];
+// terms = [souřadnice (0 délka, 1 šířka, 2 poměrný průvodič), j, rušitel, k, m, n, uzel, A, B, A1, B1]:
+//   (A + A1·T)·cos(arg) + (B + B1·T)·sin(arg), arg = j·λp + k·λq + m·ϖp + n·ϖq (+ Ωp nebo Ωq).
+// Země je v této teorii těžiště Země–Měsíc; výkyv kolem něj dopočítá sim.js z polohy Měsíce.
+export const LONG_IDS = ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
+export const WIN0 = 2415030.5,
+  WIN1 = 2469800.5,
+  WBLEND = 7305; // okno přesného fitu (1900–2050) a šířka plynulého přechodu (20 let) vně okna
+// váha dlouhodobé teorie: 0 uvnitř okna, 1 dál než 20 let od něj
+export function longWeight(jd) {
+  const d = jd < WIN0 ? (WIN0 - jd) / WBLEND : jd > WIN1 ? (jd - WIN1) / WBLEND : 0;
+  return d >= 1 ? 1 : d * d * (3 - 2 * d);
+}
+const _la = {
+  jd: NaN,
+  lam: new Float64Array(9),
+  wb: new Float64Array(9),
+  om: new Float64Array(9),
+  da: new Float64Array(9),
+  de: new Float64Array(9),
+};
+function longArgs(LG, jd) {
+  if (_la.jd === jd && _la.LG === LG) return _la;
+  const T = (jd - J2000) / 36525;
+  for (let p = 0; p < 9; p++) {
+    const L = LG[p];
+    let l = L.el[3] + L.rate[3] * T + L.quad[3] * T * T,
+      w = L.el[4] + L.rate[4] * T + L.quad[4] * T * T,
+      da = 0,
+      de = 0;
+    for (const t of L.lp) {
+      const c = Math.cos(t[0] * T),
+        s = Math.sin(t[0] * T);
+      l += t[1] * c + t[2] * s;
+      da += t[3] * c + t[4] * s;
+      de += t[5] * c + t[6] * s;
+      w += t[7] * c + t[8] * s;
+    }
+    _la.lam[p] = l * DEG;
+    _la.wb[p] = w * DEG;
+    _la.da[p] = da;
+    _la.de[p] = de;
+    _la.om[p] = (L.el[5] + L.rate[5] * T + L.quad[5] * T * T) * DEG;
+  }
+  _la.jd = jd;
+  _la.LG = LG;
+  return _la;
+}
+export function longPos(LG, p, jd, out) {
+  const T = (jd - J2000) / 36525,
+    A = longArgs(LG, jd),
+    L = LG[p],
+    T2 = T * T;
+  const a = L.el[0] + L.rate[0] * T + L.quad[0] * T2 + A.da[p],
+    e = L.el[1] + L.rate[1] * T + L.quad[1] * T2 + A.de[p],
+    I = (L.el[2] + L.rate[2] * T + L.quad[2] * T2) * DEG,
+    lam = A.lam[p],
+    wb = A.wb[p],
+    O = A.om[p];
+  const E = kepler(lam - wb, e);
+  rot(a * (Math.cos(E) - e), a * Math.sqrt(1 - e * e) * Math.sin(E), O, I, wb - O, out);
+  let dl = 0,
+    db = 0,
+    dr = 0;
+  for (const t of L.terms) {
+    const q = t[2];
+    let g = t[1] * lam + t[4] * wb;
+    if (t[3] || t[5]) g += t[3] * A.lam[q] + t[5] * A.wb[q];
+    if (t[6]) g += t[6] === 1 ? O : A.om[q];
+    const v = (t[7] + t[9] * T) * Math.cos(g) + (t[8] + t[10] * T) * Math.sin(g);
+    if (t[0] === 0) dl += v;
+    else if (t[0] === 1) db += v;
+    else dr += v;
+  }
+  const r = Math.hypot(out[0], out[1], out[2]),
+    lo = Math.atan2(out[1], out[0]) + dl,
+    la = Math.asin(out[2] / r) + db,
+    rr = r * (1 + dr),
+    cl = Math.cos(la);
+  out[0] = rr * cl * Math.cos(lo);
+  out[1] = rr * cl * Math.sin(lo);
+  out[2] = rr * Math.sin(la);
+  return out;
+}
 // ICRF (rovník J2000) ↔ ekliptika J2000
 export function eq2ecl(v, out = v) {
   const y = v[1],
@@ -206,14 +292,30 @@ export class Ephem {
     });
     this.pi = bodies.map((b) => (b.parent ? this.idx.get(b.parent) : -1));
     this.corr = bodies.map((b) => (b.orbit && b.orbit.kind === 'sat' && b.orbit.corr) || null);
+    /* dlouhodobá teorie: jen když ji mají všechny planety i Pluto */
+    const lg = LONG_IDS.map((id) => (this.idx.has(id) ? bodies[this.idx.get(id)].orbit.long : null));
+    this.LG = lg.every(Boolean) ? lg : null;
+    this.lgi = bodies.map((b) => LONG_IDS.indexOf(b.id));
+    this._lb = [0, 0, 0];
     this._t = [0, 0, 0];
   }
   // poloha vůči mateřskému tělesu: heliocentrická (AU) u těles kolem Slunce, km u měsíců
   local(i, jd, out) {
     const b = this.B[i],
       o = b.orbit;
-    if (o.kind === 'jpl')
-      return this.variant >= 2 && o.corr ? jplCorrPos(o.corr, jd, out) : jplPos(o.el, o.rate, jd, out);
+    if (o.kind === 'jpl') {
+      const w = this.variant >= 2 && this.LG && this.lgi[i] >= 0 ? longWeight(jd) : 0;
+      if (w >= 1) return longPos(this.LG, this.lgi[i], jd, out);
+      this.variant >= 2 && o.corr ? jplCorrPos(o.corr, jd, out) : jplPos(o.el, o.rate, jd, out);
+      if (w > 0) {
+        /* plynulý přechod mezi přesným fitem v okně a dlouhodobou teorií */
+        const l = longPos(this.LG, this.lgi[i], jd, this._lb);
+        out[0] += (l[0] - out[0]) * w;
+        out[1] += (l[1] - out[1]) * w;
+        out[2] += (l[2] - out[2]) * w;
+      }
+      return out;
+    }
     if (o.kind === 'kep') return conicPos(o.q, o.e, o.i, o.O, o.w, o.Tp, jd, out);
     if (o.kind === 'sun' || o.kind === 'game') {
       out[0] = out[1] = out[2] = 0;

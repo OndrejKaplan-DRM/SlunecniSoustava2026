@@ -1,6 +1,6 @@
 // Soustava 200 – katalog, efemeridy, natočení těles. Souřadnice scény: km, heliocentricky, osa Y = severní pól ekliptiky
 // (ekliptika J2000 (x, y, z) → scéna (x, z, −y)). Vše v plovoucí čárce 64 bit; do GPU jdou až rozdíly vůči kameře.
-import { Ephem, eq2ecl, DEG, J2000, conicPos } from './ephem.js';
+import { Ephem, eq2ecl, DEG, J2000, conicPos, longWeight } from './ephem.js';
 import { shapeParams } from './shape.js';
 import CAT from '../data/cat.json';
 
@@ -99,34 +99,130 @@ const MB = [
   [2, 0, -2, -1, 4324],
   [2, 0, 1, 1, 4200],
 ];
+// Verze 1.3: střední argumenty s členy T² až T⁴ (Meeus 47.1–47.5), činitel E u členů se střední anomálií Slunce, přídavné členy
+// (Venuše, Jupiter, zploštění Země) a přesný převod z ekliptiky data na ekliptiku J2000 (Meeus kap. 21). Proti JPL DE422
+// je střední odchylka 33″ dnes, 44″ v roce 0 a 59″ v roce −1000 (dřív 38″, 2 900″ a 6 600″).
+const AS = DEG / 3600;
 function moonGeo(jd, out) {
   // geocentricky, ekliptika J2000, km
-  const T = (jd - J2000) / 36525;
-  const Lp = (218.3164477 + 481267.88123421 * T) * DEG,
-    D = (297.8501921 + 445267.1114034 * T) * DEG,
-    M = (357.5291092 + 35999.0502909 * T) * DEG,
-    Mp = (134.9633964 + 477198.8675055 * T) * DEG,
-    F = (93.272095 + 483202.0175233 * T) * DEG;
+  const T = (jd - J2000) / 36525,
+    T2 = T * T,
+    T3 = T2 * T,
+    T4 = T3 * T;
+  const Lp = (218.3164477 + 481267.88123421 * T - 0.0015786 * T2 + T3 / 538841 - T4 / 65194000) * DEG,
+    D = (297.8501921 + 445267.1114034 * T - 0.0018819 * T2 + T3 / 545868 - T4 / 113065000) * DEG,
+    M = (357.5291092 + 35999.0502909 * T - 0.0001536 * T2 + T3 / 24490000) * DEG,
+    Mp = (134.9633964 + 477198.8675055 * T + 0.0087414 * T2 + T3 / 69699 - T4 / 14712000) * DEG,
+    F = (93.272095 + 483202.0175233 * T - 0.0036539 * T2 - T3 / 3526000 + T4 / 863310000) * DEG,
+    E = 1 - 0.002516 * T - 0.0000074 * T2,
+    E2 = E * E;
+  const ek = (m) => (m === 0 ? 1 : m === 1 || m === -1 ? E : E2);
   let sl = 0,
     sr = 0,
     sb = 0;
-  for (const t of ML) sl += t[4] * Math.sin(t[0] * D + t[1] * M + t[2] * Mp + t[3] * F);
-  for (const t of MR) sr += t[4] * Math.cos(t[0] * D + t[1] * M + t[2] * Mp + t[3] * F);
-  for (const t of MB) sb += t[4] * Math.sin(t[0] * D + t[1] * M + t[2] * Mp + t[3] * F);
-  const lon = Lp + sl * 1e-6 * DEG - 1.396971 * T * DEG,
+  for (const t of ML) sl += t[4] * ek(t[1]) * Math.sin(t[0] * D + t[1] * M + t[2] * Mp + t[3] * F);
+  for (const t of MR) sr += t[4] * ek(t[1]) * Math.cos(t[0] * D + t[1] * M + t[2] * Mp + t[3] * F);
+  for (const t of MB) sb += t[4] * ek(t[1]) * Math.sin(t[0] * D + t[1] * M + t[2] * Mp + t[3] * F);
+  const A1 = (119.75 + 131.849 * T) * DEG,
+    A2 = (53.09 + 479264.29 * T) * DEG,
+    A3 = (313.45 + 481266.484 * T) * DEG;
+  sl += 3958 * Math.sin(A1) + 1962 * Math.sin(Lp - F) + 318 * Math.sin(A2);
+  sb +=
+    -2235 * Math.sin(Lp) +
+    382 * Math.sin(A3) +
+    175 * Math.sin(A1 - F) +
+    175 * Math.sin(A1 + F) +
+    127 * Math.sin(Lp - Mp) -
+    115 * Math.sin(Lp + Mp);
+  const lon = Lp + sl * 1e-6 * DEG,
     lat = sb * 1e-6 * DEG,
     r = 385000.56 + sr * 1e-3,
     cl = Math.cos(lat);
-  out[0] = r * cl * Math.cos(lon);
-  out[1] = r * cl * Math.sin(lon);
-  out[2] = r * Math.sin(lat);
+  return ed2j(r * cl * Math.cos(lon), r * cl * Math.sin(lon), r * Math.sin(lat), T, out);
+}
+// ekliptika a rovnodennost data → ekliptika J2000: v0 = R3(−Π)·R1(−η)·R3(Π + p)·v (Meeus, kap. 21)
+function ed2j(x, y, z, T, out) {
+  const T2 = T * T,
+    T3 = T2 * T,
+    eta = (47.0029 * T - 0.03302 * T2 + 0.00006 * T3) * AS,
+    Pi = 174.876384 * DEG + (-869.8089 * T + 0.03536 * T2) * AS,
+    a = Pi + (5029.0966 * T + 1.11113 * T2 - 0.000006 * T3) * AS;
+  const ca = Math.cos(a),
+    sa = Math.sin(a),
+    x1 = ca * x + sa * y,
+    y1 = -sa * x + ca * y,
+    ce = Math.cos(eta),
+    se = Math.sin(eta),
+    y2 = ce * y1 - se * z,
+    z2 = se * y1 + ce * z,
+    cp = Math.cos(Pi),
+    sp = Math.sin(Pi);
+  out[0] = cp * x1 - sp * y2;
+  out[1] = sp * x1 + cp * y2;
+  out[2] = z2;
   return out;
 }
 
+// --- Čas: aplikace ukazuje světový čas (UT), dráhy těles běží v rovnoměrném čase efemerid (TT). Rozdíl ΔT = TT − UT roste se
+// vzdáleností od současnosti, protože se rotace Země zpomaluje (dnes asi 70 s, v roce 1000 asi 26 minut, v roce −500 asi 4,8 hodiny).
+// Polynomy: Espenak a Meeus, Five Millennium Canon of Solar Eclipses (NASA/TP-2006-214141). Výsledek v sekundách.
+export function deltaT(jd) {
+  const y = 2000 + (jd - J2000) / 365.25;
+  let t, u;
+  if (y < -500) return ((u = (y - 1820) / 100), -20 + 32 * u * u);
+  if (y < 500)
+    return (
+      (u = y / 100),
+      10583.6 +
+        u * (-1014.41 + u * (33.78311 + u * (-5.952053 + u * (-0.1798452 + u * (0.022174192 + u * 0.0090316521)))))
+    );
+  if (y < 1600)
+    return (
+      (u = (y - 1000) / 100),
+      1574.2 +
+        u * (-556.01 + u * (71.23472 + u * (0.319781 + u * (-0.8503463 + u * (-0.005050998 + u * 0.0083572073)))))
+    );
+  if (y < 1700) return ((t = y - 1600), 120 + t * (-0.9808 + t * (-0.01532 + t / 7129)));
+  if (y < 1800) return ((t = y - 1700), 8.83 + t * (0.1603 + t * (-0.0059285 + t * (0.00013336 - t / 1174000))));
+  if (y < 1860)
+    return (
+      (t = y - 1800),
+      13.72 +
+        t *
+          (-0.332447 +
+            t *
+              (0.0068612 +
+                t * (0.0041116 + t * (-0.00037436 + t * (0.0000121272 + t * (-0.0000001699 + t * 0.000000000875))))))
+    );
+  if (y < 1900)
+    return (
+      (t = y - 1860),
+      7.62 + t * (0.5737 + t * (-0.251754 + t * (0.01680668 + t * (-0.0004473624 + t / 233174))))
+    );
+  if (y < 1920) return ((t = y - 1900), -2.79 + t * (1.494119 + t * (-0.0598939 + t * (0.0061966 - t * 0.000197))));
+  if (y < 1941) return ((t = y - 1920), 21.2 + t * (0.84493 + t * (-0.0761 + t * 0.0020936)));
+  if (y < 1961) return ((t = y - 1950), 29.07 + t * (0.407 + t * (-1 / 233 + t / 2547)));
+  if (y < 1986) return ((t = y - 1975), 45.45 + t * (1.067 + t * (-1 / 260 - t / 718)));
+  if (y < 2005)
+    return (
+      (t = y - 2000),
+      63.86 + t * (0.3345 + t * (-0.060374 + t * (0.0017275 + t * (0.000651814 + t * 0.00002373599))))
+    );
+  if (y < 2050) return ((t = y - 2000), 62.92 + t * (0.32217 + t * 0.005589));
+  if (y < 2150) return ((u = (y - 1820) / 100), -20 + 32 * u * u - 0.5628 * (2150 - y));
+  return ((u = (y - 1820) / 100), -20 + 32 * u * u);
+}
+// čas efemerid (JD) pro daný světový čas (JD)
+export const ttOf = (jd) => jd + deltaT(jd) / 86400;
+
 // poloha vůči mateřskému tělesu v km, souřadnice scény
-const _t = [0, 0, 0];
-export function local(i, jd, out, o = 0) {
-  const k = B[i].orbit.kind;
+const _t = [0, 0, 0],
+  _mw = [0, 0, 0],
+  EMR1 = 82.30057; // 1 + hmotnost Země / hmotnost Měsíce
+// jd je světový čas (UT) – stejný, jaký ukazuje aplikace; polohy se počítají v čase efemerid
+export function local(i, jdUT, out, o = 0) {
+  const k = B[i].orbit.kind,
+    jd = ttOf(jdUT);
   if (i === MOON) moonGeo(jd, _t);
   else {
     E.local(i, jd, _t);
@@ -134,6 +230,16 @@ export function local(i, jd, out, o = 0) {
       _t[0] *= AU;
       _t[1] *= AU;
       _t[2] *= AU;
+    }
+    if (i === EARTH) {
+      /* dlouhodobá teorie dává těžiště Země–Měsíc: Země je od něj odsunutá proti Měsíci (až 4 700 km) */
+      const w = longWeight(jd);
+      if (w > 0) {
+        moonGeo(jd, _mw);
+        _t[0] -= (w * _mw[0]) / EMR1;
+        _t[1] -= (w * _mw[1]) / EMR1;
+        _t[2] -= (w * _mw[2]) / EMR1;
+      }
     }
   }
   out[o] = _t[0];
@@ -235,6 +341,35 @@ const frames = B.map((b) => {
   const Y = [p[1] * X[2] - p[2] * X[1], p[2] * X[0] - p[0] * X[2], p[0] * X[1] - p[1] * X[0]];
   return { X: s3(X), Y: s3(Y), Z: s3(p) };
 });
+// Země: osa i jarní bod data (precese 50,3″ za rok, sklon i pohyb ekliptiky) a hvězdný čas v Greenwichi
+// ze světového času. Díky tomu padá stín zatmění na správné místo Země i tisíce let od současnosti.
+const _eq = [0, 0, 0],
+  _ez = [0, 0, 0];
+function earthBasis(jd, m) {
+  const d = jd - J2000,
+    T = d / 36525,
+    eps = (23.4392911 - (46.815 * T + 0.00059 * T * T - 0.001813 * T * T * T) / 3600) * DEG,
+    G = ((((280.46061837 + 360.98564736629 * d + 0.000387933 * T * T) % 360) + 360) % 360) * DEG;
+  /* v ekliptice data: jarní bod (1, 0, 0), pól (0, sin ε, cos ε); převod na ekliptiku J2000 */
+  const q = ed2j(1, 0, 0, T, _eq),
+    Z = ed2j(0, Math.sin(eps), Math.cos(eps), T, _ez),
+    u = [Z[1] * q[2] - Z[2] * q[1], Z[2] * q[0] - Z[0] * q[2], Z[0] * q[1] - Z[1] * q[0]],
+    c = Math.cos(G),
+    s = Math.sin(G);
+  const X = [q[0] * c + u[0] * s, q[1] * c + u[1] * s, q[2] * c + u[2] * s],
+    Y = [-q[0] * s + u[0] * c, -q[1] * s + u[1] * c, -q[2] * s + u[2] * c];
+  /* ekliptika (x, y, z) → scéna (x, z, −y) */
+  m[0] = X[0];
+  m[1] = X[2];
+  m[2] = -X[1];
+  m[3] = Y[0];
+  m[4] = Y[2];
+  m[5] = -Y[1];
+  m[6] = Z[0];
+  m[7] = Z[2];
+  m[8] = -Z[1];
+  return m;
+}
 const seedOf = (b) => [...b.id].reduce((s, c) => (s * 31 + c.charCodeAt(0)) % 9973, 7) / 9973;
 const _l = [0, 0, 0];
 export function basis(i, jd, m) {
@@ -242,6 +377,7 @@ export function basis(i, jd, m) {
   const b = B[i],
     f = frames[i],
     d = jd - J2000;
+  if (i === EARTH) return earthBasis(jd, m);
   if (f && b.W) {
     const W = ((b.W[0] + b.W[1] * d) % 360) * DEG,
       c = Math.cos(W),

@@ -297,12 +297,12 @@ export function createUI(S, A) {
     return [r, nx];
   };
   let toastT = 0;
-  const toast = (h) => {
+  const toast = (h, ms = 3800) => {
     const t = $('#toast');
     t.innerHTML = h;
     t.classList.add('on');
     clearTimeout(toastT);
-    toastT = setTimeout(() => t.classList.remove('on'), 3800);
+    toastT = setTimeout(() => t.classList.remove('on'), ms);
   };
   const addPts = (n) => {
     const r0 = rank()[0];
@@ -847,7 +847,7 @@ export function createUI(S, A) {
     if (Math.abs(ms) > 8e15) return 'rok ' + nf(Math.round(2000 + (jd - 2451545) / 365.25));
     const d = new Date(ms),
       y = d.getFullYear();
-    return `${d.getDate()}. ${MES[d.getMonth()]} ${y < 0 ? -y + ' př. n. l.' : y} · ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+    return `${d.getDate()}. ${MES[d.getMonth()]} ${y <= 0 ? 1 - y + ' př. n. l.' : y} · ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
   }
   function drawTime() {
     $('#date').textContent = fmtDate(S.jd);
@@ -1502,6 +1502,20 @@ export function createUI(S, A) {
   let t42 = 0;
   const cur = () => (S.cam.fly && S.cam.fly.to !== undefined ? S.cam.fly.to : S.focus);
   /* držené klávesy a pomalé otáčení: volá hlavní smyčka enginu jednou za snímek */
+  /* meze modelu: polohy jsou ověřené proti JPL DE422 pro roky −1000 až 3000; mimo ně jednou taktně upozorníme a nic neomezujeme */
+  let outRange = false;
+  S.ticks.push(() => {
+    const y = 2000 + (S.jd - 2451545) / 365.25,
+      o = y < -1000 || y > 3000;
+    if (o && !outRange)
+      toast(
+        K()
+          ? 'Tak daleko v čase už planety jen odhadujeme. Leť klidně dál!'
+          : 'Mimo roky 1000 př. n. l. až 3000 n. l. jsou polohy těles jen přibližné – model je ověřený pro toto období.',
+        7000
+      );
+    outRange = o;
+  });
   S.ticks.push((dt) => {
     if (S.autoRot && !S.cam.fly) S.rotate(-38 * dt, 0);
     if (!keys.size) return;
