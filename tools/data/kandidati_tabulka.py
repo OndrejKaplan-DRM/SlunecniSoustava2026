@@ -60,10 +60,21 @@ for c in K:
     z,p,o=ZPO[i]
     tot=z+p+o+m if m else round((z+p+o)*20/15)
     y=c['datum'][0]; bud=(y,c['datum'][1],c['datum'][2])>(2026,11,13)
-    rows.append(dict(id=i,kat=kat,datum=den(c['datum']),y=y,nazev=c['nazev'],mod=mod,pr=pr,Z=z,P=p,M=m,O=o,tot=tot,bud=bud,pozn=PZ.get(i,''),pramen=c['pramen'],nahr=bool(c.get('nahradnik'))))
+    rows.append(dict(id=i,kat=kat,datum=den(c['datum']),y=y,nazev=c['nazev'],mod=mod,pr=pr,Z=z,P=p,M=m,O=o,tot=tot,bud=bud,id=i,pozn=PZ.get(i,''),pramen=c['pramen'],nahr=bool(c.get('nahradnik'))))
 # výběr 60: podle bodů ze všech 88 (80 kandidátů + 8 náhradníků do budoucnosti); při shodě bodů má přednost budoucí událost, potom silnější příběh
 rows.sort(key=lambda r:(-r['tot'],not r['bud'],-r['P'],r['y']))
 vyber=rows[:60]; ven=rows[60:]
+# divoká karta (Ondřej, 14. 11. 2026): seskupení 8. 9. 2040 místo zatmění Slunce 2151
+wa=next(r for r in ven if r['id']=='g2040'); wb=next(r for r in vyber if r['id']=='s2151')
+ven.remove(wa); vyber.remove(wb); vyber.append(wa); ven.append(wb); wa['pozn']='divoká karta místo zatmění 2151'
+# návrh 30 karet: nejsilnější příběh, potom body; strop na kategorii kvůli pestrosti
+STROP={'Zatmění Slunce':8,'Přechod':4,'Kometa':5,'Zatmění Měsíce':4,'Supernova / nova':4,'Konjunkce':3,'Zákryt':2,'Průlet':3,'Seskupení':2}
+karty=[]; cnt={}
+for r in sorted(vyber,key=lambda r:(-r['P'],-r['tot'],-r['Z'],r['y'])):
+    if len(karty)<30 and cnt.get(r['kat'],0)<STROP[r['kat']]: karty.append(r); cnt[r['kat']]=cnt.get(r['kat'],0)+1
+karty.sort(key=lambda r:r['y'])
+open('/tmp/karty.md','w').write('| # | Datum | Kategorie | Karta | Body | Příběh |\n|---|---|---|---|---|---|\n'+'\n'.join(f"| {n} | {r['datum']}{' ▸' if r['bud'] else ''} | {r['kat']} | {r['nazev']} | {r['tot']} | {r['P']} |" for n,r in enumerate(karty,1)))
+print('KARTY',len(karty),cnt,'budoucích',sum(r['bud'] for r in karty))
 vyber.sort(key=lambda r:(-r['tot'],r['y'])); ven.sort(key=lambda r:(-r['tot'],r['y']))
 nahr=[r for r in rows if r['nahr']]
 H=['| # | Body | Kategorie | Datum | Událost | Model | Pramen | Z | P | M | O | Poznámka |','|---|---|---|---|---|---|---|---|---|---|---|---|']
