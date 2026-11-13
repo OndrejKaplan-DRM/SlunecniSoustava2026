@@ -3,7 +3,7 @@
 Stav k 13. 11. 2026, verze 1.2.
 
 ## Autorství
-- Námět, zadání, odborná kontrola a testování: **Ondřej Kaplan**.
+- Námět, zadání, odborná kontrola a testování: **Ing. Ondřej Kaplan, Ph.D.** (ondrej.kaplan@gmail.com).
 - Kód napsal podle jeho zadání model **Claude Fable 5.2** (Anthropic). Vývoj probíhal po iteracích ve větvích `iterace-N`; každou verzi hlídají automatické testy (`npm test`, `npm run test:fakta`).
 - Aplikace je zdarma, bez reklam a bez registrace. Neodesílá žádné údaje; nastavení a postup hry ukládá jen do úložiště prohlížeče.
 
@@ -16,7 +16,7 @@ Stav k 13. 11. 2026, verze 1.2.
 | Písmo Baloo 2 (`dist/fonts/`) | SIL Open Font License 1.1, © The Baloo 2 Project Authors – `dist/fonts/OFL.txt` |
 | Mapy těles, Mléčná dráha | různé, viz tabulka níže – **nespadají pod licenci MIT** |
 | Zvuky (`dist/zvuky/`) | CC0, balíčky z opengameart.org – seznam v `zdroje/ZVUKY.md`; ostatní zvuky jsou syntéza v prohlížeči |
-| Hudba (`dist/music/`, 16 skladeb) | skladby vytvořil autor ve službě Suno; šíří se jen jako součást aplikace |
+| Hudba (`dist/music/`, 16 skladeb) | skladby vytvořil autor ve službě Suno v placeném tarifu (Premier, „Commercial use rights“ – stav účtu ověřen 13. 11. 2026); šíří se jako součást aplikace |
 
 ## Data a výpočty
 - Polohy planet: střední elementy JPL (Standish) s opravami dopočítanými proti efemeridě JPL DE421. Měsíc: zkrácená řada podle J. Meeuse, *Astronomical Algorithms*. Měsíce planet: elementy a póly IAU, opravy dopočítané proti referenčním polohám.
@@ -82,7 +82,7 @@ Další obrazové podklady:
 - Licence map převzatých ze **Stellaria** jsou opsané z jeho souboru `CREDITS.md` (větev master, čteno 13. 11. 2026). Předpokládám, že soubory v `zdroje/mapy/` odpovídají této verzi.
 - U map **USGS** jsem podmínky na stránce produktu četla jen u Europy, Dione, Ceres, Vesty a Pluta („Public domain“, „Please cite authors“). U ostatních vycházím z obecného pravidla, že díla USGS a NASA jsou volná; jednotlivě ověřeno není.
 - Mapy **J. Hastings-Trewa** (Země, malá mapa Marsu): autor na svém webu výslovně povoluje užití v programech typu „simulátor Sluneční soustavy“; nepovoluje šířit samotné mapy jako sbírku. Proto v repozitáři nejsou jeho původní soubory, jen zmenšené mapy zabudované do aplikace.
-- Podmínky služby **Suno** pro šíření skladeb je potřeba ověřit podle tarifu, ve kterém skladby vznikly.
+- **Suno**: autor má placený tarif Premier, který podle ceníku zahrnuje práva ke komerčnímu užití (snímek účtu z 13. 11. 2026). Plné znění podmínek služby jsem nečetla.
 
 ## Jak citovat
 Kaplan, O. (2026). *Sluneční soustava 200* (verze 1.2) [software]. https://github.com/OndrejKaplan-DRM/SlunecniSoustava2026

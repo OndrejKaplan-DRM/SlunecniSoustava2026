@@ -8,7 +8,7 @@ dospělé a dětské rozhraní, minutová ukázka ovládání, čtyři pohledy n
 - **Spustit:** https://ondrejkaplan-drm.github.io/SlunecniSoustava2026/
 - **Verze:** 1.2 (13. 11. 2026) · zdarma, bez reklam, bez registrace a bez sběru dat
 - **Bez internetu:** `npm run offline:hi` vyrobí jeden soubor HTML, který se otevře dvojklikem (na flashku, do školy)
-- **Autor:** Ondřej Kaplan – námět, zadání, odborná kontrola a testování. Kód napsal podle jeho zadání model Claude Fable 5.2 (Anthropic).
+- **Autor:** Ing. Ondřej Kaplan, Ph.D. (ondrej.kaplan@gmail.com) – námět, zadání, odborná kontrola a testování. Kód napsal podle jeho zadání model Claude Fable 5.2 (Anthropic).
 - **Licence:** kód MIT (`LICENSE`); mapy, písmo, zvuky a hudba mají vlastní licence – přehled v `CREDITS.md`
 
 ## Co aplikace umí
