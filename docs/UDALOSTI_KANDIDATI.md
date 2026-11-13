@@ -30,7 +30,7 @@ Stav 13. 11. 2026, větev `iterace-14`. **80 kandidátů → po schválení 60 u
 58 minulých a 22 budoucích (28 %). Cíl byl 40 % budoucích – supernovy jsou z podstaty jen minulé a historické příběhy převažují.
 Náhradníci do budoucnosti (zatím nespočítaní, prameny jsou po ruce): přechod Venuše 8. 12. 2125, přechod Merkuru 7. 11. 2039,
 Merkur zakryje Neptun 15. 7. 2067, Merkur zakryje Mars 11. 8. 2079, Venuše přejde přes Jupiter 14. 9. 2123,
-zatmění Slunce 23. 9. 2090 a 14. 6. 2151, návrat Halleyovy komety 2134 (průlet 0,09 AU od Země).
+zatmění Slunce 23. 9. 2090 a 14. 6. 2151, návrat Halleyovy komety 2134 (těsnější průlet kolem Země než 2061).
 
 ## Tabulka (seřazeno podle bodů)
 | # | Body | Kategorie | Datum | Událost | Model | Pramen | Z | P | M | O | Poznámka |
