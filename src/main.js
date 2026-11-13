@@ -6,6 +6,7 @@ import * as sim from './core/sim.js';
 import { createMobile } from './ui/mobile.js';
 import { createZvuky } from './ui/zvuky.js';
 import { createOrient } from './ui/orient.js';
+import { createUdalosti } from './ui/udalosti.js';
 const S = createEngine(document.getElementById('gl'), document.getElementById('ov'));
 const A = createAudio(S);
 const ui = createUI(S, A);
@@ -15,5 +16,6 @@ const zv = createZvuky(A, ui);
 /* zkušebna zvuků je nástroj autora: tlačítko se ukáže jen s parametrem ?zvuky v adrese */
 if (new URLSearchParams(location.search).has('zvuky')) document.body.classList.add('zvuky');
 const orient = createOrient(S, A, ui);
+const uk = createUdalosti(S, A, ui);
 S.start();
-window.S200 = { S, ui, sim, A, mob, zv, orient };
+window.S200 = { S, ui, sim, A, mob, zv, orient, uk };

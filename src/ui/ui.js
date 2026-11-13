@@ -920,7 +920,7 @@ export function createUI(S, A) {
   };
 
   // ---------- přepínače ----------
-  const POPS = ['#help', '#gamebox', '#list', '#album', '#tm', '#cmp', '#dev', '#more', '#zv'],
+  const POPS = ['#help', '#gamebox', '#list', '#album', '#tm', '#cmp', '#dev', '#more', '#zv', '#uk'],
     PSND = {},
     UI3 = ['orbit_off', 'orbit_on', 'orbit_all'],
     ui2 = (v) => A.play(v ? 'orbit_on' : 'orbit_off');
@@ -1030,6 +1030,9 @@ export function createUI(S, A) {
     },
     album() {
       if (toggle('#album')) drawAlbum();
+    },
+    uk() {
+      toggle('#uk');
     },
     tm() {
       if (toggle('#tm'))
@@ -1763,6 +1766,8 @@ export function createUI(S, A) {
   // ---------- start ----------
   const api = {
     toast,
+    toggle,
+    refresh: () => setBtn(),
     G: () => G,
     order,
     kid: K,

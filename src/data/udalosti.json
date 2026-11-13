@@ -1,0 +1,24 @@
+[
+  {
+    "id": "s1415",
+    "typ": "slunce",
+    "ikona": "🌑",
+    "nazev": "Úplné zatmění Slunce nad Prahou",
+    "podtitul": "měsíc před upálením mistra Jana Husa",
+    "jd": 2238043.7578,
+    "okno": 0.035,
+    "datum": "16. června 1415",
+    "datumJul": "7. června 1415",
+    "cas": "úplné od 6:09:41 do 6:12:48 světového času (3 minuty 7 sekund)",
+    "misto": "Praha",
+    "lat": 50.08,
+    "lon": 14.42,
+    "vyska": 5000,
+    "telo": "earth",
+    "text": "V pátek ráno, asi dvě hodiny po východu Slunce, přešel přes Čechy stín Měsíce. V Praze se na tři minuty setmělo. Mistr Jan Hus tou dobou seděl ve vězení v Kostnici; upálen byl 6. července 1415, o 29 dní později.",
+    "perlicka": "Stín pak běžel dál na východ. Nejdéle, 4 minuty 51 sekund, trvalo zatmění až nad západní Sibiří.",
+    "deti": "Měsíc se postavil přesně před Slunce a na Prahu padl jeho stín. Na tři minuty byla ráno tma jako v noci!",
+    "shoda": "Model: největší fáze v Praze v 6:12 světového času, zatmění úplné. NASA: 6:11, úplné. Pás úplného zatmění má model posunutý až o 100 km, kde bylo zatmění úplné, proto bereme z pramenů.",
+    "pramen": "F. Espenak a J. Meeus: Five Millennium Catalog of Solar Eclipses (NASA); časy v Praze z Besselových elementů téhož katalogu."
+  }
+]

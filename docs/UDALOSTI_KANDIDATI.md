@@ -104,40 +104,41 @@ u zatmění 1706 a 1133 uvést na kartě pravdu z pramenů. **Vybráno 60 událo
 | 59 | **16** | Průlet | 25. 9. 2135 ▸ | Bennu proletí blíž než Měsíc | 213 425 km, 25. 9. 08:00 UT | 204 041 km, 07:49 UT | 4 | 3 | 4 | 5 | elementy pro rok 2135 (JPL); JPL sám uvádí 195–213 tis. km |
 | 60 | **15** | Seskupení | 8. 9. 2040 ▸ | Pět planet a srpek Měsíce v jednom zorném poli (8. 9. 2040) | rozpětí 9,5°, 8. 9. | jen datum | 5 | 3 | 4 | 3 | divoká karta místo zatmění 2151 |
 
-## Návrh 30 karet (ke schválení)
-Nejsilnější příběh, potom body; strop na kategorii kvůli pestrosti. Seřazeno podle času.
+## 30 karet (schváleno 14. 11. 2026)
+Nejsilnější příběh, potom body, strop na kategorii; Ondřej vyměnil tři karty (dovnitř zatmění 1706 v Praze, Halleyova kometa 2061, seskupení 2040; ven Duende 2013, zatmění Měsíce 331 př. n. l., trojí konjunkce 7 př. n. l.). Seřazeno podle času.
+První hotová karta v aplikaci: zatmění 1415 (`src/data/udalosti.json`, `src/ui/udalosti.js`).
 
 | # | Datum | Kategorie | Karta | Body | Příběh |
 |---|---|---|---|---|---|
 | 1 | 28. 5. 585 př. n. l. | Zatmění Slunce | Thalétovo zatmění (bitva na řece Halys) | 19 | 5 |
 | 2 | 28. 8. 413 př. n. l. | Zatmění Měsíce | Níkiovo zatmění (zkáza Athéňanů u Syrakus) | 18 | 5 |
-| 3 | 20. 9. 331 př. n. l. | Zatmění Měsíce | Zatmění před bitvou u Gaugamél | 18 | 5 |
-| 4 | 29. 5. 7 př. n. l. | Konjunkce | Trojí konjunkce Jupiteru a Saturnu 7 př. n. l. (1. setkání; betlémská hvězda?) | 16 | 5 |
-| 5 | 17. 6. 2 př. n. l. | Konjunkce | Venuše a Jupiter splynuly v jednu hvězdu (2 př. n. l.) | 17 | 5 |
-| 6 | 10. 4. 837 | Kometa | Halleyova kometa 837: nejtěsnější průlet komety kolem Země v dějinách (ohon přes půl oblohy) | 19 | 4 |
-| 7 | 4. 7. 1054 | Supernova / nova | SN 1054: zrod Krabí mlhoviny, 23 dní vidět ve dne | 17 | 5 |
-| 8 | 24. 4. 1066 | Kometa | Halleyova kometa 1066 (tapisérie z Bayeux, bitva u Hastingsu) | 18 | 5 |
-| 9 | 15. 9. 1186 | Seskupení | Pět planet, Slunce a Měsíc ve Vahách (Toledský dopis, panika z konce světa) | 17 | 5 |
-| 10 | 7. 6. 1415 | Zatmění Slunce | Úplné zatmění nad Čechami měsíc před upálením Husa | 20 | 5 |
-| 11 | 22. 5. 1453 | Zatmění Měsíce | Zatmění při obléhání Konstantinopole | 18 | 5 |
-| 12 | 1. 3. 1504 | Zatmění Měsíce | Kolumbovo zatmění na Jamajce | 19 | 5 |
-| 13 | 25. 8. 1563 | Konjunkce | Konjunkce 1563: tabulky se spletly o měsíc a Tycho Brahe se rozhodl měřit sám | 18 | 5 |
-| 14 | 11. 11. 1572 | Supernova / nova | Tychonova supernova 1572: konec neměnných nebes | 17 | 5 |
-| 15 | 9. 10. 1604 | Supernova / nova | Keplerova supernova 1604: poslední v Galaxii, Kepler ji sledoval v Praze | 17 | 5 |
-| 16 | 4. 1. 1613 | Zákryt | Galileo zakreslil Neptun vedle Jupiteru 234 let před objevem | 17 | 5 |
-| 17 | 7. 11. 1631 | Přechod | První pozorovaný přechod Merkuru (Gassendi) | 19 | 5 |
-| 18 | 4. 12. 1639 | Přechod | První pozorovaný přechod Venuše (Horrocks) | 20 | 5 |
-| 19 | 18. 12. 1680 | Kometa | Kirchova kometa 1680: první objevená dalekohledem, Newton na ní ověřil gravitaci | 16 | 5 |
-| 20 | 3. 5. 1715 | Zatmění Slunce | Halleyovo zatmění (první mapa pásu totality) | 19 | 5 |
-| 21 | 13. 3. 1759 | Kometa | První předpovězený návrat Halleyovy komety (Palitzsch, Clairaut) | 19 | 5 |
-| 22 | 6. 6. 1761 | Přechod | Přechod Venuše 1761 (Lomonosov: atmosféra) | 20 | 5 |
-| 23 | 3. 6. 1769 | Přechod | Přechod Venuše 1769 (Cook na Tahiti, Hell ve Vardø) | 20 | 5 |
-| 24 | 18. 8. 1868 | Zatmění Slunce | Zatmění, při kterém bylo objeveno helium | 19 | 5 |
-| 25 | 20. 5. 1910 | Kometa | Halleyova kometa 1910: Země prošla jejím ohonem | 20 | 5 |
-| 26 | 29. 5. 1919 | Zatmění Slunce | Eddingtonovo zatmění (ohyb světla, Einstein) | 20 | 5 |
-| 27 | 11. 8. 1999 | Zatmění Slunce | Zatmění 11. 8. 1999 (střední Evropa) | 20 | 5 |
-| 28 | 15. 2. 2013 | Průlet | Planetka Duende pod dráhou družic – v den čeljabinského meteoru | 16 | 5 |
-| 29 | 13. 4. 2029 ▸ | Průlet | Apophis proletí blíž než stacionární družice (pátek 13. 4. 2029) | 19 | 4 |
+| 3 | 17. 6. 2 př. n. l. | Konjunkce | Venuše a Jupiter splynuly v jednu hvězdu (2 př. n. l.) | 17 | 5 |
+| 4 | 10. 4. 837 | Kometa | Halleyova kometa 837: nejtěsnější průlet komety kolem Země v dějinách (ohon přes půl oblohy) | 19 | 4 |
+| 5 | 4. 7. 1054 | Supernova / nova | SN 1054: zrod Krabí mlhoviny, 23 dní vidět ve dne | 17 | 5 |
+| 6 | 24. 4. 1066 | Kometa | Halleyova kometa 1066 (tapisérie z Bayeux, bitva u Hastingsu) | 18 | 5 |
+| 7 | 15. 9. 1186 | Seskupení | Pět planet, Slunce a Měsíc ve Vahách (Toledský dopis, panika z konce světa) | 17 | 5 |
+| 8 | 7. 6. 1415 | Zatmění Slunce | Úplné zatmění nad Čechami měsíc před upálením Husa | 20 | 5 |
+| 9 | 22. 5. 1453 | Zatmění Měsíce | Zatmění při obléhání Konstantinopole | 18 | 5 |
+| 10 | 1. 3. 1504 | Zatmění Měsíce | Kolumbovo zatmění na Jamajce | 19 | 5 |
+| 11 | 25. 8. 1563 | Konjunkce | Konjunkce 1563: tabulky se spletly o měsíc a Tycho Brahe se rozhodl měřit sám | 18 | 5 |
+| 12 | 11. 11. 1572 | Supernova / nova | Tychonova supernova 1572: konec neměnných nebes | 17 | 5 |
+| 13 | 9. 10. 1604 | Supernova / nova | Keplerova supernova 1604: poslední v Galaxii, Kepler ji sledoval v Praze | 17 | 5 |
+| 14 | 4. 1. 1613 | Zákryt | Galileo zakreslil Neptun vedle Jupiteru 234 let před objevem | 17 | 5 |
+| 15 | 7. 11. 1631 | Přechod | První pozorovaný přechod Merkuru (Gassendi) | 19 | 5 |
+| 16 | 4. 12. 1639 | Přechod | První pozorovaný přechod Venuše (Horrocks) | 20 | 5 |
+| 17 | 18. 12. 1680 | Kometa | Kirchova kometa 1680: první objevená dalekohledem, Newton na ní ověřil gravitaci | 16 | 5 |
+| 18 | 12. 5. 1706 | Zatmění Slunce | Poslední úplné zatmění v Praze | 17 | 4 |
+| 19 | 3. 5. 1715 | Zatmění Slunce | Halleyovo zatmění (první mapa pásu totality) | 19 | 5 |
+| 20 | 13. 3. 1759 | Kometa | První předpovězený návrat Halleyovy komety (Palitzsch, Clairaut) | 19 | 5 |
+| 21 | 6. 6. 1761 | Přechod | Přechod Venuše 1761 (Lomonosov: atmosféra) | 20 | 5 |
+| 22 | 3. 6. 1769 | Přechod | Přechod Venuše 1769 (Cook na Tahiti, Hell ve Vardø) | 20 | 5 |
+| 23 | 18. 8. 1868 | Zatmění Slunce | Zatmění, při kterém bylo objeveno helium | 19 | 5 |
+| 24 | 20. 5. 1910 | Kometa | Halleyova kometa 1910: Země prošla jejím ohonem | 20 | 5 |
+| 25 | 29. 5. 1919 | Zatmění Slunce | Eddingtonovo zatmění (ohyb světla, Einstein) | 20 | 5 |
+| 26 | 11. 8. 1999 | Zatmění Slunce | Zatmění 11. 8. 1999 (střední Evropa) | 20 | 5 |
+| 27 | 13. 4. 2029 ▸ | Průlet | Apophis proletí blíž než stacionární družice (pátek 13. 4. 2029) | 19 | 4 |
+| 28 | 8. 9. 2040 ▸ | Seskupení | Pět planet a srpek Měsíce v jednom zorném poli (8. 9. 2040) | 15 | 3 |
+| 29 | 28. 7. 2061 ▸ | Kometa | Příští návrat Halleyovy komety | 19 | 4 |
 | 30 | 7. 10. 2135 ▸ | Zatmění Slunce | Příští úplné zatmění v Česku | 19 | 4 |
 
 ## Vyřazených 28

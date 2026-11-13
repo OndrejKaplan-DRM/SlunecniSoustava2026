@@ -72,6 +72,9 @@ STROP={'Zatmění Slunce':8,'Přechod':4,'Kometa':5,'Zatmění Měsíce':4,'Supe
 karty=[]; cnt={}
 for r in sorted(vyber,key=lambda r:(-r['P'],-r['tot'],-r['Z'],r['y'])):
     if len(karty)<30 and cnt.get(r['kat'],0)<STROP[r['kat']]: karty.append(r); cnt[r['kat']]=cnt.get(r['kat'],0)+1
+# výměna schválená Ondřejem (14. 11. 2026): dovnitř zatmění 1706, Halley 2061 a seskupení 2040; ven Duende 2013, zatmění Měsíce −330 a trojí konjunkce 7 př. n. l.
+karty=[r for r in karty if r['id'] not in ('p2013','m-0330','k-0006')]+[r for r in vyber if r['id'] in ('s1706','c2061','g2040')]
+assert len(karty)==30
 karty.sort(key=lambda r:r['y'])
 open('/tmp/karty.md','w').write('| # | Datum | Kategorie | Karta | Body | Příběh |\n|---|---|---|---|---|---|\n'+'\n'.join(f"| {n} | {r['datum']}{' ▸' if r['bud'] else ''} | {r['kat']} | {r['nazev']} | {r['tot']} | {r['P']} |" for n,r in enumerate(karty,1)))
 print('KARTY',len(karty),cnt,'budoucích',sum(r['bud'] for r in karty))
