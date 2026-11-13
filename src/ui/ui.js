@@ -947,7 +947,7 @@ export function createUI(S, A) {
     $('#b-orb').dataset.m = S.orbMode;
     $('#b-lab').dataset.m = S.labMode;
     $('#b-lock').dataset.m = S.lock ? 1 : 0;
-    $('#b-con').dataset.m = S.conMode > 2 ? 2 : S.conMode;
+    $('#b-con').dataset.m = S.conMode > 1 ? 2 : S.conMode;
     $('#b-con').style.setProperty('--lv', S.conMode);
     $('#b-star').dataset.m = S.starNames ? 2 : 0;
     $('#b-snd').dataset.m = A.on ? 1 : 0;
@@ -999,13 +999,13 @@ export function createUI(S, A) {
       A.play('orbit_all');
     },
     con(v) {
-      S.conMode = typeof v === 'number' ? v : (S.conMode + (act.back ? 4 : 1)) % 5;
+      S.conMode = typeof v === 'number' ? v : (S.conMode + (act.back ? 3 : 1)) % 4;
       A.play(UI3[Math.min(2, S.conMode)]);
       toast(
         'Souhvězdí: ' +
           (K()
-            ? ['schovaná', 'jemné čáry a hvězdičky', 'jasnější čáry a hvězdy', 'zářící hvězdy', 'zářící hvězdy a jména']
-            : ['vypnutá', 'slabě (1/4)', 'středně (2/4)', 'naplno (3/4)', 'naplno se jmény (4/4)'])[S.conMode]
+            ? ['schovaná', 'jemné čáry a hvězdičky', 'zářící hvězdy', 'zářící hvězdy a jména']
+            : ['vypnutá', 'náznak (1/3)', 'naplno (2/3)', 'naplno se jmény (3/3)'])[S.conMode]
       );
     },
     stars() {

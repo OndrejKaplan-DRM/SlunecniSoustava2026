@@ -379,7 +379,7 @@ void main(){ vec3 e = uS2Eq * normalize(vD); float ra = atan(e.y, e.x), de = asi
 export const CON_VS = /* glsl */ `
 attribute float aT; attribute float aLen; attribute float aDel; uniform vec2 uOff; varying float vT; varying float vL; varying float vD;
 void main(){ gl_Position = projectionMatrix * vec4(mat3(viewMatrix) * position, 1.0); gl_Position.z = gl_Position.w * 0.9993; gl_Position.xy += uOff * gl_Position.w; vT = aT; vL = aLen; vD = aDel; }`;
-// Souhvězdí ve čtyřech stupních (uLv 0–4): čáry vedou až do hvězd a sílí (1 slabé, 2 střední, 3 plné), hvězdy na koncích jsou zvýrazněné úměrně stupni; 4 navíc jména. uC = barva (Velký vůz má teplejší).
+// Souhvězdí (uLv 0–4; rozhraní používá jen úrovně 0, 1, 3, 4 – viz CON_LV v engine.js): čáry vedou až do hvězd a sílí (1 slabé, 2 střední, 3 plné), hvězdy na koncích jsou zvýrazněné úměrně stupni; 4 navíc jména. uC = barva (Velký vůz má teplejší).
 export const CON_FS = /* glsl */ `
 uniform float uA; uniform float uG; uniform float uKid; uniform float uFr; uniform float uLv; uniform vec3 uC; varying float vT; varying float vL; varying float vD;
 void main(){ float e = min(vT, 1.0 - vT), dur = mix(0.8, 1.2, uKid), t0 = vD * mix(0.3, 0.6, uKid), g = clamp((uG - t0) / dur, 0.0, 1.0); g = g * g * (3.0 - 2.0 * g);

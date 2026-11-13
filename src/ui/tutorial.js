@@ -147,8 +147,6 @@ export function createTutorial(S, A, ui) {
       await sleep(700);
       await point('#b-con', 150);
       ui.act('con');
-      await sleep(700);
-      ui.act('con');
       await point('#b-star', 150);
       ui.act('stars');
       const dir = pick([-1, 1]);

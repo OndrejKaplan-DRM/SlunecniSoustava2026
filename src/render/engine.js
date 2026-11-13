@@ -86,6 +86,7 @@ const sstep = (a, b, x) => {
   return t * t * (3 - 2 * t);
 };
 
+const CON_LV = [0, 1, 3, 4];
 export function createEngine(canvas, overlay) {
   const S = {
     jd: jdNow(),
@@ -1552,10 +1553,12 @@ export function createEngine(canvas, overlay) {
       o.line.matrixWorldNeedsUpdate = true;
     }
     {
+      /* S.conMode má tři zapnuté stupně (1 náznak, 2 čáry se zvýrazněnými hvězdami, 3 navíc jména); shader dál počítá s úrovní 0–4, prostřední úroveň 2 se nepoužívá */
+      const conTg = CON_LV[S.conMode] || 0;
       if (S.conMode > 0 && conLv < 0.01 && conPrev === 0) conT = now;
       conPrev = S.conMode;
-      const dl = S.conMode - conLv;
-      conLv = Math.abs(dl) < 0.004 ? S.conMode : conLv + dl * Math.min(1, dtR * 7);
+      const dl = conTg - conLv;
+      conLv = Math.abs(dl) < 0.004 ? conTg : conLv + dl * Math.min(1, dtR * 7);
       const on = conLv > 0.004,
         g = (now - conT) / 1000,
         s2 = Math.min(1, Math.max(0, conLv - 1)),
@@ -1585,7 +1588,7 @@ export function createEngine(canvas, overlay) {
       conMat.cu.uKid.value = S.kid ? 1 : 0;
       conMat.cu.uG.value = g;
       cstMat.uniforms.uS.value = sK;
-      if (on && (g < 4 || conLv !== S.conMode)) wake();
+      if (on && (g < 4 || conLv !== conTg)) wake();
       const fr = 0.06 * s2 + 0.09 * s3 + (S.kid ? 0.05 * s2 : 0),
         ox = 2.2 / W,
         oy = 2.2 / H,
@@ -1639,7 +1642,7 @@ export function createEngine(canvas, overlay) {
   function drawOverlay(big) {
     const tk = S.txtK || 1; /* měřítko písma ve 2D vrstvě (režim velké obrazovky) */
     ctx.clearRect(0, 0, W, H);
-    if (S.conMode === 4 || S.starNames) {
+    if (S.conMode === 3 || S.starNames) {
       ctx.textBaseline = 'middle';
       const put = (o, star) => {
         const z = o.c.dot(fwd);
@@ -1667,7 +1670,7 @@ export function createEngine(canvas, overlay) {
           ctx.fillText(t, x - ctx.measureText(t).width / 2, y);
         }
       };
-      if (S.conMode === 4) {
+      if (S.conMode === 3) {
         // jména souhvězdí: nesmí ležet přes čáry – hledá se nejbližší volné místo u těžiště; jednou nalezené se drží, dokud vyhovuje
         const sg = [];
         for (let k = 0; k < conSeg.length; k += 6) {
