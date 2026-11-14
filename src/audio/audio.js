@@ -701,17 +701,18 @@ export function createAudio(S) {
   }
   // nahrané zvuky: načtení na vyžádání, jednorázové přehrání a smyčka s prolnutím konce do začátku
   const BUF = {},
-    LOADING = {};
+    LOADING = {},
+    PRE = {};
   const load = (id) =>
     BUF[id]
       ? Promise.resolve(BUF[id])
       : LOADING[id] ||
-        (LOADING[id] = fetch(AS('zvuky/' + id + '.mp3'))
-          .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject()))
+        (LOADING[id] = (PRE[id] || fetch(AS('zvuky/' + id + '.mp3')).then((r) => (r.ok ? r.arrayBuffer() : Promise.reject())))
           .then((a) => new Promise((ok, no) => A.ctx.decodeAudioData(a, ok, no)))
           .then((b) => (BUF[id] = b))
           .catch(() => {
             delete LOADING[id];
+            delete PRE[id];
             return null;
           }));
   function smp(m, pitch, gain) {
@@ -1428,6 +1429,33 @@ export function createAudio(S) {
     A.vol = v;
     if (master && A.on) master.gain.setTargetAtTime(v, A.ctx.currentTime, 0.05);
     save();
+  };
+  /* Přednačtení: soubory zvuků lze stáhnout ještě před prvním kliknutím (dekódovat jde až po něm, prohlížeč dřív zvuk nepovolí). */
+  A.prefetch = (ids) =>
+    Promise.all(
+      ids.map(
+        (id) =>
+          PRE[id] ||
+          (PRE[id] = fetch(AS('zvuky/' + id + '.mp3'))
+            .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject()))
+            .catch(() => {
+              delete PRE[id];
+              return Promise.reject();
+            }))
+      )
+    ).catch(() => {});
+  A.decodeAhead = (ids) => {
+    if (A.ctx) for (const id of ids) load(id);
+  };
+  A.prefetchMusic = (slot) => {
+    const l = TRACKS[slot];
+    return l ? muUrl(l[0]).catch(() => {}) : Promise.resolve();
+  };
+  A.firstSounds = () => {
+    const out = new Set([FLY[0]]);
+    for (const k of ['click', 'click2', 'select', 'panel_open', 'panel_close', 'enter']) if (SMP[k]) out.add(SMP[k][0]);
+    for (const k of ['sun', 'rock']) if (AMBS[k]) out.add(AMBS[k][0]);
+    return [...out];
   };
   A.note = (i) => {
     const r = AMB[ambOf(i)],

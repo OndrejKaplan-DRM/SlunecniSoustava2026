@@ -1918,6 +1918,47 @@ export function createEngine(canvas, overlay) {
   S.wake = wake;
   S.R = R;
   S.renderer = renderer;
+  /* Přednačtení (úvodní obrazovka): vyrobí těleso, načte jeho mapu a nechá grafickou kartu přeložit shadery dřív, než na ně dojde řada. */
+  S.warmTex = (i) =>
+    new Promise((res) => {
+      if (!R[i].mesh) makeBody(i);
+      R[i].used = performance.now();
+      needTex(i);
+      const t0 = performance.now(),
+        iv = setInterval(() => {
+          if (R[i].tex === 2 || R[i].tex === -1 || performance.now() - t0 > 7000) {
+            clearInterval(iv);
+            res();
+          }
+        }, 40);
+    });
+  S.warmGPU = async () => {
+    try {
+      if (renderer.compileAsync) await renderer.compileAsync(scene, camera);
+      else renderer.compile(scene, camera);
+    } catch (e) {
+      /* přeloží se při prvním kreslení */
+    }
+    /* jeden zkušební snímek 32 × 32 se vším viditelným: ovladač (hlavně Direct3D ve Windows) dokončuje překlad až při prvním kreslení */
+    const vis = [];
+    scene.traverse((o) => {
+      if (o.isMesh || o.isPoints || o.isLine) vis.push([o, o.visible]);
+    });
+    const rt = new THREE.WebGLRenderTarget(32, 32),
+      prev = renderer.getRenderTarget();
+    try {
+      for (const v of vis) v[0].visible = true;
+      renderer.setRenderTarget(rt);
+      renderer.render(scene, camera);
+    } catch (e) {
+      /* nic */
+    }
+    renderer.setRenderTarget(prev);
+    for (const v of vis) v[0].visible = v[1];
+    rt.dispose();
+    wake();
+  };
+  S.progs = () => (renderer.info.programs || []).length;
   S.start = () => {
     resize();
     updateAll(S.jd);

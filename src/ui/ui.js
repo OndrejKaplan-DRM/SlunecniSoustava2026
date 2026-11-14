@@ -5,6 +5,7 @@ import { drawBall, ballSize, loadMap } from '../render/ball.js';
 import { RATE_LABEL } from '../render/engine.js';
 import { createTutorial } from './tutorial.js';
 import CAT from '../data/cat.json';
+import { createPreload } from '../core/preload.js';
 
 const $ = (s) => document.querySelector(s),
   el = (t, c, h) => {
@@ -1817,16 +1818,48 @@ export function createUI(S, A) {
     setMode(true);
     spMode();
   };
-  $('#sp-tut').onclick = () => {
+  /* Přednačtení: tělesa z dolní lišty (tam uživatel i ukázka míří nejdřív), jejich mapy, shadery a první zvuky.
+     Lišta má pevný seznam úloh, takže necouvá; co přibude později, běží „v klidu“ mimo lištu (viz core/preload.js). */
+  const PL = createPreload(),
+    sndIds = A.firstSounds();
+  for (const i of dockIds) PL.add(B[i].cs, i === SUN || i === EARTH || i === idx.get('moon') ? 3 : 2, () => S.warmTex(i), 0);
+  PL.add('zvuky', 3, () => A.prefetch(sndIds), 0, 6000);
+  PL.add('shadery', 12, () => S.warmGPU(), 1, 15000);
+  PL.onProgress((p, label, ok) => {
+    const el = $('#sp-load');
+    el.querySelector('i').style.width = p + '%';
+    el.querySelector('b').textContent = ok ? '✓' : p + ' %';
+    el.querySelector('em').textContent = ok ? 'připraveno' : 'připravuji vesmír';
+    el.classList.toggle('ok', ok);
+  });
+  setTimeout(() => PL.run(), 60);
+  api.preload = PL;
+  /* Start počká na dokončení přípravy (nejdéle 9 s), aby ukázka neškobrtla o první překlad shaderu. */
+  /* Úvod je čistý: jen Země, která se pomalu otáčí; rozhraní se rozsvítí až po startu. */
+  document.body.classList.add('spl');
+  S.ticks.push((dt) => {
+    if (sp.classList.contains('on') && !S.cam.fly) {
+      S.rotate(-5 * dt, 0);
+      S.wake();
+    }
+  });
+  let going = false;
+  const begin = (btn, fn) => {
+    if (going) return;
+    going = true;
     A.unlock();
-    sp.classList.remove('on');
-    tut.start();
+    A.decodeAhead(sndIds);
+    btn.classList.add('wait');
+    PL.whenReady().then(() => {
+      btn.classList.remove('wait');
+      going = false;
+      sp.classList.remove('on');
+      document.body.classList.remove('spl');
+      fn();
+    });
   };
-  $('#sp-go').onclick = () => {
-    A.unlock();
-    sp.classList.remove('on');
-    A.play('orbit_on');
-  };
+  $('#sp-tut').onclick = () => begin($('#sp-tut'), () => tut.start());
+  $('#sp-go').onclick = () => begin($('#sp-go'), () => A.play('orbit_on'));
   $('#help [data-a="tut"]').onclick = () => act.tut();
   A.kidMood = G.kid;
   S.kid = G.kid;
@@ -1838,8 +1871,8 @@ export function createUI(S, A) {
     if (G.music === undefined ? true : G.music) A.setMusic(true);
   };
   $('#cineoff').onclick = () => act.cine();
-  $('#sp-tut').addEventListener('click', startMusic);
-  $('#sp-go').addEventListener('click', startMusic);
+  $('#sp-tut').addEventListener('click', () => PL.whenReady().then(startMusic));
+  $('#sp-go').addEventListener('click', () => PL.whenReady().then(startMusic));
   {
     const h = (location.hash || '').slice(1).replace(/-/g, '_');
     if (idx.has(h)) setTimeout(() => S.jump(idx.get(h)), 50);
