@@ -214,6 +214,25 @@ body.mob .zr em { display: none; } body.mob #zv-cats { flex-wrap: nowrap; overfl
 body.big #top, body.big #tools, body.big #more, body.big #album, body.big #tm, body.big #cmp, body.big #dev, body.big #mission, body.big #card, body.big #list, body.big #gamebox, body.big #help, body.big #tut, body.big #zv, body.big #dockwrap, body.big #hud, body.big #guide, body.big #ufo, body.big #toast, body.big #sunchip, body.big #cardtab, body.big #cineoff, body.big #mini, body.big #splash .in { zoom: var(--bk, 1.4); }
 body.touch #tools .pc, body.mob #tools .pc { display: none; }
 body.mob.land #dockwrap { left: calc(4px + env(safe-area-inset-left)); right: calc(4px + env(safe-area-inset-right)); }
+
+/* verze 1.4: registr funkcí (src/core/flags.js), neprůhledná nabídka, karta úkazu bez překryvu, čitelný úvod, Superkarta */
+body.no-ukazy [data-a="uk"], body.no-ukazy #uk, body.no-ukazy #ukc { display: none !important; }
+#more { background: rgba(9, 13, 22, 0.98); } body.kid #more { background: rgba(34, 20, 74, 0.98); }
+body.ukon:not(.mob) #mission { display: none !important; }
+#splash .in { background: radial-gradient(closest-side, rgba(3, 5, 10, 0.82), rgba(3, 5, 10, 0.62) 68%, rgba(3, 5, 10, 0)); padding: 34px 44px; } body.mob #splash .in { padding: 18px 14px; }
+#sp-load { font-size: 13px; } #sp-load .tr { height: 5px; }
+#sp-log { display: none; margin: 8px 0 0; text-align: left; font: 11px/1.45 ui-monospace, Consolas, monospace; color: #8fa3c4; white-space: pre-wrap; max-height: 150px; overflow: hidden; } body.f-nacitani #sp-log { display: block; }
+#dev .flags { width: 100%; font-size: 12.5px; border-collapse: collapse; margin: 4px 0; } #dev .flags td { padding: 2px 6px 2px 0; color: var(--mu); } #dev .flags td:first-child { color: #7fe0a2; width: 14px; }
+#sk { left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(760px, 94vw); max-height: min(86vh, 900px); z-index: 15; background: rgba(9, 13, 22, 0.98); font-size: 13.5px; line-height: 1.45; } body.kid #sk { background: rgba(34, 20, 74, 0.98); }
+#sk .sk-hd { display: flex; gap: 18px; align-items: center; margin-right: 24px; } #sk .sk-ball { flex: none; max-width: 40%; } #sk h3 { font-size: 24px; margin: 0; } #sk .sk-sub { margin: 2px 0 6px; color: var(--mu); } #sk .sk-lead { margin: 0 0 6px; }
+#sk a { color: #ffe7ad; cursor: pointer; text-decoration: underline dotted; } #sk .sk-nav a { margin-right: 12px; }
+#sk .sk-fig { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0 6px; } #sk .sk-fig > div { flex: 1 1 300px; text-align: center; background: rgba(124, 150, 210, 0.08); border-radius: 10px; padding: 6px; } #sk .sk-fig canvas { max-width: 100%; } #sk .sk-fig small, #sk .sk-foot { color: var(--mu); font-size: 11.5px; display: block; }
+#sk details { border-top: 1px solid var(--ln); padding: 7px 0; } #sk summary { cursor: pointer; font-weight: 600; font-size: 14.5px; list-style-position: inside; } #sk table { width: 100%; border-collapse: collapse; margin-top: 5px; }
+#sk th { text-align: left; font-weight: 400; color: var(--mu); width: 42%; padding: 3px 10px 3px 0; vertical-align: top; } #sk td { padding: 3px 0; font-variant-numeric: tabular-nums; } #sk td small { color: var(--mu); display: block; } #sk ul { margin: 6px 0 0 18px; padding: 0; } #sk li { margin: 3px 0; }
+body.mob #sk { width: calc(100vw - 12px); max-height: 82vh; max-height: 82dvh; padding: 12px; font-size: 13px; } body.mob #sk h3 { font-size: 19px; } body.mob #sk .sk-hd { gap: 10px; } body.mob #sk .sk-ball { max-width: 34%; height: auto; } body.mob #sk th { width: 46%; }
+#sk-cmp { min-height: 126px; display: flex; align-items: flex-end; justify-content: center; gap: 18px; flex-wrap: wrap; } #sk .sk-it { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11.5px; color: var(--mu); } #sk .sk-it.me { color: #ffe7ad; } #sk .sk-it u { display: block; border-radius: 50%; background: #cfd8ea; } #sk .sk-it.me u { background: #ffc857; }
+#sk-cmp:has(.sk-bar) { display: block; padding: 14px 8px 0; text-align: left; } #sk .sk-bar { display: grid; grid-template-columns: 1fr; gap: 2px; margin-bottom: 9px; font-size: 11.5px; color: var(--mu); } #sk .sk-bar i { display: block; height: 9px; border-radius: 5px; background: #6f84ad; } #sk .sk-bar.me { color: #ffe7ad; } #sk .sk-bar.me i { background: #ffc857; } #sk .sk-bar em { font-style: normal; }
+body.big #sk { zoom: var(--bk, 1.4); }
 </style>
 </head>
 <body>
@@ -230,6 +249,7 @@ body.mob.land #dockwrap { left: calc(4px + env(safe-area-inset-left)); right: ca
 <div id="tm" class="panel pop"><button class="x" data-close="#tm">×</button><h3>🕰 Stroj času</h3><div id="tm-list"></div></div>
 <div id="cmp" class="panel pop"><button class="x" data-close="#cmp">×</button><div id="cmp-in"></div></div>
 <div id="dev" class="panel pop"><button class="x" data-close="#dev">×</button><div id="dev-in"></div></div>
+<div id="sk" class="panel pop"><button class="x" data-close="#sk" aria-label="Zavřít">×</button><div id="sk-in"></div></div>
 <canvas id="mini" title="Kde právě jsi (pohled shora, klikni na planetu)"></canvas>
 <div id="guide"><span class="bot">🤖</span><p></p></div>
 <div id="ufo" aria-live="polite"><span>🛸</span><p></p></div>
@@ -259,7 +279,7 @@ body.mob.land #dockwrap { left: calc(4px + env(safe-area-inset-left)); right: ca
   <p>🔊 Zvuků: <b id="sndn"></b> – syntéza v prohlížeči a nahrané zvuky z volných balíčků (CC0). Hudba: 16 skladeb, hrají podle místa, řídce a potichu (☰ → Hudba). Hlasitost zvuků a hudby se nastavuje zvlášť v nabídce ☰.</p>
   <p>🎯 Nahoře je <b>hádanka</b>. Najdi těleso, o kterém mluví, a doleť k němu. Za každé nově navštívené těleso dostaneš razítko do deníku a body.</p>
   <div class="row"><button class="pri" data-close="#help">Letíme!</button><button data-a="tut">▶ Přehrát ukázku (1 min)</button></div>
-  <p class="about"><b>O aplikaci.</b> Sluneční soustava 200, verze 1.3 – pracovní sestavení (14. 11. 2026). Námět, zadání, odborná kontrola a testování: <span class="autor">Ing. Ondřej Kaplan, Ph.D.</span> (<a href="mailto:ondrej.kaplan@gmail.com">ondrej.kaplan@gmail.com</a>). Kód napsal podle jeho zadání model Claude Fable 5.2 (Anthropic) s knihovnou Three.js; aplikace vznikala postupně, iteraci po iteraci, a každá verze prochází automatickými testy.<br><b>Soukromí.</b> Zdarma, bez reklam a bez registrace. Aplikace neodesílá žádné údaje; nastavení a postup hry si ukládá jen do tohoto prohlížeče. Verze v jednom souboru běží i bez internetu.<br><b>Licence a zdroje.</b> Kód je pod licencí MIT. Polohy těles: vlastní výpočet podle elementů JPL a efemeridy DE421. Mapy těles: NASA, JPL, USGS a Stellarium (O. Pluton a další, CC BY 4.0); Země a malá mapa Marsu: J. Hastings-Trew; Mléčná dráha: A. Mellinger. Povrchy označené 🎨 jsou ilustrace. Hudba: skladby autora vytvořené ve službě Suno (placený tarif s právy ke komerčnímu užití). Zvuky: syntéza a nahrávky CC0. Úplný přehled zdrojů a zdrojový kód: <a href="https://github.com/OndrejKaplan-DRM/SlunecniSoustava2026" target="_blank" rel="noopener">github.com/OndrejKaplan-DRM/SlunecniSoustava2026</a></p>
+  <p class="about"><b>O aplikaci.</b> Sluneční soustava 200, verze 1.4 – pracovní sestavení (14. 11. 2026). Námět, zadání, odborná kontrola a testování: <span class="autor">Ing. Ondřej Kaplan, Ph.D.</span> (<a href="mailto:ondrej.kaplan@gmail.com">ondrej.kaplan@gmail.com</a>). Kód napsal podle jeho zadání model Claude Fable 5.2 (Anthropic) s knihovnou Three.js; aplikace vznikala postupně, iteraci po iteraci, a každá verze prochází automatickými testy.<br><b>Soukromí.</b> Zdarma, bez reklam a bez registrace. Aplikace neodesílá žádné údaje; nastavení a postup hry si ukládá jen do tohoto prohlížeče. Verze v jednom souboru běží i bez internetu.<br><b>Licence a zdroje.</b> Kód je pod licencí MIT. Polohy těles: vlastní výpočet podle elementů JPL a efemeridy DE421. Mapy těles: NASA, JPL, USGS a Stellarium (O. Pluton a další, CC BY 4.0); Země a malá mapa Marsu: J. Hastings-Trew; Mléčná dráha: A. Mellinger. Povrchy označené 🎨 jsou ilustrace. Hudba: skladby autora vytvořené ve službě Suno (placený tarif s právy ke komerčnímu užití). Zvuky: syntéza a nahrávky CC0. Úplný přehled zdrojů a zdrojový kód: <a href="https://github.com/OndrejKaplan-DRM/SlunecniSoustava2026" target="_blank" rel="noopener">github.com/OndrejKaplan-DRM/SlunecniSoustava2026</a></p>
 </div>
 <button id="sunchip" title="Přepnout filtr Slunce (V)"><b>🔆</b><span></span></button><div id="toast"></div><button id="cineoff" title="Ukončit kino a vrátit ovládání (I, Esc)">✕ <span>ovládání</span></button>
 <div id="tut" class="panel"><div class="r"><span id="tut-n">1/9</span><span id="tut-txt"></span><kbd id="tut-key" style="display:none"></kbd><button id="tut-skip" title="Ukončit ukázku (Esc)">Přeskočit ✕</button></div><div id="tut-bar"><i></i></div></div>
@@ -267,12 +287,12 @@ body.mob.land #dockwrap { left: calc(4px + env(safe-area-inset-left)); right: ca
 <div id="splash" class="on"><div class="in">
   <h1>Sluneční soustava <small>200</small></h1>
   <p>Přes 200 těles ve skutečném měřítku. Všechna tam, kde právě teď opravdu jsou.<br>Leť, kam chceš: od Slunce až k návštěvníkům od cizích hvězd.</p>
-  <div id="sp-load" title="Připravuji tělesa, která nejspíš navštívíš jako první"><div class="tr"><i></i></div><span><b>0 %</b> <em>připravuji vesmír</em></span></div>
+  <div id="sp-load" title="Připravuji tělesa, která nejspíš navštívíš jako první"><div class="tr"><i></i></div><span><b>0 %</b> <em>připravuji vesmír</em></span><pre id="sp-log"></pre></div>
   <div class="modes"><button id="sp-adult"><b>🎓 Dospělé rozhraní</b><small>Věcné údaje, jednotky, zdroje.</small></button><button id="sp-kid"><b>🧒 Dětské rozhraní</b><small>Hravé karty, tykání, zajímavosti.</small></button></div>
   <button id="sp-tut" class="pri">▶ Ukázka ovládání (1 min)</button><button id="sp-go">Rovnou do vesmíru</button>
   <div class="tg">👆 jeden prst otáčí · 🤏 dva prsty přibližují<br>ťuknutí vybere · dvojí ťuknutí letí k tělesu</div>
   <div class="fine">Se zvukem. Rozhraní i zvuk jde kdykoli přepnout (K, X). Enter = ukázka, Esc = přeskočit.</div>
-  <div class="ver">Verze 1.3 (pracovní) · <span class="autor">Ondřej Kaplan</span>, 2026 · zdarma, bez reklam a bez sběru dat · více v nápovědě (?)</div>
+  <div class="ver">Verze 1.4 (pracovní) · <span class="autor">Ondřej Kaplan</span>, 2026 · zdarma, bez reklam a bez sběru dat · více v nápovědě (?)</div>
 </div></div>
 <script src="app.js"></script>
 </body>

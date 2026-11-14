@@ -929,7 +929,7 @@ export function createUI(S, A) {
   };
 
   // ---------- přepínače ----------
-  const POPS = ['#help', '#gamebox', '#list', '#album', '#tm', '#cmp', '#dev', '#more', '#zv', '#uk'],
+  const POPS = ['#help', '#gamebox', '#list', '#album', '#tm', '#cmp', '#dev', '#more', '#zv', '#uk', '#sk'],
     PSND = {},
     UI3 = ['orbit_off', 'orbit_on', 'orbit_all'],
     ui2 = (v) => A.play(v ? 'orbit_on' : 'orbit_off');
@@ -1042,6 +1042,7 @@ export function createUI(S, A) {
       if (toggle('#album')) drawAlbum();
     },
     uk() {
+      if (!S.F.on('ukazy')) return;
       toggle('#uk');
     },
     tm() {
@@ -1647,7 +1648,14 @@ export function createUI(S, A) {
   }
   function drawDev() {
     $('#dev-in').innerHTML =
-      `<h3>🛠 Tajné menu</h3><p>${nf(S.fps)} snímků/s · kvalita ${S.quality}/2 · zvuků ${A.count}</p><div class="row"><button data-d="q-">Kvalita −</button><button data-d="q+">Kvalita +</button><button data-d="disco">🪩 Disko</button><button data-d="real">🔦 Reálný jas</button><button data-d="all">Odemknout všechna razítka</button><button data-d="ufo">🛸 Zavolat talíř</button></div><p>Skok na datum: <input id="dev-date" type="date" min="1600-01-01" max="2200-12-31"> <button data-d="go">Skoč</button></p><p><small>Další tajemství: zkus kód ↑↑↓↓←→←→BA, napiš 42, do hledání zadej „tesla“, „nibiru“ nebo „vulkan“, sedmkrát klikni na nadpis.</small></p>`;
+      `<h3>🛠 Tajné menu</h3><p>${nf(S.fps)} snímků/s · kvalita ${S.quality}/2 · zvuků ${A.count}</p><div class="row"><button data-d="q-">Kvalita −</button><button data-d="q+">Kvalita +</button><button data-d="disco">🪩 Disko</button><button data-d="real">🔦 Reálný jas</button><button data-d="all">Odemknout všechna razítka</button><button data-d="ufo">🛸 Zavolat talíř</button></div><p>Skok na datum: <input id="dev-date" type="date" min="1600-01-01" max="2200-12-31"> <button data-d="go">Skoč</button></p><h4>Vývojářský režim</h4><p><button data-d="dev" class="${S.F.dev ? 'pri' : ''}">${S.F.dev ? '✓ Zapnutý – vypnout' : 'Zapnout'}</button> <button data-d="sk">🃏 Superkarta vybraného tělesa</button></p><table class="flags">${S.F.list()
+        .map(
+          (f) =>
+            `<tr><td>${f.on ? '●' : '○'}</td><td>${f.popis}</td><td>${{ vse: 'všichni', dospeli: 'jen dospělí', dev: 'jen ?dev', vyp: 'vypnuto' }[f.stav]}</td></tr>`
+        )
+        .join(
+          ''
+        )}</table><p><small>Totéž z adresy: <b>?dev</b> zapne, <b>?dev=0</b> vypne, <b>?dev=superkarta</b> zapne jen vyjmenované. Stav funkcí se mění v souboru src/core/flags.js.</small></p><p><small>Další tajemství: zkus kód ↑↑↓↓←→←→BA, napiš 42, do hledání zadej „tesla“, „nibiru“ nebo „vulkan“, sedmkrát klikni na nadpis.</small></p>`;
   }
   $('#dev').addEventListener('click', (e) => {
     const d = e.target.dataset.d;
@@ -1656,6 +1664,14 @@ export function createUI(S, A) {
     if (d === 'q+') S.quality = Math.min(2, S.quality + 1);
     if (d === 'disco') act.disco();
     if (d === 'real') act.real();
+    if (d === 'dev') {
+      S.F.setDev(!S.F.dev);
+      toast(S.F.dev ? '🛠 Vývojářský režim zapnut: ukazují se i rozpracované funkce.' : 'Vývojářský režim vypnut.');
+    }
+    if (d === 'sk') {
+      if (!S.F.on('superkarta')) toast('Superkarta je jen ve vývojářském režimu.');
+      else return void S200.sk.open(S.sel);
+    }
     if (d === 'ufo') {
       toggle('#dev', false);
       ufo();
@@ -1827,7 +1843,28 @@ export function createUI(S, A) {
     PL.add(B[i].cs, i === SUN || i === EARTH || i === idx.get('moon') ? 3 : 2, () => S.warmTex(i), 0);
   PL.add('zvuky', 3, () => A.prefetch(sndIds), 0, 6000);
   PL.add('shadery', 12, () => S.warmGPU(), 1, 15000);
+  /* technický výpis načítání (jen ve vývojářském režimu): co se připravilo a za jak dlouho, a co o zařízení prohlížeč prozradí */
+  const plT0 = performance.now(),
+    plLog = [];
   PL.onProgress((p, label, ok) => {
+    if (label)
+      plLog.push(
+        `${String(Math.round(performance.now() - plT0)).padStart(5)} ms  ${String(p).padStart(3)} %  ${label}`
+      );
+    if (ok || label) {
+      const gl = S.renderer.getContext(),
+        dbg = gl.getExtension('WEBGL_debug_renderer_info'),
+        gpu = dbg
+          ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL))
+              .replace(/^ANGLE \((.*)\)$/, '$1')
+              .slice(0, 70)
+          : 'neznámá',
+        mem = navigator.deviceMemory ? '≥ ' + navigator.deviceMemory + ' GB (hrubá třída)' : 'prohlížeč neprozradí';
+      $('#sp-log').textContent =
+        `zařízení: ${navigator.hardwareConcurrency || '?'} jader · paměť ${mem} · textura do ${S.renderer.capabilities.maxTextureSize} px\ngrafika: ${gpu}\n` +
+        plLog.slice(-7).join('\n') +
+        (ok ? `\nhotovo za ${((performance.now() - plT0) / 1000).toFixed(1)} s` : '');
+    }
     const el = $('#sp-load');
     el.querySelector('i').style.width = p + '%';
     el.querySelector('b').textContent = ok ? '✓' : p + ' %';

@@ -624,6 +624,7 @@ export function createUdalosti(S, A, ui) {
     else draw();
   }
   function open(id, andShow) {
+    if (!S.F.on('ukazy')) return;
     cur = U.find((e) => e.id === id) || null;
     draw();
     if (cur && andShow) show(cur);
@@ -756,7 +757,7 @@ export function createUdalosti(S, A, ui) {
     (ev) => {
       const b = ev.target.closest('button[data-e]'),
         key = b && Object.keys(TM).find((k) => b.textContent.includes(k));
-      if (!key) return;
+      if (!key || !S.F.on('ukazy')) return; /* v dětském rozhraní zůstane obyčejný skok v čase */
       ev.stopPropagation();
       ui.toggle('#tm', false);
       open(TM[key], true);
@@ -950,7 +951,7 @@ export function createUdalosti(S, A, ui) {
     }
     const cine = document.body.classList.contains('cine'),
       fr = S.R && S.R[S.focus];
-    for (const st of STARS) {
+    for (const st of S.F.on('ukazy') ? STARS : []) {
       const m = magAt(st, S.jd);
       if (m === null) continue;
       const q = scr(st.dir);
@@ -989,6 +990,14 @@ export function createUdalosti(S, A, ui) {
     }
   });
   S.bus.on('mode', () => draw());
+  /* úkazy jsou jen v dospělém rozhraní (registr funkcí): při přepnutí do dětského se ukázka vrátí a karta zavře */
+  S.F.onChange(() => {
+    if (S.F.on('ukazy') || (!cur && !back)) return;
+    if (back) restore();
+    cur = null;
+    draw();
+    ui.toggle('#uk', false);
+  });
   return {
     open: () => {
       /* seznam a karta se nepřekrývají: otevřená karta se při otevření seznamu sbalí do proužku */

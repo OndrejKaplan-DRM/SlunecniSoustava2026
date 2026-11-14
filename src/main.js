@@ -7,15 +7,20 @@ import { createMobile } from './ui/mobile.js';
 import { createZvuky } from './ui/zvuky.js';
 import { createOrient } from './ui/orient.js';
 import { createUdalosti } from './ui/udalosti.js';
+import { createFlags } from './core/flags.js';
+import { createSuperkarta } from './ui/superkarta.js';
 const S = createEngine(document.getElementById('gl'), document.getElementById('ov'));
+/* registr funkcí (kdo co uvidí) musí existovat dřív než rozhraní */
+const F = (S.F = createFlags());
 const A = createAudio(S);
 const ui = createUI(S, A);
 ui.X = createExtras(S, A, ui);
 const mob = createMobile(S, A, ui);
 const zv = createZvuky(A, ui);
-/* zkušebna zvuků je nástroj autora: tlačítko se ukáže jen s parametrem ?zvuky v adrese */
-if (new URLSearchParams(location.search).has('zvuky')) document.body.classList.add('zvuky');
 const orient = createOrient(S, A, ui);
 const uk = createUdalosti(S, A, ui);
+const sk = createSuperkarta(S, A, ui);
+F.setKid(document.body.classList.contains('kid'));
+S.bus.on('mode', (k) => F.setKid(k));
 S.start();
-window.S200 = { S, ui, sim, A, mob, zv, orient, uk };
+window.S200 = { S, ui, sim, A, mob, zv, orient, uk, sk, F };
