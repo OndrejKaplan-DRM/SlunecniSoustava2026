@@ -6,7 +6,7 @@ Interaktivní 3D model Sluneční soustavy v prohlížeči: 201 těles ve skute�
 dospělé a dětské rozhraní, minutová ukázka ovládání, čtyři pohledy na Slunce, zvuky, hudba a hra pro mladého astronoma.
 
 - **Spustit:** https://ondrejkaplan-drm.github.io/SlunecniSoustava2026/
-- **Verze:** 1.2 (13. 11. 2026) · zdarma, bez reklam, bez registrace a bez sběru dat
+- **Verze:** 1.2 (13. 11. 2026); rozpracovaná 1.4 na větvi `iterace-16` · zdarma, bez reklam, bez registrace a bez sběru dat
 - **Bez internetu:** `npm run offline:hi` vyrobí jeden soubor HTML, který se otevře dvojklikem (na flashku, do školy)
 - **Autor:** Ing. Ondřej Kaplan, Ph.D. (ondrej.kaplan@gmail.com) – námět, zadání, odborná kontrola a testování. Kód napsal podle jeho zadání model Claude Fable 5.2 (Anthropic).
 - **Licence:** kód MIT (`LICENSE`); mapy, písmo, zvuky a hudba mají vlastní licence – přehled v `CREDITS.md`
@@ -83,6 +83,19 @@ tools/                nástroje (spouštět z kořene repa)
 zdroje/               původ dat: MAPY.md (zpracování map), ZVUKY.md; licence všech podkladů shrnuje CREDITS.md
 docs/                 poznámky k architektuře
 ```
+
+## Rozpracované funkce a přepínač `?dev`
+Kdo kterou funkci uvidí, určuje jediný soubor `src/core/flags.js`. Každá funkce má stav `vse` (obě rozhraní), `dospeli` (jen dospělé rozhraní),
+`dev` (jen ve vývojářském režimu) nebo `vyp`. Schování funkce je změna jednoho slova, kód se nemaže.
+
+| Adresa | Co udělá |
+|---|---|
+| `…/index.html?dev` | zapne vývojářský režim: funkce ve stavu `dev` a technický výpis načítání na úvodu |
+| `…?dev=superkarta,nacitani` | zapne jen vyjmenované funkce |
+| `…?dev=0` | vypne a zapomene |
+| `…?zvuky` | zkušebna zvuků (jako dřív) |
+
+Volba se pamatuje v prohlížeči a jde přepnout i v Tajném menu. V kódu se ptá `S.F.on('nazev')`; na `<body>` jsou třídy `dev`, `f-<funkce>` a `no-<funkce>`.
 
 ## Pravidla práce
 

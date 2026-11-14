@@ -105,7 +105,32 @@ export function createUdalosti(S, A, ui) {
     S.wake();
   }
   // kde osa stínu Měsíce protíná Zemi (z poloh P pro právě nastavený čas); vrací vektor v soustavě Země a poloměry stínů v km
-  function shadow() {
+  /* Tabulka z katalogu NASA (Besselovy elementy, viz tools/model/besel_stopa.py): osa stínu na povrchu a pohled z místa
+     po krocích času. Model má pás úplného zatmění posunutý až o stovky km, proto se obrys, dráha stínu a okénko kreslí podle ní. */
+  function nasaAt(e, jd) {
+    const n = e && e.nasa;
+    if (!n) return null;
+    const f = (jd - n.t0) / n.dt,
+      k = Math.floor(f),
+      u = f - k;
+    if (k < 0 || k >= n.site.length - 1) return null;
+    const mix = (a, b) => a.map((v, i) => v + (b[i] - v) * u),
+      a0 = n.axis[k],
+      a1 = n.axis[k + 1];
+    let axis = null;
+    if (a0 && a1) {
+      const b1 = a1.slice();
+      if (b1[1] - a0[1] > 180) b1[1] -= 360;
+      if (b1[1] - a0[1] < -180) b1[1] += 360;
+      axis = mix(a0, b1);
+    }
+    return { axis, site: mix(n.site[k], n.site[k + 1]) };
+  }
+  /* zeměpisná (geodetická) šířka → směr od středu Země */
+  const geoV = (lat, lon) => siteV(Math.atan(0.99330562 * Math.tan(lat * DEG)) / DEG, lon);
+  function shadow(ev) {
+    const q = nasaAt(ev, S.jd);
+    if (q) return q.axis ? { v: geoV(q.axis[0], q.axis[1]), um: q.axis[2], pen: q.axis[3] } : null;
     const e = pos(EARTH),
       mo = sub(pos(MOON), e),
       s = sub(pos(SUN), e),
@@ -162,6 +187,10 @@ export function createUdalosti(S, A, ui) {
       return;
     }
     if (e.typ !== 'slunce') return;
+    if (e.nasa) {
+      track = e.nasa.axis.filter(Boolean).map((a) => geoV(a[0], a[1]));
+      return;
+    }
     const now = S.jd,
       w = e.okno * 1.7;
     for (let k = 0; k <= 60; k++) {
@@ -175,6 +204,18 @@ export function createUdalosti(S, A, ui) {
   }
   // pohled z místa úkazu: úhlové poloměry Slunce a Měsíce a posun Měsíce vůči Slunci (východ, sever) v radiánech
   function sky(e) {
+    const q = nasaAt(e, S.jd);
+    if (q) {
+      const SS = 0.004654; /* střední úhlový poloměr Slunce; okénko potřebuje jen poměry */
+      return {
+        ss: SS,
+        sm: q.site[2] * SS,
+        sep: Math.hypot(q.site[0], q.site[1]) * SS,
+        x: q.site[0] * SS,
+        y: q.site[1] * SS,
+        alt: q.site[3],
+      };
+    }
     basis(EARTH, S.jd, m9);
     const up = toWorld(siteV(e.lat, e.lon)),
       o = [up[0] * RE, up[1] * RE, up[2] * RE],
@@ -851,7 +892,7 @@ export function createUdalosti(S, A, ui) {
     ctx.strokeStyle = 'rgba(255,214,102,0.9)';
     line(track.map(toWorld));
     ctx.setLineDash([]);
-    const sh = shadow();
+    const sh = shadow(cur);
     if (sh) {
       const c = toWorld(sh.v),
         a = unit(cross(c, Math.abs(c[1]) < 0.9 ? [0, 1, 0] : [1, 0, 0])),

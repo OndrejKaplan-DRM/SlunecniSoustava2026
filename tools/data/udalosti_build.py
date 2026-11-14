@@ -73,7 +73,7 @@ N.append(rec('s-0584', 'slunce', '🌑', 'Thalétovo zatmění', 'bitva, kterou 
     NASA_S + ' Hérodotos, Dějiny I, 74.', 'největší fáze kolem 15:57 světového času, podvečer (nejistota desítky minut)', lat=39.9, lon=34.0, vyska=9000, telo='earth'))
 N.append(rec('s1715', 'slunce', '🌑', 'Halleyovo zatmění', 'první mapa stínu vydaná předem', jdJul(1715, 4, 22, 9.1257), 0.035, 'Londýn',
     'Edmond Halley spočítal, kudy stín Měsíce projde Anglií, a mapu nechal vytisknout předem, aby se lidé nelekli. Zároveň poprosil veřejnost, aby mu změřila, jak dlouho tma trvala. V Londýně trvalo úplné zatmění přes tři minuty.',
-    'Halley se spletl jen asi o čtyři minuty v čase a o zhruba 30 km na okraji pásu. Podle došlých měření pak mapu opravil – jeden z prvních projektů občanské vědy.',
+    'Halley se spletl jen asi o čtyři minuty v čase a o zhruba 30 km v poloze pásu. Podle došlých měření pak mapu opravil a rovnou do ní zakreslil i zatmění roku 1724 – jeden z prvních projektů občanské vědy.',
     'Pan Halley dopředu nakreslil mapu, kudy přejde stín Měsíce. A měl skoro úplnou pravdu! Lidé mu pak psali, jak dlouho u nich byla tma.',
     'Model: největší fáze v Londýně vychází na 89 %, katalog NASA dává úplné zatmění. Pás úplného zatmění má model posunutý až o 100 km; časy a „úplné“ na kartě jsou z NASA.',
     NASA_S, 'úplné od 9:05:52 do 9:09:13 světového času (3 minuty 21 sekund)', lat=51.51, lon=-0.13, vyska=5000, telo='earth'))
@@ -193,7 +193,7 @@ def bli(id, ikona, nazev, podtitul, a, okno, misto, text, perl, deti, shoda, pra
 k = K['c837']
 N.append(bli('c837', '☄️', 'Halleyova kometa těsně u Země', 'nejbližší průlet v dějinách', 'halley', 8, 'celý svět',
     'Na jaře roku 837 minula Halleyova kometa Zemi o pouhých 5 milionů km – třináctkrát dál, než je Měsíc. Tak blízko se k nám už nikdy potom nedostala. Čínští astronomové dynastie Tchang zapsali, že se její ohon táhl přes velkou část oblohy.',
-    'Franský císař Ludvík Pobožný, syn Karla Velikého, v kometě viděl zlé znamení. Podle svého životopisce kvůli ní nařídil půsty a modlitby.',
+    'Franského císaře Ludvíka Pobožného, syna Karla Velikého, kometa znepokojila. Jeho životopisec, zvaný Astronom, píše, že ji spolu probírali; císař pak probděl noc, ráno rozdal almužny chudým a nechal sloužit mše.',
     'Slavná kometa tehdy proletěla tak blízko Země jako nikdy jindy. Její ohon byl přes velký kus oblohy!',
     'Model s elementy tohoto návratu (JPL Horizons): nejblíž %.4f AU dne 10. 4. 837 (juliánsky). JPL CNEOS: 0,0334 AU. Dnešní dráha komety by tu nestačila – planety ji mezi návraty mění, proto si ukázka půjčuje dráhu z roku 837.' % k['au'],
     'JPL CNEOS: Historic Comet Close Approaches; JPL Horizons (elementy návratu, záznam 90000015).', 'nejblíž Zemi 10. dubna 837 (juliánsky): 0,0334 AU, tedy 5,0 milionu km'))
@@ -259,6 +259,18 @@ N.append(hv('h1604', 'Keplerova supernova', 'zatím poslední v naší Galaxii',
 N[-1]['datumJul'] = '29. září 1604 (v Praze už platil gregoriánský kalendář: 9. října)'
 out = OLD + N
 out.sort(key=lambda e: e['jd'])
+# Zatmění Slunce: obrys a dráha stínu a okénko „Pohled z místa“ podle Besselových elementů NASA (Ondřej, 14. 11. 2026).
+# Model má pás posunutý až o stovky km (Londýn 1715 by vyšel jen částečně), proto se pro kreslení bere tabulka z katalogu.
+sys.path.insert(0, 'tools/model')
+import besel_stopa
+VETA = ' Obrys stínu, jeho dráha a okénko „Pohled z místa“ se kreslí podle katalogu NASA.'
+for e in out:
+    if e['typ'] != 'slunce':
+        continue
+    w = e['okno'] * 1.7
+    e['nasa'] = besel_stopa.tabulka(besel_stopa.najdi(e['jd']), e['lat'], e['lon'], e['jd'] - w, e['jd'] + w)
+    if VETA.strip() not in e['shoda']:
+        e['shoda'] = e['shoda'].rstrip() + VETA
 json.dump(out, open('src/data/udalosti.json', 'w'), ensure_ascii=False, indent=1)
 print(len(out), 'karet')
 for e in out:

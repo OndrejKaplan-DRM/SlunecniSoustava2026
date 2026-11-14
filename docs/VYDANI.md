@@ -10,6 +10,9 @@ Projít před každým sloučením do `main` a zveřejněním (stránka, artefak
 - [ ] `npx prettier --check "src/**/*.js" "tools/**/*.mjs"` čisté (kromě `tools/zvuky/picks.json`)
 - [ ] snímky v 1366 × 768, 1920 × 1080, 3840 × 2160 a na telefonu (`tools/test/mobshot.mjs`): nic se nepřekrývá, nápověda se dá dočíst
 
+- [ ] `node tools/test/t_karty.mjs` (32 karet úkazů, Superkarta všech těles, `?dev`) a `node tools/test/t_preload.mjs` bez chyb.
+- [ ] `src/core/flags.js`: žádná nedodělaná funkce není ve stavu `vse`; vývojářský režim není po čistém otevření zapnutý.
+
 ## Data a texty
 - [ ] každé nové číslo v textu má zdroj; čísla, která se mění (počty měsíců), mají datum stavu
 - [ ] nové těleso: katalog, zajímavosti, ikona (`node tools/data/build_icons.mjs`), mapa, zápis v `CREDITS.md`

@@ -195,3 +195,17 @@ node /tmp/k.mjs --json /tmp/kAll.json && python3 tools/data/kandidati_tabulka.py
 - Navíc: zatmění 2026 (Burgos), 2027 (Luxor) a konjunkce Mars–Jupiter 16. 11. 2026 (model 1,193° ve 2:13 UT, přehledy 1,193° ve 2:04 UT).
 - Místní okolnosti zatmění: `tools/model/besel_misto.py` (Halys 39,9° s. š., 34,0° v. d.: 96,6 %; Londýn 1715: úplné 9:05:52–9:09:13 UT; Guntúr 1868: úplné 4:08:15–4:13:59 UT).
 - Historky na kartách (perličky) jsou psané z paměti a čekají na ověření proti pramenům; čísla úkazů jsou z katalogů.
+
+## Stav karet ve verzi 1.4 (14. 11. 2026 večer, větev `iterace-16`)
+- Úkazy jsou jen v dospělém rozhraní (registr funkcí `src/core/flags.js`, stav `dospeli`).
+- Kirchova kometa 1680: karta vyřazena (rozhodl Ondřej 14. 11.), řešič se nemění. Karet zůstává 32.
+- Zatmění Slunce (10 karet): obrys stínu, jeho dráha a okénko „Pohled z místa“ se kreslí podle Besselových elementů NASA
+  (`tools/model/besel_stopa.py` → pole `nasa` v `src/data/udalosti.json`). Důvod: model má pás úplného zatmění posunutý až o stovky km
+  (Londýn 1715 vycházel jen jako 89 %). Trojrozměrný stín Měsíce na Zemi dál počítá model, takže může ležet kus vedle obrysu.
+- Doby trvání na kartách sedí s katalogem NASA: 1415 nejdéle 4 min 51 s, 1999 2 min 23 s, 2027 6 min 23 s.
+- Historky ověřené 14. 11. 2026 na webu: Halley 1715 (4 minuty, 20 mil), Apophis (2,7 %, 340 m, radar 2021), afel Halleyovy komety 9. 12. 2023,
+  Krabí mlhovina (23 dní ve dne, 30 otoček za sekundu; rychlost rozpínání uvádějí prameny 1 100–1 800 km/s), Mark Twain (30. 11. 1835, 21. 4. 1910),
+  Le Gentil (1761 a 1769), Hájek z Hájku (Dialexis 1574, žádná paralaxa).
+- Opraveno: Ludvík Pobožný 837 – pramen (Astronom, Vita Hludovici) mluví o noci beze spánku, almužnách a mších, ne o půstech.
+- Neověřované jednotlivě (psané z paměti, v souladu s běžnými přehledy): ostatní historky.
+- Test `node tools/test/t_karty.mjs` projde všech 32 karet a Superkartu všech těles.

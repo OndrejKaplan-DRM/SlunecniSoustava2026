@@ -20,6 +20,9 @@ Stav k 13. 11. 2026, verze 1.2.
 
 ## Data a výpočty
 - Polohy planet: střední elementy JPL (Standish) s opravami dopočítanými proti efemeridě JPL DE421. Měsíc: zkrácená řada podle J. Meeuse, *Astronomical Algorithms*. Měsíce planet: elementy a póly IAU, opravy dopočítané proti referenčním polohám.
+- Dlouhodobá teorie planet a Pluta pro roky −1000 až 3000 a kontrola věrohodnosti: numerická efemerida JPL DE422 (W. M. Folkner, Jet Propulsion Laboratory); postup v `docs/VEROHODNOST.md`.
+- Rozdíl mezi světovým a dynamickým časem (ΔT): polynomy F. Espenaka a J. Meeuse (NASA, *Five Millennium Canon of Solar Eclipses*).
+- Zatmění Slunce a Měsíce: katalogy a Besselovy elementy NASA (F. Espenak, J. Meeus, *Five Millennium Canon of Solar Eclipses* a *of Lunar Eclipses*, NASA/GSFC); podle nich se kreslí obrys a dráha stínu a pohled z místa. Přechody planet: katalogy F. Espenaka. Průlety a komety: JPL Horizons, Small-Body Database a CNEOS.
 - Planetky a komety: Keplerova dráha z elementů JPL Small-Body Database, bez poruch. Výjimka: u Apophisu jsou tři elementy doladěné tak, aby průlet 13. 4. 2029 vyšel na skutečný čas a vzdálenost (`tools/data/fit_apophis.mjs`); směr průletu je přibližný.
 - Fyzikální údaje těles: katalog Stellaria, doplněný a opravený (měsíce Pluta: Weaver et al. 2016, *Science* 351, aae0030; 2I/Borisov a 3I/ATLAS: JPL SBDB).
 - Hvězdy a souhvězdí: katalog jasných hvězd a čáry souhvězdí ze Stellaria (GPL v2+ / volná data).
