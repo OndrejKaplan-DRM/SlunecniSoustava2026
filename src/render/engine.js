@@ -81,6 +81,7 @@ const dec64 = (s, T) => {
   for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i);
   return new T(u.buffer);
 };
+const ORB_TH = [9, 0.95, 0.62, 0.48, 0.34, 0]; /* práh významu dráhy pro stupně 0–5 */
 const sstep = (a, b, x) => {
   const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
   return t * t * (3 - 2 * t);
@@ -95,7 +96,7 @@ export function createEngine(canvas, overlay) {
     focus: EARTH,
     sel: EARTH,
     hover: -1,
-    orbMode: 1,
+    orbMode: 2 /* 0 vypnuto, 1–5 stupně podle významu tělesa (viz ORB_TH) */,
     labMode: 1,
     realBright: false,
     disco: false,
@@ -1526,11 +1527,19 @@ export function createEngine(canvas, overlay) {
       const hot = i === fi || i === S.sel || i === S.hover || i === par[fi];
       let a = 0;
       if (S.orbMode > 0) {
-        if (p === SUN)
-          a = b.type === 'planet' || b.type === 'dwarf' ? 0.5 * nearK : hot ? 0.75 : S.orbMode === 2 ? 0.22 : 0;
-        else
-          a = (hot ? 0.75 : 0.42) * sstep(14, 40, apx) * (S.orbMode === 2 || root[i] === root[fi] || apx > 70 ? 1 : 0);
-        if (hot && p === SUN) a = Math.max(a, 0.8);
+        /* význam dráhy 0–1: velikost tělesa, blízkost Slunci, blízkost kameře; stupeň 1–5 určuje práh */
+        const th = ORB_TH[S.orbMode],
+          sizeK = Math.max(0, Math.min(1, (Math.log10(Math.max(b.R, 1)) - 0.5) / 4.3));
+        let sc;
+        if (p === SUN) {
+          const sunK = Math.max(0, Math.min(1, 1 - Math.log10(Math.max(semi[i] / AU, 0.3) / 0.3) / 2.52)),
+            camK = Math.max(0, Math.min(1, 1 - Math.log10(Math.max(r.dist / AU, 0.05) / 0.05) / 2.9));
+          sc = b.type === 'planet' ? 1 : 0.45 * sizeK + 0.25 * sunK + 0.3 * camK + (b.type === 'dwarf' ? 0.2 : 0);
+          a = hot ? 0.8 : sc >= th ? (b.type === 'planet' ? 0.5 * nearK : 0.2 + 0.25 * sc) : 0;
+        } else {
+          sc = (root[i] === root[fi] ? 0.35 : 0) + 0.4 * sizeK + 0.25 * sstep(40, 400, apx);
+          a = (hot ? 0.75 : sc >= th ? 0.26 + 0.2 * sc : 0) * sstep(14, 40, apx);
+        }
         a *= sstep(shape[i].rmax * 25, shape[i].rmax * 250, r.dist);
       }
       if (a < 0.015) {

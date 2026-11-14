@@ -478,8 +478,8 @@ export function createExtras(S, A, api) {
   mx.setTransform(d, 0, 0, d, 0, 0);
   const rad = (au) => (Math.log10(1 + au / 0.25) / Math.log10(1 + 60 / 0.25)) * (MS / 2 - 8);
   X.drawMini = () => {
-    if (!X.mini || document.hidden || !mc.offsetParent || document.body.classList.contains('cine'))
-      return; /* skrytá minimapa se nekreslí */
+    if (!X.mini || document.hidden || !mc.clientWidth || document.body.classList.contains('cine'))
+      return; /* skrytá minimapa se nekreslí (offsetParent je u position: fixed vždy null, proto šířka) */
     mx.clearRect(0, 0, MS, MS);
     const c = MS / 2;
     spots = [];

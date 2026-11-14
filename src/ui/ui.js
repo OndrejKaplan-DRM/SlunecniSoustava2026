@@ -121,6 +121,14 @@ const icoD = (i, dia) => {
 };
 const U = (y, m, d, h = 12, mi = 0) => Date.UTC(y, m - 1, d, h, mi) / 86400000 + 2440587.5;
 // stroj času: [popis, juliánské datum, těleso, výška v poloměrech]
+const ORB_LAB = [
+  'vypnuté',
+  'jen planety (1/5)',
+  'planety, velké měsíce a blízká tělesa (2/5)',
+  'i trpasličí planety a střední měsíce (3/5)',
+  'i malé měsíce a planetky poblíž (4/5)',
+  'všech těles (5/5)',
+];
 const EVENTS = [
   ['Úplné zatmění Slunce nad Španělskem (12. 8. 2026)', U(2026, 8, 12, 18, 0), 'earth', 4.5],
   ['Úplné zatmění Slunce nad Egyptem (2. 8. 2027)', U(2027, 8, 2, 10, 7), 'earth', 4.5],
@@ -944,7 +952,8 @@ export function createUI(S, A) {
     return v;
   };
   const setBtn = () => {
-    $('#b-orb').dataset.m = S.orbMode;
+    $('#b-orb').dataset.m = S.orbMode === 0 ? 0 : S.orbMode > 3 ? 2 : 1;
+    $('#b-orb').style.setProperty('--lv', S.orbMode);
     $('#b-lab').dataset.m = S.labMode;
     $('#b-lock').dataset.m = S.lock ? 1 : 0;
     $('#b-con').dataset.m = S.conMode > 1 ? 2 : S.conMode;
@@ -954,14 +963,14 @@ export function createUI(S, A) {
     $('#b-snd').firstChild.textContent = A.on ? '🔊' : '🔇';
     $('#b-mode').innerHTML = K() ? '🎓 <span>Dospělé</span>' : '🧒 <span>Dětské</span>';
     $('#gam').value = S.gamma;
-    $('#b-orb').title = 'Dráhy: ' + ['vypnuté', 'hlavní', 'všechny'][S.orbMode] + ' (O)';
+    $('#b-orb').title = 'Dráhy: ' + ORB_LAB[S.orbMode] + ' (O)';
     $('#b-lab').title = 'Popisky: ' + ['vypnuté', 'hlavní', 'všechny'][S.labMode] + ' (L)';
   };
   const act = {
     orb() {
-      S.orbMode = (S.orbMode + 1) % 3;
-      A.play(['orbit_off', 'orbit_on', 'orbit_all'][S.orbMode]);
-      toast('Dráhy: ' + ['vypnuté', 'planety a blízké měsíce', 'všech těles'][S.orbMode]);
+      S.orbMode = (S.orbMode + 1) % 6;
+      A.play(['orbit_off', 'orbit_on', 'orbit_on', 'orbit_on', 'orbit_all', 'orbit_all'][S.orbMode]);
+      toast('Dráhy: ' + ORB_LAB[S.orbMode]);
     },
     lab() {
       S.labMode = (S.labMode + 1) % 3;
@@ -1095,7 +1104,7 @@ export function createUI(S, A) {
     },
     disco() {
       S.disco = !S.disco;
-      S.orbMode = S.disco ? 2 : 1;
+      S.orbMode = S.disco ? 5 : 2;
       A.play('disco');
       toast(S.disco ? '🪩 Disko ve Sluneční soustavě! (Stejný kód ho zase vypne.)' : 'Disko skončilo.');
     },

@@ -120,9 +120,9 @@ export function createTutorial(S, A, ui) {
     },
     async orbits() {
       await say(
-        'Tlačítko Dráhy (klávesa O): vypnuté → hlavní → dráhy všech těles.',
+        'Tlačítko Dráhy (klávesa O): pět stupňů, od planet po dráhy všech těles.',
         'Čáry ukazují, kudy tělesa létají. Tlačítkem Dráhy je schováš, nebo ukážeš úplně všechny!',
-        'Dráhy najdeš v nabídce ☰ vpravo nahoře: vypnuté → hlavní → dráhy všech těles.',
+        'Dráhy najdeš v nabídce ☰ vpravo nahoře: pět stupňů, od planet po dráhy všech těles.',
         'Čáry ukazují, kudy tělesa létají. V nabídce ☰ je schováš, nebo ukážeš úplně všechny!'
       );
       S.zoom(pick([40, 400, 3000]));
@@ -340,7 +340,7 @@ export function createTutorial(S, A, ui) {
     if (run === me) run = null;
     S.conMode = 0;
     S.starNames = false;
-    S.orbMode = 1;
+    S.orbMode = 2;
     S.labMode = 1;
     S.rateIdx = 1;
     S.paused = false;
