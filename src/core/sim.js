@@ -219,11 +219,24 @@ export const ttOf = (jd) => jd + deltaT(jd) / 86400;
 const _t = [0, 0, 0],
   _mw = [0, 0, 0],
   EMR1 = 82.30057; // 1 + hmotnost Země / hmotnost Měsíce
+/* Elementy pro událost: dráha komety se mezi návraty mění (poruchy planet). Karta úkazu si na dobu ukázky půjčí
+   elementy daného návratu (JPL Horizons): setEl(index, {q, e, i, O, w, Tp}); setEl(index, null) vrátí katalog. */
+const elOv = new Map();
+export function setEl(i, el) {
+  if (el) elOv.set(i, el);
+  else elOv.delete(i);
+}
 // jd je světový čas (UT) – stejný, jaký ukazuje aplikace; polohy se počítají v čase efemerid
 export function local(i, jdUT, out, o = 0) {
   const k = B[i].orbit.kind,
     jd = ttOf(jdUT);
-  if (i === MOON) moonGeo(jd, _t);
+  const ov = elOv.get(i);
+  if (ov) {
+    conicPos(ov.q, ov.e, ov.i, ov.O, ov.w, ov.Tp, jd, _t);
+    _t[0] *= AU;
+    _t[1] *= AU;
+    _t[2] *= AU;
+  } else if (i === MOON) moonGeo(jd, _t);
   else {
     E.local(i, jd, _t);
     if (k === 'jpl' || k === 'kep') {

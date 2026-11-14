@@ -32,7 +32,7 @@ export const BODY_FS = /* glsl */ `
 #include <common>
 #include <logdepthbuf_pars_fragment>
 uniform sampler2D tMap; uniform sampler2D tAux; uniform sampler2D tRing; uniform sampler2D tHi; uniform float uHi;
-uniform float uHasMap; uniform float uHasAux; uniform float uKind; uniform float uDet; uniform float uSeed; uniform float uFill; uniform float uGam;
+uniform float uHasMap; uniform float uHasAux; uniform float uCity; uniform float uRed; uniform float uKind; uniform float uDet; uniform float uSeed; uniform float uFill; uniform float uGam;
 uniform float uAtmK; uniform float uSunR; uniform float uRad; uniform float uTime;
 uniform vec3 uCol; uniform vec3 uSun; uniform vec3 uAtmCol; uniform vec3 uPole; uniform vec3 uCtr; uniform vec3 uRingSh; uniform mat3 uRot;
 uniform vec4 uOcc[4]; uniform vec4 uAur; uniform vec3 uAurC; uniform vec3 uAurP; uniform float uExp;
@@ -69,11 +69,12 @@ void main(){
     alb = mix(alb, vec3(0.93), cl * 0.92);
     alb = mix(alb, vec3(0.35, 0.55, 1.0), pow(1.0 - mu, 2.5) * 0.55);
     add += vec3(1.0, 0.92, 0.8) * sp * sh * step(0.0, mu0);
-    add += vec3(1.0, 0.72, 0.38) * aux0.b * aux0.b * smoothstep(0.08, -0.14, mu0) * (1.0 - cl * 0.7) * 0.9;
+    add += vec3(1.0, 0.72, 0.38) * aux0.b * aux0.b * smoothstep(0.08, -0.14, mu0) * (1.0 - cl * 0.7) * 0.9 * uCity;
     alb *= mix(vec3(1.0, 0.55, 0.35), vec3(1.0), smoothstep(-0.02, 0.28, mu0));
   } else if (uKind > 1.5 && uKind < 2.5) { lit = clamp((mu0 + 0.07) / 1.07, 0.0, 1.0) * (0.72 + 0.28 * pow(mu, 0.45)); }
   else { float ls = 2.0 * m0 / (m0 + mu + 0.03); lit = mix(m0, min(ls, 1.5) * 0.62, 0.6) * step(0.0, mu0); }
   vec3 col = alb * (lit * sh * uExp + uFill) + add * uExp;
+  col += alb * vec3(0.5, 0.13, 0.05) * lit * (1.0 - sh) * uRed * uExp; /* zatmění Měsíce: světlo lomené zemskou atmosférou barví stín do měděna */
   if (uAur.x > 0.0) { // polární záře: ovál kolem magnetického pólu, záclony ze šumu
     vec3 mp = uAurP; float cl2 = acos(clamp(abs(dot(o, mp)), 0.0, 1.0)), ring = exp(-pow((cl2 - uAur.y) / uAur.z, 2.0));
     float cur = 0.35 + 0.65 * vn(vec3(atan(o.y, o.x) * 9.0, uSeed + uTime * 300.0 + uAur.w, cl2 * 30.0)); col += uAurC * ring * cur * uAur.x * mix(1.0, smoothstep(0.12, -0.18, mu0), step(3.5, uKind)); }

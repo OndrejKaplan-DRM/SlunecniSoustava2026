@@ -707,7 +707,9 @@ export function createAudio(S) {
     BUF[id]
       ? Promise.resolve(BUF[id])
       : LOADING[id] ||
-        (LOADING[id] = (PRE[id] || fetch(AS('zvuky/' + id + '.mp3')).then((r) => (r.ok ? r.arrayBuffer() : Promise.reject())))
+        (LOADING[id] = (
+          PRE[id] || fetch(AS('zvuky/' + id + '.mp3')).then((r) => (r.ok ? r.arrayBuffer() : Promise.reject()))
+        )
           .then((a) => new Promise((ok, no) => A.ctx.decodeAudioData(a, ok, no)))
           .then((b) => (BUF[id] = b))
           .catch(() => {
@@ -1028,6 +1030,7 @@ export function createAudio(S) {
     };
   }
   // průběžně: prostředí podle tělesa a blízkosti, svist času, šum letu
+  const hab = { i: -1, t: 0, k: 1, last: performance.now() };
   setInterval(() => {
     if (!A.ctx || A.ctx.state !== 'running') return;
     const c = A.ctx,
@@ -1076,7 +1079,21 @@ export function createAudio(S) {
       MU.bgm = true;
     } else if (MU.slot && !(fly && A.music) && !(th0 && MU.slot === th0)) muStop();
     muTick(t);
-    if (amb) amb.g.gain.setTargetAtTime(near * (myst || theme ? 0.2 : MU.slot ? 0.42 : 0.6), t, 0.6);
+    /* „Vibe“ tělesa: se zoomem sílí (strměji než dřív), ale po asi 25 s zblízka se během dalších 20 s stáhne na desetinu,
+       aby varovné bručení (Venuše, Jupiter) zůstalo znát a neodhánělo. Po odletu nebo oddálení se sluch „zotaví“. */
+    if (i !== hab.i) {
+      hab.i = i;
+      hab.t = 0;
+    }
+    const tNow = performance.now(),
+      dtH = Math.min(1, (tNow - hab.last) / 1000);
+    hab.last = tNow;
+    if (!fly && near > 0.45) hab.t += dtH;
+    else hab.t = Math.max(0, hab.t - dtH * 2);
+    hab.k = hab.t < 25 ? 1 : Math.max(0.1, 1 - (0.9 * (hab.t - 25)) / 20);
+    A.hab = hab;
+    if (amb)
+      amb.g.gain.setTargetAtTime(Math.pow(near, 1.6) * hab.k * (myst || theme ? 0.2 : MU.slot ? 0.42 : 0.6), t, 0.6);
     if (!whirr) {
       const o = c.createOscillator(),
         o2 = c.createOscillator(),

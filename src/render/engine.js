@@ -13,6 +13,7 @@ import {
   root,
   SUN,
   EARTH,
+  MOON,
   AU,
   updateAll,
   local,
@@ -637,6 +638,8 @@ export function createEngine(canvas, overlay) {
       tHi: { value: blank },
       uHi: { value: 0 },
       tAux: { value: blank },
+      uCity: { value: 1 },
+      uRed: { value: i === MOON ? 1 : 0 },
       tRing: { value: blank },
       uHasMap: { value: 0 },
       uHasAux: { value: 0 },
@@ -1396,7 +1399,12 @@ export function createEngine(canvas, overlay) {
                 ? Math.min(1, (pr - th) / (th * 1.5)) * (kindOf(b) === 2 || i === EARTH ? 0.25 : 1)
                 : 0;
           }
-          if (i === EARTH) U.uTime.value = ((S.jd - 2451545) * 0.02) % 1;
+          if (i === EARTH) {
+            U.uTime.value = ((S.jd - 2451545) * 0.02) % 1;
+            /* noční světla měst: elektrické osvětlení je z vesmíru znát zhruba od 80. let 19. století; dřív je noční strana tmavá.
+               Do budoucnosti je necháváme, jaká jsou dnes – nevíme, jak bude vypadat. */
+            U.uCity.value = Math.max(0, Math.min(1, (2000 + (S.jd - 2451545) / 365.25 - 1880) / 80));
+          }
         } else {
           U.uTime.value = (now * 0.00002) % 100;
           U.uMode.value = S.sunMode;

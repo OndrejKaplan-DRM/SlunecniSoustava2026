@@ -53,8 +53,14 @@ const res = await page.evaluate(async () => {
   return { p0, p1: S.progs(), out };
 });
 const ok =
-  mono && log[log.length - 1] === 100 && late[0] === false && late[1] === 100 && res.out.every((o) => o.texPriKliku === 2 && o.noveProgramy === 0);
-console.log(JSON.stringify({ ok, tReady, kroku: log.length, mono, konec: log[log.length - 1], pozdni: late, ...res }, null, 1));
+  mono &&
+  log[log.length - 1] === 100 &&
+  late[0] === false &&
+  late[1] === 100 &&
+  res.out.every((o) => o.texPriKliku === 2 && o.noveProgramy === 0);
+console.log(
+  JSON.stringify({ ok, tReady, kroku: log.length, mono, konec: log[log.length - 1], pozdni: late, ...res }, null, 1)
+);
 console.log(errs.slice(0, 8).join('\n') || 'bez chyb');
 await browser.close();
 srv.close();

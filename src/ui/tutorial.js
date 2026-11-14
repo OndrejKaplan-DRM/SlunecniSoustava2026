@@ -324,9 +324,9 @@ export function createTutorial(S, A, ui) {
       }
       head();
       await say(
-        'Hotovo. Klávesa H ukáže nápovědu a ukázku pustí znovu. Hodně objevů!',
+        'Hotovo. Klávesa H ukáže nápovědu a ukázku pustí znovu. Tip: v nabídce ☰ čekají 🔭 Úkazy na obloze – zatmění, komety a supernovy z dějin.',
         'A teď ty, kapitáne! Nahoře čeká hádanka. Kdybys nevěděl, zmáčkni H. 🚀',
-        'Hotovo. Tlačítko ? ukáže nápovědu, ukázku pustíš znovu z nabídky ☰. Hodně objevů!',
+        'Hotovo. Tlačítko ? ukáže nápovědu, ukázku pustíš znovu z nabídky ☰. Tip: najdeš tam i 🔭 Úkazy na obloze.',
         'A teď ty, kapitáne! 🎯 ti ukáže hádanku. Kdybys nevěděl, ťukni na ?. 🚀'
       );
       A.play('tut_end');

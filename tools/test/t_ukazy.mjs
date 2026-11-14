@@ -54,7 +54,7 @@ await w(600);
 await tap('#more [data-a="uk"]');
 await w(900);
 await shot('1seznam');
-await tap('#uk-list button[data-k="0"]');
+await tap('#uk-list button[data-id="s1415"]');
 await w(900);
 await shot('2karta');
 await page.evaluate(() => S200.S.setGamma(1));

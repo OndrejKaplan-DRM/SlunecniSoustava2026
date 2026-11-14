@@ -1527,6 +1527,7 @@ export function createUI(S, A) {
           : 'Mimo roky 1000 př. n. l. až 3000 n. l. jsou polohy těles jen přibližné – model je ověřený pro toto období.',
         7000
       );
+    if (o !== outRange) document.body.classList.toggle('oor', o);
     outRange = o;
   });
   S.ticks.push((dt) => {
@@ -1822,7 +1823,8 @@ export function createUI(S, A) {
      Lišta má pevný seznam úloh, takže necouvá; co přibude později, běží „v klidu“ mimo lištu (viz core/preload.js). */
   const PL = createPreload(),
     sndIds = A.firstSounds();
-  for (const i of dockIds) PL.add(B[i].cs, i === SUN || i === EARTH || i === idx.get('moon') ? 3 : 2, () => S.warmTex(i), 0);
+  for (const i of dockIds)
+    PL.add(B[i].cs, i === SUN || i === EARTH || i === idx.get('moon') ? 3 : 2, () => S.warmTex(i), 0);
   PL.add('zvuky', 3, () => A.prefetch(sndIds), 0, 6000);
   PL.add('shadery', 12, () => S.warmGPU(), 1, 15000);
   PL.onProgress((p, label, ok) => {
