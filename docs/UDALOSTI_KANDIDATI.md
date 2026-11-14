@@ -188,3 +188,10 @@ npx esbuild tools/test/probe_kandidati.mjs --bundle --platform=node --format=esm
 python3 -I tools/model/besel.py /tmp/nasa/bess.csv tools/data/kandidati.json   # Praha z Besselových elementů
 node /tmp/k.mjs --json /tmp/kAll.json && python3 tools/data/kandidati_tabulka.py                 # body a výběr 60
 ```
+
+## Stav karet v aplikaci (14. 11. 2026, větev `iterace-15`)
+- V aplikaci je 32 karet (`src/data/udalosti.json`, sestavuje `tools/data/udalosti_build.py` z `tools/data/kandidati_model.json` a `kandidati.json`).
+- Ze schválených 30 je hotovo 29; chybí Kirchova kometa 1680 (řešič skoro parabolické dráhy v `src/core/ephem.js` dává v přísluní 0,0084 AU místo 0,0062 AU).
+- Navíc: zatmění 2026 (Burgos), 2027 (Luxor) a konjunkce Mars–Jupiter 16. 11. 2026 (model 1,193° ve 2:13 UT, přehledy 1,193° ve 2:04 UT).
+- Místní okolnosti zatmění: `tools/model/besel_misto.py` (Halys 39,9° s. š., 34,0° v. d.: 96,6 %; Londýn 1715: úplné 9:05:52–9:09:13 UT; Guntúr 1868: úplné 4:08:15–4:13:59 UT).
+- Historky na kartách (perličky) jsou psané z paměti a čekají na ověření proti pramenům; čísla úkazů jsou z katalogů.

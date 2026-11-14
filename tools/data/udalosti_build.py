@@ -1,8 +1,8 @@
 # Sestaví src/data/udalosti.json: ponechá ručně psaná zatmění Slunce (první verze) a přidá ostatní karty.
 # Časy (jd, UT) a čísla „model“ bere z výstupu tools/test/probe_kandidati.mjs (--json), hodnoty „pramen“ z tools/data/kandidati.json.
-# Spuštění: python3 -I tools/data/udalosti_build.py /tmp/kAll.json
+# Spuštění: python3 -I tools/data/udalosti_build.py [tools/data/kandidati_model.json]
 import json, math, sys
-K = {e['id']: e for e in json.load(open(sys.argv[1]))}
+K = {e["id"]: e for e in json.load(open(sys.argv[1] if len(sys.argv) > 1 else "tools/data/kandidati_model.json"))}
 C = {e['id']: e for e in json.load(open('tools/data/kandidati.json'))}
 OLD = [e for e in json.load(open('src/data/udalosti.json')) if e['id'] in ('s1415', 's1706', 's1919', 's1999', 's2026', 's2027', 's2135')]
 MES = 'ledna února března dubna května června července srpna září října listopadu prosince'.split()
