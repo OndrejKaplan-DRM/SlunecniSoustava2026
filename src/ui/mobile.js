@@ -41,7 +41,15 @@ export function createMobile(S, A, ui) {
     M.touch = (coarse && f !== 'pc') || f === 'tab';
     /* velká obrazovka (4K televize, tabule bez zvětšení v systému): rozhraní se zvětší, aby bylo čitelné z dálky */
     M.big = f === 'big' || (f === 'auto' && !M.mob && w >= 2400);
-    const bk = !M.big ? 1 : f === 'big' ? Math.min(2.4, Math.max(1.25, w / 1500)) : Math.min(2.2, w / 1750);
+    /* 1.5: má-li systém vlastní zvětšení (4K monitor na 150 %), je rozhraní už zvětšené – přidává se jen mírně */
+    const dpr = window.devicePixelRatio || 1;
+    const bk = !M.big
+      ? 1
+      : f === 'big'
+        ? Math.min(2.4, Math.max(1.25, w / 1500))
+        : dpr >= 1.4
+          ? Math.min(1.6, Math.max(1, w / 2100))
+          : Math.min(2.2, w / 1750);
     B.classList.toggle('big', M.big);
     B.style.setProperty('--bk', bk.toFixed(2));
     S.txtK = bk;

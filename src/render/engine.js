@@ -88,7 +88,7 @@ const sstep = (a, b, x) => {
   return t * t * (3 - 2 * t);
 };
 
-const CON_LV = [0, 1, 3, 4];
+const CON_LV = [0, 1, 2.4, 4]; /* 1.5: stupeň 2 je tenčí a o něco slabší než plný stupeň 3 */
 export function createEngine(canvas, overlay) {
   const S = {
     jd: jdNow(),
@@ -1603,6 +1603,11 @@ export function createEngine(canvas, overlay) {
         });
       }
       conMat.cu.uLv.value = conLv;
+      /* 1.5: na stupni 2 (čáry bez jmen) je čára tenká – lem z posunutých kopií skoro zmizí; stupeň 3 zůstává plný */
+      {
+        const ft = S.conMode === 2 ? 0.025 : 0.13;
+        for (const m of conMat.fringe) m.uniforms.uFr.value += (ft - m.uniforms.uFr.value) * 0.15;
+      }
       conMat.cu.uA.value = 0.5 + S.gamma * 0.25;
       conMat.cu.uKid.value = S.kid ? 1 : 0;
       conMat.cu.uG.value = g;

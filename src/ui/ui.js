@@ -765,7 +765,7 @@ export function createUI(S, A) {
     const r = root[S.focus],
       all = r === SUN ? [] : [r, ...[...kids[r]].sort((a, b) => semi[a] - semi[b])],
       /* dětské rozhraní: jen známé a větší měsíce (a ten, u kterého právě jsme); ostatní zůstávají v seznamu Všechna */
-      ks = K() ? all.filter((j) => j === r || j === S.focus || j === S.sel || B[j].fame >= 3 || B[j].R >= 200) : all;
+      ks = K() ? all.filter((j) => j === r || j === S.focus || j === S.sel || B[j].fame >= 4 || B[j].R >= 200) : all;
     const e = $('#sub');
     if (ks.length < 2) {
       e.style.display = 'none';
