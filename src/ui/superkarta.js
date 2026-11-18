@@ -394,6 +394,18 @@ export function createSuperkarta(S, A, ui) {
     ui.toggle('#sk', true);
     return true;
   }
+  /* 1.6: Superkarta je překvapení, ale zakrývá hlavní pohled – zmizí po kliknutí kamkoli mimo ni i při výběru jiného tělesa */
+  const skOn = () => $('#sk').classList.contains('on');
+  document.addEventListener(
+    'pointerdown',
+    (ev) => {
+      if (skOn() && !ev.target.closest('#sk')) ui.toggle('#sk', false);
+    },
+    true
+  );
+  S.bus.on('card', (i) => {
+    if (skOn() && i >= 0 && i !== cur) ui.toggle('#sk', false);
+  });
   $('#sk').addEventListener('click', (ev) => {
     const a = ev.target.closest('[data-sk]'),
       f = ev.target.closest('[data-fly]');

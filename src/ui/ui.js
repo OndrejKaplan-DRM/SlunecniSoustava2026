@@ -100,6 +100,7 @@ const SIZES = [
   [600, 'jako Česká republika'],
   [1800, 'jako střední Evropa'],
   [6000, 'jako celá Evropa'],
+  [9000, 'asi jako půl Země'],
   [16000, 'podobně jako Země'],
 ];
 const sizeLike = (D) => (SIZES.find((x) => D < x[0]) || [0, nf(D / 12742, 1) + '× větší než Země'])[1];
@@ -607,7 +608,7 @@ export function createUI(S, A) {
       ];
     const sunBox =
       i === SUN
-        ? `<div class="sunf"><button data-a="sunf" class="pri">🔆 Filtr: ${SUNN[S.sunMode]} (V)</button><p>${SUNF[S.sunMode]} <small>Skvrny a erupce jsou ilustrace: poloha podle aktivních oblastí snímku SDO, ne dnešní stav.</small></p></div>`
+        ? `<div class="sunf"><button data-a="sunf" class="pri">🔆 Filtr: ${SUNN[S.sunMode]} (V)</button><p>${SUNF[S.sunMode]} <small>Skvrny a erupce jsou ilustrace: poloha podle aktivních oblastí snímku SDO, ne dnešní stav.</small></p><p class="sunw">${K() ? '⚪ <b>Víš, že Slunce je bílé?</b> Z vesmíru svítí čistě bíle, protože v jeho světle jsou všechny barvy duhy dohromady. Žluté ho vidíme jen ze Země: vzduch rozhází modré světlo po celé obloze (proto je nebe modré) a k nám od Slunce dojde víc žluté. Při západu letí světlo vzduchem nejdelší cestou, a tak je Slunce oranžové až červené.' : '⚪ <b>Skutečná barva Slunce je bílá.</b> Vyzařuje všechny barvy viditelného světla v podobné míře, takže mimo atmosféru se jeví jako bílé. Ze Země vypadá nažloutle, protože vzduch rozptyluje krátké vlnové délky (modrou) do všech směrů – Rayleighův rozptyl, proto je obloha modrá – a v přímém svazku jich ubude. U obzoru prochází světlo delší dráhou vzduchem, proto je Slunce oranžové až červené. Žlutooranžový odstín v tomto modelu je zavedená kreslířská konvence, ne skutečná barva.'}</p></div>`
         : '';
     const fx = factsOf(b, { moons: MOONS[b.id], sunAU: inf.sun / AU, isSun: i === SUN }),
       ib = fx.length
@@ -737,6 +738,7 @@ export function createUI(S, A) {
   S.on.arrive = (i) => {
     drawCard(S.sel);
     A.play('arrive');
+    if (K() && api.X) api.X.burst(false); /* 1.6: kružnice od tělesa při každém příletu v dětském rozhraní */
     if (api.onArrive) api.onArrive(i);
     const from = flyFrom;
     flyFrom = -1;
@@ -765,7 +767,11 @@ export function createUI(S, A) {
     const r = root[S.focus],
       all = r === SUN ? [] : [r, ...[...kids[r]].sort((a, b) => semi[a] - semi[b])],
       /* dětské rozhraní: jen známé a větší měsíce (a ten, u kterého právě jsme); ostatní zůstávají v seznamu Všechna */
-      ks = K() ? all.filter((j) => j === r || j === S.focus || j === S.sel || B[j].fame >= 4 || B[j].R >= 200) : all;
+      ks = K()
+        ? all.filter(
+            (j) => j === r || j === S.focus || j === S.sel || B[j].fame >= 4 || B[j].R >= 200 || B[j].mk === 'foto'
+          )
+        : all;
     const e = $('#sub');
     if (ks.length < 2) {
       e.style.display = 'none';
@@ -814,7 +820,7 @@ export function createUI(S, A) {
         xs
           .map(
             (i) =>
-              `<button class="it li ${G.seen[B[i].id] ? 'seen' : ''}" data-i="${i}"><b>${ico(i, 28)}</b><span>${B[i].cs}${B[i].type === 'moon' ? ` <small>${B[par[i]].cs}</small>` : ''}</span></button>`
+              `<button class="it li ${G.seen[B[i].id] ? 'seen' : ''}" data-i="${i}"><b>${ico(i, 28, 26)}</b><span>${B[i].cs}${B[i].type === 'moon' ? ` <small>${B[par[i]].cs}</small>` : ''}</span></button>`
           )
           .join('');
     }
@@ -1049,6 +1055,7 @@ export function createUI(S, A) {
       toggle('#uk');
     },
     tm() {
+      if (K()) return; /* 1.6: Stroj času jen v rozhraní pro dospělé */
       if (toggle('#tm'))
         $('#tm-list').innerHTML =
           `<button data-e="-1" class="pri">⟲ Zpět do současnosti</button>` +
@@ -1231,6 +1238,7 @@ export function createUI(S, A) {
       }
       S.realBright = false;
     }
+    if (k && $('#tm').classList.contains('on')) toggle('#tm', false);
     S.bus.emit('mode', k);
     $('#top h1').innerHTML = k ? '🚀 Vesmírná výprava <small>200</small>' : 'Sluneční soustava <small>200</small>';
     A.play(k ? 'mode_kid' : 'mode_adult');
@@ -1835,20 +1843,23 @@ export function createUI(S, A) {
   $('#sndn').textContent = A.count;
   const sp = $('#splash'),
     spMode = () => {
-      $('#sp-adult').classList.toggle('sel', !G.kid);
-      $('#sp-kid').classList.toggle('sel', G.kid);
+      $('#sp-adult').classList.toggle('sel', !spWant);
+      $('#sp-kid').classList.toggle('sel', spWant);
     };
+  /* 1.6: úvod má vždy stejný (dospělý) vzhled; volba rozhraní se jen označí a použije se až při startu */
+  let spWant = G.kid;
   spMode();
   $('#sp-adult').onclick = () => {
     A.unlock();
-    setMode(false);
+    spWant = false;
     spMode();
   };
   $('#sp-kid').onclick = () => {
     A.unlock();
-    setMode(true);
+    spWant = true;
     spMode();
   };
+  $('#sp-fs').onclick = () => act.full();
   /* Přednačtení: tělesa z dolní lišty (tam uživatel i ukázka míří nejdřív), jejich mapy, shadery a první zvuky.
      Lišta má pevný seznam úloh, takže necouvá; co přibude později, běží „v klidu“ mimo lištu (viz core/preload.js). */
   /* Chytré načítání (verze 1.4): povinná vrstva jako dosud, k ní podle třídy zařízení a změřené rychlosti bonus –
@@ -1956,6 +1967,7 @@ export function createUI(S, A) {
   /* Start počká na dokončení přípravy (nejdéle 9 s), aby ukázka neškobrtla o první překlad shaderu. */
   /* Úvod je čistý: jen Země, která se pomalu otáčí; rozhraní se rozsvítí až po startu. */
   document.body.classList.add('spl');
+  document.body.classList.remove('kid');
   S.ticks.push((dt) => {
     if (sp.classList.contains('on') && !S.cam.fly) {
       S.rotate(-5 * dt, 0);
@@ -1974,6 +1986,8 @@ export function createUI(S, A) {
       going = false;
       sp.classList.remove('on');
       document.body.classList.remove('spl');
+      if (spWant !== G.kid) setMode(spWant);
+      else document.body.classList.toggle('kid', G.kid);
       fn();
     });
   };

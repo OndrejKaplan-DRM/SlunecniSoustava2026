@@ -683,6 +683,7 @@ export function createUdalosti(S, A, ui) {
     vis = () => U.filter((e) => inGrp(e, filt));
   function draw() {
     const e = cur;
+    if (e && !mini) ukTouch = performance.now();
     card.classList.toggle('on', !!e);
     card.classList.toggle('min', !!e && mini);
     document.body.classList.toggle('ukon', !!e && !mini);
@@ -1039,6 +1040,21 @@ export function createUdalosti(S, A, ui) {
     draw();
     ui.toggle('#uk', false);
   });
+  /* 1.6: karta úkazu uvolní zorné pole sama – sbalí se do proužku po 2 minutách bez dotyku a hned při kliknutí na jiné těleso */
+  let ukTouch = performance.now();
+  for (const ev of ['pointerdown', 'wheel', 'pointermove'])
+    card.addEventListener(ev, () => (ukTouch = performance.now()), { passive: true });
+  const ukMin = () => {
+    if (cur && !mini) {
+      mini = true;
+      draw();
+    }
+  };
+  S.bus.on('tap', ukMin);
+  setInterval(() => {
+    if (!cur || mini) ukTouch = performance.now();
+    else if (performance.now() - ukTouch > 120000) ukMin();
+  }, 5000);
   return {
     open: () => {
       /* seznam a karta se nepřekrývají: otevřená karta se při otevření seznamu sbalí do proužku */

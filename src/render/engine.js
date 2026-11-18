@@ -102,6 +102,7 @@ export function createEngine(canvas, overlay) {
     realBright: false,
     disco: false,
     conMode: 0,
+    poleFx: 0 /* 1 → 0: probliknutí planet a drah při pohledu přesně shora nebo zdola */,
     starNames: false,
     sunMode: 0,
     lock: false,
@@ -1058,7 +1059,9 @@ export function createEngine(canvas, overlay) {
     arriveAlt = (i) => shape[i].rmax * (RINGS[B[i].id] && B[i].id === 'saturn' ? 6.5 : i === SUN ? 4 : 3.4);
   const dirOf = (yaw, pitch, out) =>
     out.set(Math.cos(pitch) * Math.cos(yaw), Math.sin(pitch), Math.cos(pitch) * Math.sin(yaw));
-  let lastInput = performance.now();
+  let lastInput = performance.now(),
+    poleIn = false,
+    poleD = -1;
   const wake = () => {
     lastInput = performance.now();
   };
@@ -1134,8 +1137,16 @@ export function createEngine(canvas, overlay) {
   S.rotate = (dx, dy) => {
     const i = S.focus,
       k = Math.min(0.005, (cam.alt / shape[i].rmax) * ((2 * Math.tan((FOV * DEG) / 2)) / H));
-    cam.yaw += dx * k;
-    cam.pitch = Math.min(1.553, Math.max(-1.553, cam.pitch + dy * k));
+    /* 1.6: dětské rozhraní se zastaví nad pólem (kvůli orientaci); dospělé se otáčí volně i přes pól */
+    if (S.kid) {
+      cam.yaw += dx * k;
+      cam.pitch = Math.min(1.553, Math.max(-1.553, cam.pitch + dy * k));
+    } else {
+      cam.yaw += dx * k * (Math.cos(cam.pitch) < 0 ? -1 : 1);
+      cam.pitch += dy * k;
+      if (cam.pitch > Math.PI) cam.pitch -= 2 * Math.PI;
+      else if (cam.pitch < -Math.PI) cam.pitch += 2 * Math.PI;
+    }
     wake();
   };
   S.look = (dx, dy) => {
@@ -1184,14 +1195,41 @@ export function createEngine(canvas, overlay) {
       cam.pitch = Math.asin(Math.max(-1, Math.min(1, dv.y)));
       cam.yaw = Math.atan2(dv.z, dv.x);
     }
+    if ((S.kid || S.lock) && Math.cos(cam.pitch) < 0) {
+      /* návrat z polohy „přes pól“ do běžného rozsahu (dětské rozhraní, zámek na povrch) */
+      cam.pitch = Math.sign(cam.pitch) * (Math.PI - Math.abs(cam.pitch));
+      cam.yaw += Math.PI;
+    }
+    if (S.kid) cam.pitch = Math.min(1.553, Math.max(-1.553, cam.pitch));
+    {
+      /* pohled přesně shora nebo zdola: jemné probliknutí planet a jejich drah (pokus, verze 1.6) */
+      const sd = Math.abs(cam.pitch) - Math.PI / 2,
+        pd = Math.abs(sd),
+        crossed = sd * poleD < 0 && Math.abs(sd - poleD) < 1.2; /* přelet přes pól mezi dvěma snímky */
+      poleD = sd;
+      if (pd < 0.035 || crossed) {
+        if ((!poleIn || crossed) && !fl) {
+          poleIn = true;
+          S.poleFx = 1;
+        }
+      } else if (pd > 0.09) poleIn = false;
+      if (S.poleFx > 0) {
+        S.poleFx *= Math.exp(-dt * 1.5);
+        if (S.poleFx < 0.02) S.poleFx = 0;
+        else wake();
+      }
+    }
     dirOf(cam.yaw, cam.pitch, dv);
+    const flipY = Math.cos(cam.pitch) < 0 ? -1 : 1,
+      rYx = Math.sin(cam.yaw),
+      rYz = -Math.cos(cam.yaw);
     const dist = shape[i].rmax + cam.alt,
       C = S.camPos;
     C[0] = P[i * 3] + dv.x * dist;
     C[1] = P[i * 3 + 1] + dv.y * dist;
     C[2] = P[i * 3 + 2] + dv.z * dist;
     fwd.copy(dv).negate();
-    right.crossVectors(fwd, Y).normalize();
+    right.set(rYx, 0, rYz); /* = (fwd × Y) se znaménkem podle strany pólu; plynulé i přesně nad pólem */
     up.crossVectors(right, fwd);
     if (cam.ly || cam.lp) {
       const cl = Math.cos(cam.lp);
@@ -1207,8 +1245,8 @@ export function createEngine(canvas, overlay) {
       fwd.lerp(tmp, blend).normalize();
       if (fwd.lengthSq() < 0.5) fwd.copy(tmp);
     }
-    if (Math.abs(fwd.y) > 0.9995) right.set(1, 0, 0);
-    else right.crossVectors(fwd, Y).normalize();
+    if (Math.abs(fwd.y) > 0.9995) right.set(rYx, 0, rYz);
+    else right.crossVectors(fwd, Y).normalize().multiplyScalar(flipY);
     up.crossVectors(right, fwd).normalize();
     if (fl && fl.ph === 0 && fl.t >= 1) {
       // přepnutí středu: kamera zůstává na místě, dál se přibližuje k novému tělesu
@@ -1552,6 +1590,7 @@ export function createEngine(canvas, overlay) {
         }
         a *= sstep(shape[i].rmax * 25, shape[i].rmax * 250, r.dist);
       }
+      if (S.poleFx > 0 && b.type === 'planet') a = Math.max(a, 0.9 * S.poleFx);
       if (a < 0.015) {
         if (r.orbit) r.orbit.line.visible = false;
         continue;

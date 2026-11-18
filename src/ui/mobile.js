@@ -67,9 +67,13 @@ export function createMobile(S, A, ui) {
       if (clash()) B.classList.add('stack');
     }
     S.pickR = M.touch ? 24 : 12;
-    $('#b-view').textContent =
-      '📱 Zobrazení: ' +
-      { auto: 'automaticky', mob: 'telefon', tab: 'tablet', pc: 'počítač', big: 'velká obrazovka' }[f];
+    {
+      /* 1.6: položka říká, co platí TEĎ a kdo to určil; klik přepne na další možnost */
+      const ted = M.mob ? 'telefon' : M.tab ? 'tablet' : M.big ? 'velká obrazovka' : 'počítač';
+      $('#b-view').textContent = `🖥 Rozložení: ${ted} (${f === 'auto' ? 'auto' : 'ručně'}) · změnit`;
+      $('#b-view').title =
+        'Ukazuje rozložení, které právě platí. Kliknutím přepneš na další: automaticky → telefon → tablet → počítač → velká obrazovka.';
+    }
     dock();
     if (!M.mob && !M.tab) {
       card.classList.remove('gone', 'open');
@@ -205,16 +209,17 @@ export function createMobile(S, A, ui) {
     }
     $('#more').classList.remove('on');
     layout();
-    ui.toast(
-      'Zobrazení: ' +
-        {
+    {
+      const o2 = ['auto', 'mob', 'tab', 'pc', 'big'],
+        nm = {
           auto: 'automaticky podle zařízení',
           mob: 'telefon',
           tab: 'tablet',
           pc: 'počítač',
           big: 'velká obrazovka (televize, tabule)',
-        }[M.force]
-    );
+        };
+      ui.toast(`Rozložení teď: ${nm[M.force]}. Další klik: ${nm[o2[(o2.indexOf(M.force) + 1) % o2.length]]}.`);
+    }
   });
   for (const s of ['#sp-go', '#sp-tut'])
     $(s).addEventListener('click', () => {

@@ -450,6 +450,21 @@ export function createExtras(S, A, api) {
       ctx.globalAlpha = 1;
       S.wake();
     }
+    if (S.poleFx > 0) {
+      for (let j = 0; j < R.length; j++) {
+        if (B[j].type !== 'planet') continue;
+        const q = R[j];
+        if (!q || q.z <= 0) continue;
+        const rr = Math.max(q.pr, 2) + 9,
+          g = ctx.createRadialGradient(q.sx, q.sy, Math.max(q.pr, 1), q.sx, q.sy, rr + 8);
+        g.addColorStop(0, `rgba(190,215,255,${0.55 * S.poleFx})`);
+        g.addColorStop(1, 'rgba(190,215,255,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(q.sx, q.sy, rr + 8, 0, 6.2832);
+        ctx.fill();
+      }
+    }
     if (ring) {
       ring.t += 0.022;
       const q = R[fi];
