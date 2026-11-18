@@ -36,9 +36,16 @@ export function createMobile(S, A, ui) {
       h = innerHeight,
       coarse = mq.matches,
       f = M.force;
-    M.mob = f === 'mob' || (f === 'auto' && (w < 700 || (coarse && Math.min(w, h) < 520)));
-    M.tab = !M.mob && (f === 'tab' || (f === 'auto' && coarse));
+    /* 1.7: telefon = dotyk bez myši. Počítač (i s dotykovým displejem, i připojený k televizi se zvětšením 300 %)
+       telefonní rozložení sám nikdy nedostane: malé okno nebo málo bodů znamená jen zmenšené počítačové rozhraní. */
+    const fineAny = matchMedia('(any-pointer: fine)').matches,
+      phone = coarse && !fineAny,
+      small = f === 'auto' && !phone && (w < 1100 || h < 560),
+      shrink = small ? Math.max(0.5, Math.min(1, w / 1100, h / 560)) : 1;
+    M.mob = f === 'mob' || (f === 'auto' && phone && (w < 700 || Math.min(w, h) < 520));
+    M.tab = !M.mob && (f === 'tab' || (f === 'auto' && phone));
     M.touch = (coarse && f !== 'pc') || f === 'tab';
+    M.shrink = shrink;
     /* velká obrazovka (4K televize, tabule bez zvětšení v systému): rozhraní se zvětší, aby bylo čitelné z dálky */
     M.big = f === 'big' || (f === 'auto' && !M.mob && w >= 2400);
     /* 1.5: má-li systém vlastní zvětšení (4K monitor na 150 %), je rozhraní už zvětšené – přidává se jen mírně */
@@ -50,9 +57,10 @@ export function createMobile(S, A, ui) {
         : dpr >= 1.4
           ? Math.min(1.6, Math.max(1, w / 2100))
           : Math.min(2.2, w / 1750);
-    B.classList.toggle('big', M.big);
-    B.style.setProperty('--bk', bk.toFixed(2));
-    S.txtK = bk;
+    const bk2 = M.big ? bk : shrink; /* jedno měřítko: nad 1 velká obrazovka, pod 1 malé okno na počítači */
+    B.classList.toggle('big', bk2 !== 1);
+    B.style.setProperty('--bk', bk2.toFixed(2));
+    S.txtK = bk2;
     B.classList.toggle('mob', M.mob);
     B.classList.toggle('tab', M.tab);
     B.classList.toggle('touch', M.touch);

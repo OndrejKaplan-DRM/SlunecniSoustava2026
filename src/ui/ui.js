@@ -1875,6 +1875,7 @@ export function createUI(S, A) {
     st = { ms: [], bonus: [], skip: [], why: '' },
     SOFT = 10000;
   api.device = DV;
+  S.hiTab = DV.trida !== 'usporna'; /* tablet a dotyková tabule s dostatkem paměti smí podrobné mapy */
   api.loadStat = st;
   const timed = (fn) => () => {
     const t = performance.now();

@@ -133,7 +133,19 @@ export function createEngine(canvas, overlay) {
     logarithmicDepthBuffer: true,
     powerPreference: 'high-performance',
   });
-  let PR = Math.min(window.devicePixelRatio || 1, 1.5);
+  /* 1.7: rozlišení vykreslování má strop v počtu bodů (4K televize, okno přes dva monitory) – jinak by na velké ploše
+     spadla plynulost a s ní kvalita. Strop podle stupně kvality 0–2. */
+  const PX_BUD = [1.7e6, 2.6e6, 4.4e6];
+  const prFor = (w, h) =>
+    Math.max(
+      0.4,
+      Math.min(
+        S.quality >= 2 ? Math.min(window.devicePixelRatio || 1, 1.5) : S.quality === 1 ? 1 : 0.75,
+        Math.sqrt(PX_BUD[Math.max(0, Math.min(2, S.quality))] / Math.max(1, w * h))
+      )
+    );
+  let PR = prFor(window.innerWidth, window.innerHeight),
+    lastArea = 0;
   renderer.setPixelRatio(PR);
   renderer.setClearColor(0x000000, 1);
   const scene = new THREE.Scene(),
@@ -146,6 +158,20 @@ export function createEngine(canvas, overlay) {
   function resize() {
     W = canvas.clientWidth || window.innerWidth;
     H = canvas.clientHeight || window.innerHeight;
+    /* okno se výrazně změnilo (jiný monitor, celá obrazovka): kvalita dostane novou šanci */
+    if (lastArea && Math.abs(Math.log((W * H) / lastArea)) > 0.25 && S.quality < 2) {
+      S.quality = 2;
+      S.requal = true;
+    }
+    lastArea = W * H;
+    PR = prFor(W, H);
+    renderer.setPixelRatio(PR);
+    try {
+      starMat.uniforms.uPx.value = Math.max(1, PR);
+      cstMat.uniforms.uPx.value = Math.max(1, PR);
+    } catch (e) {
+      /* hvězdy ještě nejsou vytvořené (první volání při startu) */
+    }
     renderer.setSize(W, H, false);
     camera.aspect = W / H;
     camera.updateProjectionMatrix();
@@ -921,7 +947,9 @@ export function createEngine(canvas, overlay) {
     S.quality > 0 &&
     typeof createImageBitmap === 'function' &&
     renderer.capabilities.maxTextureSize >= 4096 &&
-    !/\b(mob|tab)\b/.test(document.body.className);
+    /* telefon velké mapy nenačítá; tablet jen když na ně má paměť (S.hiTab nastaví rozhraní podle třídy zařízení) */
+    !/\bmob\b/.test(document.body.className) &&
+    (S.hiTab || !/\btab\b/.test(document.body.className));
   function dropHi(i) {
     const r = R[i];
     if (r.hi !== 2) return;
@@ -1302,6 +1330,9 @@ export function createEngine(canvas, overlay) {
     acc = 0,
     frames = 0,
     slow = 0,
+    fast = 0,
+    qDrop = 0,
+    qUps = 0,
     hudT = 0,
     skip = 0,
     raf = 0;
@@ -1364,10 +1395,12 @@ export function createEngine(canvas, overlay) {
           U.uHasMap.value = Math.min(1, U.uHasMap.value + dt * 2.2);
           wake();
         }
-        if (i === S.focus && pr > 250 && !cam.fly && r.tex === 2 && !r.hi) needHi(i);
+        if (i === S.focus && pr > Math.min(250, H * 0.34) && !cam.fly && r.tex === 2 && !r.hi) needHi(i);
         if (r.hi === 2) {
           // prolnutí velké mapy; u těles, kde velká mapa ukazuje jiný jev než malá (Venuše: povrch pod oblačností), řídí míru jen velikost kotouče – při oddálení se oblačnost zase zatáhne
-          const tg = HI_ZOOM.has(b.id) ? Math.max(0.001, Math.min(1, (pr - 230) / 120)) : 1,
+          const tg = HI_ZOOM.has(b.id)
+              ? Math.max(0.001, Math.min(1, (pr - Math.min(230, H * 0.31)) / Math.min(120, H * 0.16)))
+              : 1,
             v = U.uHi.value;
           if (Math.abs(tg - v) > 0.0005) {
             U.uHi.value = v + Math.sign(tg - v) * Math.min(Math.abs(tg - v), dt * 1.1);
@@ -1678,16 +1711,28 @@ export function createEngine(canvas, overlay) {
       const ms = acc / frames;
       S.fps = 1000 / ms;
       if (!idle) {
+        if (S.requal) {
+          S.requal = false;
+          slow = 0;
+          fast = 0;
+        }
         if (ms > 42) slow++;
         else slow = Math.max(0, slow - 1);
+        /* 1.7: kvalita se umí i vrátit – po delší plynulé době (a nejdřív 40 s po snížení), nejvýš třikrát */
+        if (ms < 24) fast++;
+        else fast = 0;
+        if (fast >= 12 && S.quality < 2 && now - qDrop > 40000 && qUps < 3) {
+          S.quality++;
+          qUps++;
+          fast = 0;
+          resize();
+        }
         if (slow >= 3 && S.quality > 0) {
           S.quality--;
-          PR = S.quality === 1 ? 1 : 0.75;
-          renderer.setPixelRatio(PR);
-          starMat.uniforms.uPx.value = Math.max(1, PR);
-          cstMat.uniforms.uPx.value = Math.max(1, PR);
           resize();
           slow = 0;
+          fast = 0;
+          qDrop = now;
         }
       }
       frames = 0;
@@ -2031,6 +2076,25 @@ export function createEngine(canvas, overlay) {
     hiPin.clear();
     HI_MAX = 2;
   });
+  /* 1.7: kontext se po přetažení okna na jiný monitor nebo grafickou kartu umí vrátit – velké mapy se pak zase povolí */
+  renderer.domElement.addEventListener('webglcontextrestored', () => {
+    S.hiOff = false;
+    resize();
+  });
+  /* pojistka pro přetahování mezi monitory: změna velikosti okna nebo zvětšení systému bez události resize */
+  {
+    let lw = window.innerWidth,
+      lh = window.innerHeight,
+      ld = window.devicePixelRatio;
+    setInterval(() => {
+      if (window.innerWidth !== lw || window.innerHeight !== lh || window.devicePixelRatio !== ld) {
+        lw = window.innerWidth;
+        lh = window.innerHeight;
+        ld = window.devicePixelRatio;
+        window.dispatchEvent(new Event('resize'));
+      }
+    }, 700);
+  }
   S.warmGPU = async () => {
     try {
       if (renderer.compileAsync) await renderer.compileAsync(scene, camera);

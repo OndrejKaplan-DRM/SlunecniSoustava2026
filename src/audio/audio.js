@@ -113,7 +113,7 @@ export const AMB = {
     real: 'helioseismické kmity (pětiminutové, zrychlené)',
   },
   mercury: { n: ['highpass', 2500, 0.5, 0.05, 6], ev: ['tick', 3, 0.05] },
-  venus: { d: [[48, 0.1, 'sawtooth']], n: ['lowpass', 320, 1, 0.3, 5] },
+  venus: { d: [[48, 0.035, 'sine']], n: ['lowpass', 320, 1, 0.3, 5] } /* 1.7: bez vrčivé pily, jen tichý hluboký tón */,
   earth: { n: ['lowpass', 620, 0.6, 0.2, 13], sw: 9, ev: ['nature', 6.5, 0.05] },
   moon: { ev: ['tick', 5, 0.04] },
   mars: { n: ['bandpass', 600, 1.5, 0.12, 4], real: 'vítr z mikrofonu sondy (tichý, hluboký)' },
@@ -1112,9 +1112,11 @@ export function createAudio(S) {
     const tNow = performance.now(),
       dtH = Math.min(1, (tNow - hab.last) / 1000);
     hab.last = tNow;
-    if (!fly && near > 0.45) hab.t += dtH;
-    else hab.t = Math.max(0, hab.t - dtH * 2);
-    hab.k = hab.t < 25 ? 1 : Math.max(0.1, 1 - (0.9 * (hab.t - 25)) / 20);
+    /* 1.7: prostředí tělesa zazní při příchodu a do 35 s úplně utichne; přibližování a oddalování ho znovu nespustí.
+       „Zotaví“ se jen pomalu a jen daleko od tělesa (nebo u jiného tělesa). */
+    if (!fly && near > 0.12) hab.t += dtH;
+    else if (near < 0.04) hab.t = Math.max(0, hab.t - dtH * 0.25);
+    hab.k = hab.t < 20 ? 1 : Math.max(0, 1 - (hab.t - 20) / 15);
     A.hab = hab;
     if (amb)
       amb.g.gain.setTargetAtTime(Math.pow(near, 1.6) * hab.k * (myst || theme ? 0.2 : MU.slot ? 0.42 : 0.6), t, 0.6);
