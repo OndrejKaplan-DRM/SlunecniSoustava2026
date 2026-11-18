@@ -46,3 +46,11 @@ Konvence modelu ověřena výpočtem: nultý poledník vázaně rotujících tě
 - Phobos, Země: beze změny (rozhodnutí Ondřeje). Deimos: nehledáno dál.
 
 Přehled autorů a licencí všech map (i malých, převzatých ze Stellaria) je od verze 1.2 v `CREDITS.md` v kořeni repozitáře.
+
+## Země – velká mapa (18. 11. 2026)
+- Zdroj: NASA Blue Marble Next Generation, červenec 2004, verze „topography“ 5400 × 2700 (R. Stöckli, NASA Earth Observatory), volné dílo.
+  Adresa: https://assets.science.nasa.gov/content/dam/science/esd/eo/images/bmng/bmng-topography/july/world.topo.200407.3x5400x2700.jpg
+- Výroba: `python3 -I tools/maps/make_earth.py <soubor>` → `dist/maps/hi/earth.webp` (4096 × 2048, 687 kB). Pevnina a led z NASA, barva v hrubých
+  rysech vyrovnaná s malou mapou; moře má NASA v této verzi skoro černé, proto barva moře zůstává ze stávající malé mapy. Malá mapa beze změny.
+- Vrstva mraků `earth_aux.webp`: vyčištěna od stop pobřeží (`tools/maps/clean_earth_aux.py`), uložena bezeztrátově (1,35 MB).
+- Zkoušené a zamítnuté: verze s reliéfem mořského dna (na glóbu vypadá nevěrohodně), náhrada celé mapy verzí NASA (moře skoro černé).

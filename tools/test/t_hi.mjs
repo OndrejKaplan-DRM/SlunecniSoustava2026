@@ -77,7 +77,8 @@ const hiState = (page) =>
   );
 const IDS = (process.argv[3] || 'mars,moon,europa').split(',');
 for (const mode of process.env.ONLY ? [process.env.ONLY] : ['bez', 's']) {
-  const { page, errs } = await open();
+  const { page, errs } =
+    await open('?trida=usporna'); /* úsporná třída nic nepřednačítá a nepřipichuje – test hlídá samotné líné načítání */
   if (mode === 'bez')
     await page.evaluate(() => {
       S200.S.hiOff = true;

@@ -1031,7 +1031,22 @@ export function createAudio(S) {
   }
   // průběžně: prostředí podle tělesa a blízkosti, svist času, šum letu
   const hab = { i: -1, t: 0, k: 1, last: performance.now() };
+  /* Únava z hudby: počítá se čas, kdy aplikace běží na očích (skrytá karta prohlížeče se nepočítá).
+     Prvních 10 minut plná úroveň, do 25. minuty plynule na 40 %, do 45. minuty na 20 %; po hodině už hudba na pozadí
+     nezačíná (témata těles hrají dál, potichu). Ukázka ovládání hraje vždy naplno. Posuvník hlasitosti se tím jen násobí. */
+  const ses = { ms: 0, last: performance.now() };
+  const lerp = (a, b, u) => a + (b - a) * Math.max(0, Math.min(1, u));
+  A.fatigue = (min = ses.ms / 60000) =>
+    min <= 10 ? 1 : min <= 25 ? lerp(1, 0.4, (min - 10) / 15) : lerp(0.4, 0.2, (min - 25) / 20);
+  A.sesMin = (v) => (v === undefined ? ses.ms / 60000 : (ses.ms = v * 60000));
+  const tutoring = () => document.body.classList.contains('tutoring');
   setInterval(() => {
+    {
+      const n = performance.now(),
+        d = n - ses.last;
+      ses.last = n;
+      if (!document.hidden && d < 2000) ses.ms += d;
+    }
     if (!A.ctx || A.ctx.state !== 'running') return;
     const c = A.ctx,
       t = c.currentTime,
@@ -1062,6 +1077,7 @@ export function createAudio(S) {
       focI = i;
       focT = performance.now();
     }
+    if (!tutoring()) MU.tutDone = false;
     const zone = zoneOf(i),
       bg = A.music && !MU.bad && !myst,
       nowm = performance.now();
@@ -1073,9 +1089,17 @@ export function createAudio(S) {
       if (th0) {
         /* skladba tělesa teprve přijde: co hraje, nechat dohrát, nic nového nezačínat */
       } else if (!MU.slot) {
-        if (nowm > MU.gapUntil && !fly) muPlay(zone || MU.any());
+        /* ukázka ovládání: skladba začne hned (i za letu); jinak až po pauze, v klidu a jen první hodinu */
+        if (tutoring() ? !MU.tutDone : nowm > MU.gapUntil && !fly && ses.ms < 3600000) {
+          if (tutoring()) MU.tutDone = true;
+          muPlay(zone || MU.any());
+        }
       }
-      /* hrající skladbu při přeletu nestříháme; oblast se uplatní až u další */ MU.tv = A.kidMood ? 0.17 : 0.12;
+      /* hrající skladbu při přeletu nestříháme; oblast se uplatní až u další */ MU.tv = tutoring()
+        ? 0.22
+        : A.kidMood
+          ? 0.17
+          : 0.12;
       MU.bgm = true;
     } else if (MU.slot && !(fly && A.music) && !(th0 && MU.slot === th0)) muStop();
     muTick(t);
@@ -1197,11 +1221,12 @@ export function createAudio(S) {
           MU.slot = '';
           MU.gapUntil =
             performance.now() +
+            /* 18. 11. 2026 (Ondřej): mezi skladbami delší ticho – na pozadí 3–6 min (děti) a 6–10 min (dospělí), po tématu tělesa 5–8 min */
             (MU.bgm
               ? A.kidMood
-                ? 30000 + Math.random() * 30000
-                : 60000 + Math.random() * 60000
-              : 120000 + Math.random() * 120000);
+                ? 180000 + Math.random() * 180000
+                : 360000 + Math.random() * 240000
+              : 300000 + Math.random() * 180000);
         }
       });
       MU.els.push(el);
@@ -1273,7 +1298,7 @@ export function createAudio(S) {
   }
   function muTick(t) {
     for (let k = 0; k < MU.els.length; k++) {
-      const v = k === MU.cur && MU.slot ? MU.tv : 0,
+      const v = k === MU.cur && MU.slot ? MU.tv * (tutoring() ? 1 : A.fatigue()) : 0,
         g = MU.gs[k];
       if (g) g.gain.setTargetAtTime(v, t, 0.9);
       else {
@@ -1425,6 +1450,9 @@ export function createAudio(S) {
     cur: MU.cur,
     bad: MU.bad,
     tv: MU.tv,
+    fat: +A.fatigue().toFixed(3),
+    min: +(ses.ms / 60000).toFixed(2),
+    gapS: Math.max(0, Math.round((MU.gapUntil - performance.now()) / 1000)),
     t: MU.cur >= 0 ? MU.els[MU.cur].currentTime : 0,
     paused: MU.els.map((e) => e.paused),
     gain: MU.gs.map((g) => (g ? +g.gain.value.toFixed(3) : -1)),

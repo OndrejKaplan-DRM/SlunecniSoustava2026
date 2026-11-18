@@ -173,6 +173,25 @@ const five2 = await page.evaluate(async () => {
 });
 ok(five2[0] === 'Saturn', 'pětiklik na ikonu neotevřel Superkartu Saturnu');
 ok(!five2[1] && five2[2] === 'Země', 'pětiklik na těleso: ' + JSON.stringify(five2));
+// skutečných pět kliknutí myší na těleso ve scéně
+await page.evaluate(() => {
+  S200.ui.toggle('#sk', false);
+  S200.S.jump(S200.sim.idx.get('mars'));
+});
+await page.waitForTimeout(2500);
+const pt = await page.evaluate(() => {
+  const r = S200.S.R[S200.S.focus];
+  return [r.sx, r.sy, document.elementFromPoint(r.sx, r.sy).id];
+});
+for (let k = 0; k < 5; k++) {
+  await page.mouse.click(pt[0], pt[1]);
+  await page.waitForTimeout(90);
+}
+await page.waitForTimeout(600);
+const five3 = await page.evaluate(
+  () => document.querySelector('#sk').classList.contains('on') && document.querySelector('#sk h3').textContent
+);
+ok(pt[2] === 'gl' && /Mars/.test(five3 || ''), 'pět kliknutí myší na těleso: ' + JSON.stringify([pt, five3]));
 // ?dev=0 vypne
 await page.close();
 page = await browser.newPage();

@@ -64,7 +64,7 @@ void main(){
   float lit; vec3 add = vec3(0.0);
   if (uKind > 3.5) { // Země: mraky, oceán, noční světla, modrý opar
     vec3 aux = uHasAux > 0.5 ? texture2D(tAux, uv + vec2(uTime, 0.0)).rgb : vec3(0.0); vec3 aux0 = uHasAux > 0.5 ? texture2D(tAux, uv).rgb : vec3(0.0);
-    float cl = aux.r; lit = clamp((mu0 + 0.06) / 1.06, 0.0, 1.0);
+    float cl = aux.r * (1.0 - 0.45 * uHi); /* zblízka (s podrobnou mapou) mraky zřídnou, ať je vidět povrch */ lit = clamp((mu0 + 0.06) / 1.06, 0.0, 1.0);
     vec3 H = normalize(L + V); float sp = pow(max(dot(N, H), 0.0), 70.0) * aux0.g * (1.0 - cl) * 0.7;
     alb = mix(alb, vec3(0.93), cl * 0.92);
     alb = mix(alb, vec3(0.35, 0.55, 1.0), pow(1.0 - mu, 2.5) * 0.55);

@@ -36,6 +36,7 @@ Ze 201 těles má **44 skutečnou mapu** ze snímků sond (na kartě 📷). Zbyl
 | Merkur | USGS – MESSENGER MDIS Basemap (velká mapa); barva z mapy Stellaria (O. Pluton) | volné dílo (NASA / USGS), žádá se uvedení zdroje | ano |
 | Venuše | USGS – Magellan C3-MDIR (radar, velká mapa); oblačnost: Stellarium (O. Pluton) | volné dílo (NASA / USGS), žádá se uvedení zdroje | ano |
 | Země | J. Hastings-Trew, Planetary Pixel Emporium (denní mapa, oblačnost, odlesk, noční světla; převzato z ukázek Three.js) | © J. Hastings-Trew – užití v programech a vizualizacích povoleno, samotné mapy se nesmí šířit jako sbírka | – |
+| Země – podrobná mapa (pevnina a led) | NASA Blue Marble Next Generation, červenec 2004 (R. Stöckli, NASA Earth Observatory), verze s reliéfem pevniny; barva moře zůstává z malé mapy | volné dílo (NASA), žádá se uvedení zdroje | ano |
 | Měsíc | NASA Scientific Visualization Studio – CGI Moon Kit (LROC WAC) | volné dílo (NASA / USGS), žádá se uvedení zdroje | ano |
 | Mars | USGS Astrogeology – Viking Colorized Global Mosaic (velká mapa); malá mapa: J. Hastings-Trew, Planetary Pixel Emporium | volné dílo (NASA / USGS), žádá se uvedení zdroje; malá mapa © J. Hastings-Trew (užití v programu povoleno) | ano |
 | Jupiter | NASA/JPL/Space Science Institute – PIA07782 (Cassini) | volné dílo (NASA / USGS), žádá se uvedení zdroje | ano |

@@ -403,13 +403,14 @@ export function createSuperkarta(S, A, ui) {
       S.flyTo(+f.dataset.fly);
     }
   });
-  /* spouštěč: pět rychlých kliknutí (do 0,6 s po sobě) na těleso ve scéně, na jeho ikonu v liště nebo na název v kartě */
+  /* spouštěč: pět rychlých kliknutí (do 0,7 s po sobě) na těleso ve scéně, na jeho ikonu v liště nebo na název v kartě */
   let n = 0,
     t = 0,
     last = -1;
-  const hit = (i) => {
-    const now = performance.now();
-    n = now - t < 600 && i === last ? n + 1 : 1;
+  const hit = (i, ts) => {
+    /* čas bere z události, ne z okamžiku zpracování: na pomalém stroji se kliknutí zpracují se zpožděním */
+    const now = ts || performance.now();
+    n = now - t < 700 && i === last ? n + 1 : 1;
     t = now;
     last = i;
     if (n >= 5) {
@@ -418,12 +419,12 @@ export function createSuperkarta(S, A, ui) {
     }
   };
   $('#card').addEventListener('click', (ev) => {
-    if (ev.target.closest('h2') || ev.target.closest('.ball')) hit(S.sel);
+    if (ev.target.closest('h2') || ev.target.closest('.ball')) hit(S.sel, ev.timeStamp);
   });
   for (const id of ['#dock', '#sub'])
     $(id).addEventListener('click', (ev) => {
       const b = ev.target.closest('.it[data-i]');
-      if (b) hit(+b.dataset.i);
+      if (b) hit(+b.dataset.i, ev.timeStamp);
     });
   S.bus.on('tap', hit);
   S.F.onChange(() => {

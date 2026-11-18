@@ -6,6 +6,7 @@ import { RATE_LABEL } from '../render/engine.js';
 import { createTutorial } from './tutorial.js';
 import CAT from '../data/cat.json';
 import { createPreload } from '../core/preload.js';
+import { detectDevice } from '../core/device.js';
 
 const $ = (s) => document.querySelector(s),
   el = (t, c, h) => {
@@ -969,12 +970,12 @@ export function createUI(S, A) {
   };
   const act = {
     orb() {
-      S.orbMode = (S.orbMode + 1) % 6;
+      S.orbMode = (S.orbMode + 1) % (K() ? 3 : 6); /* dětské rozhraní: jen vypnuto a dva stupně */
       A.play(['orbit_off', 'orbit_on', 'orbit_on', 'orbit_on', 'orbit_all', 'orbit_all'][S.orbMode]);
       toast('Dráhy: ' + ORB_LAB[S.orbMode]);
     },
     lab() {
-      S.labMode = (S.labMode + 1) % 3;
+      S.labMode = (S.labMode + 1) % (K() ? 2 : 3);
       A.play(S.labMode ? 'labels_on' : 'labels_off');
       toast('Popisky: ' + ['vypnuté', 'hlavní', 'všechny'][S.labMode]);
     },
@@ -1218,6 +1219,16 @@ export function createUI(S, A) {
     G.kid = k;
     save();
     document.body.classList.toggle('kid', k);
+    if (k) {
+      /* dětské rozhraní je štíhlejší: méně drah a popisků, bez odborných nástrojů */
+      S.orbMode = Math.min(S.orbMode, 2);
+      S.labMode = Math.min(S.labMode, 1);
+      if (api.X) {
+        api.X.ruler = -1;
+        api.X.grid = false;
+      }
+      S.realBright = false;
+    }
     S.bus.emit('mode', k);
     $('#top h1').innerHTML = k ? '🚀 Vesmírná výprava <small>200</small>' : 'Sluneční soustava <small>200</small>';
     A.play(k ? 'mode_kid' : 'mode_adult');
@@ -1306,7 +1317,7 @@ export function createUI(S, A) {
     if (!p || moved >= 5 || p.b !== 0) return;
     const i = S.pick(e.clientX, e.clientY),
       now = performance.now();
-    if (i >= 0) S.bus.emit('tap', i); /* počítá si je Superkarta (pětiklik na těleso) */
+    if (i >= 0) S.bus.emit('tap', i, e.timeStamp); /* počítá si je Superkarta (pětiklik na těleso) */
     if (now - lastTap < 380 && i === lastTapI) {
       if (i >= 0) {
         if (i === S.focus) S.flyTo(i, { alt: shape[i].rmax * 0.6 });
@@ -1838,39 +1849,105 @@ export function createUI(S, A) {
   };
   /* Přednačtení: tělesa z dolní lišty (tam uživatel i ukázka míří nejdřív), jejich mapy, shadery a první zvuky.
      Lišta má pevný seznam úloh, takže necouvá; co přibude později, běží „v klidu“ mimo lištu (viz core/preload.js). */
+  /* Chytré načítání (verze 1.4): povinná vrstva jako dosud, k ní podle třídy zařízení a změřené rychlosti bonus –
+     podrobné mapy těles, na která se chodí nejčastěji. Rozpočty a třídy: src/core/device.js.
+     Čas: cíl 6 s; po 10 s se bonus už nezačíná (dožene se v klidu po startu); start po kliknutí čeká nejdéle 9 s.
+     Lišta necouvá: bonus má svůj díl v součtu předem, a když se vynechá, započte se jako hotový. */
   const PL = createPreload(),
-    sndIds = A.firstSounds();
+    sndIds = A.firstSounds(),
+    DV = detectDevice(S.renderer, S.quality),
+    BONUS = ['earth', 'moon', 'jupiter', 'saturn', 'mars'].map((id) => idx.get(id)).slice(0, DV.bonus),
+    plT0 = performance.now(),
+    plLog = [],
+    st = { ms: [], bonus: [], skip: [], why: '' },
+    SOFT = 10000;
+  api.device = DV;
+  api.loadStat = st;
+  const timed = (fn) => () => {
+    const t = performance.now();
+    return Promise.resolve(fn()).then(() => st.ms.push(performance.now() - t));
+  };
   for (const i of dockIds)
-    PL.add(B[i].cs, i === SUN || i === EARTH || i === idx.get('moon') ? 3 : 2, () => S.warmTex(i), 0);
+    PL.add(
+      B[i].cs,
+      i === SUN || i === EARTH || i === idx.get('moon') ? 3 : 2,
+      timed(() => S.warmTex(i)),
+      0
+    );
   PL.add('zvuky', 3, () => A.prefetch(sndIds), 0, 6000);
   PL.add('shadery', 12, () => S.warmGPU(), 1, 15000);
-  /* technický výpis načítání (jen ve vývojářském režimu): co se připravilo a za jak dlouho, a co o zařízení prohlížeč prozradí */
-  const plT0 = performance.now(),
-    plLog = [];
+  /* bonus jde po jednom (rozbalení velké mapy je náročné); každá mapa se nejdřív zeptá, zda na ni zbývá čas a rozpočet */
+  const bonusOk = () => {
+    const el = performance.now() - plT0;
+    /* měřítkem rychlosti je, za jak dlouho zařízení zvládlo povinnou vrstvu: běžné zařízení začíná další podrobnou mapu
+       jen do 6. sekundy, výkonné do 10. */
+    if (el > (DV.trida === 'bezna' ? 6000 : SOFT)) return 'došel čas';
+    if (S.texMem() + 45 > DV.rozpocet) return 'rozpočet paměti';
+    return '';
+  };
+  let chain = Promise.resolve();
+  for (const i of BONUS)
+    PL.add(
+      'podrobná mapa: ' + B[i].cs,
+      3,
+      () =>
+        (chain = chain.then(async () => {
+          const why = bonusOk();
+          if (why) {
+            st.skip.push(i);
+            st.why = why;
+            return;
+          }
+          if (await S.warmHi(i)) st.bonus.push(i);
+        })),
+      2,
+      9000
+    );
+  const names = (a) => a.map((i) => B[i].cs).join(', ');
   PL.onProgress((p, label, ok) => {
-    if (label)
-      plLog.push(
-        `${String(Math.round(performance.now() - plT0)).padStart(5)} ms  ${String(p).padStart(3)} %  ${label}`
-      );
-    if (ok || label) {
-      const gl = S.renderer.getContext(),
-        dbg = gl.getExtension('WEBGL_debug_renderer_info'),
-        gpu = dbg
-          ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL))
-              .replace(/^ANGLE \((.*)\)$/, '$1')
-              .slice(0, 70)
-          : 'neznámá',
-        mem = navigator.deviceMemory ? '≥ ' + navigator.deviceMemory + ' GB (hrubá třída)' : 'prohlížeč neprozradí';
+    const sec = (performance.now() - plT0) / 1000,
+      mem = S.texMem();
+    if (label) plLog.push(`${String(Math.round(sec * 1000)).padStart(5)} ms  ${String(p).padStart(3)} %  ${label}`);
+    /* malá konzole pro každého: co teče do grafické paměti, jak rychle a co je v plánu */
+    $('#sp-con').innerHTML =
+      `mapy v grafické paměti asi <b>${nf(mem)} z ${DV.rozpocet} MB</b>${sec > 0.3 ? ` · ${nf(mem / sec, 1)} MB/s` : ''}${label && !ok ? ' · ' + label : ''}<br>` +
+      `zařízení: <b>${DV.nazev}</b>${DV.rucne ? ' (ruční volba)' : ''} · ${DV.jadra || '?'} jader · paměť ${DV.pametTxt}<br>` +
+      (ok
+        ? `hotovo za ${nf(sec, 1)} s · ` +
+          (st.bonus.length ? `podrobně předem: ${names(st.bonus)}` : 'podrobné mapy se načtou až při přiblížení') +
+          (st.skip.length ? ` · později v klidu: ${names(st.skip)} (${st.why})` : '')
+        : BONUS.length
+          ? `plán: 13 těles, zvuky, shadery a podrobně ${names(BONUS)}`
+          : 'plán: 13 těles, zvuky a shadery; podrobné mapy až při přiblížení');
+    if (ok || label)
       $('#sp-log').textContent =
-        `zařízení: ${navigator.hardwareConcurrency || '?'} jader · paměť ${mem} · textura do ${S.renderer.capabilities.maxTextureSize} px\ngrafika: ${gpu}\n` +
-        plLog.slice(-7).join('\n') +
-        (ok ? `\nhotovo za ${((performance.now() - plT0) / 1000).toFixed(1)} s` : '');
-    }
+        `grafika: ${DV.gpu || 'neznámá'} · textura do ${DV.tex} px\n` +
+        plLog.slice(-8).join('\n') +
+        (ok
+          ? `\nhotovo za ${sec.toFixed(1)} s · průměr malé mapy ${st.ms.length ? Math.round(st.ms.reduce((x, y) => x + y, 0) / st.ms.length) : 0} ms`
+          : '');
     const el = $('#sp-load');
     el.querySelector('i').style.width = p + '%';
     el.querySelector('b').textContent = ok ? '✓' : p + ' %';
     el.querySelector('em').textContent = ok ? 'připraveno' : 'připravuji vesmír';
     el.classList.toggle('ok', ok);
+    /* co se nestihlo kvůli času, dožene se po startu ve chvíli klidu (ne za letu a ne při ukázce) */
+    if (ok && st.skip.length && st.why === 'došel čas') {
+      for (const i of st.skip.splice(0))
+        PL.add(
+          'později: ' + B[i].cs,
+          0,
+          async () => {
+            for (let k = 0; k < 90; k++) {
+              if (!sp.classList.contains('on') && !S.flying() && !document.body.classList.contains('tutoring')) break;
+              await new Promise((r) => setTimeout(r, 1000));
+            }
+            if (S.texMem() + 45 <= DV.rozpocet && (await S.warmHi(i))) st.bonus.push(i);
+          },
+          0,
+          120000
+        );
+    }
   });
   setTimeout(() => PL.run(), 60);
   api.preload = PL;

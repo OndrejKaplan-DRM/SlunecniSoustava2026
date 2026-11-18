@@ -909,8 +909,9 @@ export function createEngine(canvas, overlay) {
   // a prolnou se přes malou mapu. V paměti nejvýš HI_MAX; na telefonu a tabletu a při snížené kvalitě (S.quality 0) se nenačítají.
   const HI_ZOOM = new Set(['venus']),
     HI = new Set(HI_IDS),
-    HI_MAX = 2,
-    hiLog = [];
+    hiLog = [],
+    hiPin = new Set(); /* velké mapy načtené předem na úvodu: nevyhazují se */
+  let HI_MAX = 2;
   let hiBusy = false;
   S.hiLog = hiLog;
   S.hiOff = false;
@@ -987,7 +988,7 @@ export function createEngine(canvas, overlay) {
           w: bm.width,
         });
         const live = [];
-        for (let j = 0; j < N; j++) if (R[j].hi === 2 && j !== i && j !== S.focus) live.push(j);
+        for (let j = 0; j < N; j++) if (R[j].hi === 2 && j !== i && j !== S.focus && !hiPin.has(j)) live.push(j);
         live.sort((a, b) => R[a].used - R[b].used);
         while (live.length > HI_MAX - 1) dropHi(live.shift());
         wake();
@@ -1001,7 +1002,7 @@ export function createEngine(canvas, overlay) {
     if (texCount <= 18) return;
     for (let i = 0; i < N; i++) {
       const r = R[i];
-      if (r.tex === 2 && now - r.used > 20000 && i !== S.focus) {
+      if (r.tex === 2 && now - r.used > 20000 && i !== S.focus && !hiPin.has(i)) {
         dropHi(i);
         r.U.tMap.value.dispose();
         r.U.tMap.value = blank;
@@ -1535,8 +1536,9 @@ export function createEngine(canvas, overlay) {
       const hot = i === fi || i === S.sel || i === S.hover || i === par[fi];
       let a = 0;
       if (S.orbMode > 0) {
-        /* význam dráhy 0–1: velikost tělesa, blízkost Slunci, blízkost kameře; stupeň 1–5 určuje práh */
-        const th = ORB_TH[S.orbMode],
+        /* význam dráhy 0–1: velikost tělesa, blízkost Slunci, blízkost kameře; stupeň 1–5 určuje práh.
+           Dětské rozhraní je štíhlejší: nejvýš stupeň 2. */
+        const th = ORB_TH[S.kid ? Math.min(S.orbMode, 2) : S.orbMode],
           sizeK = Math.max(0, Math.min(1, (Math.log10(Math.max(b.R, 1)) - 0.5) / 4.3));
         let sc;
         if (p === SUN) {
@@ -1822,7 +1824,15 @@ export function createEngine(canvas, overlay) {
       else if (b.type === 'moon') pri = 60 + Math.log10(b.R) * 12 + (root[i] === root[fi] ? 40 : 0);
       else pri = 20 + b.fame * 8 + (r.pr > 1.5 ? 60 : 0);
       const lab =
-        hot || S.labMode === 2 || (S.labMode === 1 && (!small || b.fame >= 4 || r.pr > 1.5 || r.dist < 0.05 * AU));
+        hot ||
+        (S.labMode === 2 && !S.kid) ||
+        (S.labMode >= 1 &&
+          /* dětské rozhraní: z měsíců jen ty známé nebo velké, drobná tělesa jen slavná – ať se jména nepřekrývají */
+          (S.kid
+            ? b.type === 'moon'
+              ? b.fame >= 4 || b.R >= 200
+              : !small || b.fame >= 4
+            : !small || b.fame >= 4 || r.pr > 1.5 || r.dist < 0.05 * AU));
       items.push({ i, sx: r.sx, sy: r.sy, pr: r.pr, pri, lab, dist: r.dist });
     }
     if (!draw) return;
@@ -1940,6 +1950,43 @@ export function createEngine(canvas, overlay) {
           }
         }, 40);
     });
+  /* Velká mapa předem (chytré načítání): nejdřív malá mapa, pak velká; těleso se „připíchne“, aby mapa zůstala v paměti.
+     Vrací true, když se mapa opravdu nahrála. Kapacita pro mapy načítané za letu (2) zůstává navíc. */
+  S.warmHi = async (i) => {
+    if (!HI.has(B[i].id) || !hiCan()) return false;
+    await S.warmTex(i);
+    const r = R[i],
+      t0 = performance.now();
+    if (r.tex !== 2) return false;
+    hiPin.add(i);
+    HI_MAX = 2 + hiPin.size;
+    while (performance.now() - t0 < 12000) {
+      if (r.hi === 2) return true;
+      if (r.hi === -1) break;
+      if (!r.hi && !hiBusy) needHi(i);
+      await new Promise((res) => setTimeout(res, 40));
+    }
+    hiPin.delete(i);
+    HI_MAX = 2 + hiPin.size;
+    return false;
+  };
+  /* odhad paměti grafické karty pro mapy těles v MB (RGBA se zmenšeninami, 1,33×) */
+  S.texMem = () => {
+    let px = 0;
+    for (let i = 0; i < N; i++) {
+      const r = R[i];
+      if (r.tex === 2) px += ((r.mw || 512) * (r.mw || 512)) / 2;
+      if (r.hi === 2) px += ((r.hw || 4096) * (r.hw || 4096)) / 2;
+    }
+    return (px * 4 * 1.33) / 1048576;
+  };
+  S.hiPinned = () => [...hiPin];
+  /* pojistka: když grafická karta přijde o kontext (došla paměť), velké mapy se vypnou */
+  renderer.domElement.addEventListener('webglcontextlost', () => {
+    S.hiOff = true;
+    hiPin.clear();
+    HI_MAX = 2;
+  });
   S.warmGPU = async () => {
     try {
       if (renderer.compileAsync) await renderer.compileAsync(scene, camera);
