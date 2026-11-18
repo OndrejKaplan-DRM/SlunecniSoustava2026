@@ -10,7 +10,7 @@
    Volba se pamatuje (localStorage 's200dev'), protože v artefaktu se parametr adresy k aplikaci nemusí dostat. */
 export const REG = {
   ukazy: ['dospeli', 'Úkazy na obloze (seznam, karty, supernovy)'],
-  superkarta: ['dev', 'Superkarta tělesa (pětiklik na název v kartě)'],
+  superkarta: ['dospeli', 'Superkarta tělesa (pětiklik na těleso, jeho ikonu nebo název v kartě)'],
   nacitani: ['dev', 'Technický výpis načítání na úvodu'],
   zvuky: ['dev', 'Zkušebna zvuků (dříve jen ?zvuky)'],
 };

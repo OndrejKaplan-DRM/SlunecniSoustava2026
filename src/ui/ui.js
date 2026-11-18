@@ -1306,6 +1306,7 @@ export function createUI(S, A) {
     if (!p || moved >= 5 || p.b !== 0) return;
     const i = S.pick(e.clientX, e.clientY),
       now = performance.now();
+    if (i >= 0) S.bus.emit('tap', i); /* počítá si je Superkarta (pětiklik na těleso) */
     if (now - lastTap < 380 && i === lastTapI) {
       if (i >= 0) {
         if (i === S.focus) S.flyTo(i, { alt: shape[i].rmax * 0.6 });

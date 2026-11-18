@@ -270,7 +270,7 @@ export function createSuperkarta(S, A, ui) {
       sec('🔭', 'Objev, sondy, měsíce', s6, false) +
       sec('💡', 'Zajímavosti', fx.length ? `<ul>${fx.map((f) => `<li>${f}</li>`).join('')}</ul>` : '', false) +
       sec('🧾', 'Odkud jsou data', s8, false) +
-      `<p class="sk-foot">Čísla jsou z katalogu aplikace a z okamžité polohy v modelu. Skrytá karta: pětkrát rychle klikni na název tělesa.</p>`
+      `<p class="sk-foot">Čísla jsou z katalogu aplikace a z okamžité polohy v modelu. Tuhle kartu otevře pět rychlých kliknutí na těleso, na jeho ikonu dole nebo na název v kartě.</p>`
     );
   }
   // porovnání velikostí ve stejném měřítku: velká tělesa vedle Země, Měsíce nebo Jupiteru (skutečné kotouče z map),
@@ -403,19 +403,29 @@ export function createSuperkarta(S, A, ui) {
       S.flyTo(+f.dataset.fly);
     }
   });
-  /* spouštěč: pět rychlých kliknutí (do 0,6 s po sobě) na název tělesa v kartě */
+  /* spouštěč: pět rychlých kliknutí (do 0,6 s po sobě) na těleso ve scéně, na jeho ikonu v liště nebo na název v kartě */
   let n = 0,
-    t = 0;
-  $('#card').addEventListener('click', (ev) => {
-    if (!ev.target.closest('h2')) return;
+    t = 0,
+    last = -1;
+  const hit = (i) => {
     const now = performance.now();
-    n = now - t < 600 ? n + 1 : 1;
+    n = now - t < 600 && i === last ? n + 1 : 1;
     t = now;
+    last = i;
     if (n >= 5) {
       n = 0;
-      if (open(S.sel)) A.play('egg');
+      if (open(i)) A.play('egg');
     }
+  };
+  $('#card').addEventListener('click', (ev) => {
+    if (ev.target.closest('h2') || ev.target.closest('.ball')) hit(S.sel);
   });
+  for (const id of ['#dock', '#sub'])
+    $(id).addEventListener('click', (ev) => {
+      const b = ev.target.closest('.it[data-i]');
+      if (b) hit(+b.dataset.i);
+    });
+  S.bus.on('tap', hit);
   S.F.onChange(() => {
     if (!S.F.on('superkarta') && $('#sk').classList.contains('on')) ui.toggle('#sk', false);
   });

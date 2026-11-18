@@ -55,7 +55,8 @@ let page = await boot('');
 const flags = await page.evaluate(() => S200.F.list());
 ok(!(await page.evaluate(() => S200.F.dev)), 'vývojářský režim je zapnutý bez ?dev');
 ok(flags.find((f) => f.k === 'ukazy').on, 'úkazy nejsou v dospělém rozhraní');
-ok(!flags.find((f) => f.k === 'superkarta').on, 'Superkarta je vidět bez ?dev');
+ok(flags.find((f) => f.k === 'superkarta').on, 'Superkarta není v dospělém rozhraní');
+ok(!flags.find((f) => f.k === 'nacitani').on, 'technický výpis načítání je vidět bez ?dev');
 const ids = await page.evaluate(() => S200.uk.ids());
 let n = 0;
 for (const id of ids) {
@@ -110,11 +111,12 @@ const kid = await page.evaluate(async () => {
 ok(kid.btn === 'none', 'dětské: položka Úkazy je v nabídce vidět');
 ok(!kid.card, 'dětské: karta úkazu zůstala otevřená');
 ok(!kid.on, 'dětské: úkazy jsou zapnuté');
+ok(!(await page.evaluate(() => S200.F.on('superkarta') || S200.sk.open(3))), 'dětské: Superkarta jde otevřít');
 await page.close();
 
 // 3) vývojářský režim: Superkarta všech těles
 page = await boot('?dev');
-ok(await page.evaluate(() => S200.F.dev && S200.F.on('superkarta')), '?dev nezapnul Superkartu');
+ok(await page.evaluate(() => S200.F.dev && S200.F.on('nacitani')), '?dev nezapnul vývojářské funkce');
 const sk = await page.evaluate(() => {
   const outp = [];
   for (let i = 0; i < S200.sim.B.length; i++) {
@@ -155,6 +157,22 @@ const five = await page.evaluate(async () => {
   return document.querySelector('#sk').classList.contains('on') && document.querySelector('#sk h3').textContent;
 });
 ok(five === 'Mars', 'pětiklik neotevřel Superkartu Marsu (' + five + ')');
+// pětiklik na ikonu v dolní liště a na těleso ve scéně
+const five2 = await page.evaluate(async () => {
+  S200.ui.toggle('#sk', false);
+  const b = document.querySelector('#dock .it[data-i="' + S200.sim.idx.get('saturn') + '"]');
+  for (let k = 0; k < 5; k++) b.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  await new Promise((r) => setTimeout(r, 200));
+  const a = document.querySelector('#sk').classList.contains('on') && document.querySelector('#sk h3').textContent;
+  S200.ui.toggle('#sk', false);
+  for (let k = 0; k < 4; k++) S200.S.bus.emit('tap', S200.sim.EARTH);
+  const mid = document.querySelector('#sk').classList.contains('on');
+  S200.S.bus.emit('tap', S200.sim.EARTH);
+  await new Promise((r) => setTimeout(r, 200));
+  return [a, mid, document.querySelector('#sk h3').textContent];
+});
+ok(five2[0] === 'Saturn', 'pětiklik na ikonu neotevřel Superkartu Saturnu');
+ok(!five2[1] && five2[2] === 'Země', 'pětiklik na těleso: ' + JSON.stringify(five2));
 // ?dev=0 vypne
 await page.close();
 page = await browser.newPage();

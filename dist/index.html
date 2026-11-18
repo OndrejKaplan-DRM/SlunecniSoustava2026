@@ -232,6 +232,7 @@ body.ukon:not(.mob) #mission { display: none !important; }
 body.mob #sk { width: calc(100vw - 12px); max-height: 82vh; max-height: 82dvh; padding: 12px; font-size: 13px; } body.mob #sk h3 { font-size: 19px; } body.mob #sk .sk-hd { gap: 10px; } body.mob #sk .sk-ball { max-width: 34%; height: auto; } body.mob #sk th { width: 46%; }
 #sk-cmp { min-height: 126px; display: flex; align-items: flex-end; justify-content: center; gap: 18px; flex-wrap: wrap; } #sk .sk-it { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11.5px; color: var(--mu); } #sk .sk-it.me { color: #ffe7ad; } #sk .sk-it u { display: block; border-radius: 50%; background: #cfd8ea; } #sk .sk-it.me u { background: #ffc857; }
 #sk-cmp:has(.sk-bar) { display: block; padding: 14px 8px 0; text-align: left; } #sk .sk-bar { display: grid; grid-template-columns: 1fr; gap: 2px; margin-bottom: 9px; font-size: 11.5px; color: var(--mu); } #sk .sk-bar i { display: block; height: 9px; border-radius: 5px; background: #6f84ad; } #sk .sk-bar.me { color: #ffe7ad; } #sk .sk-bar.me i { background: #ffc857; } #sk .sk-bar em { font-style: normal; }
+body.no-superkarta .h-sk { display: none; }
 body.big #sk { zoom: var(--bk, 1.4); }
 </style>
 </head>
@@ -265,7 +266,7 @@ body.big #sk { zoom: var(--bk, 1.4); }
   <h2>Vítej, mladý astronome!</h2>
   <p>Tohle je Sluneční soustava ve <b>skutečném měřítku</b>: přes 200 těles tam, kde právě teď opravdu jsou. Vesmír je hlavně prázdno – proto jsou tělesa z dálky jen tečky se jménem. Doleť k nim a uvidíš je zblízka.</p>
   <div class="g">
-    <div><kbd>dvojklik</kbd> leť k tělesu</div><div><kbd>Tab</kbd> / <kbd>Shift+Tab</kbd> další / předchozí těleso</div>
+    <div><kbd>dvojklik</kbd> leť k tělesu</div><div class="h-sk"><kbd>5× klik</kbd> na těleso nebo ikonu: Superkarta se vším</div><div><kbd>Tab</kbd> / <kbd>Shift+Tab</kbd> další / předchozí těleso</div>
     <div><kbd>kolečko</kbd> <kbd>Q</kbd> <kbd>E</kbd> přiblížit / oddálit</div><div><kbd>0</kbd> Slunce, <kbd>1</kbd>–<kbd>8</kbd> planety, <kbd>9</kbd> Pluto (znovu = měsíce)</div>
     <div><kbd>levé tlačítko</kbd> <kbd>šipky</kbd> <kbd>WASD</kbd> otáčet</div><div><kbd>Enter</kbd> leť k vybranému / přiblížit</div>
     <div><kbd>pravé tlačítko</kbd> rozhlédnout se, <kbd>C</kbd> zpět</div><div><kbd>mezerník</kbd> zastavit čas, <kbd>,</kbd> <kbd>.</kbd> rychlost, <kbd>T</kbd> teď</div>
