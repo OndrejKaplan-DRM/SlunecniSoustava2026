@@ -238,6 +238,16 @@ body.no-superkarta .h-sk { display: none; }
 /* dětské rozhraní bez odborných nástrojů (registr funkcí: nastroje) */
 body.no-nastroje [data-a="ruler"], body.no-nastroje [data-a="grid"], body.no-nastroje [data-a="real"], body.no-nastroje [data-a="lock"], body.no-nastroje [data-a="cine"], body.no-nastroje [data-a="autorot"], body.no-nastroje #more [data-a="gam"], body.no-nastroje #more [data-a="mini"], body.no-nastroje #more [data-a="music"] { display: none !important; }
 body.big #sk { zoom: var(--bk, 1.4); }
+/* 1.4 – pohodlí na velkém displeji (podle snímků z notebooku 1920 × 1080 v zobrazení „tablet“) */
+@media (min-width: 1400px) { body.tab #card { width: 318px; font-size: inherit; max-height: calc(100vh - var(--dk, 120px) - 80px); } body.tab #card h2 { font-size: 19px; } body.tab.kid #card { width: 350px; } body.tab.kid #card h2 { font-size: 26px; } body.tab.kid .kid { font-size: 17.5px; } }
+@media (min-width: 1700px) { body.kid:not(.mob) #card { width: 380px; } }
+/* tlačítka karty (Blíž, Dál, Jak je to velké) zůstávají vidět i při posunutém textu */
+body:not(.mob) #card .row:has([data-a="close"], [data-a="go"]) { position: sticky; bottom: -12px; margin: 0 -14px; padding: 7px 14px 9px; background: rgba(13, 17, 30, 0.97); z-index: 1; } body.kid:not(.mob) #card .row:has([data-a="close"], [data-a="go"]) { background: rgba(30, 20, 66, 0.98); }
+/* okna vlevo nepřekrývají proužek s úkolem ani robota */
+body:has(#album.on) #mission, body.tab:has(#list.on, #tm.on, #uk.on) #mission, body.stack:has(#list.on, #tm.on, #uk.on) #mission { visibility: hidden; }
+body:has(#list.on, #album.on, #tm.on, #uk.on) #guide { display: none !important; }
+body.kid:not(.mob) #album { right: 372px; } @media (min-width: 1700px) { body.kid:not(.mob) #album { right: 402px; } }
+#album { background: rgba(13, 17, 30, 0.98); } body.kid #album { background: rgba(26, 18, 60, 0.98); } #album.on ~ #dockwrap #sub, body:has(#album.on) #sub { visibility: hidden; }
 </style>
 </head>
 <body>

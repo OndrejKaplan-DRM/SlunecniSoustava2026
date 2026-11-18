@@ -111,7 +111,7 @@ export function createOrient(S, A, ui) {
       return true;
     };
     const L = 14,
-      T = mob ? 150 : 64,
+      T = mob || document.body.classList.contains('stack') ? 150 : 106 /* pod horní lištou i pod proužkem s úkolem */,
       Bm = dk + (mob ? 70 : 26),
       cx = W / 2,
       cy = (T + H - Bm) / 2,

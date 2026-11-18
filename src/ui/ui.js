@@ -143,7 +143,7 @@ const EVENTS = [
   ['Kometa Hale-Bopp v plné kráse (1. 4. 1997)', U(1997, 4, 1), 'hale_bopp', 1.5e6],
   ['Kometa Ikeya-Seki těsně u Slunce (21. 10. 1965)', U(1965, 10, 21, 4, 0), 'ikeya_seki', 3e6],
   ['Duende míjí Zemi (15. 2. 2013)', U(2013, 2, 15, 19, 25), 'duende', 40],
-  ['Apophis prolétá kolem Země (13. 4. 2029, dráha jen přibližná)', U(2029, 4, 13, 21, 46), 'apophis', 40],
+  ['Apophis prolétá kolem Země (13. 4. 2029)', U(2029, 4, 13, 21, 46), 'apophis', 40],
   ['Galileo objevuje měsíce Jupiteru (7. 1. 1610)', U(1610, 1, 7, 18, 0), 'jupiter', 30],
 ].filter((e) => idx.has(e[2]));
 const FUN = {
@@ -649,7 +649,7 @@ export function createUI(S, A) {
             `Nejrychlejší sondou bys sem letěl <b>${kmh(58000)}</b>, světlo to zvládne za <b>${fmtLight(inf.earth)}</b>.`,
           ]
         );
-      tiles.push(['📏', `Průměr <b>${fmtDist(D).replace(/ \(.*/, '')}</b> – ${sizeLike(D)}.`]);
+      tiles.push(['📏', `Průměr <b>${fmtDist(D).replace(/ \(.*/, '')}</b>${i === EARTH ? '' : ' – ' + sizeLike(D)}.`]);
       if (b.rot)
         tiles.push([
           '🌗',
@@ -763,7 +763,9 @@ export function createUI(S, A) {
     `<button class="it all" data-a="list" title="Všechna tělesa (B)"><b><i class="menu">☰</i></b><span>Všechna</span></button>`;
   function drawSub() {
     const r = root[S.focus],
-      ks = r === SUN ? [] : [r, ...[...kids[r]].sort((a, b) => semi[a] - semi[b])];
+      all = r === SUN ? [] : [r, ...[...kids[r]].sort((a, b) => semi[a] - semi[b])],
+      /* dětské rozhraní: jen známé a větší měsíce (a ten, u kterého právě jsme); ostatní zůstávají v seznamu Všechna */
+      ks = K() ? all.filter((j) => j === r || j === S.focus || j === S.sel || B[j].fame >= 3 || B[j].R >= 200) : all;
     const e = $('#sub');
     if (ks.length < 2) {
       e.style.display = 'none';
