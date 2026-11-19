@@ -4649,7 +4649,7 @@ hotovo za ${Le.toFixed(1)} s \xB7 pr\u016Fm\u011Br mal\xE9 mapy ${qe.ms.length?M
 .ds-btn { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 4px; }
 body.stack #ds, body.stack #dsc { top: 108px; max-height: calc(var(--vh) / var(--bk, 1) - 308px); }
 body.tab #dsc { width: 340px; }
-#dsk { left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(820px, 94vw); max-height: min(88vh, 940px); z-index: 15; background: rgba(9, 13, 22, 0.98); font-size: 13.5px; line-height: 1.5; }
+#dsk { left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(820px, 94vw); max-height: min(86vh, 940px); z-index: 15; background: rgba(9, 13, 22, 0.98); font-size: 13.5px; line-height: 1.5; }
 #dsk h3 { font-size: 24px; margin: 0 30px 0 0; } #dsk .dk-sub { margin: 2px 0 8px; color: var(--mu); } #dsk .dk-lead { margin: 0 0 10px; font-size: 14.5px; }
 #dsk a { color: #ffe7ad; text-decoration: underline dotted; cursor: pointer; } #dsk sup a { text-decoration: none; }
 #dsk .dk-fig { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 12px; margin: 0 0 12px; align-items: start; }
