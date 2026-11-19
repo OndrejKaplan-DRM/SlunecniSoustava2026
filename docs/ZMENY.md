@@ -42,6 +42,9 @@ Samostatná linie „grafika povrchů“ vedle 1.9 (dráhy a úkazy na `iterace-
   - **Noční světla Země** 8192 × 4096 (Black Marble 2016, jeden kanál R8) místo 2048 px – načítají se s velkou mapou Země.
   - Nástroje: `tools/maps/l2_tiles.py` (stupně, převod starých názvů), `make_l2.py` píše pyramidu (`L2_L1`, `L2_Q2`).
   - Test `t_l2.mjs`: stupně v `S.l2.state().lv`, pohled `…:noc` pro noční světla, snímky `<id>_<n>_L1|L2.jpg`.
+  - Soubor na flashku s `--hi`: 298,2 MiB (312,7 MB, 2 293 souborů); v sandboxu připraven za 4,8 s, paměť stránky 637 MB,
+    po přiblížení k Měsíci 815 MB, 0 požadavků ven, 0 chyb.
+  - Test ukázky `tut.mjs`: první běh čeká, až úvod zmizí a ukázka běží (start s přednačtením trvá v sandboxu asi 4 s; padal i na `9fe1848`).
 - Soubor na flashku s `--hi` obsahuje i úroveň 2 (180 MB; `--bez-l2` ji vynechá). Data jsou nově v neaktivních prvcích
   `<script type="text/x-s200">` a `window.S200_ASSETS` je Proxy (src/core/asset.js beze změny): po otevření v sandboxu 503 MB paměti
   stránky místo 618 MB se starým způsobem (1.8a s 81 MB: 406 MB), halda JavaScriptu 30 MB místo 381 MB. Starý způsob: `--json`.
