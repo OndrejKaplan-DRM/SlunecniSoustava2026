@@ -25,6 +25,8 @@ export function createUdalosti(S, A, ui) {
       'a' /* 1.9 pohled na zatmění: a = výchozí (nad místem / od Země), m = zpoza Měsíce, t = Země a Měsíc shora */,
     drag = false /* uživatel drží táhlo časové osy */,
     trackUm = 0 /* střední poloměr stínu podél dráhy (km) – šířka pásu úplného zatmění */,
+    calKm = 0 /* 1.10: o kolik km stojí pozorovatel v modelu vedle místa úkazu (srovnání s katalogem NASA) */,
+    switching = false /* kamera se právě přestavuje (vzlet z povrchu při tom neznamená, že ho chtěl uživatel) */,
     lastF = 0 /* ohnisková délka kamery v bodech z posledního snímku */,
     wasPlay = false,
     skyT = 0;
@@ -126,12 +128,14 @@ export function createUdalosti(S, A, ui) {
     e.typ === 'slunce'
       ? [
           ['a', '📍 Nad místem'],
+          ['z', '🔭 Z místa'],
           ['m', '🌘 Zpoza Měsíce'],
           ['t', '🛰 Země a Měsíc'],
         ]
       : e.typ === 'mesic'
         ? [
             ['a', '🌕 Od Země'],
+            ['z', '🔭 Z místa'],
             ['t', '🛰 Země a Měsíc'],
           ]
         : [];
@@ -257,6 +261,7 @@ export function createUdalosti(S, A, ui) {
     const s = new Set([EARTH]),
       add = (id) => idx.has(id) && s.add(idx.get(id));
     if (SHADOW(e)) s.add(MOON);
+    if (e.typ === 'slunce') s.add(SUN);
     if (TOP(e) && (e.typ !== 'blizko' || e.telo === 'sun')) s.add(SUN);
     for (const id of [e.a, e.b, e.telo].concat(e.telesa || [])) if (id) add(id);
     return s;
@@ -797,7 +802,60 @@ export function createUdalosti(S, A, ui) {
   function place(e) {
     const small = cls('mob') ? 1.5 : 1;
     S.orbMode = back ? back.orb : S.orbMode;
-    if (SHADOW(e) && view === 't') {
+    switching = true;
+    try {
+      placeCam(e, small);
+    } finally {
+      switching = false;
+    }
+  }
+  /* 1.10 pohled z místa úkazu: pozorovatel stojí na Zemi a dalekohledem sleduje Slunce (nebo Měsíc).
+     Model má osu stínu oproti katalogu NASA posunutou až o desítky km. Aby 3D pohled odpovídal okolnostem z katalogu
+     (úplné × částečné), stojí pozorovatel v modelu vůči modelové ose stínu stejně, jako místo úkazu vůči ose podle NASA. */
+  function siteOf(e) {
+    const s = geoV(e.lat, e.lon),
+      q = e.typ === 'slunce' ? nasaAt(e, S.jd) : null;
+    calKm = 0;
+    let v = s;
+    if (q && q.axis) {
+      basis(EARTH, S.jd, m9);
+      const sm = shadow(null); /* osa stínu podle modelu */
+      if (sm) {
+        const a = geoV(q.axis[0], q.axis[1]),
+          b = sm.v,
+          ax = cross(a, b),
+          sn = len(ax),
+          th = Math.atan2(sn, dot(a, b));
+        if (sn > 1e-9 && th < 0.06) {
+          const k = [ax[0] / sn, ax[1] / sn, ax[2] / sn],
+            kv = cross(k, s),
+            kd = dot(k, s),
+            c = Math.cos(th),
+            si = Math.sin(th);
+          v = unit([0, 1, 2].map((j) => s[j] * c + kv[j] * si + k[j] * kd * (1 - c)));
+          calKm = th * RE;
+        }
+      }
+    }
+    return [Math.asin(Math.max(-1, Math.min(1, v[2]))) / DEG, Math.atan2(v[1], v[0]) / DEG];
+  }
+  function fromSite(e) {
+    const [lat, lon] = siteOf(e),
+      f = area();
+    ui.povrch.enter(EARTH, lat, lon, {
+      fov: e.typ === 'slunce' ? 3.4 : 2.8,
+      track: e.typ === 'slunce' ? SUN : MOON,
+      quiet: true,
+      air: true,
+    });
+    if (S.surf) {
+      S.surf.ox = f.cx - f.W / 2;
+      S.surf.oy = f.cy - f.H / 2;
+    }
+  }
+  function placeCam(e, small) {
+    if (SHADOW(e) && view === 'z' && ui.povrch) fromSite(e);
+    else if (SHADOW(e) && view === 't') {
       /* Země a Měsíc shora, ve skutečném poměru: je vidět, jak daleko Měsíc je a jak úzký je stín */
       topDown(EARTH, [pos(MOON)]);
       S.orbMode = Math.max(2, S.orbMode);
@@ -831,7 +889,9 @@ export function createUdalosti(S, A, ui) {
     if (!back) return;
     play = 0;
     setTime(back.jd);
+    switching = true;
     S.jump(back.focus);
+    switching = false;
     S.cam.yaw = back.yaw;
     S.cam.pitch = back.pitch;
     S.cam.alt = S.cam.altT = back.alt;
@@ -958,16 +1018,20 @@ export function createUdalosti(S, A, ui) {
         e.typ === 'slunce'
           ? view === 'a'
             ? `<i class="l1"></i> stín Měsíce (100 %) <i class="l2"></i> pás úplného zatmění <i class="l3"></i> pásma částečného zatmění: kolik procent průměru Slunce Měsíc zakryje`
-            : view === 'm'
-              ? 'Díváš se od Slunce přes Měsíc na Zemi. Fialový kužel je stín Měsíce; na Zemi z něj dopadne jen malá tmavá skvrna.'
-              : 'Pohled shora ve skutečném poměru. Tmavý kužel je plný stín Měsíce, světlý vějíř polostín. Šipka míří ke Slunci.'
+            : view === 'z'
+              ? `Stojíš v místě úkazu a sleduješ Slunce dalekohledem. Táhlem posouvej čas. Polohy počítá model${calKm > 1 ? `; aby pohled odpovídal katalogu NASA, stojí pozorovatel v modelu o ${num(Math.round(calKm))} km vedle` : ''}. Přesné okolnosti ukazuje okénko nahoře.`
+              : view === 'm'
+                ? 'Díváš se od Slunce přes Měsíc na Zemi. Fialový kužel je stín Měsíce; na Zemi z něj dopadne jen malá tmavá skvrna.'
+                : 'Pohled shora ve skutečném poměru. Tmavý kužel je plný stín Měsíce, světlý vějíř polostín. Šipka míří ke Slunci.'
           : TOP(e)
             ? `<i class="l2"></i> ${e.typ === 'blizko' ? 'spojnice těles' : 'přímka od Země: tělesa na ní leží za sebou'}. Dráhy jsou stopy: těleso letí k jasnému konci.`
             : e.typ === 'hvezda'
               ? 'Hvězda svítí na obloze vedle Země; ▶ Přehrát ukáže, jak vzplála a pohasla.'
-              : view === 'a'
-                ? 'Pohled od Země. Červená kružnice je plný stín Země ve vzdálenosti Měsíce, světlá polostín.'
-                : 'Pohled shora ve skutečném poměru. Tmavý kužel je plný stín Země, světlý vějíř polostín. Šipka míří ke Slunci.',
+              : view === 'z'
+                ? 'Stojíš v místě úkazu a sleduješ Měsíc dalekohledem. Táhlem posouvej čas: Měsíc vjíždí do stínu Země a červená.'
+                : view === 'a'
+                  ? 'Pohled od Země. Červená kružnice je plný stín Země ve vzdálenosti Měsíce, světlá polostín.'
+                  : 'Pohled shora ve skutečném poměru. Tmavý kužel je plný stín Země, světlý vějíř polostín. Šipka míří ke Slunci.',
       sp = span(e),
       tl = back
         ? `<div class="uk-tl"><input type="range" min="0" max="1000" step="1" value="${tlPos()}" aria-label="Čas úkazu: tažením posuneš čas"><i style="left:${(100 * (e.typ === 'hvezda' ? e.t0 - sp[0] : e.jd - sp[0])) / sp[1]}%" title="vrchol úkazu"></i></div>` +
@@ -1187,8 +1251,8 @@ export function createUdalosti(S, A, ui) {
   // 2D vrstva zatmění (1.9): pás úplného zatmění, pásma částečného zatmění s procenty, stín, místo úkazu;
   // v pohledech z odstupu kužel stínu a polostínu; u zatmění Měsíce průřez stínem Země.
   S.overlays.push((ctx, e) => {
-    lastF = e.F;
-    if (!cur || !back || !SHADOW(cur)) return;
+    if (!S.surf) lastF = e.F; /* při pohledu z povrchu je zorné pole úzké; volná plocha se počítá z běžného */
+    if (!cur || !back || !SHADOW(cur) || S.surf) return;
     if (S.focus !== EARTH && S.focus !== MOON) return;
     const { W, H, F, fwd, right, up } = e,
       C = S.camPos,
@@ -1564,6 +1628,7 @@ export function createUdalosti(S, A, ui) {
     for (const st of S.F.on('ukazy') ? STARS : []) {
       const m = magAt(st, S.jd);
       if (m === null) continue;
+      if (S.surf && dot(st.dir, S.surfBasis().n.toArray()) < 0) continue; /* 1.10: pod obzorem */
       const q = scr(st.dir);
       if (!q || q[0] < -40 || q[0] > W + 40 || q[1] < -40 || q[1] > H + 40) continue;
       if (fr && fr.pr && Math.hypot(q[0] - fr.sx, q[1] - fr.sy) < fr.pr) continue; /* za kotoučem tělesa */
@@ -1600,6 +1665,17 @@ export function createUdalosti(S, A, ui) {
     }
   });
   S.bus.on('mode', () => draw());
+  S.bus.on('surf', (q) => {
+    if (q || switching || view !== 'z' || !back || !cur) return;
+    view = 'a';
+    const t = S.jd;
+    setTime(cur.jd);
+    draw();
+    place(cur);
+    setTime(t);
+    if (cur.typ === 'slunce') aim(cur);
+    draw();
+  });
   /* úkazy jsou jen v dospělém rozhraní (registr funkcí): při přepnutí do dětského se ukázka vrátí a karta zavře */
   S.F.onChange(() => {
     if (S.F.on('ukazy') || (!cur && !back)) return;

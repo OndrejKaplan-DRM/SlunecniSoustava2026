@@ -10,6 +10,7 @@ import { createUdalosti } from './ui/udalosti.js';
 import { createFlags } from './core/flags.js';
 import { createSuperkarta } from './ui/superkarta.js';
 import { createObloha } from './ui/obloha.js';
+import { createPovrch } from './ui/povrch.js';
 let S;
 try {
   S = createEngine(document.getElementById('gl'), document.getElementById('ov'));
@@ -33,6 +34,8 @@ ui.X = createExtras(S, A, ui);
 const mob = createMobile(S, A, ui);
 const zv = createZvuky(A, ui);
 const orient = createOrient(S, A, ui);
+/* 1.10: pohled z povrchu tělesa (musí existovat dřív než úkazy: zatmění se dá sledovat z místa úkazu) */
+const povrch = (ui.povrch = createPovrch(S, A, ui));
 const uk = createUdalosti(S, A, ui);
 const sk = createSuperkarta(S, A, ui);
 /* ukázka ovládání umí předvést i Superkartu a úkazy */
@@ -58,4 +61,4 @@ S.bus.on('belt', (b) => {
 F.setKid(document.body.classList.contains('kid'));
 S.bus.on('mode', (k) => F.setKid(k));
 S.start();
-window.S200 = { S, ui, sim, A, mob, zv, orient, uk, sk, F, obloha };
+window.S200 = { S, ui, sim, A, mob, zv, orient, uk, sk, F, obloha, povrch };

@@ -11,11 +11,40 @@ a v souboru na vyzkoušení (`node tools/build/build_offline.mjs <výstup.html> 
 | 1.6 | 18. 11. 2026 | `iterace-17` (`d991ab9`) | `iterace-16` |
 | 1.7, 1.7.1 | 18.–19. 11. 2026 | `iterace-18` (`06f1a52`) | `iterace-17` |
 | 1.8a | 19. 11. 2026 | `iterace-19` (`8b21072`) | `iterace-18` |
-| 1.9 | 19. 11. 2026 | `iterace-20` | `iterace-19` |
-| 1.8a | 19. 11. 2026 | `iterace-19` | `iterace-18` |
-| 1.8m | 19. 11. 2026 | `iterace-21` | `iterace-19` (souběžně s 1.9 na `iterace-20`) |
+| 1.8b | 19. 11. 2026 | `iterace-19b` (`929fe9c`) | `iterace-19` (boční větev, objekty na obloze) |
+| 1.8m | 19. 11. 2026 | `iterace-21` (`9fe1848`) | `iterace-19` (boční větev, podrobné mapy) |
+| 1.9 | 19. 11. 2026 | `iterace-20` (`1e06803`) | `iterace-19` |
+| 1.10 | 19. 11. 2026 | `iterace-22` | `iterace-20` + sloučené `iterace-19b` a `iterace-21` |
 
-Větve na sebe navazují v řadě, takže `iterace-20` obsahuje vše předchozí.
+Do verze 1.8a na sebe větve navazují v řadě. Verze 1.8b, 1.8m a 1.9 vznikly souběžně ve třech sešnách z `iterace-19`;
+`iterace-22` je slučuje a přidává pohled z povrchu, takže obsahuje vše předchozí.
+
+## 1.10 – sloučení tří větví a pohled z povrchu tělesa
+Sloučeno: 1.9 (mizející dráhy, scéna úkazu), 1.8b (19 objektů na obloze) a 1.8m (podrobné mapy úrovně 2). Konflikty jen ve třech
+čekaných souborech (`dist/app.js` – znovu sestaven, číslo verze v `dist/index.html`, tabulka v tomto souboru); zdrojáky se sloučily samy.
+- **Pohled z povrchu** (`ui/povrch.js`, `render/engine.js`; vzor: „Telescope mode“ v NASA Eyes): tlačítko „🔭 Z povrchu“ v kartě tělesa
+  a v ☰ postaví pozorovatele na místo, nad kterým kamera právě stojí (u Země i tlačítko „📍 Praha“). Tahem se rozhlíží, kolečkem nebo
+  dvěma prsty se mění zorné pole od 75° po 0,25° (dalekohled). Lišta `#surf` ukazuje zeměpisnou polohu, směr pohledu (světová strana,
+  výška nad obzorem), výšku Slunce, zorné pole a nabídku „Najít na obloze…“ (těleso se pak sleduje, i když běží čas). Esc nebo
+  „⬆ Vzlétnout“ vrátí kameru na oběžnou dráhu přímo nad místo. Funguje v obou rozhraních a na všech tělesech kromě Slunce.
+- **Co je skutečné a co zjednodušené:** směry a výšky těles nad obzorem, jejich úhlové velikosti, fáze a denní pohyb oblohy počítá
+  model (kontrola: Slunce z Prahy 20. 11. 2026 v 11:02 UT je 20,1° vysoko těsně za jihem – shoda s výpočtem z deklinace). Zjednodušení:
+  zem je rovina v barvě tělesa bez terénu, obzor je ideální (bez hor a bez lomu světla ve vzduchu, ten u obzoru zvedá tělesa asi o 0,5°),
+  barva denní oblohy Země a Marsu je ilustrace (přechod podle výšky Slunce, bez výpočtu rozptylu). Venuše, Titan a plynní obři dostanou
+  upozornění, že skutečný výhled tam takový není (mraky, opar, žádný pevný povrch). Na tělesech bez vzduchu jsou hvězdy vidět i ve dne;
+  oko oslněné povrchem by jich vidělo méně.
+- **Vzduch:** přepínač „🌫 Vzduch“ (Země, Mars) zapíná denní oblohu – se vzduchem přes den hvězdy ustoupí, bez něj je obloha černá.
+  Denní obloha je vrstva `#skyair` mezi 3D plátnem a 2D vrstvou (`mix-blend-mode: screen`), síla v `S.skyDim`.
+- **Obzor:** tělesa, objekty na obloze, supernovy a odlesk objektivu pod obzorem se nekreslí a nejdou vybrat. Drobná tělesa (planetky,
+  komety, sondy) nemají na obloze jméno, dokud nejsou vybraná nebo nejsou zapnutá všechna jména; trpasličí planety až při poli pod 20°.
+- **Zatmění „Z místa“** (`ui/udalosti.js`): čtvrtý pohled u zatmění Slunce a Měsíce postaví pozorovatele do místa z karty a sleduje
+  Slunce (pole 3,4°) nebo Měsíc (2,8°); táhlo času ukáže průběh. Při úplném zatmění obloha ztmavne a vyjde koróna. Model má pás
+  úplného zatmění posunutý až o desítky km, proto se pozorovatel posune tak, aby pohled odpovídal katalogu NASA; o kolik, píše legenda
+  („stojí pozorovatel v modelu o 55 km vedle“). Lištu pohledu z povrchu tu nahrazuje karta úkazu.
+- **Engine:** `S.surf` (místo, směr, zorné pole, sledované těleso, posun středu), `S.setSurf`, `S.subPoint`, `S.surfDir`,
+  `S.surfBasis`, `S.fov`; proměnné zorné pole kamery (`setFov`), těleso pod nohama se nekreslí, dráhy jsou schované;
+  událost sběrnice `surf`. Odlet (`flyTo`, `jump`) pohled z povrchu ukončí.
+- Test `tools/test/t_povrch.mjs` (počítač, telefon na výšku i na šířku, tablet; 199 kontrol).
 
 ## 1.9 – mizející dráhy a úkaz jako samostatná scéna (inspirace: NASA Eyes on the Solar System)
 Podklad: 54 snímků NASA Eyes a 58 snímků verze 1.7.1 od autora (19. 11. 2026). Limit velikosti souboru nově 250 MB (dřív 100); verze 1.9
@@ -42,10 +71,6 @@ velikost nemění.
 - **Seznam úkazů:** nahoře „Nejbližší úkaz“ podle dnešního data.
 - **Ukázka ovládání:** kapitola o drahách vysvětluje stopu; kapitola o úkazech u zatmění přepne i na pohled zpoza Měsíce.
 - Test `tools/test/t_scena.mjs` (počítač, telefon na výšku i na šířku, tablet; 287 kontrol).
-| 1.8b | 19. 11. 2026 | `iterace-19b` | `iterace-19` (souběžně s verzí 1.9 z jiné sešny) |
-
-Větve na sebe navazují v řadě, takže `iterace-19` obsahuje vše předchozí. `iterace-19b` je boční větev z `iterace-19`
-určená ke sloučení s větví verze 1.9 (viz „Sloučení“ na konci oddílu 1.8b).
 
 ## 1.8b – objekty na obloze (mlhoviny, hvězdokupy, galaxie)
 Limit velikosti souboru nově 250 MB včetně grafiky. Jen dospělé rozhraní (`obloha` v `src/core/flags.js`).

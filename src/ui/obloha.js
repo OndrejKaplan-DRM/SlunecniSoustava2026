@@ -281,6 +281,7 @@ export function createObloha(S, A, ui) {
       o.vis = false;
       const z = o.v.dot(e.fwd);
       if (z < 0.25) continue;
+      if (S.surf && o.v.dot(S.surfBasis().n) < 0) continue; /* 1.10: při pohledu z povrchu je objekt pod obzorem */
       const x = e.W / 2 + (e.F * o.v.dot(e.right)) / z,
         y = e.H / 2 - (e.F * o.v.dot(e.up)) / z;
       if (x < -30 || x > e.W + 30 || y < -30 || y > e.H + 30) continue;

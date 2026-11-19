@@ -103,6 +103,8 @@ export function createEngine(canvas, overlay) {
     orbFade: true /* 1.9: dráha jako mizející stopa za tělesem (false = rovnoměrná čára) */,
     evSet:
       null /* 1.9: množina těles právě ukazovaného úkazu (jinak null); ostatní drobná tělesa, pásy a sondy ustoupí */,
+    surf: null /* 1.10 pohled z povrchu: { i, lat, lon, az, el, fov, track, ox, oy, air } – kamera stojí na tělese a dívá se na oblohu */,
+    skyDim: 0 /* 1.10: o kolik denní obloha přesvítí hvězdy a Mléčnou dráhu (0–1) */,
     labMode: 1,
     realBright: false,
     disco: false,
@@ -159,7 +161,14 @@ export function createEngine(canvas, overlay) {
   const ctx = overlay.getContext('2d');
   let W = 1,
     H = 1,
-    F = 1;
+    F = 1,
+    fovNow = FOV; /* 1.10: zorné pole se mění jen při pohledu z povrchu (dalekohled) */
+  const setFov = (v) => {
+    if (v === fovNow) return;
+    fovNow = v;
+    camera.fov = v;
+    F = H / 2 / Math.tan((v * DEG) / 2);
+  };
   function resize() {
     W = canvas.clientWidth || window.innerWidth;
     H = canvas.clientHeight || window.innerHeight;
@@ -184,7 +193,7 @@ export function createEngine(canvas, overlay) {
     overlay.width = Math.round(W * d);
     overlay.height = Math.round(H * d);
     ctx.setTransform(d, 0, 0, d, 0, 0);
-    F = H / 2 / Math.tan((FOV * DEG) / 2);
+    F = H / 2 / Math.tan((fovNow * DEG) / 2);
     wake();
   }
   window.addEventListener('resize', resize);
@@ -1135,6 +1144,7 @@ export function createEngine(canvas, overlay) {
   }
   S.flyTo = (j, opts = {}) => {
     if (j < 0 || j >= N) return;
+    if (S.surf) S.setSurf(null); /* 1.10: přelet jinam = vzlet z povrchu */
     wake();
     S.sel = j;
     S.on.select(j);
@@ -1170,6 +1180,7 @@ export function createEngine(canvas, overlay) {
     wake();
   }; // zkušební háček: natočit pohled na místo na obloze
   S.jump = (j) => {
+    if (S.surf) S.setSurf(null);
     S.focus = S.sel = j;
     cam.fly = null;
     cam.alt = cam.altT = arriveAlt(j);
@@ -1191,11 +1202,30 @@ export function createEngine(canvas, overlay) {
     wake();
   };
   S.zoom = (k) => {
+    if (S.surf) {
+      /* na povrchu kolečko nemění výšku, ale zorné pole (dalekohled) */
+      S.surf.fov = Math.min(SURF_FOV[1], Math.max(SURF_FOV[0], S.surf.fov * k));
+      return wake();
+    }
     cam.altT = Math.min(3e11, Math.max(minAlt(S.focus), cam.altT * k));
     if (cam.fly && cam.fly.ph === 2) cam.fly = null;
     wake();
   };
+  const surfTurn = (dx, dy) => {
+    /* rozhlížení z povrchu: tah „drží oblohu“ – doprava se obloha posune doprava; sledování tělesa tím končí */
+    const q = S.surf,
+      k = (fovNow * DEG) / H;
+    if (q.track >= 0) {
+      q.track = -1;
+      q.ox = q.oy = 0;
+      S.bus.emit('surf', q);
+    }
+    q.az -= (dx * k) / Math.max(0.2, Math.cos(q.el));
+    q.el = Math.min(SURF_EL[1], Math.max(SURF_EL[0], q.el + dy * k));
+    wake();
+  };
   S.rotate = (dx, dy) => {
+    if (S.surf) return surfTurn(dx, dy);
     const i = S.focus,
       k = Math.min(0.005, (cam.alt / shape[i].rmax) * ((2 * Math.tan((FOV * DEG) / 2)) / H));
     /* 1.6: dětské rozhraní se zastaví nad pólem (kvůli orientaci); dospělé se otáčí volně i přes pól */
@@ -1211,6 +1241,7 @@ export function createEngine(canvas, overlay) {
     wake();
   };
   S.look = (dx, dy) => {
+    if (S.surf) return surfTurn(-dx, dy);
     cam.ly = Math.max(-3.1, Math.min(3.1, cam.ly + dx * 0.0035));
     cam.lp = Math.max(-1.5, Math.min(1.5, cam.lp + dy * 0.0035));
     if (cam.fly && cam.fly.ph === 2) cam.fly = null;
@@ -1222,7 +1253,167 @@ export function createEngine(canvas, overlay) {
   };
   S.cam = cam;
   const ease = (u) => u * u * (3 - 2 * u);
+  /* ---------- 1.10 pohled z povrchu ----------
+     Kamera stojí na místě (lat, lon) tělesa, „nahoře“ je místní zenit. Směr pohledu: azimut (0 = sever, π/2 = východ)
+     a výška nad obzorem. Zorné pole 0,25–75° (kolečko = dalekohled). track ≥ 0: pohled drží zvolené těleso, případně
+     posunuté o (ox, oy) bodů od středu obrazu (volná plocha vedle karty úkazu). */
+  const SURF_FOV = [0.25, 75],
+    SURF_EL = [-0.35, 1.5533],
+    sN = new THREE.Vector3(),
+    sE = new THREE.Vector3(),
+    sNo = new THREE.Vector3(),
+    sD = new THREE.Vector3();
+  function surfFrame(q) {
+    const i = q.i,
+      la = q.lat * DEG,
+      lo = q.lon * DEG,
+      cl = Math.cos(la),
+      v0 = cl * Math.cos(lo),
+      v1 = cl * Math.sin(lo),
+      v2 = Math.sin(la);
+    basis(i, S.jd, m9);
+    sN.set(
+      v0 * m9[0] + v1 * m9[3] + v2 * m9[6],
+      v0 * m9[1] + v1 * m9[4] + v2 * m9[7],
+      v0 * m9[2] + v1 * m9[5] + v2 * m9[8]
+    );
+    sE.set(m9[6], m9[7], m9[8]).cross(sN); /* východ = pól × zenit */
+    if (sE.lengthSq() < 1e-8) sE.set(m9[0], m9[1], m9[2]);
+    sE.normalize();
+    sNo.crossVectors(sN, sE);
+    const C = S.camPos,
+      rad = B[i].R * 1.00001 + 0.002;
+    C[0] = P[i * 3] + sN.x * rad;
+    C[1] = P[i * 3 + 1] + sN.y * rad;
+    C[2] = P[i * 3 + 2] + sN.z * rad;
+  }
+  /* směr k tělesu j z místa pozorovatele: [azimut, výška nad obzorem] v radiánech (po surfFrame) */
+  function surfDir(j, out) {
+    const C = S.camPos;
+    sD.set(P[j * 3] - C[0], P[j * 3 + 1] - C[1], P[j * 3 + 2] - C[2]).normalize();
+    out[0] = Math.atan2(sD.dot(sE), sD.dot(sNo));
+    out[1] = Math.asin(Math.max(-1, Math.min(1, sD.dot(sN))));
+    return out;
+  }
+  const sAE = [0, 0];
+  function surfCamera(dt) {
+    const q = S.surf,
+      i = q.i;
+    S.focus = i;
+    cam.fly = null;
+    cam.ly = cam.lp = 0;
+    cam.alt = cam.altT = minAlt(i);
+    q.fov = Math.min(SURF_FOV[1], Math.max(SURF_FOV[0], q.fov));
+    if (!q.fovNow) q.fovNow = q.fov;
+    const lf = Math.log(q.fov / q.fovNow);
+    if (Math.abs(lf) > 1e-3) {
+      q.fovNow *= Math.exp(lf * (1 - Math.exp(-dt * 9)));
+      wake();
+    } else q.fovNow = q.fov;
+    setFov(q.fovNow);
+    surfFrame(q);
+    let tracked = false;
+    if (q.track >= 0 && q.track !== i) {
+      surfDir(q.track, sAE);
+      q.az = sAE[0];
+      q.el = Math.max(SURF_EL[0], sAE[1]);
+      tracked = true;
+    }
+    const el = tracked ? q.el : Math.min(SURF_EL[1], Math.max(SURF_EL[0], q.el)),
+      ce = Math.cos(el);
+    fwd
+      .set(0, 0, 0)
+      .addScaledVector(sE, ce * Math.sin(q.az))
+      .addScaledVector(sNo, ce * Math.cos(q.az))
+      .addScaledVector(sN, Math.sin(el));
+    const mkRight = () => {
+      right.crossVectors(fwd, sN);
+      if (right.lengthSq() < 1e-8)
+        right.set(0, 0, 0).addScaledVector(sE, Math.cos(q.az)).addScaledVector(sNo, -Math.sin(q.az));
+      right.normalize();
+      up.crossVectors(right, fwd).normalize();
+    };
+    mkRight();
+    if (tracked && (q.ox || q.oy)) {
+      /* sledované těleso nemá být uprostřed, ale o (ox, oy) bodů vedle: pootočit pohled */
+      tmp2.copy(fwd);
+      for (let k = 0; k < 6; k++) {
+        fwd
+          .copy(tmp2)
+          .addScaledVector(right, -q.ox / F)
+          .addScaledVector(up, q.oy / F)
+          .normalize();
+        mkRight();
+      }
+    }
+    mm.makeBasis(right, up, tmp.copy(fwd).negate());
+    camera.matrix.copy(mm);
+    camera.matrixWorld.copy(mm);
+    camera.matrixWorldInverse.copy(mm).invert();
+    camera.near = 1e-4;
+    camera.far = 1e12;
+    camera.updateProjectionMatrix();
+  }
+  S.setSurf = (o) => {
+    if (!o) {
+      if (!S.surf) return;
+      /* vzlet: kamera se vrátí na oběžnou dráhu přímo nad místo, kde stála */
+      surfFrame(S.surf);
+      const i = S.surf.i;
+      S.surf = null;
+      S.skyDim = 0;
+      setFov(FOV);
+      cam.pitch = Math.asin(Math.max(-1, Math.min(1, sN.y)));
+      cam.yaw = Math.atan2(sN.z, sN.x);
+      cam.ly = cam.lp = 0;
+      cam.fly = null;
+      cam.alt = shape[i].rmax * 0.05;
+      cam.altT = arriveAlt(i);
+      S.bus.emit('surf', null);
+      return wake();
+    }
+    cam.fly = null;
+    S.focus = S.sel = o.i;
+    S.surf = {
+      i: o.i,
+      lat: o.lat,
+      lon: o.lon,
+      az: o.az || 0,
+      el: o.el === undefined ? 0.3 : o.el,
+      fov: o.fov || 60,
+      fovNow: 0,
+      track: o.track === undefined ? -1 : o.track,
+      ox: o.ox || 0,
+      oy: o.oy || 0,
+      air: o.air !== false,
+      quiet: !!o.quiet,
+    };
+    surfFrame(S.surf);
+    S.on.focus(o.i);
+    S.on.select(o.i);
+    S.bus.emit('surf', S.surf);
+    wake();
+  };
+  /* místo na tělese i, nad kterým kamera právě stojí: [šířka, délka] ve stupních */
+  S.subPoint = (i = S.focus) => {
+    basis(i, S.jd, m9);
+    dirOf(cam.yaw, cam.pitch, dv);
+    const x = dv.x * m9[0] + dv.y * m9[1] + dv.z * m9[2],
+      y = dv.x * m9[3] + dv.y * m9[4] + dv.z * m9[5],
+      z = dv.x * m9[6] + dv.y * m9[7] + dv.z * m9[8];
+    return [Math.asin(Math.max(-1, Math.min(1, z))) / DEG, Math.atan2(y, x) / DEG];
+  };
+  /* směr k tělesu j při pohledu z povrchu: { az, el } v radiánech, nebo null mimo tento režim */
+  S.surfDir = (j) => {
+    if (!S.surf) return null;
+    surfFrame(S.surf);
+    const o = surfDir(j, [0, 0]);
+    return { az: o[0], el: o[1] };
+  };
+  S.surfBasis = () => ({ n: sN, e: sE, no: sNo });
+  S.fov = () => fovNow;
   function updateCamera(dt) {
+    if (S.surf) return surfCamera(dt);
     let i = S.focus;
     const fl = cam.fly;
     let blend = 0,
@@ -1405,6 +1596,17 @@ export function createEngine(canvas, overlay) {
         r.sy = H / 2 - (rel.dot(up) / z) * F;
       } else {
         r.sx = r.sy = -1e6;
+      }
+      if (S.surf && i === S.surf.i) {
+        /* pohled z povrchu: těleso pod nohama se nekreslí (zem dělá 2D vrstva), ani se kvůli němu nenačítají mapy */
+        if (r.mesh) r.mesh.visible = false;
+        if (r.plumes) for (const m of r.plumes) m.visible = false;
+        if (r.glow) r.glow.visible = false;
+        if (r.tails) r.tails[0].visible = r.tails[1].visible = false;
+        r.sx = r.sy = -1e6;
+        r.z = -1;
+        r.pr = 0;
+        continue;
       }
       const on =
         pr > 0.9 &&
@@ -1673,6 +1875,7 @@ export function createEngine(canvas, overlay) {
         a *= sstep(shape[i].rmax * 25, shape[i].rmax * 250, r.dist);
       }
       if (S.poleFx > 0 && b.type === 'planet') a = Math.max(a, 0.9 * S.poleFx);
+      if (S.surf) a = 0; /* z povrchu by dráhy byly jen čáry přes oblohu */
       if (a < 0.015) {
         if (r.orbit) r.orbit.line.visible = false;
         continue;
@@ -1751,8 +1954,10 @@ export function createEngine(canvas, overlay) {
       f[3].uniforms.uOff.value.set(0, -oy);
       for (let q = 1; q < 5; q++) S.conLines.children[q].visible = fr > 0.004;
     }
-    starMat.uniforms.uGain.value = (1 + S.gamma * 1.2) * (S.disco ? 1.3 + 0.5 * Math.sin(now * 0.008) : 1);
-    skyMat.uniforms.uGain.value = 0.5 + S.gamma * 1.2;
+    starMat.uniforms.uGain.value =
+      (1 + S.gamma * 1.2) * (S.disco ? 1.3 + 0.5 * Math.sin(now * 0.008) : 1) * (1 - 0.97 * S.skyDim);
+    /* fotka Mléčné dráhy má 0,18° na bod: v dalekohledu (úzké zorné pole) by byla jen rozmazaná skvrna, proto slábne */
+    skyMat.uniforms.uGain.value = (0.5 + S.gamma * 1.2) * (1 - S.skyDim) * (S.surf ? sstep(2.5, 14, fovNow) : 1);
     renderer.render(scene, camera);
     drawOverlay(big);
     // návštěva, HUD, výkon
@@ -1941,6 +2146,7 @@ export function createEngine(canvas, overlay) {
       const r = R[i],
         b = B[i];
       if (r.z <= 0 || r.sx < -40 || r.sx > W + 40 || r.sy < -40 || r.sy > H + 40) continue;
+      if (S.surf && r.rel.dot(sN) < -0.004 * r.dist) continue; /* 1.10: těleso je pod obzorem */
       /* 1.9: při ukázce úkazu (S.evSet) mají značku a jméno jen tělesa, která k němu patří, a planety */
       const hot = i === fi || i === S.sel || i === S.hover || (S.evSet !== null && S.evSet.has(i)),
         p = par[i];
@@ -1960,6 +2166,8 @@ export function createEngine(canvas, overlay) {
       }
       if (hid) continue;
       const small = !(b.type === 'planet' || b.type === 'star' || b.type === 'dwarf' || b.type === 'moon');
+      /* pohled z povrchu: drobná tělesa pouhým okem vidět nejsou – na obloze jen vybraná nebo při „všech popiskách“; trpasličí planety až v dalekohledu (pole pod 20°) */
+      if (S.surf && !hot && S.labMode !== 2 && r.pr < 1.5 && (small || (b.type === 'dwarf' && fovNow > 20))) continue;
       let pri;
       if (hot) pri = 1000 + (i === S.hover ? 50 : 0);
       else if (b.type === 'star') pri = 300;

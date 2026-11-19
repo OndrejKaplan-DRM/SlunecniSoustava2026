@@ -231,7 +231,7 @@ export function createExtras(S, A, api) {
       if (s2) text(kid ? 'jižní pól' : 'J', s2[0] + 6, s2[1], '#ff9c9c');
     }
     // --- útvary na povrchu ---
-    const fs = FEAT[B[fi].id];
+    const fs = S.surf ? null : FEAT[B[fi].id]; /* 1.10: z povrchu se útvary na tělese pod nohama nepopisují */
     if (fs && rf.pr > 110 && S.labMode > 0 && rf.z > 0) {
       basis(fi, S.jd, m9);
       const cx = P[fi * 3],
@@ -389,7 +389,8 @@ export function createExtras(S, A, api) {
       sn.sy < H + 50 &&
       sn.pr < 160 &&
       !(S.sunMode === 3 && sn.pr > 5) /* koronograf: zakrytý kotouč odlesk nedělá */ &&
-      !hidden(sn.sx, sn.sy, sn.dist)
+      !hidden(sn.sx, sn.sy, sn.dist) &&
+      !(S.surf && S.surfDir(SUN).el < 0) /* z povrchu: Slunce pod obzorem odlesk nedělá */
     ) {
       const k = (kid ? 0.6 : 1) * Math.min(1, 1.3 - sn.pr / 160) * (0.55 + 0.45 * Math.min(1, (20 * AU) / sn.dist)),
         dx = W / 2 - sn.sx,

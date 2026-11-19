@@ -6,7 +6,7 @@ Interaktivní 3D model Sluneční soustavy v prohlížeči: 201 těles ve skute�
 dospělé a dětské rozhraní, minutová ukázka ovládání, čtyři pohledy na Slunce, zvuky, hudba a hra pro mladého astronoma.
 
 - **Spustit:** https://ondrejkaplan-drm.github.io/SlunecniSoustava2026/
-- **Verze:** 1.2 (13. 11. 2026); rozpracovaná 1.9 na větvi `iterace-20` (přehled změn: `docs/ZMENY.md`) · zdarma, bez reklam, bez registrace a bez sběru dat
+- **Verze:** 1.2 (13. 11. 2026); rozpracovaná 1.10 na větvi `iterace-22` (přehled změn: `docs/ZMENY.md`) · zdarma, bez reklam, bez registrace a bez sběru dat
 - **Bez internetu:** `npm run offline:hi` vyrobí jeden soubor HTML, který se otevře dvojklikem (na flashku, do školy)
 - **Autor:** Ing. Ondřej Kaplan, Ph.D. (ondrej.kaplan@gmail.com) – námět, zadání, odborná kontrola a testování. Kód napsal podle jeho zadání model Claude Fable 5.2 (Anthropic).
 - **Licence:** kód MIT (`LICENSE`); mapy, písmo, zvuky a hudba mají vlastní licence – přehled v `CREDITS.md`
@@ -63,6 +63,7 @@ src/                  zdrojový kód (ES moduly)
     superkarta.js     podrobná karta tělesa (pětiklik; jen dospělé rozhraní)
     udalosti.js       úkazy na obloze: seznam, karty, ukázka a návrat
     obloha.js         objekty na obloze: mlhoviny, hvězdokupy a galaxie na fotce Mléčné dráhy (jen dospělé rozhraní)
+    povrch.js         pohled z povrchu tělesa: lišta, denní obloha, zem a obzor, hledání těles na obloze
     tutorial.js       dvouminutová ukázka ovládání (každá kapitola si sama připraví pohled)
     zvuky.js          zkušebna zvuků
   audio/

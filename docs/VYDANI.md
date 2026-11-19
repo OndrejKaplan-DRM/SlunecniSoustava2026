@@ -16,6 +16,7 @@ Projít před každým sloučením do `main` a zveřejněním (stránka, artefak
 - [ ] `node tools/test/t_obloha.mjs /tmp/obl desk` a `… phone` (objekty na obloze: data, zdroje, pohled na objekt, karty, dětské rozhraní nic neukáže) bez chyb.
 - [ ] `node tools/test/t_pasy.mjs` (pásy planetek: vidět v přehledu, zblízka pryč, nejdou vybrat) bez chyb.
 - [ ] `node tools/test/t_scena.mjs` (scéna úkazu na počítači, telefonu na výšku i na šířku a tabletu: výběr ze seznamu, časová osa, pohledy na zatmění, tělesa ve volné ploše, návrat; mizející dráhy a jejich přepínač) bez chyb. Běží asi 8 minut.
+- [ ] `node tools/test/t_povrch.mjs` (pohled z povrchu na počítači, telefonu na výšku i na šířku a tabletu: vstup a výstup, výška Slunce z Prahy proti výpočtu, denní pohyb, vzduch, meze pohledu a zorného pole, sledování, Mars, Měsíc, dětské rozhraní, zatmění „Z místa“) bez chyb.
 - [ ] `node tools/test/t_l2.mjs /tmp/l2 moon:0.25,earth:0.2:46:9,mars:0.25:-8:-75,mercury:0.25` (podrobné mapy zblízka: zdálky nic, zblízka dlaždice, telefon nic; snímky `<id>_L1.jpg` a `<id>_L2.jpg` před/po) bez chyb.
 - [ ] `src/core/flags.js`: žádná nedodělaná funkce není ve stavu `vse`; vývojářský režim není po čistém otevření zapnutý.
 

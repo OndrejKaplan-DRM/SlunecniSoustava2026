@@ -36,6 +36,11 @@ a volají jeho funkce (`flyTo`, `jump`, `setSunMode`…); zpět dostávají udá
   o něm neví. Směr objektu ve scéně dává `S.eq2s(α, δ)`. „Ukázat na obloze“ nemění těleso ani výšku: nastaví otočení kolem tělesa
   (`cam.yaw`, `cam.pitch`) a odklon pohledu (`cam.lp`) tak, aby objekt přišel na zvolené místo obrazovky a těleso zůstalo stranou.
   Fotografie se načítají až při otevření karty (`AS('sky/…')`), ve verzi v jednom souboru jsou vložené jako ostatní podklady.
+- `ui/povrch.js` (1.10) – pohled z povrchu tělesa. Stav drží engine v `S.surf` (místo, směr, zorné pole, sledované těleso);
+  `surfCamera` v `render/engine.js` staví kameru na povrch (zenit, východ, sever z `basis`), mění zorné pole a těleso pod nohama
+  nekreslí. Modul kreslí lištu `#surf`, zem s obzorem jako první vrstvu `S.overlays` a denní oblohu `#skyair`; sílu oblohy
+  zapisuje do `S.skyDim`, podle které engine tlumí hvězdy. Ostatní vrstvy se ptají `S.surf` a `S.surfBasis()` (co je pod obzorem).
+  Pohled „Z místa“ u zatmění volá `ui.povrch.enter(…, { quiet: true })` z `ui/udalosti.js`.
 - Výšky oken v CSS se počítají z `var(--vh)` (na telefonu `100dvh`) a dělí měřítkem rozhraní `var(--bk)`.
 
 ## Co je velké a zaslouží rozdělit

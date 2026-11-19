@@ -693,7 +693,7 @@ export function createUI(S, A) {
       nx = S.focus === i ? nextUp(i) : [],
       e = el('div', 'more');
     e.innerHTML =
-      `<div class="row"><button data-a="cmp" title="Porovnat velikost">⚖ ${K() ? 'Jak je to velké?' : 'Porovnat'}</button><button data-a="pin" title="Měřit vzdálenost odsud (Shift+D)">📏 ${api.X && api.X.ruler === i ? 'Zrušit měření' : 'Měřit odsud'}</button></div>` +
+      `<div class="row"><button data-a="cmp" title="Porovnat velikost">⚖ ${K() ? 'Jak je to velké?' : 'Porovnat'}</button><button data-a="pin" title="Měřit vzdálenost odsud (Shift+D)">📏 ${api.X && api.X.ruler === i ? 'Zrušit měření' : 'Měřit odsud'}</button>${i === SUN ? '' : `<button data-a="surf" title="Postavit se na povrch a dívat se na oblohu (místo uprostřed obrazu)">🔭 ${S.surf && S.surf.i === i ? 'Vzlétnout' : K() ? 'Stoupnout si sem' : 'Z povrchu'}</button>`}</div>` +
       (nx.length
         ? `<div class="next"><span>${K() ? '🧭 Kam poletíme dál?' : 'Kam dál:'}</span>${nx.map((j) => `<button class="it chip" data-i="${j}"><b>${ico(j, 30)}</b><span>${B[j].cs}</span></button>`).join('')}</div>`
         : '');
@@ -986,6 +986,12 @@ export function createUI(S, A) {
       S.orbMode = (S.orbMode + 1) % (K() ? 3 : 6); /* dětské rozhraní: jen vypnuto a dva stupně */
       A.play(['orbit_off', 'orbit_on', 'orbit_on', 'orbit_on', 'orbit_all', 'orbit_all'][S.orbMode]);
       toast('Dráhy: ' + ORB_LAB[S.orbMode]);
+    },
+    surf() {
+      /* 1.10: pohled z povrchu vybraného tělesa (u Slunce z tělesa, u kterého právě jsme; jinak ze Země) */
+      if (!api.povrch) return;
+      if (S.surf) return api.povrch.exit();
+      api.povrch.enter(S.sel !== SUN ? S.sel : S.focus !== SUN ? S.focus : EARTH);
     },
     orbfade() {
       S.orbFade = !S.orbFade;
@@ -1583,7 +1589,7 @@ export function createUI(S, A) {
     outRange = o;
   });
   S.ticks.push((dt) => {
-    if (S.autoRot && !S.cam.fly) S.rotate(-38 * dt, 0);
+    if (S.autoRot && !S.cam.fly && !S.surf) S.rotate(-38 * dt, 0);
     if (!keys.size) return;
     const v = 520 * dt,
       has = (...a) => a.some((x) => keys.has(x));
