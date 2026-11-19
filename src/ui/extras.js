@@ -276,7 +276,7 @@ export function createExtras(S, A, api) {
     }
     // --- sondy ---
     X.probes.length = 0;
-    if (S.labMode > 0) {
+    if (S.labMode > 0 && !S.evSet) {
       const yr = 2000 + (S.jd - 2451545) / 365.25,
         put = (name, x, y, z, info) => {
           const p = proj(x, y, z);

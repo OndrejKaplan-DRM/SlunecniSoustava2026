@@ -248,10 +248,10 @@ export function createTutorial(S, A, ui) {
     // ---------- dráhy a pásy planetek: celá soustava shora ----------
     async orbits() {
       await say(
-        'Tlačítko Dráhy (klávesa O): pět stupňů, od planet po dráhy všech těles.',
-        'Čáry ukazují, kudy tělesa létají. Tlačítkem Dráhy je schováš, nebo ukážeš víc!',
-        'Dráhy najdeš v nabídce ☰ vpravo nahoře: pět stupňů, od planet po dráhy všech těles.',
-        'Čáry ukazují, kudy tělesa létají. V nabídce ☰ je schováš, nebo ukážeš víc!'
+        'Tlačítko Dráhy (klávesa O): pět stupňů, od planet po dráhy všech těles. Čára je nejjasnější těsně za tělesem a dozadu slábne: ukazuje, kterým směrem těleso letí.',
+        'Čáry ukazují, kudy tělesa létají. Za každou planetou svítí stopa – planeta letí od slabého konce k jasnému!',
+        'Dráhy najdeš v nabídce ☰ vpravo nahoře: pět stupňů. Čára je nejjasnější těsně za tělesem a dozadu slábne: ukazuje, kterým směrem těleso letí.',
+        'Čáry ukazují, kudy tělesa létají. Za každou planetou svítí stopa – planeta letí od slabého konce k jasnému!'
       );
       S.flyTo(SUN, { alt: 7.2 * AU });
       S.cam.homePitch = true; /* pohled šikmo shora na rovinu drah */
@@ -466,6 +466,13 @@ export function createTutorial(S, A, ui) {
         b.click();
       }
       await sleep(7600);
+      /* 1.9: u zatmění ještě druhý pohled – zpoza Měsíce, se stínovým kuželem */
+      const v = $('#ukc [data-v="m"]');
+      if (v) {
+        await point(v, 200);
+        v.click();
+        await sleep(2800);
+      }
       await read();
       const x = $('#ukc.on [data-u="close"]'); /* zavření karty vrátí čas, pohled i přisvětlení */
       if (x) x.click();

@@ -209,7 +209,10 @@ export function createBelts(scene, S, sstep) {
           0.16,
           Math.min(1, apx / 300)
         ) /* malý prstenec = tečky přes sebe: slabší a menší, ať nesplynou v bílou skvrnu */,
-        tg = X.on ? b.max * sstep(b.lo, b.hi, alt) * sstep(7, 28, apx) * (1 - sstep(b.inn[0], b.inn[1], ratio)) : 0;
+        tg =
+          X.on && !S.evSet
+            ? b.max * sstep(b.lo, b.hi, alt) * sstep(7, 28, apx) * (1 - sstep(b.inn[0], b.inn[1], ratio))
+            : 0;
       if (Math.abs(tg - b.a) > 0.002) {
         b.a += (tg - b.a) * Math.min(1, dt * 3.5);
         busy = true;

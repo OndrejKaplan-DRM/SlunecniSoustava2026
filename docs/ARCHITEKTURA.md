@@ -18,6 +18,11 @@ a volají jeho funkce (`flyTo`, `jump`, `setSunMode`…); zpět dostávají udá
 - `core/device.js` – třída zařízení (úsporná, běžná, bohatá) z počtu jader, paměti a grafiky; určuje rozpočet paměti a kolik
   podrobných map se přednačte.
 - `ui/superkarta.js` – podrobná karta tělesa (pětiklik na těleso, ikonu nebo jméno); sama se zavře kliknutím mimo.
+- Dráhy (1.9) – `orbitLine` a `buildOrbit` v `render/engine.js`: čára s průhledností po vrcholech; `orbitSamples` v `core/sim.js` dává ke každému
+  vzorku stáří stopy (0 u tělesa, roste proti směru pohybu). `S.orbFade` přepíná stopu a rovnoměrnou čáru.
+- Scéna úkazu (1.9) – `ui/udalosti.js` nastaví `S.evSet` (množina zúčastněných těles) a `S.evStrict`; engine pak kreslí značky a jména jen jim
+  (a planetám, pokud není `evStrict`), `belts.js`, sondy v `extras.js` a šipky v `orient.js` ustoupí. Kameru skládají `setCam`, `setCamOver`
+  a `aimDir` do volné plochy vedle karty; `S.cam.ly` a `S.cam.lp` (pootočení pohledu) se při návratu nulují.
 - `render/belts.js` – hlavní pás planetek a Kuiperův pás: dvě mračna bodů, polohu každého bodu počítá vertex shader z elementů dráhy
   a času modelu (Keplerova rovnice řadou do e²). Průhlednost řídí `update()` jednou za snímek: podle výšky kamery nad tělesem
   (u tělesa zblízka pás zmizí), podle zdánlivé velikosti prstence (malý prstenec = slabší a menší tečky) a podle toho, zda je kamera

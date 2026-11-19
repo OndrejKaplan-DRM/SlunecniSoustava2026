@@ -21,6 +21,12 @@ export function createUdalosti(S, A, ui) {
     trail = [] /* přechod: dráha planety přes Slunce (posun v radiánech) */,
     filt = '' /* filtr seznamu */,
     mini = false /* karta sbalená do proužku */,
+    view =
+      'a' /* 1.9 pohled na zatmění: a = výchozí (nad místem / od Země), m = zpoza Měsíce, t = Země a Měsíc shora */,
+    drag = false /* uživatel drží táhlo časové osy */,
+    trackUm = 0 /* střední poloměr stínu podél dráhy (km) – šířka pásu úplného zatmění */,
+    lastF = 0 /* ohnisková délka kamery v bodech z posledního snímku */,
+    wasPlay = false,
     skyT = 0;
   /* viděné úkazy (hra pro lovce): ukládá se jen do tohoto prohlížeče */
   let seen = [];
@@ -89,6 +95,172 @@ export function createUdalosti(S, A, ui) {
       Math.cos(lat * DEG) * Math.sin(lon * DEG),
       Math.sin(lat * DEG),
     ];
+  /* 1.9: datum a čas pro časovou osu úkazu – světový čas (UT), dnešní kalendář i před rokem 1582 (jako v aplikaci) */
+  const MES = 'ledna února března dubna května června července srpna září října listopadu prosince'.split(' ');
+  function cal(jd) {
+    const Z = Math.floor(jd + 0.5),
+      fr = jd + 0.5 - Z,
+      al = Math.floor((Z - 1867216.25) / 36524.25),
+      A1 = Z + 1 + al - Math.floor(al / 4),
+      B1 = A1 + 1524,
+      C1 = Math.floor((B1 - 122.1) / 365.25),
+      D1 = Math.floor(365.25 * C1),
+      E1 = Math.floor((B1 - D1) / 30.6001),
+      mo = E1 < 14 ? E1 - 1 : E1 - 13,
+      mins = Math.min(1439, Math.round(fr * 1440));
+    return {
+      d: B1 - D1 - Math.floor(30.6001 * E1),
+      mo,
+      y: mo > 2 ? C1 - 4716 : C1 - 4715,
+      h: Math.floor(mins / 60),
+      mi: mins % 60,
+    };
+  }
+  const calTxt = (jd, clock) => {
+    const c = cal(jd),
+      day = `${c.d}. ${MES[c.mo - 1]} ${c.y <= 0 ? 1 - c.y + ' př. n. l.' : c.y}`;
+    return clock ? `${String(c.h).padStart(2, '0')}:${String(c.mi).padStart(2, '0')} UT · ${day}` : day;
+  };
+  /* pohledy na zatmění (vzor: „Select your view“ v NASA Eyes) */
+  const VIEWS = (e) =>
+    e.typ === 'slunce'
+      ? [
+          ['a', '📍 Nad místem'],
+          ['m', '🌘 Zpoza Měsíce'],
+          ['t', '🛰 Země a Měsíc'],
+        ]
+      : e.typ === 'mesic'
+        ? [
+            ['a', '🌕 Od Země'],
+            ['t', '🛰 Země a Měsíc'],
+          ]
+        : [];
+  /* volná plocha obrazu vedle karty úkazu (na telefonu nad ní): tam má scéna úkazu ležet */
+  function area() {
+    const W = window.innerWidth,
+      H = window.innerHeight,
+      F = lastF || H / 2 / Math.tan((22.5 * Math.PI) / 180),
+      on = card.classList.contains('on') && !mini,
+      r = card.getBoundingClientRect();
+    if (!on) return { W, H, F, cx: W / 2, cy: H / 2, w: W * 0.8, h: H * 0.6, vert: H > W * 1.1 };
+    if (cls('mob') && !cls('land')) {
+      const top = 64,
+        bot = Math.max(top + 140, Math.min(r.top, H));
+      return { W, H, F, cx: W / 2, cy: (top + bot) / 2, w: W * 0.9, h: bot - top, vert: true };
+    }
+    const l = Math.min(Math.max(r.right, 0), W * 0.6),
+      top = 70,
+      bot = H - Math.min(170, H * 0.24);
+    /* úzký vysoký pruh vedle karty (tablet na výšku): scéna se skládá odshora dolů jako na telefonu */
+    return { W, H, F, cx: (l + W) / 2, cy: (top + bot) / 2, w: W - l, h: bot - top, vert: bot - top > (W - l) * 1.25 };
+  }
+  /* Kamera pro scénu úkazu: dívá se směrem f (jednotkový vektor scény), střed tělesa „focus“ leží ve vzdálenosti dist
+     a na obraze vychází (fx, fy). Kamera aplikace nezná náklon kolem osy pohledu („vpravo“ je vždy vodorovně), proto se
+     poloha kamery (yaw, pitch) a pootočení pohledu (ly, lp) dopočítají tak, aby výsledný směr pohledu byl přesně f. */
+  const clamp1 = (v) => Math.max(-1, Math.min(1, v)),
+    rightOf = (f) => {
+      const r = cross(f, [0, 1, 0]);
+      return len(r) < 1e-6 ? [1, 0, 0] : unit(r);
+    };
+  /* d = směr od kamery ke středu tělesa, f = směr pohledu */
+  function camApply(focus, d, f, dist) {
+    S.jump(focus);
+    S.cam.alt = S.cam.altT = Math.max(dist - B[focus].R, B[focus].R * 0.02);
+    S.cam.pitch = Math.asin(clamp1(-d[1]));
+    S.cam.yaw = Math.atan2(-d[2], -d[0]);
+    const y = S.cam.yaw,
+      r0 = [Math.sin(y), 0, -Math.cos(y)],
+      u0 = cross(r0, d);
+    S.cam.lp = Math.asin(clamp1(dot(f, u0)));
+    S.cam.ly = Math.atan2(dot(f, r0), dot(f, d));
+    S.wake();
+  }
+  function setCam(focus, f, dist, fx, fy) {
+    const q = area(),
+      ox = (fx - q.W / 2) / q.F,
+      oy = (q.H / 2 - fy) / q.F,
+      r = rightOf(f),
+      up = cross(r, f);
+    camApply(focus, unit([0, 1, 2].map((k) => f[k] + ox * r[k] + oy * up[k])), f, dist);
+  }
+  /* totéž, ale zadaná je poloha kamery (p = směr od středu tělesa ke kameře): kamera zůstane přesně nad daným místem
+     a pootočí se jen pohled, aby místo vyšlo na (fx, fy) */
+  function setCamOver(focus, p, dist, fx, fy) {
+    const d = [-p[0], -p[1], -p[2]];
+    camApply(focus, d, aimDir(d, fx, fy), dist);
+  }
+  /* směr pohledu, při kterém směr d (jednotkový vektor scény) vyjde na obraze na (fx, fy) */
+  function aimDir(d, fx, fy) {
+    const q = area(),
+      ox = (fx - q.W / 2) / q.F,
+      oy = (q.H / 2 - fy) / q.F;
+    let f = d;
+    for (let it = 0; it < 8; it++) {
+      const r = rightOf(f),
+        up = cross(r, f);
+      f = unit([0, 1, 2].map((k) => d[k] - ox * r[k] - oy * up[k]));
+    }
+    return f;
+  }
+  /* pohled shora na rovinu drah: všechna zadaná místa (souřadnice scény) se vejdou do volné plochy,
+     směr k nejvzdálenějšímu míří doprava (na telefonu nahoru) */
+  function topDown(focus, pts, minD = 0) {
+    const f = area(),
+      c = pos(focus),
+      rel = pts.map((q) => sub(q, c));
+    let far = rel[0];
+    for (const r of rel) if (Math.hypot(r[0], r[2]) > Math.hypot(far[0], far[2])) far = r;
+    const mh = unit([far[0], 0, far[2]]),
+      ph = [-mh[2], 0, mh[0]];
+    let lo = 0,
+      hi = 0,
+      pe = 0;
+    for (const r of rel) {
+      const a = r[0] * mh[0] + r[2] * mh[2];
+      lo = Math.min(lo, a);
+      hi = Math.max(hi, a);
+      pe = Math.max(pe, Math.abs(r[0] * ph[0] + r[2] * ph[2]) + Math.abs(r[1]) * 0.15);
+    }
+    const lng = f.vert ? f.h : f.w,
+      sht = f.vert ? f.w : f.h,
+      k = Math.min((lng * 0.6) / Math.max(hi - lo, 1), (sht * 0.4) / Math.max(pe, 1e-9)) /* bodů na km */,
+      D = Math.max(f.F / k, minD, B[focus].R * 3),
+      mid = (((lo + hi) / 2) * f.F) / D,
+      /* „vpravo“ na obraze: na šířku směr k nejvzdálenějšímu místu, na výšku o čtvrt otáčky jinak (místo je pak nahoře) */
+      rr = f.vert ? [-mh[2], 0, mh[0]] : mh,
+      g = [rr[2], 0, -rr[0]] /* vodorovný směr, kam na obraze míří „nahoru“ */,
+      tau = 0.12 /* malý náklon od svislice: dráhy nejsou úplně naplocho */,
+      dir = unit([g[0] * Math.sin(tau), -Math.cos(tau), g[2] * Math.sin(tau)]);
+    setCam(focus, dir, D, f.vert ? f.cx : f.cx - mid, f.vert ? f.cy + mid : f.cy);
+  }
+  /* zatmění Slunce zpoza Měsíce: Měsíc v popředí, za ním malá Země se stínem (ve skutečném poměru) */
+  function behindMoon() {
+    const f = area(),
+      eh = unit(sub(pos(EARTH), pos(MOON))),
+      y0 = Math.atan2(-eh[2], -eh[0]),
+      r0 = [Math.sin(y0), 0, -Math.cos(y0)],
+      u0 = cross(r0, eh),
+      alt = f.vert ? 36000 : 15000 /* na výšku je volná plocha malá: Měsíc menší */,
+      th =
+        Math.asin(RM / (RM + alt)) +
+        (f.vert ? 0.11 : 0.19) /* úhel mezi středem Měsíce a Zemí: Země vychází kus vedle kotouče */,
+      a = f.vert ? 0.26 : 0.8,
+      b = f.vert ? 0.966 : 0.6,
+      t = Math.tan(th),
+      c = unit([0, 1, 2].map((k) => eh[k] - t * (r0[k] * a + u0[k] * b))),
+      px = t * f.F;
+    /* c je směr od kamery ke středu Měsíce: Země pak na obraze vychází o úhel th vedle něj (vpravo nahoře) */
+    setCamOver(MOON, [-c[0], -c[1], -c[2]], RM + alt, f.cx - (a * px) / 2, f.cy + (b * px) / 2);
+  }
+  /* která tělesa k úkazu patří: jen ta mají při ukázce značku a jméno */
+  function evOf(e) {
+    const s = new Set([EARTH]),
+      add = (id) => idx.has(id) && s.add(idx.get(id));
+    if (SHADOW(e)) s.add(MOON);
+    if (TOP(e) && (e.typ !== 'blizko' || e.telo === 'sun')) s.add(SUN);
+    for (const id of [e.a, e.b, e.telo].concat(e.telesa || [])) if (id) add(id);
+    return s;
+  }
   // směr od středu Země k místu úkazu (scéna)
   function dirOf(e, dLat = 0) {
     basis(idx.get(e.telo), S.jd, m9);
@@ -98,6 +270,12 @@ export function createUdalosti(S, A, ui) {
     /* na telefonu leží karta přes spodní polovinu obrazu: mířím o kus jižněji, aby místo úkazu vyšlo nad kartu */
     const p = dirOf(e, cls('mob') ? -24 : 0);
     S.lookSky({ x: -p[0], y: -p[1], z: -p[2] });
+    /* 1.9: na počítači a tabletu posadit místo úkazu do volné plochy vedle karty, ne pod ni */
+    if (!cls('mob')) {
+      const f = area(),
+        alt = S.cam.altT;
+      setCamOver(idx.get(e.telo), p, B[idx.get(e.telo)].R + alt, f.cx, f.H / 2);
+    }
   }
   function setTime(jd) {
     S.jd = jd;
@@ -187,8 +365,11 @@ export function createUdalosti(S, A, ui) {
       return;
     }
     if (e.typ !== 'slunce') return;
+    trackUm = 0;
     if (e.nasa) {
-      track = e.nasa.axis.filter(Boolean).map((a) => geoV(a[0], a[1]));
+      const ax = e.nasa.axis.filter(Boolean);
+      track = ax.map((a) => geoV(a[0], a[1]));
+      trackUm = ax.reduce((s, a) => s + a[2], 0) / Math.max(1, ax.length);
       return;
     }
     const now = S.jd,
@@ -198,8 +379,12 @@ export function createUdalosti(S, A, ui) {
       updateAll(t);
       basis(EARTH, t, m9);
       const sh = shadow();
-      if (sh) track.push(sh.v);
+      if (sh) {
+        track.push(sh.v);
+        trackUm += sh.um;
+      }
     }
+    trackUm /= Math.max(1, track.length);
     updateAll(now);
   }
   // pohled z místa úkazu: úhlové poloměry Slunce a Měsíce a posun Měsíce vůči Slunci (východ, sever) v radiánech
@@ -586,37 +771,13 @@ export function createUdalosti(S, A, ui) {
     S.paused = true;
     setTime(e.jd);
     buildTrack(e);
-    const small = cls('mob') ? 1.5 : 1;
-    if (e.typ === 'slunce') {
-      if (from != null) setTime(from);
-      S.jump(idx.get(e.telo));
-      S.cam.alt = S.cam.altT = altOf(e);
-      aim(e);
-    } else if (e.typ === 'mesic') {
-      /* pohled od Země na Měsíc */
-      S.jump(MOON);
-      S.cam.alt = S.cam.altT = e.vyska * small;
-      const d = unit(sub(pos(MOON), pos(EARTH)));
-      S.lookSky({ x: d[0], y: d[1], z: d[2] });
-    } else if (TOP(e)) {
-      /* pohled shora na rovinu drah: je vidět, že tělesa leží v jedné přímce se Zemí */
-      const c = idx.get(e.telo);
-      let far = 0;
-      for (const [a, b] of linesOf(e)) far = Math.max(far, len(sub(pos(a), pos(c))), len(sub(pos(b), pos(c))));
-      S.jump(c);
-      S.cam.alt = S.cam.altT = Math.max(far * (e.typ === 'blizko' && c === EARTH ? 3 : 4.4) * small, B[c].R * 5);
-      S.lookSky({ x: 0.1, y: -0.99, z: 0.06 });
-      if (e.typ !== 'blizko') S.orbMode = 1;
-    } else if (e.typ === 'hvezda') {
-      /* Země zůstává v obraze, hvězda vyjde kousek vedle ní */
-      S.jump(EARTH);
-      S.cam.alt = S.cam.altT = 70000 * small;
-      const d = e.dir,
-        q = unit(cross(d, [0, 1, 0])),
-        c = unit([d[0] + q[0] * 0.33, d[1] + q[1] * 0.33 - 0.12, d[2] + q[2] * 0.33]);
-      S.lookSky({ x: c[0], y: c[1], z: c[2] });
+    if (!VIEWS(e).some((q) => q[0] === view)) view = 'a';
+    draw(); /* karta musí stát dřív než kamera: podle ní se počítá volná plocha obrazu */
+    place(e);
+    if (from != null) {
+      setTime(from);
+      if (e.typ === 'slunce' && view === 'a') aim(e);
     }
-    if (from != null) setTime(from);
     if (!seen.includes(e.id)) {
       seen.push(e.id);
       try {
@@ -632,6 +793,40 @@ export function createUdalosti(S, A, ui) {
     ui.refresh();
     draw();
   }
+  /* kamera podle druhu úkazu a zvoleného pohledu; čas modelu je nastavený na vrchol úkazu */
+  function place(e) {
+    const small = cls('mob') ? 1.5 : 1;
+    S.orbMode = back ? back.orb : S.orbMode;
+    if (SHADOW(e) && view === 't') {
+      /* Země a Měsíc shora, ve skutečném poměru: je vidět, jak daleko Měsíc je a jak úzký je stín */
+      topDown(EARTH, [pos(MOON)]);
+      S.orbMode = Math.max(2, S.orbMode);
+    } else if (e.typ === 'slunce' && view === 'm') behindMoon();
+    else if (e.typ === 'slunce') {
+      S.jump(idx.get(e.telo));
+      S.cam.alt = S.cam.altT = altOf(e);
+      aim(e);
+    } else if (e.typ === 'mesic') {
+      /* pohled od Země na Měsíc; 1.9: Měsíc sedí ve volné ploše vedle karty (na telefonu nad ní) */
+      const d = unit(sub(pos(MOON), pos(EARTH))),
+        f = area();
+      setCam(MOON, d, RM + e.vyska * (f.vert ? 2.1 : 1), f.cx, f.cy);
+    } else if (TOP(e)) {
+      /* pohled shora na rovinu drah: je vidět, že tělesa leží v jedné přímce se Zemí.
+         1.9: všechna zúčastněná tělesa se vejdou do volné plochy vedle karty (dřív přímka mířila i pod lištu) */
+      const c = idx.get(e.telo),
+        pts = [];
+      for (const [a, b] of linesOf(e)) pts.push(pos(a), pos(b));
+      if (c === SUN) pts.push(pos(EARTH)); /* Země patří do obrazu vždy: je vidět, odkud se na úkaz díváme */
+      topDown(c, pts);
+      if (e.typ !== 'blizko') S.orbMode = 1;
+    } else if (e.typ === 'hvezda') {
+      /* Země zůstává v obraze, hvězda vyjde kousek vedle ní; 1.9: obojí ve volné ploše vedle karty */
+      const f = area(),
+        c = aimDir(e.dir, f.cx - f.w * (f.vert ? 0.2 : 0.24), f.cy - f.h * (f.vert ? 0.26 : 0.16));
+      setCam(EARTH, c, RE + 70000 * small, f.cx + f.w * (f.vert ? 0.1 : 0.14), f.cy + f.h * (f.vert ? 0.2 : 0.12));
+    }
+  }
   function restore() {
     if (!back) return;
     play = 0;
@@ -640,6 +835,8 @@ export function createUdalosti(S, A, ui) {
     S.cam.yaw = back.yaw;
     S.cam.pitch = back.pitch;
     S.cam.alt = S.cam.altT = back.alt;
+    S.cam.ly = S.cam.lp = 0;
+    view = 'a';
     S.paused = back.paused;
     S.setGamma(back.gamma);
     S.orbMode = back.orb;
@@ -660,13 +857,19 @@ export function createUdalosti(S, A, ui) {
     cur = L[k];
     for (const q of U) q._s0 = q._x0 = undefined;
     play = 0;
+    view = 'a';
     A.play('a_tick');
     if (back) show(cur);
     else draw();
   }
   function open(id, andShow) {
     if (!S.F.on('ukazy')) return;
+    const was = cur;
     cur = U.find((e) => e.id === id) || null;
+    if (cur !== was) {
+      view = 'a';
+      play = 0;
+    }
     draw();
     if (cur && andShow) show(cur);
   }
@@ -681,12 +884,57 @@ export function createUdalosti(S, A, ui) {
     ],
     inGrp = (e, g) => !g || e.typ === g || (g === 'planety' && (e.typ === 'dvojice' || e.typ === 'skupina')),
     vis = () => U.filter((e) => inGrp(e, filt));
+  /* časová osa úkazu: poloha táhla 0–1000 v okně úkazu, popisek času a tlačítko přehrávání */
+  function tlPos() {
+    if (!cur) return 0;
+    const sp = span(cur);
+    return Math.round(1000 * Math.max(0, Math.min(1, (S.jd - sp[0]) / sp[1])));
+  }
+  /* kde na časové ose jsme vůči vrcholu úkazu */
+  function relTxt() {
+    if (!cur) return '';
+    const sp = span(cur),
+      peak = cur.typ === 'hvezda' ? cur.t0 : cur.jd,
+      d = S.jd - peak,
+      a = Math.abs(d);
+    if (a < sp[1] / 500) return cur.typ === 'hvezda' ? 'největší jasnost' : 'vrchol úkazu';
+    const m = a * 1440,
+      t =
+        m < 90
+          ? Math.max(1, Math.round(m)) + ' min'
+          : m < 2880
+            ? num(m / 60, 1) + ' h'
+            : a < 90
+              ? Math.round(a) + ' dní'
+              : num(a / 30.44, 0) + ' měs.';
+    return t + (d < 0 ? ' před vrcholem' : ' po vrcholu');
+  }
+  function tlTick() {
+    const inp = card.querySelector('.uk-tl input');
+    if (!inp || !cur) return;
+    if (!drag) inp.value = tlPos();
+    const t = card.querySelector('.uk-t'),
+      b = card.querySelector('[data-u="play"]'),
+      ph = card.querySelector('.uk-ph'),
+      txt = calTxt(S.jd, span(cur)[1] < 3),
+      lab = play > 0 ? '⏸ Zastavit' : '▶ Přehrát',
+      rel = relTxt();
+    if (t && t.textContent !== txt) t.textContent = txt;
+    if (b && b.textContent !== lab) b.textContent = lab;
+    if (ph && ph.textContent !== rel) ph.textContent = rel;
+  }
   function draw() {
     const e = cur;
     if (e && !mini) ukTouch = performance.now();
     card.classList.toggle('on', !!e);
     card.classList.toggle('min', !!e && mini);
     document.body.classList.toggle('ukon', !!e && !mini);
+    /* 1.9 úkaz jako samostatná scéna: po dobu ukázky ustoupí karta tělesa, hádanka, pásy, sondy a jména těles, která k úkazu nepatří */
+    const scene = !!e && !!back && !mini;
+    document.body.classList.toggle('uksh', scene);
+    S.evSet = scene ? evOf(e) : null;
+    S.evStrict =
+      scene && !TOP(e); /* zatmění a supernovy: žádná další jména; pohled shora na dráhy: planety zůstávají */
     if (!e) return;
     try {
       localStorage.setItem('s200ukl', e.id);
@@ -708,20 +956,39 @@ export function createUdalosti(S, A, ui) {
       d = Math.min(window.devicePixelRatio || 1, 2),
       leg =
         e.typ === 'slunce'
-          ? `<i class="l1"></i> stín Měsíce <i class="l2"></i> jeho dráha <i class="l3"></i> polostín (částečné zatmění)`
+          ? view === 'a'
+            ? `<i class="l1"></i> stín Měsíce (100 %) <i class="l2"></i> pás úplného zatmění <i class="l3"></i> pásma částečného zatmění: kolik procent průměru Slunce Měsíc zakryje`
+            : view === 'm'
+              ? 'Díváš se od Slunce přes Měsíc na Zemi. Fialový kužel je stín Měsíce; na Zemi z něj dopadne jen malá tmavá skvrna.'
+              : 'Pohled shora ve skutečném poměru. Tmavý kužel je plný stín Měsíce, světlý vějíř polostín. Šipka míří ke Slunci.'
           : TOP(e)
-            ? `<i class="l2"></i> ${e.typ === 'blizko' ? 'spojnice těles' : 'přímka od Země: tělesa na ní leží za sebou'}`
+            ? `<i class="l2"></i> ${e.typ === 'blizko' ? 'spojnice těles' : 'přímka od Země: tělesa na ní leží za sebou'}. Dráhy jsou stopy: těleso letí k jasnému konci.`
             : e.typ === 'hvezda'
               ? 'Hvězda svítí na obloze vedle Země; ▶ Přehrát ukáže, jak vzplála a pohasla.'
-              : 'Pohled od Země: na Měsíc padá stín Země.';
+              : view === 'a'
+                ? 'Pohled od Země. Červená kružnice je plný stín Země ve vzdálenosti Měsíce, světlá polostín.'
+                : 'Pohled shora ve skutečném poměru. Tmavý kužel je plný stín Země, světlý vějíř polostín. Šipka míří ke Slunci.',
+      sp = span(e),
+      tl = back
+        ? `<div class="uk-tl"><input type="range" min="0" max="1000" step="1" value="${tlPos()}" aria-label="Čas úkazu: tažením posuneš čas"><i style="left:${(100 * (e.typ === 'hvezda' ? e.t0 - sp[0] : e.jd - sp[0])) / sp[1]}%" title="vrchol úkazu"></i></div>` +
+          `<p class="uk-now"><b class="uk-t">${calTxt(S.jd, sp[1] < 3)}</b><span class="uk-ph">${relTxt()}</span></p>`
+        : '',
+      vw =
+        back && VIEWS(e).length
+          ? `<div class="uk-views" role="group" aria-label="Pohled">${VIEWS(e)
+              .map(([v, t]) => `<button data-v="${v}" class="${v === view ? 'sel' : ''}">${t}</button>`)
+              .join('')}</div>`
+          : '';
     card.innerHTML =
       `<button class="x" data-u="close" title="Zavřít kartu" aria-label="Zavřít kartu">×</button><button class="x mn" data-u="min" title="Sbalit kartu (úkaz zůstane otevřený)" aria-label="Sbalit kartu">–</button>` +
       `<div class="uk-nav"><button data-u="prev" aria-label="Předchozí úkaz">‹</button><span>${k + 1} / ${L.length}${seen.includes(e.id) ? ' · ✓ viděno' : ''}</span><button data-u="next" aria-label="Další úkaz">›</button></div>` +
       `<h3>${e.ikona} ${e.nazev}</h3><p class="uk-sub">${e.podtitul}</p>` +
       `<p class="uk-when"><b>${e.datum}</b> · ${e.misto}<br><small>${e.cas}${e.datumJul ? `<br>podle juliánského kalendáře ${e.datumJul}` : ''}</small></p>` +
       `<div class="uk-skyrow"><canvas class="uk-sky" width="${px * d}" height="${px * d}" style="width:${px}px;height:${px}px"></canvas><div class="uk-skytxt"></div></div>` +
-      `<div class="uk-btn"><button class="pri" data-u="show">🎬 Ukázat</button><button data-u="play">▶ Přehrát</button>` +
-      `<button data-u="back"${back ? '' : ' disabled'}>⟲ Zpět</button></div>` +
+      `<div class="uk-btn"><button class="pri" data-u="show" title="${back ? 'Skočit na vrchol úkazu' : 'Přenést se v čase na úkaz a ukázat ho'}">${back ? '◉ Vrchol' : '🎬 Ukázat'}</button><button data-u="play" title="Přehrát průběh úkazu (znovu = zastavit)">${play > 0 ? '⏸ Zastavit' : '▶ Přehrát'}</button>` +
+      `<button data-u="back"${back ? '' : ' disabled'} title="Vrátit čas i pohled tam, kde jsi byl">⟲ Zpět</button></div>` +
+      tl +
+      vw +
       (back ? `<p class="uk-leg">${leg}</p>` : '') +
       (small ? `<details class="uk-more"><summary>Příběh</summary>${body}${src}</details>` : body + src);
     drawSky();
@@ -734,9 +1001,24 @@ export function createUdalosti(S, A, ui) {
         return null;
       }
     })();
+    /* 1.9 (vzor: „Featured Stories and Events“ v NASA Eyes): nahoře úkaz, který nás čeká nejdřív – podle dnešního data */
+    const today = Date.now() / 86400000 + 2440587.5,
+      nx = U.filter((e) => e.typ !== 'hvezda' && e.jd > today).sort((a, b) => a.jd - b.jd)[0],
+      nd = nx ? nx.jd - today : 0,
+      nxIn =
+        nd < 1
+          ? 'dnes'
+          : nd < 60
+            ? `za ${Math.round(nd)} dní`
+            : nd < 730
+              ? `za ${Math.round(nd / 30.44)} měsíců`
+              : `za ${Math.round(nd / 365.25)} let`;
     list.innerHTML =
       `<p class="uk-prog"><b>Viděno ${seen.length} z ${U.length}</b><i><u style="width:${(100 * seen.length) / U.length}%"></u></i></p>` +
       `<div class="uk-chips">${GRP.map(([g, t]) => `<button data-g="${g}" class="${g === filt ? 'sel' : ''}">${t}</button>`).join('')}</div>` +
+      (nx
+        ? `<button class="uk-next" data-id="${nx.id}">⏭ <b>Nejbližší úkaz:</b> ${nx.datum}<br>${nx.ikona} ${nx.nazev} <small>(${nxIn})</small></button>`
+        : '') +
       (last && !cur
         ? `<button class="uk-last" data-id="${last.id}">↩ Naposledy otevřeno: ${last.nazev}</button>`
         : '') +
@@ -761,11 +1043,31 @@ export function createUdalosti(S, A, ui) {
     if (!b) return;
     cur = U.find((e) => e.id === b.dataset.id);
     mini = false;
+    view = 'a';
+    play = 0;
     ui.toggle('#uk', false);
     A.play('panel_open');
     draw();
+    /* 1.9: výběr ze seznamu úkaz rovnou ukáže (dřív bylo potřeba ještě „Ukázat“ a karta mezitím ukazovala jen náhled) */
+    if (cur) show(cur);
+    S.wake();
   });
   card.addEventListener('click', (ev) => {
+    const vb = ev.target.closest('button[data-v]');
+    if (vb && cur && back) {
+      view = vb.dataset.v;
+      A.play('a_tick');
+      const t = S.jd;
+      setTime(cur.jd);
+      draw();
+      place(cur);
+      setTime(t);
+      if (cur.typ === 'slunce' && view === 'a') aim(cur);
+      ui.refresh();
+      draw();
+      S.wake();
+      return;
+    }
     const b = ev.target.closest('button[data-u]');
     if (!b || !cur) return;
     const a = b.dataset.u;
@@ -781,9 +1083,22 @@ export function createUdalosti(S, A, ui) {
       show(cur);
     } else if (a === 'play') {
       const sp = span(cur);
-      show(cur, sp[0]);
-      play = sp[1];
-      playK = sp[1] / 14;
+      if (play > 0) play = 0; /* druhý stisk přehrávání zastaví */
+      else if (
+        back &&
+        S.jd > sp[0] + sp[1] * 0.02 &&
+        S.jd < sp[0] + sp[1] * 0.98 &&
+        Math.abs(S.jd - cur.jd) > sp[1] * 0.004
+      ) {
+        /* pokračovat od místa, kam uživatel posunul táhlo */
+        play = sp[0] + sp[1] - S.jd;
+        playK = sp[1] / 14;
+      } else {
+        show(cur, sp[0]);
+        play = sp[1];
+        playK = sp[1] / 14;
+      }
+      tlTick();
     } else if (a === 'min' || a === 'max') {
       mini = a === 'min';
       draw();
@@ -791,6 +1106,24 @@ export function createUdalosti(S, A, ui) {
     else if (a === 'prev') go(-1);
     else if (a === 'next') go(1);
     S.wake();
+  });
+  /* 1.9 časová osa: tažením se posouvá čas úkazu (přehrávání se tím zastaví) */
+  card.addEventListener('input', (ev) => {
+    if (!ev.target.matches('.uk-tl input') || !cur || !back) return;
+    const sp = span(cur);
+    play = 0;
+    setTime(sp[0] + (sp[1] * ev.target.value) / 1000);
+    if (cur.typ === 'slunce' && view === 'a') aim(cur);
+    tlTick();
+    drawSky();
+  });
+  card.addEventListener('pointerdown', (ev) => {
+    if (ev.target.matches('.uk-tl input')) drag = true;
+  });
+  for (const n of ['pointerup', 'pointercancel', 'change']) window.addEventListener(n, () => (drag = false));
+  /* po puštění táhla vrátit klávesnici aplikaci: šipky by jinak posouvaly táhlo a zároveň ovládaly vesmír */
+  card.addEventListener('change', (ev) => {
+    if (ev.target.matches('.uk-tl input')) ev.target.blur();
   });
   // Stroj času: zatmění, která mají kartu, otevřou rovnou ukázku úkazu (kamera nad místo, stín, pohled z místa)
   const TM = { '12. 8. 2026': 's2026', '2. 8. 2027': 's2027' };
@@ -838,7 +1171,10 @@ export function createUdalosti(S, A, ui) {
     if (now - skyT > 120) {
       skyT = now;
       drawSky();
+      tlTick();
     }
+    if (wasPlay && play <= 0) tlTick();
+    wasPlay = play > 0;
   });
   // přehrávání: 14 sekund na celý průchod, kamera drží místo úkazu pod sebou
   S.ticks.push((dt) => {
@@ -846,31 +1182,52 @@ export function createUdalosti(S, A, ui) {
     const d = Math.min(play, playK * dt);
     play -= d;
     setTime(S.jd + d);
-    if (cur.typ === 'slunce') aim(cur);
+    if (cur.typ === 'slunce' && view === 'a') aim(cur);
   });
-  // 2D vrstva: dráha stínu, polostín, stín a místo úkazu
+  // 2D vrstva zatmění (1.9): pás úplného zatmění, pásma částečného zatmění s procenty, stín, místo úkazu;
+  // v pohledech z odstupu kužel stínu a polostínu; u zatmění Měsíce průřez stínem Země.
   S.overlays.push((ctx, e) => {
-    if (!cur || !back || cur.typ !== 'slunce' || S.focus !== EARTH) return;
+    lastF = e.F;
+    if (!cur || !back || !SHADOW(cur)) return;
+    if (S.focus !== EARTH && S.focus !== MOON) return;
     const { W, H, F, fwd, right, up } = e,
       C = S.camPos,
       ec = pos(EARTH),
+      mc = pos(MOON),
+      sc = pos(SUN),
       v = sub(C, ec),
       vl = len(v),
-      lim = RE / vl + 0.015;
+      vh = [v[0] / vl, v[1] / vl, v[2] / vl],
+      cosH = Math.min(1, RE / vl),
+      sinH = Math.sqrt(1 - cosH * cosH),
+      rE = vl > RE ? (RE / Math.sqrt(vl * vl - RE * RE)) * F : 1e9 /* poloměr Země na obrazovce */,
+      tk = S.txtK || 1,
+      FONT = (px, w = 600) => `${w} ${px * tk}px system-ui, -apple-system, Segoe UI, sans-serif`;
     basis(EARTH, S.jd, m9);
-    const proj = (w) => {
-      /* w = jednotkový vektor od středu Země (scéna); null = za obzorem nebo mimo obraz */
-      if (dot(w, v) / vl < lim) return null;
-      const d = [ec[0] + w[0] * RE - C[0], ec[1] + w[1] * RE - C[1], ec[2] + w[2] * RE - C[2]],
-        zz = d[0] * fwd.x + d[1] * fwd.y + d[2] * fwd.z;
-      if (zz <= 0) return null;
-      return [
-        W / 2 + ((d[0] * right.x + d[1] * right.y + d[2] * right.z) / zz) * F,
-        H / 2 - ((d[0] * up.x + d[1] * up.y + d[2] * up.z) / zz) * F,
-        zz,
-      ];
+    /* bod scény (vůči kameře) → obrazovka */
+    const scr = (d) => {
+      const zz = d[0] * fwd.x + d[1] * fwd.y + d[2] * fwd.z;
+      return zz <= 0
+        ? null
+        : [
+            W / 2 + ((d[0] * right.x + d[1] * right.y + d[2] * right.z) / zz) * F,
+            H / 2 - ((d[0] * up.x + d[1] * up.y + d[2] * up.z) / zz) * F,
+            zz,
+          ];
     };
-    const line = (pts, close) => {
+    const abs = (p) => scr(sub(p, C)) /* p = poloha ve scéně */,
+      onE = (w) => scr([ec[0] + w[0] * RE - C[0], ec[1] + w[1] * RE - C[1], ec[2] + w[2] * RE - C[2]]),
+      /* w = jednotkový vektor od středu Země; null = za obzorem */
+      proj = (w) => (dot(w, vh) < cosH + 0.015 ? null : onE(w)),
+      /* bod za obzorem kamery posunout na nejbližší místo obzoru (pro výplně, které obzor ořízne) */
+      clampH = (w) => {
+        const c = dot(w, vh);
+        if (c >= cosH) return w;
+        const t = [w[0] - c * vh[0], w[1] - c * vh[1], w[2] - c * vh[2]],
+          tl = len(t) || 1;
+        return [0, 1, 2].map((k) => vh[k] * cosH + (t[k] / tl) * sinH);
+      };
+    const line = (pts) => {
       let on = false;
       ctx.beginPath();
       for (const w of pts) {
@@ -882,56 +1239,251 @@ export function createUdalosti(S, A, ui) {
         on ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]);
         on = true;
       }
-      if (close && on) ctx.closePath();
       ctx.stroke();
     };
+    const text = (t, x, y, col = '#fff', px = 12, w = 600) => {
+      ctx.font = FONT(px, w);
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = 'rgba(0,0,0,0.8)';
+      ctx.strokeText(t, x, y);
+      ctx.fillStyle = col;
+      ctx.fillText(t, x, y);
+    };
+    /* kužel stínu z odstupu: lichoběžník od tělesa (poloměr r0) po délce L na poloměr r1, kolmo ke směru pohledu */
+    const fw = [fwd.x, fwd.y, fwd.z],
+      cone = (base, u, r0, L, r1, fill, stroke) => {
+        const w = unit(cross(u, fw)),
+          pt = (t, r, s) => abs([0, 1, 2].map((k) => base[k] + u[k] * t + w[k] * r * s)),
+          q = [pt(0, r0, 1), pt(L, r1, 1), pt(L, r1, -1), pt(0, r0, -1)];
+        if (q.some((p) => !p)) return;
+        ctx.beginPath();
+        q.forEach((p, j) => (j ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])));
+        ctx.closePath();
+        ctx.fillStyle = fill;
+        ctx.fill();
+        if (stroke) {
+          ctx.strokeStyle = stroke;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(q[0][0], q[0][1]);
+          ctx.lineTo(q[1][0], q[1][1]);
+          ctx.moveTo(q[3][0], q[3][1]);
+          ctx.lineTo(q[2][0], q[2][1]);
+          ctx.stroke();
+        }
+      },
+      /* odkud svítí Slunce: šipka na pevném místě nahoře ve volné ploše, směr podle skutečné polohy Slunce na obraze */
+      sunArrow = (from, u) => {
+        const a = abs(from),
+          b = abs([0, 1, 2].map((k) => from[k] - u[k] * vl * 0.2));
+        if (!a || !b) return;
+        const dx = b[0] - a[0],
+          dy = b[1] - a[1],
+          l = Math.hypot(dx, dy) || 1,
+          ux = dx / l,
+          uy = dy / l,
+          f = area(),
+          cx = f.vert ? Math.max(70, f.cx - f.w * 0.3) : f.cx,
+          cy = f.vert ? f.cy : Math.max(96, f.cy - f.h / 2 + 34),
+          x0 = cx - ux * 30,
+          y0 = cy - uy * 30,
+          x1 = cx + ux * 30,
+          y1 = cy + uy * 30;
+        ctx.strokeStyle = ctx.fillStyle = 'rgba(255,214,102,0.95)';
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.moveTo(x0, y0);
+        ctx.lineTo(x1, y1);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x1 + ux * 10, y1 + uy * 10);
+        ctx.lineTo(x1 - uy * 5.5, y1 + ux * 5.5);
+        ctx.lineTo(x1 + uy * 5.5, y1 - ux * 5.5);
+        ctx.fill();
+        ctx.textAlign = 'center';
+        text(
+          f.vert
+            ? '☀ ke Slunci'
+            : `☀ ke Slunci (${Math.round(len(sub(sc, ec)) / len(sub(mc, ec)) / 10) * 10}× dál než Měsíc)`,
+          cx,
+          cy + 34 + (uy > 0.5 ? 14 : 0),
+          '#ffe7ad',
+          12
+        );
+        ctx.textAlign = 'left';
+      };
     ctx.save();
     ctx.lineJoin = 'round';
-    // dráha osy stínu
-    ctx.setLineDash([7, 6]);
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = 'rgba(255,214,102,0.9)';
-    line(track.map(toWorld));
-    ctx.setLineDash([]);
-    const sh = shadow(cur);
+    ctx.textBaseline = 'alphabetic';
+    const far = rE < 90; /* Země je v obraze malá: pohled z odstupu */
+    if (cur.typ === 'mesic') {
+      const a = unit(sub(ec, sc)) /* osa stínu Země */,
+        ds = len(sub(ec, sc)),
+        dm = dot(sub(mc, ec), a),
+        ru = 1.02 * (RE - ((RS - RE) * dm) / ds),
+        rp = 1.02 * (RE + ((RS + RE) * dm) / ds);
+      if (S.focus === EARTH && far) {
+        const Lu = (RE * ds) / (RS - RE),
+          L = Math.min(Lu * 0.98, dm * 1.3);
+        cone(ec, a, RE, L, RE + (L * (RS + RE)) / ds, 'rgba(150,140,230,0.13)', 'rgba(190,200,255,0.35)');
+        cone(ec, a, RE, L, RE * (1 - L / Lu), 'rgba(70,20,30,0.6)', 'rgba(255,150,120,0.7)');
+        sunArrow(ec, a);
+      } else if (S.focus === MOON) {
+        /* průřez stínem Země ve vzdálenosti Měsíce */
+        const x0 = [0, 1, 2].map((k) => ec[k] + a[k] * dm),
+          p = unit(cross(a, Math.abs(a[1]) < 0.9 ? [0, 1, 0] : [1, 0, 0])),
+          q = cross(a, p),
+          ring = (r, col, lw, lab) => {
+            let best = null;
+            ctx.beginPath();
+            for (let k = 0; k <= 96; k++) {
+              const g = (k / 96) * 6.2832,
+                s = abs([0, 1, 2].map((j) => x0[j] + r * (Math.cos(g) * p[j] + Math.sin(g) * q[j])));
+              if (!s) continue;
+              k ? ctx.lineTo(s[0], s[1]) : ctx.moveTo(s[0], s[1]);
+              if (
+                s[0] > 30 &&
+                s[0] < W - 150 &&
+                s[1] > 80 &&
+                s[1] < H - 150 &&
+                (!best || s[0] - s[1] > best[0] - best[1])
+              )
+                best = s;
+            }
+            ctx.strokeStyle = col;
+            ctx.lineWidth = lw;
+            ctx.stroke();
+            if (best) text(lab, best[0] + 8, best[1] - 6, col, 12);
+          };
+        ring(rp, 'rgba(200,215,255,0.75)', 1.2, 'polostín Země');
+        ring(ru, 'rgba(255,140,100,0.95)', 1.8, 'plný stín Země');
+      }
+      ctx.restore();
+      return;
+    }
+    // ---- zatmění Slunce
+    const sh = shadow(cur),
+      u = unit(sub(mc, sc)) /* směr stínu: od Slunce přes Měsíc */,
+      dl = len(sub(mc, sc));
+    if (far) {
+      /* z odstupu: kužel plného stínu a vějíř polostínu od Měsíce k Zemi */
+      const Lu = (RM * dl) / (RS - RM),
+        dE = dot(sub(ec, mc), u),
+        L = Math.min(Lu * 0.995, dE),
+        mr = e.R && e.R[MOON];
+      ctx.save();
+      if (mr && mr.pr > 6) {
+        /* kužel vychází zpoza Měsíce: kotouč Měsíce z kresby vyjmout */
+        ctx.beginPath();
+        ctx.rect(0, 0, W, H);
+        ctx.arc(mr.sx, mr.sy, mr.pr, 0, 6.2832);
+        ctx.clip('evenodd');
+      }
+      cone(mc, u, RM, dE, RM + (dE * (RS + RM)) / dl, 'rgba(150,140,230,0.13)', 'rgba(190,200,255,0.35)');
+      cone(mc, u, RM, L, Math.max(0, RM * (1 - L / Lu)), 'rgba(60,30,110,0.62)', 'rgba(200,170,255,0.8)');
+      ctx.restore();
+      if (S.focus === EARTH) sunArrow(mc, u);
+      if (sh) {
+        const p = proj(toWorld(sh.v));
+        if (p) {
+          ctx.fillStyle = '#000';
+          ctx.strokeStyle = '#ffd666';
+          ctx.lineWidth = 1.4;
+          ctx.beginPath();
+          ctx.arc(p[0], p[1], Math.max(2.4, (sh.um / p[2]) * F), 0, 6.2832);
+          ctx.fill();
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
+      return;
+    }
+    // pás úplného zatmění (šířka podle skutečného průměru stínu) a jeho osa
+    if (track.length > 1) {
+      const pc = proj(toWorld(track[track.length >> 1])) || [0, 0, vl];
+      ctx.lineCap = 'round';
+      ctx.lineWidth = Math.max(5, ((2 * trackUm) / pc[2]) * F);
+      ctx.strokeStyle = 'rgba(255,214,102,0.24)';
+      line(track.map(toWorld));
+      ctx.lineCap = 'butt';
+      ctx.setLineDash([7, 6]);
+      ctx.lineWidth = 1.6;
+      ctx.strokeStyle = 'rgba(255,214,102,0.9)';
+      line(track.map(toWorld));
+      ctx.setLineDash([]);
+    }
     if (sh) {
       const c = toWorld(sh.v),
-        a = unit(cross(c, Math.abs(c[1]) < 0.9 ? [0, 1, 0] : [1, 0, 0])),
-        b = cross(c, a),
-        ring = (rkm) => {
-          const t = rkm / RE,
-            ct = Math.cos(t),
-            st = Math.sin(t),
-            o = [];
+        c0 = [c[0] * RE, c[1] * RE, c[2] * RE],
+        a = unit(cross(u, Math.abs(u[1]) < 0.9 ? [0, 1, 0] : [1, 0, 0])),
+        b = cross(u, a),
+        /* stopa válce o poloměru d (km) kolem osy stínu na zeměkouli; kde válec Zemi míjí, vede obrys po hranici dne a noci */
+        foot = (d) => {
+          const o = [];
           for (let k = 0; k <= 72; k++) {
-            const q = (k / 72) * 6.2832,
-              cq = Math.cos(q) * st,
-              sq = Math.sin(q) * st;
-            o.push([
-              c[0] * ct + a[0] * cq + b[0] * sq,
-              c[1] * ct + a[1] * cq + b[1] * sq,
-              c[2] * ct + a[2] * cq + b[2] * sq,
-            ]);
+            const g = (k / 72) * 6.2832,
+              p0 = [0, 1, 2].map((j) => c0[j] + d * (Math.cos(g) * a[j] + Math.sin(g) * b[j])),
+              pu = dot(p0, u),
+              D = pu * pu - dot(p0, p0) + RE * RE;
+            if (D >= 0) {
+              const t = -pu - Math.sqrt(D);
+              o.push(unit([p0[0] + u[0] * t, p0[1] + u[1] * t, p0[2] + u[2] * t]));
+            } else o.push(unit([p0[0] - pu * u[0], p0[1] - pu * u[1], p0[2] - pu * u[2]]));
           }
           return o;
         };
-      // polostín: hranice částečného zatmění
-      if (sh.pen < RE * 1.4) {
-        ctx.lineWidth = 1.2;
-        ctx.strokeStyle = 'rgba(190,210,255,0.55)';
-        line(ring(sh.pen));
+      if (sh.pen < RE * 1.6) {
+        /* pásma částečného zatmění: podíl průměru Slunce, který Měsíc zakrývá (0, 25, 50 a 75 %) */
+        const labs = [];
+        for (const [G, al] of [
+          [0, 0.1],
+          [0.25, 0.07],
+          [0.5, 0.08],
+          [0.75, 0.09],
+        ]) {
+          const ring = foot(sh.pen - G * (sh.pen - sh.um)),
+            pp = ring.map((w) => onE(clampH(w)));
+          if (pp.some((p) => !p)) continue;
+          ctx.beginPath();
+          pp.forEach((p, j) => (j ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])));
+          ctx.closePath();
+          ctx.fillStyle = `rgba(6,8,26,${al})`;
+          ctx.fill();
+          ctx.lineWidth = G ? 1 : 1.3;
+          ctx.strokeStyle = `rgba(200,215,255,${0.38 + G * 0.3})`;
+          line(ring);
+          /* popisek: bod obrysu nejvíc vpravo nahoře, který je v obraze */
+          let best = null;
+          for (const w of ring) {
+            const p = proj(w);
+            if (
+              p &&
+              p[0] > 40 &&
+              p[0] < W - 70 &&
+              p[1] > 84 &&
+              p[1] < H - 150 &&
+              (!best || p[0] - p[1] > best[0] - best[1])
+            )
+              best = p;
+          }
+          /* na malém kotouči Země leží obrysy těsně u sebe: popisek, který by se překrýval s předchozím, se vynechá */
+          if (best && !labs.some((q) => Math.hypot(q[1][0] - best[0], q[1][1] - best[1]) < 26 * tk))
+            labs.push([Math.round(G * 100) + ' %', best]);
+        }
+        for (const [t, p] of labs) text(t, p[0] + 6, p[1] - 5, 'rgba(215,226,255,0.95)', 11.5);
       }
       // stín: střed je vidět i tam, kde je skutečný stín menší než pár bodů obrazu
       const p = proj(c);
       if (p) {
         const r = Math.max(7, (sh.um / p[2]) * F);
-        ctx.fillStyle = 'rgba(0,0,0,0.55)';
+        ctx.fillStyle = 'rgba(0,0,0,0.6)';
         ctx.beginPath();
         ctx.arc(p[0], p[1], r, 0, 6.2832);
         ctx.fill();
         ctx.lineWidth = 2;
         ctx.strokeStyle = '#ffd666';
         ctx.stroke();
+        text('100 % · stín Měsíce', p[0] + r + 7, p[1] - r - 3, '#ffe7ad', 12);
       }
     }
     // místo úkazu
@@ -949,13 +1501,7 @@ export function createUdalosti(S, A, ui) {
       ctx.moveTo(pl[0], pl[1] + 3);
       ctx.lineTo(pl[0], pl[1] + 9);
       ctx.stroke();
-      if (cur.misto !== 'Praha' || S.labMode === 0) {
-        ctx.font = '600 12px system-ui, sans-serif';
-        ctx.fillStyle = '#ffffff';
-        ctx.shadowColor = '#000';
-        ctx.shadowBlur = 4;
-        ctx.fillText(cur.misto.split(',')[0], pl[0] + 12, pl[1] + 16);
-      }
+      if (cur.misto !== 'Praha' || S.labMode === 0) text(cur.misto.split(',')[0], pl[0] + 12, pl[1] + 17, '#fff', 12.5);
     }
     ctx.restore();
   });
@@ -988,6 +1534,28 @@ export function createUdalosti(S, A, ui) {
         ctx.moveTo(qa[0], qa[1]);
         ctx.lineTo(qb[0], qb[1]);
         ctx.stroke();
+        if (cur.typ === 'blizko') {
+          /* 1.9: vzdálenost přímo na spojnici, mění se s časem na ose úkazu */
+          const d = len(sub(pb, pa)),
+            t =
+              d < 3e6
+                ? num(Math.round(d / 100) * 100) + ' km'
+                : d < 0.3 * AU
+                  ? num(d / 1e6, 1) + ' mil. km'
+                  : num(d / AU, 2) + ' AU',
+            mx = (qa[0] + qb[0]) / 2,
+            my = (qa[1] + qb[1]) / 2;
+          ctx.setLineDash([]);
+          ctx.font = `600 ${12.5 * (S.txtK || 1)}px system-ui, -apple-system, Segoe UI, sans-serif`;
+          ctx.lineWidth = 3;
+          ctx.strokeStyle = 'rgba(0,0,0,0.8)';
+          ctx.strokeText(t, mx + 10, my - 8);
+          ctx.fillStyle = '#ffe7ad';
+          ctx.fillText(t, mx + 10, my - 8);
+          ctx.setLineDash([8, 7]);
+          ctx.lineWidth = 1.6;
+          ctx.strokeStyle = 'rgba(255,214,102,0.85)';
+        }
       }
       ctx.restore();
     }
@@ -1085,7 +1653,13 @@ export function createUdalosti(S, A, ui) {
     show: () => cur && show(cur),
     back: restore,
     go,
+    view: (v) => {
+      const b = card.querySelector(`[data-v="${v}"]`);
+      if (b) b.click();
+      return view;
+    },
     state: () => ({
+      view,
       cur: cur && cur.id,
       back: !!back,
       play,

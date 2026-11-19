@@ -10,9 +10,36 @@ a v souboru na vyzkoušení (`node tools/build/build_offline.mjs <výstup.html> 
 | 1.4, 1.5 | 14.–18. 11. 2026 | `iterace-16` (`1f56f45`) | `iterace-15` |
 | 1.6 | 18. 11. 2026 | `iterace-17` (`d991ab9`) | `iterace-16` |
 | 1.7, 1.7.1 | 18.–19. 11. 2026 | `iterace-18` (`06f1a52`) | `iterace-17` |
-| 1.8a | 19. 11. 2026 | `iterace-19` | `iterace-18` |
+| 1.8a | 19. 11. 2026 | `iterace-19` (`8b21072`) | `iterace-18` |
+| 1.9 | 19. 11. 2026 | `iterace-20` | `iterace-19` |
 
-Větve na sebe navazují v řadě, takže `iterace-19` obsahuje vše předchozí.
+Větve na sebe navazují v řadě, takže `iterace-20` obsahuje vše předchozí.
+
+## 1.9 – mizející dráhy a úkaz jako samostatná scéna (inspirace: NASA Eyes on the Solar System)
+Podklad: 54 snímků NASA Eyes a 58 snímků verze 1.7.1 od autora (19. 11. 2026). Limit velikosti souboru nově 250 MB (dřív 100); verze 1.9
+velikost nemění.
+- **Mizející dráhy** (`render/engine.js`, `core/sim.js`): dráha je stopa – nejjasnější těsně za tělesem, proti směru pohybu slábne
+  a těsně před tělesem je nejslabší. Směr oběhu je tak vidět i při zastaveném čase. `orbitSamples(…, ph)` vrací ke každému vzorku „stáří
+  stopy“ 0–1, čára má průhlednost po vrcholech (`vertexColors`, atribut `color` se čtyřmi složkami). Dlouhé a otevřené dráhy (komety)
+  slábnou 60 let do minulosti. Platí pro planety, měsíce i malá tělesa, v obou rozhraních. Přepínač ☰ → „Dráhy: stopa / celá čára“
+  (`S.orbFade`, pamatuje se v `s200of`).
+- **Úkaz jako scéna** (`ui/udalosti.js`): výběr ze seznamu úkaz rovnou ukáže (dřív bylo potřeba ještě „Ukázat“). Po dobu ukázky nese
+  `<body>` třídu `uksh` a engine množinu `S.evSet`: ustoupí karta tělesa, hádanka, přepínač filtru Slunce, pásy planetek, sondy, orientační
+  šipky a jména těles, která k úkazu nepatří; zúčastněná tělesa mají kroužek a zvýrazněné jméno. Sbalení karty do proužku vrátí běžnou scénu.
+- **Časová osa úkazu:** táhlo přes celé okno úkazu se značkou vrcholu, čas ve světovém čase (UT) a údaj „12 min před vrcholem“;
+  ▶ přehrává od začátku nebo od táhla, druhý stisk zastaví, ◉ skočí na vrchol.
+- **Zatmění Slunce:** pásma částečného zatmění 0 / 25 / 50 / 75 % (podíl průměru Slunce zakrytý Měsícem) jako stopa válce kolem osy stínu
+  na zeměkouli (u obzoru se protahují, kde válec Zemi míjí, vede obrys po hranici dne a noci), pás úplného zatmění ve skutečné šířce podle
+  poloměru stínu z katalogu NASA, popisek „100 % · stín Měsíce“.
+- **Pohledy na zatmění** (vzor „Select your view“): Slunce – nad místem, zpoza Měsíce (Měsíc v popředí, Země za ním, kužel stínu),
+  Země a Měsíc shora ve skutečném poměru (kužel plného stínu, vějíř polostínu, šipka ke Slunci); Měsíc – od Země (kružnice plného stínu
+  a polostínu Země ve vzdálenosti Měsíce) a Země a Měsíc shora.
+- **Rámování:** scéna úkazu se skládá do volné plochy vedle karty (na telefonu a na tabletu na výšku odshora dolů nad kartou či vedle ní).
+  `setCam`, `setCamOver`, `aimDir` dopočítají polohu kamery a pootočení pohledu tak, aby zadaný směr vyšel na zadané místo obrazu
+  (kamera nezná náklon kolem osy pohledu). Průlet Apophisu už nemíří pod dolní lištu; u blízkých průletů je vzdálenost napsaná na spojnici.
+- **Seznam úkazů:** nahoře „Nejbližší úkaz“ podle dnešního data.
+- **Ukázka ovládání:** kapitola o drahách vysvětluje stopu; kapitola o úkazech u zatmění přepne i na pohled zpoza Měsíce.
+- Test `tools/test/t_scena.mjs` (počítač, telefon na výšku i na šířku, tablet; 287 kontrol).
 
 ## 1.8a – zobrazení na všech zařízeních, delší ukázka, pásy planetek
 Limit velikosti souboru nově 100 MB (dřív 110).

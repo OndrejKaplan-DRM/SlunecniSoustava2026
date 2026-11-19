@@ -288,6 +288,11 @@ export function createUI(S, A) {
   } catch (e) {
     /* bez úložiště */
   }
+  try {
+    if (localStorage.getItem('s200of') === '0') S.orbFade = false; /* 1.9: volba „dráhy jako celá čára“ */
+  } catch (e) {
+    /* bez úložiště */
+  }
   const save = () => {
     try {
       localStorage.setItem('s200', JSON.stringify(G));
@@ -981,6 +986,21 @@ export function createUI(S, A) {
       S.orbMode = (S.orbMode + 1) % (K() ? 3 : 6); /* dětské rozhraní: jen vypnuto a dva stupně */
       A.play(['orbit_off', 'orbit_on', 'orbit_on', 'orbit_on', 'orbit_all', 'orbit_all'][S.orbMode]);
       toast('Dráhy: ' + ORB_LAB[S.orbMode]);
+    },
+    orbfade() {
+      S.orbFade = !S.orbFade;
+      ui2(S.orbFade);
+      try {
+        localStorage.setItem('s200of', S.orbFade ? '1' : '0');
+      } catch (e) {
+        /* soukromý režim */
+      }
+      if (S.orbFade && S.orbMode === 0) S.orbMode = 2;
+      toast(
+        S.orbFade
+          ? 'Dráhy jako stopa: čára je nejjasnější těsně za tělesem a slábne dozadu. Těleso tedy letí od slabého konce k jasnému.'
+          : 'Dráhy jako rovnoměrná čára po celém oběhu.'
+      );
     },
     belts() {
       S.belts.on = !S.belts.on;

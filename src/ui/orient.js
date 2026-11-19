@@ -92,6 +92,7 @@ export function createOrient(S, A, ui) {
     if (performance.now() - O.last > 150000) O.pulse(false);
   }, 5000);
   S.overlays.push((ctx, e) => {
+    if (S.evSet) return; /* 1.9: při ukázce úkazu má scéna vlastní popisky (šipka ke Slunci, pásma, přímky) */
     if (!O.on) return;
     const { W, H, F, fwd, right, up } = e,
       C = S.camPos,

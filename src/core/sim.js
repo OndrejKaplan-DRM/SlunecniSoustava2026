@@ -307,7 +307,9 @@ B.forEach((b, i) => {
   semi[i] = a;
 });
 // vzorky dráhy (vůči mateřskému tělesu), zhuštěné kolem současné polohy, aby čára procházela přesně tělesem
-export function orbitSamples(i, jd, n, out) {
+/* ph (nepovinné): pro každý vzorek „stáří stopy“ 0–1. 0 = místo, kde těleso právě je; roste proti směru pohybu
+   (kudy těleso letělo před chvílí … před celým oběhem); těsně před tělesem je tedy skoro 1. Slouží mizejícím drahám. */
+export function orbitSamples(i, jd, n, out, ph) {
   const Pd = period[i],
     o = B[i].orbit,
     ts = [];
@@ -315,6 +317,7 @@ export function orbitSamples(i, jd, n, out) {
     for (let k = 0; k <= n; k++) {
       const u = (k / n) * 2 - 1;
       ts.push(jd + Pd * 0.5 * u * u * u);
+      if (ph) ph[k] = u === 0 ? 0 : u < 0 ? -0.5 * u * u * u : 1 - 0.5 * u * u * u;
     }
   } else {
     // dlouhé a otevřené dráhy: úsek kolem přísluní + zhuštění kolem „teď“
@@ -334,6 +337,8 @@ export function orbitSamples(i, jd, n, out) {
     ts.push(...[...s].sort((x, y) => x - y));
     while (ts.length < n + 1) ts.push(ts[ts.length - 1]);
     ts.length = n + 1;
+    /* dlouhé a otevřené dráhy: stopa slábne 60 let do minulosti, budoucí část je slabá celá */
+    if (ph) for (let k = 0; k <= n; k++) ph[k] = ts[k] <= jd ? Math.min(0.9, ((jd - ts[k]) / 21915) * 0.9) : 0.97;
   }
   for (let k = 0; k <= n; k++) local(i, ts[k], out, k * 3);
   return out;

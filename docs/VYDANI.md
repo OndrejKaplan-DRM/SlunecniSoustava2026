@@ -14,6 +14,7 @@ Projít před každým sloučením do `main` a zveřejněním (stránka, artefak
 - [ ] `node tools/test/t_displej.mjs` (4K, televize se zvětšením 300–400 %, malé okno, přesun okna) bez chyb.
 - [ ] `node tools/test/t_okna.mjs` (18 sestav od telefonu po monitor QHD × obě rozhraní × všechna okna: nic mimo obrazovku, nic uříznutého, zavírací tlačítka dost velká, žádné visící okno) – 0 nálezů. Běží asi 15 minut; `SHOT=1` uloží snímky.
 - [ ] `node tools/test/t_pasy.mjs` (pásy planetek: vidět v přehledu, zblízka pryč, nejdou vybrat) bez chyb.
+- [ ] `node tools/test/t_scena.mjs` (scéna úkazu na počítači, telefonu na výšku i na šířku a tabletu: výběr ze seznamu, časová osa, pohledy na zatmění, tělesa ve volné ploše, návrat; mizející dráhy a jejich přepínač) bez chyb. Běží asi 8 minut.
 - [ ] `src/core/flags.js`: žádná nedodělaná funkce není ve stavu `vse`; vývojářský režim není po čistém otevření zapnutý.
 
 ## Data a texty

@@ -99,6 +99,9 @@ export function createEngine(canvas, overlay) {
     sel: EARTH,
     hover: -1,
     orbMode: 2 /* 0 vypnuto, 1–5 stupně podle významu tělesa (viz ORB_TH) */,
+    orbFade: true /* 1.9: dráha jako mizející stopa za tělesem (false = rovnoměrná čára) */,
+    evSet:
+      null /* 1.9: množina těles právě ukazovaného úkazu (jinak null); ostatní drobná tělesa, pásy a sondy ustoupí */,
     labMode: 1,
     realBright: false,
     disco: false,
@@ -1048,31 +1051,48 @@ export function createEngine(canvas, overlay) {
   // ---------- dráhy ----------
   const ORB_N = 320;
   let orbBudget = 0;
-  const o64 = new Float64Array((ORB_N + 1) * 3);
+  const o64 = new Float64Array((ORB_N + 1) * 3),
+    oPh = new Float32Array(ORB_N + 1);
+  /* 1.9 mizející dráhy (vzor NASA Eyes): čára je nejjasnější těsně za tělesem a slábne proti směru pohybu,
+     takže je směr oběhu vidět i při zastaveném čase. S.orbFade = false vrátí rovnoměrnou čáru. */
+  const ORB_LO = 0.2,
+    ORB_GAIN = 1.9;
   function orbitLine(i) {
     const r = R[i];
     if (r.orbit) return r.orbit;
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.BufferAttribute(new Float32Array((ORB_N + 1) * 3), 3));
+    g.setAttribute('color', new THREE.BufferAttribute(new Float32Array((ORB_N + 1) * 4).fill(1), 4));
     const b = B[i],
       c = new THREE.Color(
         b.type === 'planet' && b.col ? hex(b.col.map((x) => 0.35 + x * 0.75)) : TYPE_COL[b.type] || '#888'
       );
     const line = new THREE.Line(
       g,
-      new THREE.LineBasicMaterial({ color: c, transparent: true, opacity: 0.5, depthWrite: false })
+      new THREE.LineBasicMaterial({ color: c, transparent: true, opacity: 0.5, depthWrite: false, vertexColors: true })
     );
     line.frustumCulled = false;
     line.matrixAutoUpdate = false;
     line.renderOrder = -5;
     scene.add(line);
-    return (r.orbit = { line, built: -1e99, base: c.getHex() });
+    return (r.orbit = { line, built: -1e99, base: c.getHex(), fade: null });
   }
   function buildOrbit(i) {
-    const o = orbitLine(i);
-    orbitSamples(i, S.jd, ORB_N, o64);
+    const o = orbitLine(i),
+      fade = !!S.orbFade;
+    orbitSamples(i, S.jd, ORB_N, o64, oPh);
     o.line.geometry.attributes.position.array.set(o64);
     o.line.geometry.attributes.position.needsUpdate = true;
+    const ca = o.line.geometry.attributes.color,
+      c = ca.array;
+    for (let k = 0; k <= ORB_N; k++) {
+      const q = 1 - oPh[k],
+        w = fade ? 1 + 0.55 * q ** 9 : 1; /* u tělesa je stopa o něco bělejší */
+      c[k * 4] = c[k * 4 + 1] = c[k * 4 + 2] = w;
+      c[k * 4 + 3] = fade ? ORB_LO + (1 - ORB_LO) * q ** 1.7 : 1;
+    }
+    ca.needsUpdate = true;
+    o.fade = fade;
     o.built = S.jd;
   }
 
@@ -1599,7 +1619,7 @@ export function createEngine(canvas, overlay) {
       }
     }
     // dráhy
-    orbBudget = 3;
+    orbBudget = S.orbFade ? 5 : 3;
     const fi = S.focus,
       nearK = 0.3 + 0.7 * sstep(shape[fi].rmax * 30, shape[fi].rmax * 400, cam.alt);
     for (let i = 0; i < N; i++) {
@@ -1637,9 +1657,13 @@ export function createEngine(canvas, overlay) {
         Pd = isFinite(period[i]) ? period[i] : 36525,
         chain = i === fi || i === par[fi] || i === S.sel,
         age = Math.abs(S.jd - o.built);
-      if (age > Pd * (chain ? 2e-6 : 0.0015) && (chain || orbBudget-- > 0)) buildOrbit(i);
+      if (
+        (age > Pd * (chain ? 2e-6 : S.orbFade ? 0.0007 : 0.0015) || o.fade !== !!S.orbFade) &&
+        (chain || orbBudget-- > 0)
+      )
+        buildOrbit(i);
       o.line.visible = true;
-      o.line.material.opacity = a;
+      o.line.material.opacity = o.fade ? Math.min(1, a * ORB_GAIN) : a;
       if (S.disco) o.line.material.color.setHSL((now * 0.0002 + i * 0.031) % 1, 0.9, 0.6);
       else if (o.base !== undefined && o.line.material.color.getHex() !== o.base) o.line.material.color.setHex(o.base);
       const px = p === SUN ? -C[0] : R[p].rel.x,
@@ -1893,8 +1917,10 @@ export function createEngine(canvas, overlay) {
       const r = R[i],
         b = B[i];
       if (r.z <= 0 || r.sx < -40 || r.sx > W + 40 || r.sy < -40 || r.sy > H + 40) continue;
-      const hot = i === fi || i === S.sel || i === S.hover,
+      /* 1.9: při ukázce úkazu (S.evSet) mají značku a jméno jen tělesa, která k němu patří, a planety */
+      const hot = i === fi || i === S.sel || i === S.hover || (S.evSet !== null && S.evSet.has(i)),
         p = par[i];
+      if (S.evSet !== null && !hot && (S.evStrict || (b.type !== 'planet' && b.type !== 'star'))) continue;
       if (!hot && p >= 0 && p !== SUN && r.pr < 3) {
         const q = R[p];
         if (Math.hypot(q.sx - r.sx, q.sy - r.sy) < Math.max(13, q.pr * 0.9)) continue;
