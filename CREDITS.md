@@ -97,7 +97,8 @@ tytéž jako u velkých map v tabulce výše, navíc: Země – NASA Blue Marble
 noční světla Země – NASA Earth Observatory, Black Marble 2016 (M. Román, NASA GSFC; data Suomi NPP VIIRS); Měsíc – NASA Scientific
 Visualization Studio, CGI Moon Kit 16k (LROC WAC; NASA/GSFC/Arizona State University) a pro nejjemnější kresbu USGS Astrogeology,
 LRO LROC WAC Global Morphology Mosaic 100 m (NASA/GSFC/Arizona State University); Mars – USGS Astrogeology, Viking MDIM 2.1 Global
-Mosaic 232 m (NASA/JPL/USGS), barva z barevné mozaiky Viking. Všechno volné dílo NASA/USGS s žádostí o uvedení autorů. Postup výroby
+Mosaic 232 m (NASA/JPL/USGS), barva z barevné mozaiky Viking; reliéf Měsíce – USGS Astrogeology, LRO LOLA DEM 128 px/° (NASA/GSFC,
+LOLA Science Team). Všechno volné dílo NASA/USGS s žádostí o uvedení autorů. Postup výroby
 a seznam souborů: `zdroje/MAPY.md`, oddíl „Úroveň 2“.
 
 Další obrazové podklady:
