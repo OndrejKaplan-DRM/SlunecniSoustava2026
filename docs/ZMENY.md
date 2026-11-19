@@ -23,8 +23,8 @@ Do verze 1.8a na sebe větve navazují v řadě. Verze 1.8b, 1.8m a 1.9 vznikly 
 Sloučeno: 1.9 (mizející dráhy, scéna úkazu), 1.8b (19 objektů na obloze) a 1.8m (podrobné mapy úrovně 2). Konflikty jen ve třech
 čekaných souborech (`dist/app.js` – znovu sestaven, číslo verze v `dist/index.html`, tabulka v tomto souboru); zdrojáky se sloučily samy.
 Větev map se během práce posunula (2. kolo: pyramida dlaždic 8k/16k/32k, `55150f4`); sloučena podruhé téhož večera, konflikt jen
-v `dist/app.js` a v `docs/VYDANI.md`. Soubor na vyzkoušení tím vzrostl ze 194 MiB na zhruba 300 MiB – nad rozpočet 250 MB
-(samotný stupeň 32k Země a Měsíce má 68 MiB).
+v `dist/app.js` a v `docs/VYDANI.md`. Soubor na vyzkoušení tím vzrostl ze 194 MiB na zhruba 300 MiB
+(samotný stupeň 32k Země a Měsíce má 68 MiB). Limit velikosti souboru je od 19. 11. 2026 večer 400 MB (dřív 250).
 - **Pohled z povrchu** (`ui/povrch.js`, `render/engine.js`; vzor: „Telescope mode“ v NASA Eyes): tlačítko „🔭 Z povrchu“ v kartě tělesa
   a v ☰ postaví pozorovatele na místo, nad kterým kamera právě stojí (u Země i tlačítko „📍 Praha“). Tahem se rozhlíží, kolečkem nebo
   dvěma prsty se mění zorné pole od 75° po 0,25° (dalekohled). Lišta `#surf` ukazuje zeměpisnou polohu, směr pohledu (světová strana,
