@@ -56,20 +56,25 @@ Přehled autorů a licencí všech map (i malých, převzatých ze Stellaria) je
 - Zkoušené a zamítnuté: verze s reliéfem mořského dna (na glóbu vypadá nevěrohodně), náhrada celé mapy verzí NASA (moře skoro černé).
 
 ## Úroveň 2 – dlaždice zblízka (verze 1.8m, 19. 11. 2026)
-Třetí úroveň map: dlaždice 1024 px (+1 px okraje, tedy 1026 × 1026) z primárních mozaik ve 16 384 × 8 192 nebo 8 192 × 4 096 px,
-`dist/maps/l2/<id>/<řádek>-<sloupec>.webp` (řádek 0 = sever), seznam `src/data/l2.json`. Načítá je `src/render/l2.js` jen pro těleso
-v ohnisku, jen zblízka a jen ty, na které se díváš.
+Třetí úroveň map: **pyramida** dlaždic 1024 px (+1 px okraje, tedy 1026 × 1026). Stupeň z má (8 · 2^z) × (4 · 2^z) dlaždic:
+z = 0 → 8 192 px po obvodu, z = 1 → 16 384, z = 2 → 32 768 (jen Země a Měsíc). Soubory `dist/maps/l2/<id>/<z>-<řádek>-<sloupec>.webp`
+(řádek 0 = sever), seznam `src/data/l2.json` = nejjemnější stupeň tělesa. Načítá je `src/render/l2.js` jen pro těleso v ohnisku,
+jen zblízka a jen ty, na které se díváš – v každém místě stupeň, jehož texel je zhruba velký jako pixel. Stupeň 8k plynule navazuje
+na úroveň 1 (4096 px) a odstranil rozmazané pásmo mezi úrovní 1 a 16k, které Ondřej viděl na notebooku (Měsíc, Merkur, Mars
+z 2–3 tisíc km).
 
 Výroba: `node tools/maps/l2_resize.mjs <zdroj> <šířka> <pracovní.raw> seda` (proudově přes sharp/libvips, bez načtení celého zdroje)
-→ `python3 -I tools/maps/make_l2.py <pracovní.raw> <id> 78 [--zeme] [--l1]`. Barvy a jas určuje stávající velká mapa (úroveň 1);
+→ `python3 -I tools/maps/make_l2.py <pracovní.raw> <id> 78 [--zeme] [--l1]` (nejjemnější stupeň z mapy, hrubší jejím zmenšením
+průměrem 2 × 2; `tools/maps/l2_tiles.py`). Barvy a jas určuje stávající velká mapa (úroveň 1, nebo jiná mapa přes `L2_L1`);
 ze zdroje se přebírá jen jemná kresba nad jejím rozlišením („přenos detailu“: L2 = zvětšená L1 × ((Y + 6) / (Ynízké + 6))^γ),
-takže zmenšená úroveň 2 dá zase úroveň 1 (odchylka 0,5–2,7 z 255) a při doostření nic neblikne. Natočení se zjišťuje korelací
+takže zmenšená úroveň 2 dá zase úroveň 1 (odchylka 0,5–2,8 z 255) a při doostření nic neblikne. Natočení se zjišťuje korelací
 se stávající mapou – u všech těles vyšlo stejně jako posun zapsaný výše. Kde zdroj nemá data, zůstává úroveň 1 (nic se nepřikresluje).
+Stávající dlaždice 16k a 8k převedl na stupně `python3 -I tools/maps/l2_tiles.py <id>` (přejmenování + hrubší stupeň zmenšením).
 
-| Těleso | Úroveň 2 | Zdroj kresby | Dlaždice | Poznámka |
+| Těleso | Nejjemnější | Zdroj kresby | Dlaždice | Poznámka |
 |---|---|---|---|---|
-| Země | 16 384 | NASA Blue Marble NG, červenec 2004, topography 21 600 × 10 800 (`world.topo.200407.3x21600x10800.jpg`, assets.science.nasa.gov) | 5,1 MB | `--zeme`: pevnina ze zdroje s barvou podle L1, moře z L1 (zdroj ho má skoro černé), ostré pobřeží; mraky a světla měst zůstávají 2048 px |
-| Měsíc | 16 384 | NASA SVS 4720, CGI Moon Kit, `lroc_color_poles_16k.tif` | 11,3 MB | stejný produkt jako L1, jen v plném rozlišení |
+| Země | 32 768 | NASA Blue Marble NG, červenec 2004, topography 500 m: 8 dlaždic `world.topo.200407.3x21600x21600.{A1…D2}.jpg` (assets.science.nasa.gov), každá zmenšena na 8192² a složena | 24,8 MB | `--zeme`: pevnina ze zdroje s barvou podle L1, moře z L1 (zdroj ho má skoro černé), ostré pobřeží; mraky zůstávají 2048 px; noční světla zvlášť (níže) |
+| Měsíc | 32 768 | stupně 16k a 8k: NASA SVS 4720, CGI Moon Kit, `lroc_color_poles_16k.tif` (barva, albedo); jemná kresba 32k: USGS, LRO LROC WAC Global Morphology Mosaic 100 m (`Lunar_LRO_LROC-WAC_Mosaic_global_100m_June2013.tif`, 109 164 × 54 582, 6,0 GB) | viz níže | 69,2 MB | dva průchody: 1) SVS 16k přenesená na tóny L1 (korelace 0,976, γ 1,04; `L2_KEEP`), 2) jemná kresba WAC na tuto mapu (`L2_L1`, `L2_POSUN=0` – korelace 0,67, druhý vrchol 0,66, posun ověřen i v šířce; γ 0,6 ručně `L2_GAMA`). Stupeň 32k s kvalitou 66 (`L2_Q2`) a bez krajního řádku dlaždic u pólů (`L2_POLY=1`, nad 78,75° by ho shader skoro nikdy neukázal); l2.json `[2, 1]` |
 | Mars | 16 384 | USGS, Viking MDIM 2.1 Global Mosaic 232 m (šedá, `Mars_Viking_MDIM21_Mosaic_global_232m.tif`, 4,2 GB) | 10,0 MB | barva z L1 zmenšené na 1024 px (`L2_REF=1024`), kresba z MDIM 2.1, γ 0,75 ručně (`L2_GAMA`), posun 0 ručně (`L2_POSUN`; korelace s barevnou L1 je slabá, ověřeno jemnou kresbou); **L1 přepsána** zmenšeninou (výrazně ostřejší). Barevná mozaika Viking 925 m dala jen malé zlepšení (je měkká) – nepoužita |
 | Merkur | 16 384 | USGS, MESSENGER MDIS MD3 Color 665 m | 20,2 MB | největší zisk ze všech |
 | Pluto | 16 384 | USGS, New Horizons LORRI–MVIC 300 m | 4,1 MB | ostrá jen strana nalétnutí sondy, zbytek zůstává rozmazaný (skutečnost dat) |
@@ -83,8 +88,33 @@ se stávající mapou – u všech těles vyšlo stejně jako posun zapsaný vý
 | Iapetus | 8 192 | USGS, Cassini–Voyager 783 m | 1,8 MB | L1 2048 → 4096 |
 | Rhea, Tethys, Triton | – | jako L1 | – | jen L1 2048 → 4096 (zmenšenina 8k); dlaždice by nic nepřidaly |
 
-Celkem 13 těles s úrovní 2 (71 MB) a 5 těles s ostřejší úrovní 1. Licence: vše volné dílo NASA/USGS, u USGS „Please cite authors“
-(autoři jsou v CREDITS.md). Velké zdrojové soubory se do repa neukládají (4,5 GB + 4,2 GB MDIM), adresy jsou výše.
+Celkem 13 těles s úrovní 2 (159 MB: Měsíc 69, Země 25, Merkur 26, Mars 13, Pluto 5, ostatní 8k po 1,5–5,6) a 5 těles s ostřejší
+úrovní 1. Licence: vše volné dílo NASA/USGS, u USGS „Please cite authors“ (autoři jsou v CREDITS.md). Velké zdrojové soubory se do repa
+neukládají (desítky GB), adresy jsou výše.
+
+**Měsíc 32k – proč dva zdroje a γ 0,6.** Barevná mapa SVS (albedo, Slunce „v zádech“) má v nejjemnějším pásmu velmi malý kontrast
+(směrodatná odchylka log jasu v oktávě 16k 0,024), takže 32k ze stejného druhu dat by bylo jen o pár procent ostřejší. Mozaika WAC
+100 m je „morfologická“ (snímky při šikmém Slunci, dopad 55–75°): krátery mají stín a světlou stěnu (oktáva 32k 0,088). Přenáší se
+jen nejjemnější oktáva (pod 670 m), barvy i vše hrubší zůstává z SVS sladěné s L1 – zmenšený stupeň 32k dá zase tuto mapu 16k
+(odchylka 3,5 z 255). Pozor: bez prvního průchodu byly dlaždice o třetinu tmavší než L1 (L1 Měsíce je proti SVS zesvětlená) – při
+doostření by Měsíc „zešedl“; zachytil to snímek z testu 19. 11. večer.
+γ 0,6 je kompromis z porovnání výřezů (0,3 skoro nic nepřidá, 1,0 je proti měkké barevné mapě příliš tvrdé). Omezení: stínování
+je „zapečené“ z jednoho směru Slunce, aplikace osvětluje podle skutečné polohy Slunce – u kráterů menších než asi 1 km to může
+u terminátoru vypadat jako opačné nasvícení. Stejně tak mají zapečené stínování zdroje Marsu (MDIM), Merkuru (MDIS) a Země (BMNG topography).
+Poctivější cesta (výšková mapa a výpočet stínování podle Slunce, např. LOLA 128 px/°) je zapsaná jako možné pokračování.
+
+**Póly (Antarktida, Arktida, póly Měsíce).** Mapy jsou ve válcové projekci: u pólu je texel v délce zúžený o cos šířky, v šířce ne.
+Shader volí stupeň podle horšího směru, takže u pólu ukáže jemnější stupeň až zblízka a ve směru poledníků zůstává obraz roztažený –
+na Antarktidě z 1 300 km to vypadá jako jemné „pruhy“ k pólu (ověřeno: nejsou to mraky, zůstanou i bez pomocné mapy). Oprava by
+chtěla zvláštní dlaždice v polární projekci (čepičky nad ±60°) – zapsáno jako možné pokračování.
+
+### Noční světla Země (verze 1.8m)
+`dist/maps/hi/earth_lights.webp`, 8192 × 4096, šedá (načítá se jako jeden kanál R8, 43 MB v grafice se zmenšeninami), 0,7 MB.
+Zdroj NASA Earth Observatory, Black Marble 2016, `BlackMarble_2016_3km_gray.jpg` (13 500 × 6 750, 3 km; assets.science.nasa.gov,
+image record 144897), zmenšeno Lanczosem a zesíleno 1,18× (shoda s jasem dosavadních světel v pomocné mapě `earth_aux` – shader
+světla umocňuje na druhou). Načítá se s velkou mapou Země a zahazuje se s ní; zdálky zůstávají světla z pomocné mapy 2048 px.
+Dřív (2048 px, asi 20 km na pixel) byla světla měst v noci zblízka rozmazaná do čtverců (Ondřejovy snímky 19. 11. 2026).
+Black Marble existuje i v 500 m (dlaždice A1–D2) – pro světla ve stupních dlaždic jako možné pokračování.
 
 ### Zpracováno a vyřazeno (zisk do pár procent – podle zadání „nepálit úsilí na 3 %“)
 Io (USGS 1 km – většina mozaiky je zvětšený Voyager), Charon (300 m jen na malé části), Ceres (zdroj 20 ppd = 7200 px; mozaika 140 m
@@ -96,4 +126,4 @@ mezi dlaždicí a zvětšenou L1 ve výřezu s nejvíc kresbou (Merkur 25, Venu�
 - Jupiter – Hubble OPAL má stejné rozlišení 0,1° (3600 px) jako náš Cassini PIA07782; žádná větší globální mapa s jasnou licencí.
 - Uran, Neptun – globální mapa neexistuje. Měsíce Uranu – Voyager 2, 1440 px, jen jižní polokoule.
 - Solar System Scope (CC BY 4.0) – 8k textury s „vymyšleným terénem“ v mezerách a přisycenými barvami: méně poctivé a ne ostřejší než primární zdroje výše.
-- Mraky a noční světla Země ve vyšším rozlišení – archiv NASA NEO (`neo.gsfc.nasa.gov/archive/bluemarble/`) byl přesunut, soubory nejsou dostupné.
+- Mraky Země ve vyšším rozlišení – archiv NASA NEO (`neo.gsfc.nasa.gov/archive/bluemarble/`) byl přesunut, soubory nejsou dostupné. (Noční světla viz výše – Black Marble 2016.)

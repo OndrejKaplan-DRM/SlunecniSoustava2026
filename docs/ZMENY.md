@@ -12,7 +12,7 @@ a v souboru na vyzkoušení (`node tools/build/build_offline.mjs <výstup.html> 
 | 1.7, 1.7.1 | 18.–19. 11. 2026 | `iterace-18` (`06f1a52`) | `iterace-17` |
 | 1.8a | 19. 11. 2026 | `iterace-19` (`8b21072`) | `iterace-18` |
 | 1.8b | 19. 11. 2026 | `iterace-19b` (`929fe9c`) | `iterace-19` (boční větev, objekty na obloze) |
-| 1.8m | 19. 11. 2026 | `iterace-21` (`9fe1848`) | `iterace-19` (boční větev, podrobné mapy) |
+| 1.8m | 19. 11. 2026 | `iterace-21` (`55150f4`, 2. kolo map) | `iterace-19` (boční větev, podrobné mapy) |
 | 1.9 | 19. 11. 2026 | `iterace-20` (`1e06803`) | `iterace-19` |
 | 1.10 | 19. 11. 2026 | `iterace-22` | `iterace-20` + sloučené `iterace-19b` a `iterace-21` |
 
@@ -22,6 +22,9 @@ Do verze 1.8a na sebe větve navazují v řadě. Verze 1.8b, 1.8m a 1.9 vznikly 
 ## 1.10 – sloučení tří větví a pohled z povrchu tělesa
 Sloučeno: 1.9 (mizející dráhy, scéna úkazu), 1.8b (19 objektů na obloze) a 1.8m (podrobné mapy úrovně 2). Konflikty jen ve třech
 čekaných souborech (`dist/app.js` – znovu sestaven, číslo verze v `dist/index.html`, tabulka v tomto souboru); zdrojáky se sloučily samy.
+Větev map se během práce posunula (2. kolo: pyramida dlaždic 8k/16k/32k, `55150f4`); sloučena podruhé téhož večera, konflikt jen
+v `dist/app.js` a v `docs/VYDANI.md`. Soubor na vyzkoušení tím vzrostl ze 194 MiB na zhruba 300 MiB – nad rozpočet 250 MB
+(samotný stupeň 32k Země a Měsíce má 68 MiB).
 - **Pohled z povrchu** (`ui/povrch.js`, `render/engine.js`; vzor: „Telescope mode“ v NASA Eyes): tlačítko „🔭 Z povrchu“ v kartě tělesa
   a v ☰ postaví pozorovatele na místo, nad kterým kamera právě stojí (u Země i tlačítko „📍 Praha“). Tahem se rozhlíží, kolečkem nebo
   dvěma prsty se mění zorné pole od 75° po 0,25° (dalekohled). Lišta `#surf` ukazuje zeměpisnou polohu, směr pohledu (světová strana,
@@ -121,6 +124,20 @@ Samostatná linie „grafika povrchů“ vedle 1.9 (dráhy a úkazy na `iterace-
 - **Země zblízka:** mraky (jen 2048 px) se nad podrobnou pevninou ztenčí o polovinu.
 - **Nápověda:** jeden odstavec o doostření zblízka.
 - **Test** `tools/test/t_l2.mjs`: zdálky nic, zblízka dlaždice, telefon nic, snímky před/po, chyby stránky.
+- **2. kolo (po Ondřejově zkoušce na notebooku 19. 11. večer):**
+  - **Pyramida dlaždic** 8k → 16k → 32k (`maps/l2/<id>/<z>-<řádek>-<sloupec>.webp`, `l2.json` = nejjemnější stupeň): stupeň 8k navazuje
+    na úroveň 1 a odstranil rozmazané pásmo mezi úrovní 1 a 16k (Měsíc z 2 000 km, Merkur z 3 400 km, Mars). Shader prolíná stupně
+    od hrubého k jemnému; chybí-li jemná dlaždice, ukáže se hrubší. Atlas 12 míst (50 MB) v běžné třídě, 24 (101 MB) ve výkonné.
+    Index 32 × 28 (všechny stupně nad sebou). Předem se ve webové verzi stahují stupně 8k a 16k (32k až podle potřeby).
+  - **Země 32k** z Blue Marble NG 500 m (8 dlaždic 21 600²) a **Měsíc 32k**: barva SVS 16k, nejjemnější kresba z LROC WAC 100 m
+    (krátery menší než asi 1 km se stínem; γ 0,6; barvy SVS sladěné s velkou mapou). Úroveň 2 celkem 159 MB (dřív 71).
+  - Výběr dlaždic počítá se zúžením texelu k pólům (shader je tam ukáže až zblízka) – u pólů už nezabírají místa v atlasu zbytečně.
+  - **Noční světla Země** 8192 × 4096 (Black Marble 2016, jeden kanál R8) místo 2048 px – načítají se s velkou mapou Země.
+  - Nástroje: `tools/maps/l2_tiles.py` (stupně, převod starých názvů), `make_l2.py` píše pyramidu (`L2_L1`, `L2_Q2`).
+  - Test `t_l2.mjs`: stupně v `S.l2.state().lv`, pohled `…:noc` pro noční světla, snímky `<id>_<n>_L1|L2.jpg`.
+  - Soubor na flashku s `--hi`: 298,2 MiB (312,7 MB, 2 293 souborů); v sandboxu připraven za 4,8 s, paměť stránky 637 MB,
+    po přiblížení k Měsíci 815 MB, 0 požadavků ven, 0 chyb.
+  - Test ukázky `tut.mjs`: první běh čeká, až úvod zmizí a ukázka běží (start s přednačtením trvá v sandboxu asi 4 s; padal i na `9fe1848`).
 - Soubor na flashku s `--hi` obsahuje i úroveň 2 (180 MB; `--bez-l2` ji vynechá). Data jsou nově v neaktivních prvcích
   `<script type="text/x-s200">` a `window.S200_ASSETS` je Proxy (src/core/asset.js beze změny): po otevření v sandboxu 503 MB paměti
   stránky místo 618 MB se starým způsobem (1.8a s 81 MB: 406 MB), halda JavaScriptu 30 MB místo 381 MB. Starý způsob: `--json`.

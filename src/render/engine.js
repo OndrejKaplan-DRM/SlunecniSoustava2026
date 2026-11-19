@@ -689,6 +689,8 @@ export function createEngine(canvas, overlay) {
       uL2: { value: new THREE.Vector4(1, 1, 4, 0) },
       tAux: { value: blank },
       uCity: { value: 1 },
+      tLights: { value: blank },
+      uLights: { value: 0 },
       uRed: { value: i === MOON ? 1 : 0 },
       tRing: { value: blank },
       uHasMap: { value: 0 },
@@ -973,8 +975,65 @@ export function createEngine(canvas, overlay) {
     /* telefon velké mapy nenačítá; tablet jen když na ně má paměť (S.hiTab nastaví rozhraní podle třídy zařízení) */
     !/\bmob\b/.test(document.body.className) &&
     (S.hiTab || !/\btab\b/.test(document.body.className));
+  /* Noční světla Země zblízka (verze 1.8m): NASA Black Marble 2016 (3 km), 8192 × 4096, jeden kanál (R8, 43 MB se zmenšeninami);
+     načítají se po velké mapě Země a zahazují se s ní. Bez nich zůstávají světla z malé pomocné mapy (2048 px). */
+  function needLights(i) {
+    const r = R[i],
+      url = 'maps/hi/earth_lights.webp';
+    if (r.lights || (typeof window !== 'undefined' && window.S200_ASSETS && !window.S200_ASSETS[url])) return;
+    r.lights = 1;
+    fetch(AS(url))
+      .then((q) => {
+        if (!q.ok) throw new Error('http');
+        return q.blob();
+      })
+      .then((bl) =>
+        createImageBitmap(bl, { imageOrientation: 'flipY', premultiplyAlpha: 'none', colorSpaceConversion: 'none' })
+      )
+      .then((bm) => {
+        if (r.hi !== 2 || r.lights !== 1) {
+          bm.close();
+          if (r.lights === 1) r.lights = 0;
+          return;
+        }
+        const t = new THREE.Texture(bm);
+        t.flipY = false;
+        t.format = THREE.RedFormat;
+        t.internalFormat = 'R8';
+        t.colorSpace = THREE.NoColorSpace;
+        t.wrapS = THREE.RepeatWrapping;
+        t.needsUpdate = true;
+        try {
+          renderer.initTexture(t);
+        } catch (e) {
+          /* nahraje se při prvním kreslení */
+        }
+        r.U.tLights.value = t;
+        r.U.uLights.value = 1;
+        r.lights = 2;
+        r.lw = bm.width;
+        wake();
+      })
+      .catch(() => {
+        r.lights = -1;
+      });
+  }
+  function dropLights(i) {
+    const r = R[i];
+    if (r.lights !== 2) {
+      if (r.lights === 1) r.lights = 0;
+      return;
+    }
+    const t = r.U.tLights.value;
+    r.U.tLights.value = blank;
+    r.U.uLights.value = 0;
+    r.lights = 0;
+    t.dispose();
+    if (t.image && t.image.close) t.image.close();
+  }
   function dropHi(i) {
     const r = R[i];
+    dropLights(i);
     if (r.hi !== 2) return;
     const t = r.U.tHi.value;
     r.U.tHi.value = blank;
@@ -1032,6 +1091,7 @@ export function createEngine(canvas, overlay) {
         r.U.uHi.value = 0.001;
         r.hi = 2;
         r.hw = bm.width;
+        if (id === 'earth') needLights(i);
         hiLog.push({
           id,
           load: Math.round(t1 - t0),
@@ -2329,6 +2389,7 @@ export function createEngine(canvas, overlay) {
       const r = R[i];
       if (r.tex === 2) px += ((r.mw || 512) * (r.mw || 512)) / 2;
       if (r.hi === 2) px += ((r.hw || 4096) * (r.hw || 4096)) / 2;
+      if (r.lights === 2) px += (r.lw * r.lw) / 8; /* jeden kanál místo čtyř */
     }
     return (px * 4 * 1.33) / 1048576 + l2.mem();
   };

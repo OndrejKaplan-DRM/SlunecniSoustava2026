@@ -40,7 +40,13 @@ fs.mkdirSync(out, { recursive: true });
 let bad = 0;
 const VSE = ['cmp', 'superkarta', 'ukazy', 'where', 'cine', 'search', 'small', 'game'];
 for (let runN = 0; runN < 3; runN++) {
-  if (runN === 0) await page.click('#sp-tut');
+  if (runN === 0) {
+    await page.click('#sp-tut');
+    /* start je asynchronní (přednačtení na úvodu trvá v sandboxu 3–4 s) – počkat, až úvod zmizí a ukázka běží */
+    await page.waitForFunction(() => !document.querySelector('#splash.on') && S200.ui.tut.running(), null, {
+      timeout: 60000,
+    });
+  }
   else if (runN === 1) await page.evaluate((v) => void S200.ui.tut.start(v), VSE);
   else
     await page.evaluate(() => {

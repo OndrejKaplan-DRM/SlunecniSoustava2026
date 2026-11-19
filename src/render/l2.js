@@ -1,18 +1,28 @@
-// Úroveň 2 map těles (verze 1.8m): dlaždice 1024 px (+1 px okraje) z primárních mozaik 16k nebo 8k (seznam src/data/l2.json,
-// soubory dist/maps/l2/<id>/<řádek>-<sloupec>.webp, řádek 0 = sever). Načítají se jen pro těleso v ohnisku, jen zblízka a jen ty,
-// na které se díváš – tam, kde se velká mapa (úroveň 1, 4096 × 2048) už roztahuje. Dlaždice se skládají do jedné „atlasové“
-// textury (8 nebo 16 míst, 32 nebo 64 MB) a malá textura indexu říká shaderu, která dlaždice leží na kterém místě.
-// Shader úroveň 2 prolne jen tam, kde se zvětšuje (texel ≥ pixel); jinak zůstává úroveň 1 se zmenšeninami – žádné třpytivé zrnění.
+// Úroveň 2 map těles (verze 1.8m): pyramida dlaždic 1024 px (+1 px okraje). Stupeň z má mapu (8 · 2^z) × (4 · 2^z) dlaždic:
+// z = 0 → 8192 px po obvodu, z = 1 → 16 384, z = 2 → 32 768 (Země a Měsíc). Seznam src/data/l2.json = nejjemnější stupeň tělesa,
+// soubory dist/maps/l2/<id>/<z>-<řádek>-<sloupec>.webp (řádek 0 = sever). Načítají se jen pro těleso v ohnisku, jen zblízka
+// a jen ty, na které se díváš – v každém místě stupeň, jehož texel je zhruba velký jako pixel obrazovky (8k plynule navazuje
+// na velkou mapu úrovně 1, 4096 × 2048, a 16k na 8k – žádné rozmazané pásmo mezi nimi). Dlaždice se skládají do jedné
+// „atlasové“ textury (12 nebo 24 míst) a malá textura indexu (32 × 28, všechny stupně nad sebou) říká shaderu, která dlaždice
+// leží na kterém místě. Shader stupně prolíná od hrubého k jemnému a jen tam, kde se zvětšují (texel ≥ pixel); jinak zůstává
+// úroveň 1 se zmenšeninami – žádné třpytivé zrnění. Chybí-li jemná dlaždice, ukáže se hrubší.
 import L2_IDS from '../data/l2.json';
 
 const T = 1024,
   SLOT = 1026, // dlaždice s okrajem 1 px na každé straně (bilineární vzorkování nepřeteče do sousedního místa)
-  GW = 16,
-  GH = 8; // největší mřížka (16k); 8k tělesa používají 8 × 4
+  ZN = 3, // stupně 0–2
+  IW = 32, // index: šířka nejjemnějšího stupně
+  IH = 28; // řádky stupňů 0 (4), 1 (8), 2 (16) nad sebou
+const GRID = (z) => [8 << z, 4 << z],
+  OFF = (z) => 4 * ((1 << z) - 1), // první řádek stupně v indexu
+  /* l2.json: nejjemnější stupeň, nebo [stupeň, n] – u nejjemnějšího stupně chybí n krajních řádků u každého pólu (Měsíc 32k:
+     dlaždice nad 78,75° by shader skoro nikdy neukázal – rovnoběžky jsou tam v mapě roztažené víc než 5×) */
+  ZMAX = (id) => (Array.isArray(L2_IDS[id]) ? L2_IDS[id][0] : L2_IDS[id]),
+  POLE = (id) => (Array.isArray(L2_IDS[id]) ? L2_IDS[id][1] : 0);
 
 export function createL2({ THREE, renderer, AS, wake }) {
-  const idxData = new Uint8Array(GW * GH * 4),
-    idx = new THREE.DataTexture(idxData, GW, GH, THREE.RGBAFormat, THREE.UnsignedByteType);
+  const idxData = new Uint8Array(IW * IH * 4),
+    idx = new THREE.DataTexture(idxData, IW, IH, THREE.RGBAFormat, THREE.UnsignedByteType);
   idx.minFilter = idx.magFilter = THREE.NearestFilter;
   idx.generateMipmaps = false;
   idx.needsUpdate = true;
@@ -22,8 +32,8 @@ export function createL2({ THREE, renderer, AS, wake }) {
     nSlots = 0,
     owner = -1,
     gen = 0,
-    gw = 0,
-    gh = 0,
+    zmax = 0,
+    pole = 0,
     busy = 0,
     lastSel = 0,
     dirty = false;
@@ -36,14 +46,16 @@ export function createL2({ THREE, renderer, AS, wake }) {
     U,
     log,
     ids: new Set(Object.keys(L2_IDS)),
-    slots: 8 /* nastaví rozhraní podle třídy zařízení: 0 úsporná, 8 běžná, 16 výkonná */,
-    has: (id) => !!L2_IDS[id],
-    grid: (id) => L2_IDS[id],
+    slots: 12 /* nastaví rozhraní podle třídy zařízení: 0 úsporná, 12 běžná, 24 výkonná */,
+    has: (id) => L2_IDS[id] !== undefined,
+    zmax: ZMAX,
+    grid: (id) => GRID(ZMAX(id) | 0) /* mřížka nejjemnějšího stupně */,
     mem: () => (rt ? (rt.width * rt.height * 4) / 1048576 : 0),
     state: () => ({
       owner,
       slots: nSlots,
       loaded: [...tiles.values()].filter((t) => t.slot !== undefined).length,
+      lv: [0, 1, 2].map((z) => [...tiles.entries()].filter(([k, t]) => t.slot !== undefined && k[0] === '' + z).length),
       loading: busy,
       want: want.size,
     }),
@@ -76,8 +88,8 @@ export function createL2({ THREE, renderer, AS, wake }) {
     return true;
   }
   function setIdx(key, slot, a) {
-    const [ty, tx] = key.split('-').map(Number),
-      o = ((gh - 1 - ty) * GW + tx) * 4;
+    const [z, ty, tx] = key.split('-').map(Number),
+      o = ((OFF(z) + GRID(z)[1] - 1 - ty) * IW + tx) * 4;
     idxData[o] = slot < 0 ? 0 : slot + 1;
     idxData[o + 1] = Math.round(Math.max(0, Math.min(1, a)) * 255);
     dirty = true;
@@ -169,14 +181,28 @@ export function createL2({ THREE, renderer, AS, wake }) {
     log.push({ key: it.key, load: Math.round(t1 - it.t0), upload: Math.round(performance.now() - t1) });
     if (log.length > 200) log.shift();
   }
-  /* Výběr dlaždic: síť 13 × 9 paprsků z kamery; v každém zásahu tělesa se porovná velikost pixelu na povrchu s texelem úrovně 2.
-     Dlaždice je potřeba tam, kde ji shader opravdu ukáže (texel úrovně 2 větší než asi 1/2 px, shader prolíná do 1/1,7 px);
-     přednost má větší zvětšení a střed obrazovky. */
+  /* Výběr dlaždic: síť 13 × 9 paprsků z kamery; v každém zásahu tělesa se porovná velikost pixelu na povrchu (foot) s texelem
+     stupňů. Vybere se nejjemnější stupeň, který tu shader opravdu ukáže (texel větší než asi 1/2 px, shader prolíná do 1/1,7 px),
+     a v pásmu prolínání i stupeň pod ním (shader je tam míchá). Přednost má větší zvětšení (hrubší stupeň dřív – rychle pokryje
+     plochu) a střed obrazovky. */
   const NX = 13,
     NY = 9;
+  function add(z, u, v, pri) {
+    let [gw, gh] = GRID(z),
+      ty = gh - 1 - Math.min(gh - 1, Math.max(0, Math.floor(v * gh)));
+    if (z === zmax && pole && (ty < pole || ty >= gh - pole)) {
+      if (!z) return;
+      z--; /* u pólu nejjemnější stupeň chybí – stačí hrubší */
+      [gw, gh] = GRID(z);
+      ty = gh - 1 - Math.min(gh - 1, Math.max(0, Math.floor(v * gh)));
+    }
+    const tx = ((Math.floor(u * gw) % gw) + gw) % gw,
+      key = z + '-' + ty + '-' + tx;
+    if (!(want.get(key) >= pri)) want.set(key, pri);
+  }
   function select(c, Rb, m9, cam, F, W, H) {
     want.clear();
-    const t2 = (Math.PI * Rb) / (gh * T),
+    const t0 = (Math.PI * Rb) / (4 * T) /* texel stupně 0 na rovníku */,
       cc = c.x * c.x + c.y * c.y + c.z * c.z - Rb * Rb;
     for (let a = 0; a < NY; a++)
       for (let b = 0; b < NX; b++) {
@@ -198,21 +224,22 @@ export function createL2({ THREE, renderer, AS, wake }) {
           py = t * dy - c.y,
           pz = t * dz - c.z,
           cs = -(px * dx + py * dy + pz * dz) / Rb,
-          foot = t / F / dl / Math.max(cs, 0.25);
-        if (foot > t2 * 2.0) continue;
-        const bx = (m9[0] * px + m9[1] * py + m9[2] * pz) / Rb,
+          foot = t / F / dl / Math.max(cs, 0.25),
+          bx = (m9[0] * px + m9[1] * py + m9[2] * pz) / Rb,
           by = (m9[3] * px + m9[4] * py + m9[5] * pz) / Rb,
           bz = (m9[6] * px + m9[7] * py + m9[8] * pz) / Rb,
+          /* texelů stupně 0 na pixel; k pólům se rovnoběžky v mapě zkracují (texel je užší o cos šířky) – shader bere horší směr */
+          tp0 = foot / (t0 * Math.max(Math.sqrt(Math.max(0, 1 - bz * bz)), 0.02));
+        if (tp0 > 2.0) continue;
+        const z = Math.min(zmax, Math.floor(Math.log2(2.0 / tp0) - 1e-9)),
           u = Math.atan2(by, bx) / (2 * Math.PI) + 0.5,
           v = Math.asin(Math.max(-1, Math.min(1, bz))) / Math.PI + 0.5,
-          tx = ((Math.floor(u * gw) % gw) + gw) % gw,
-          ty = gh - 1 - Math.min(gh - 1, Math.max(0, Math.floor(v * gh))),
           ctr = Math.hypot((b + 0.5) / NX - 0.5, (a + 0.5) / NY - 0.5),
-          pri = (t2 / foot) * (1.6 - ctr),
-          key = ty + '-' + tx;
-        if (!(want.get(key) >= pri)) want.set(key, pri);
+          tz = tp0 * (1 << z);
+        add(z, u, v, (1.6 - ctr) / tz);
+        if (z > 0 && tz > 1.0) add(z - 1, u, v, (1.6 - ctr) / (tz * 0.5));
       }
-    /* jen tolik dlaždic, kolik je míst; zbytek zůstane na úrovni 1 */
+    /* jen tolik dlaždic, kolik je míst; zbytek zůstane na hrubším stupni */
     if (want.size > nSlots) {
       const keep = [...want.entries()].sort((p, q) => q[1] - p[1]).slice(0, nSlots);
       want.clear();
@@ -222,7 +249,7 @@ export function createL2({ THREE, renderer, AS, wake }) {
   /* volá engine každý snímek pro těleso v ohnisku; vrací váhu úrovně 2 pro uniform uL2.w */
   L2.frame = (i, id, U2, o) => {
     const now = o.now;
-    if (!L2_IDS[id] || !o.can || L2.slots <= 0) {
+    if (L2_IDS[id] === undefined || !o.can || L2.slots <= 0) {
       if (owner === i) reset();
       U2.value.w = 0;
       return;
@@ -230,9 +257,10 @@ export function createL2({ THREE, renderer, AS, wake }) {
     if (owner !== i) {
       reset();
       owner = i;
-      [gw, gh] = L2_IDS[id];
+      zmax = Math.min(ZN - 1, ZMAX(id) | 0);
+      pole = POLE(id);
     }
-    U2.value.set(gw, gh, cols || 4, 0);
+    U2.value.set(zmax, 0, cols || 4, 0);
     const near =
       o.pr >
       o.H * 0.35; /* od tohoto přiblížení se úroveň 1 uprostřed kotouče začíná roztahovat (podrobně rozhodne výběr) */
@@ -264,30 +292,33 @@ export function createL2({ THREE, renderer, AS, wake }) {
     U2.value.w = 1;
     if (busy || ready.length) wake();
   };
-  /* Předem (jen webová verze): soubory dlaždic strategických těles se v klidu po startu stáhnou do mezipaměti prohlížeče,
-     aby se zblízka jen rozbalily. Nic se nerozbaluje ani nenahrává do grafiky. Soubor na flashku má vše v sobě – tam se nedělá nic.
+  /* Předem (jen webová verze): soubory dlaždic stupňů 0 a 1 strategických těles se v klidu po startu stáhnou do mezipaměti
+     prohlížeče, aby se zblízka jen rozbalily (nejjemnější stupeň 2 Země a Měsíce – 32k – se stahuje až podle potřeby). Nic se
+     nerozbaluje ani nenahrává do grafiky. Soubor na flashku má vše v sobě – tam se nedělá nic.
      ok() – smí se teď stahovat (nelétá se, neběží ukázka); po každé dlaždici se ptá znovu. */
-  L2.prefetch = async (ids, ok) => {
+  L2.prefetch = async (ids, ok, zTo = 1) => {
     if (offline() || L2.slots <= 0 || !/^https?:/.test(location.protocol)) return 0;
     let n = 0;
-    for (const id of ids) {
-      const g = L2_IDS[id];
-      if (!g) continue;
-      const order = [];
-      for (let ty = 0; ty < g[1]; ty++)
-        for (let tx = 0; tx < g[0]; tx++) order.push([Math.abs(ty + 0.5 - g[1] / 2), ty + '-' + tx]);
-      order.sort((a, b) => a[0] - b[0]); /* od rovníku k pólům */
-      for (const [, key] of order) {
-        while (!ok()) await new Promise((r) => setTimeout(r, 1500));
-        try {
-          const q = await fetch(AS('maps/l2/' + id + '/' + key + '.webp'), { priority: 'low' });
-          await q.blob();
-          n++;
-        } catch (e) {
-          return n;
+    for (let z = 0; z <= zTo; z++)
+      for (const id of ids) {
+        if (L2_IDS[id] === undefined || z > ZMAX(id)) continue;
+        const [gw, gh] = GRID(z),
+          order = [],
+          pl = z === ZMAX(id) ? POLE(id) : 0;
+        for (let ty = pl; ty < gh - pl; ty++)
+          for (let tx = 0; tx < gw; tx++) order.push([Math.abs(ty + 0.5 - gh / 2), z + '-' + ty + '-' + tx]);
+        order.sort((a, b) => a[0] - b[0]); /* od rovníku k pólům */
+        for (const [, key] of order) {
+          while (!ok()) await new Promise((r) => setTimeout(r, 1500));
+          try {
+            const q = await fetch(AS('maps/l2/' + id + '/' + key + '.webp'), { priority: 'low' });
+            await q.blob();
+            n++;
+          } catch (e) {
+            return n;
+          }
         }
       }
-    }
     return n;
   };
   return L2;

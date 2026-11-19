@@ -1,5 +1,6 @@
-// Úroveň 2 map (dlaždice 16k/8k): načtení zblízka, nic zdálky, nic na telefonu, snímky před/po, chyby stránky.
-// Použití: node tools/test/t_l2.mjs <složka> [id:výška_v_poloměrech[:šířka:délka],…]   (výchozí moon:0.3,earth:0.35,mars:0.3)
+// Úroveň 2 map (pyramida dlaždic 8k/16k/32k): načtení zblízka, nic zdálky, nic na telefonu, snímky před/po, chyby stránky.
+// Použití: node tools/test/t_l2.mjs <složka> [id:výška_v_poloměrech[:šířka:délka[:noc]],…]   (výchozí moon:0.3,earth:0.35,mars:0.3)
+// „noc“ (jen Země): čas, kdy je nad místem noc – zkouší noční světla 8192 px; snímek <id>_<n>_L2.jpg.
 // Bez šířky a délky se kamera postaví nad místo 25° západně od bodu, kde je Slunce v nadhlavníku (šikmé světlo, den).
 // Snímky: <složka>/<id>_L1.jpg (jen úroveň 1, tak jak to bylo do 1.8a) a <id>_L2.jpg (s dlaždicemi).
 import { chromium } from '/home/claude/.npm-global/lib/node_modules/playwright/index.mjs';
@@ -29,7 +30,8 @@ const out = process.argv[2] || '/tmp/l2';
 fs.mkdirSync(out, { recursive: true });
 const LIST = (process.argv[3] || 'moon:0.3,earth:0.35,mars:0.3').split(',').map((s) => s.split(':'));
 let ok = 0,
-  bad = 0;
+  bad = 0,
+  shot = 0;
 const T = (n, c, x = '') => {
   c ? ok++ : bad++;
   console.log((c ? 'OK  ' : 'FAIL') + ' ' + n + ' ' + x);
@@ -106,12 +108,15 @@ const waitHi = (page, id) =>
     T(id + ': zdálky (6 R) žádné dlaždice', far.loaded === 0 && far.loading === 0, JSON.stringify(far));
     await fly(page, id, alt);
     await page.evaluate(
-      ([id, la, lo]) => {
+      ([id, la, lo, noc]) => {
         const S = S200.S,
           j = S200.sim.idx.get(id),
           m = [],
           P = S200.sim.P;
-        if (id === 'earth' && la !== undefined) S.jd = 2461212.5 + 11.3 / 24; /* 21. 6. 2026, poledne nad Evropou */
+        if (id === 'earth' && la !== undefined)
+          S.jd =
+            (la < -60 ? 2461395.5 : 2461212.5) +
+            (noc ? 23.2 : 11.3) / 24; /* 21. 6. 2026 (jižní polární oblast 21. 12.), poledne (nebo noc) nad Evropou */
         S200.sim.updateAll && S200.sim.updateAll(S.jd);
         S200.sim.basis(j, S.jd, m);
         let lat, lon;
@@ -141,7 +146,7 @@ const waitHi = (page, id) =>
         S.cam.ly = S.cam.lp = 0;
         S.wake();
       },
-      [id, view[0] === undefined ? undefined : +view[0], view[1] === undefined ? undefined : +view[1]]
+      [id, view[0] === undefined ? undefined : +view[0], view[1] === undefined ? undefined : +view[1], view[2] === 'noc']
     );
     const hi = await waitHi(page, id);
     T(id + ': úroveň 1 načtená', hi === 2, 'hi=' + hi);
@@ -151,11 +156,48 @@ const waitHi = (page, id) =>
       st.loaded > 0 && st.owner === (await page.evaluate((x) => S200.sim.idx.get(x), id)),
       JSON.stringify(st)
     );
-    await page.screenshot({ path: `${out}/${id}_L2.jpg`, type: 'jpeg', quality: 85, timeout: 180000 });
-    await page.evaluate(() => (S200.S.l2.slots = 0));
+    if (view[2] === 'noc') {
+      const li = await page.evaluate(async (id) => {
+        const S = S200.S,
+          j = S200.sim.idx.get(id),
+          t0 = performance.now();
+        while (performance.now() - t0 < 20000 && S.R[j].lights !== 2) await new Promise((r) => setTimeout(r, 200));
+        return S.R[j].lights;
+      }, id);
+      T(id + ': noční světla 8192 px načtená', li === 2, 'lights=' + li);
+    }
+    const nm = `${id}_${++shot}`;
+    if (view[2] === 'noc') {
+      /* pro srovnání: světla z malé pomocné mapy (2048 px), jak byla do 1.8a */
+      await page.evaluate((id) => {
+        const R = S200.S.R[S200.sim.idx.get(id)];
+        R.U.uLights.value = 0;
+        S200.S.wake();
+      }, id);
+      await page.waitForTimeout(1200);
+      await page.screenshot({ path: `${out}/${nm}_svetla2048.jpg`, type: 'jpeg', quality: 85, timeout: 180000 });
+      await page.evaluate((id) => {
+        const R = S200.S.R[S200.sim.idx.get(id)];
+        R.U.uLights.value = 1;
+        S200.S.wake();
+      }, id);
+      await page.waitForTimeout(1200);
+    }
+    await page.screenshot({ path: `${out}/${nm}_L2.jpg`, type: 'jpeg', quality: 85, timeout: 180000 });
+    if (process.env.PROBE) {
+      /* ladicí sonda: PROBE='kód' se vyhodnotí v aplikaci (proměnná id = těleso) a uloží se snímek <id>_<n>_probe.jpg */
+      await page.evaluate(([c, id]) => (0, eval)(`(id) => { ${c} }`)(id), [process.env.PROBE, id]);
+      await page.waitForTimeout(1500);
+      await page.screenshot({ path: `${out}/${nm}_probe.jpg`, type: 'jpeg', quality: 85, timeout: 180000 });
+    }
+    const sl = await page.evaluate(() => {
+      const s = S200.S.l2.slots;
+      S200.S.l2.slots = 0;
+      return s;
+    });
     await page.waitForTimeout(1500);
-    await page.screenshot({ path: `${out}/${id}_L1.jpg`, type: 'jpeg', quality: 85, timeout: 180000 });
-    await page.evaluate(() => (S200.S.l2.slots = 8));
+    await page.screenshot({ path: `${out}/${nm}_L1.jpg`, type: 'jpeg', quality: 85, timeout: 180000 });
+    await page.evaluate((s) => (S200.S.l2.slots = s), sl);
   }
   const lg = await page.evaluate(() => S200.S.l2.log.slice());
   if (lg.length) {
