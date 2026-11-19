@@ -52,6 +52,7 @@ Samostatná linie „grafika povrchů“ vedle 1.9 (dráhy a úkazy na `iterace-
     Doplňkové mapy k velké mapě obecně (`EXTRA` v `engine.js`: světla Země, reliéf Měsíce).
   - **Polární záře Země** se středem v geomagnetickém pólu podle WMM2025 (80,79° s. š., 72,76° z. d.; dřív 80,6° s. š., 107° z. d.).
   - Test `t_l2.mjs`: pohled `id:výška:term` (Slunce nízko), z výšky nad 1 R se dlaždice nečekají (velká mapa se ještě neroztahuje).
+  - Soubor na flashku 305,4 MiB (320,2 MB, 2 294 souborů); v sandboxu paměť stránky 653 MB, po přiblížení k Měsíci 964 MB, 0 chyb.
 - Soubor na flashku s `--hi` obsahuje i úroveň 2 (180 MB; `--bez-l2` ji vynechá). Data jsou nově v neaktivních prvcích
   `<script type="text/x-s200">` a `window.S200_ASSETS` je Proxy (src/core/asset.js beze změny): po otevření v sandboxu 503 MB paměti
   stránky místo 618 MB se starým způsobem (1.8a s 81 MB: 406 MB), halda JavaScriptu 30 MB místo 381 MB. Starý způsob: `--json`.
