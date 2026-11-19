@@ -11,8 +11,27 @@ a v souboru na vyzkoušení (`node tools/build/build_offline.mjs <výstup.html> 
 | 1.6 | 18. 11. 2026 | `iterace-17` (`d991ab9`) | `iterace-16` |
 | 1.7, 1.7.1 | 18.–19. 11. 2026 | `iterace-18` (`06f1a52`) | `iterace-17` |
 | 1.8a | 19. 11. 2026 | `iterace-19` | `iterace-18` |
+| 1.8m | 19. 11. 2026 | `iterace-21` | `iterace-19` (souběžně s 1.9 na `iterace-20`) |
 
 Větve na sebe navazují v řadě, takže `iterace-19` obsahuje vše předchozí.
+
+## 1.8m – podrobné mapy zblízka (úroveň 2) a strategie načítání
+Samostatná linie „grafika povrchů“ vedle 1.9 (dráhy a úkazy na `iterace-20`); limit souboru 250 MB.
+- **Úroveň 2 map** (`src/render/l2.js`, `src/data/l2.json`, `dist/maps/l2/<id>/`): dlaždice 1024 px z primárních mozaik 16 384 px (Země,
+  Měsíc, Mars, Merkur, Pluto) a 8 192 px (Venuše, Europa, Ganymed, Callisto, Vesta, Enceladus, Dione, Iapetus) – 13 těles, 1 120 dlaždic,
+  71 MB. Načítají se jen pro těleso v ohnisku a jen ty, na které se díváš (13 × 9 paprsků z kamery; dlaždice je potřeba, kde by se úroveň 1
+  roztahovala). V grafice jeden atlas: 8 míst (32 MB) v běžné třídě, 16 (64 MB) ve výkonné, nic v úsporné a na telefonu. Shader úroveň 2
+  prolne jen tam, kde se zvětšuje (texel ≥ pixel), takže bez zmenšenin nevzniká zrnění; nová dlaždice se prolne za 0,3 s.
+- **Výroba** (`tools/maps/l2_resize.mjs`, `tools/maps/make_l2.py`): přenos detailu na stávající velkou mapu – barvy zůstávají, přibývá jen
+  kresba; zmenšená úroveň 2 dává zpět úroveň 1, při doostření nic neblikne. Podrobnosti a zdroje v `zdroje/MAPY.md`.
+- **Mars:** nová kresba z Viking MDIM 2.1 (232 m); přepsána i velká mapa 4096 px – výrazně ostřejší i na střední vzdálenost.
+- **Ostřejší úroveň 1** (2048 → 4096 px): Dione, Iapetus, Rhea, Tethys, Triton.
+- **Načítání předem:** běžná třída zařízení připraví na úvodu podrobně Zemi, Měsíc a Mars (dřív Zemi a Měsíc), výkonná k nim Jupiter a Saturn.
+  Webová verze si 20 s po startu v klidu (nelétá se, neběží ukázka) stáhne do mezipaměti dlaždice Země, Měsíce a Marsu; nic se nerozbaluje.
+- **Země zblízka:** mraky (jen 2048 px) se nad podrobnou pevninou ztenčí o polovinu.
+- **Nápověda:** jeden odstavec o doostření zblízka.
+- **Test** `tools/test/t_l2.mjs`: zdálky nic, zblízka dlaždice, telefon nic, snímky před/po, chyby stránky.
+- Soubor na flashku s `--hi` obsahuje i úroveň 2 (180 MB; `--bez-l2` ji vynechá).
 
 ## 1.8a – zobrazení na všech zařízeních, delší ukázka, pásy planetek
 Limit velikosti souboru nově 100 MB (dřív 110).

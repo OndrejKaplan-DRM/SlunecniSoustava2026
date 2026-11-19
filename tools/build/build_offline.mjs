@@ -7,8 +7,14 @@ const out = (process.argv[2] && !process.argv[2].startsWith('--') ? process.argv
   A = {};
 const uri = (f) => `data:${MIME[path.extname(f)]};base64,${fs.readFileSync('dist/' + f).toString('base64')}`;
 for (const f of fs.readdirSync('dist/maps')) if (f.endsWith('.webp')) A['maps/' + f] = uri('maps/' + f);
-if (process.argv.includes('--hi'))
+if (process.argv.includes('--hi')) {
   for (const f of fs.readdirSync('dist/maps/hi')) if (f.endsWith('.webp')) A['maps/hi/' + f] = uri('maps/hi/' + f); // volitelně i velké mapy
+  /* 1.8m: úroveň 2 (dlaždice 16k/8k) – jen s --hi a bez --bez-l2 */
+  if (!process.argv.includes('--bez-l2') && fs.existsSync('dist/maps/l2'))
+    for (const d of fs.readdirSync('dist/maps/l2'))
+      for (const f of fs.readdirSync('dist/maps/l2/' + d))
+        if (f.endsWith('.webp')) A[`maps/l2/${d}/${f}`] = uri(`maps/l2/${d}/${f}`);
+}
 for (const f of fs.readdirSync('dist/music')) A['music/' + f] = uri('music/' + f);
 const used = new Set(
   (fs.readFileSync('src/audio/audio.js', 'utf8').match(/'z\d{3}'/g) || []).map((s) => s.slice(1, -1))

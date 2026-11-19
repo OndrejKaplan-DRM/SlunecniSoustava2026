@@ -53,6 +53,7 @@ src/                  zdrojový kód (ES moduly)
     engine.js         scéna, kamera, lety, načítání map (malé a velké), souhvězdí, 2D vrstva
     shaders.js        GLSL: tělesa, Slunce, prstence, atmosféry, hvězdy, souhvězdí
     belts.js          hlavní pás planetek a Kuiperův pás (ilustrační tečky na skutečných typech drah)
+    l2.js             podrobné mapy zblízka (úroveň 2): dlaždice 16k/8k jen pro těleso v ohnisku a jen v záběru, jeden atlas v grafice
     ball.js           kotouče těles na 2D plátně (porovnání velikostí, ikony)
   ui/                 rozhraní
     ui.js             karta tělesa, lišty, hra, klávesy a ukazatel

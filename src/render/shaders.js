@@ -32,6 +32,7 @@ export const BODY_FS = /* glsl */ `
 #include <common>
 #include <logdepthbuf_pars_fragment>
 uniform sampler2D tMap; uniform sampler2D tAux; uniform sampler2D tRing; uniform sampler2D tHi; uniform float uHi;
+uniform sampler2D tL2; uniform sampler2D tL2i; uniform vec4 uL2; uniform vec2 uL2s;
 uniform float uHasMap; uniform float uHasAux; uniform float uCity; uniform float uRed; uniform float uKind; uniform float uDet; uniform float uSeed; uniform float uFill; uniform float uGam;
 uniform float uAtmK; uniform float uSunR; uniform float uRad; uniform float uTime;
 uniform vec3 uCol; uniform vec3 uSun; uniform vec3 uAtmCol; uniform vec3 uPole; uniform vec3 uCtr; uniform vec3 uRingSh; uniform mat3 uRot;
@@ -46,6 +47,15 @@ void main(){
   vec2 uv = vec2(fwidth(ua) < fwidth(ub) ? ua : ub, lat * 0.31830989 + 0.5);
   vec3 alb = uHasMap > 0.0 ? mix(uCol, texture2D(tMap, uv).rgb, uHasMap) : uCol;   // mapa se po načtení plynule prolne
   if (uHi > 0.0) alb = mix(alb, texture2D(tHi, uv).rgb, uHi);   // velká mapa (maps/hi) se zblízka prolne přes malou
+  float l2w = 0.0;
+  if (uL2.w > 0.0) { // úroveň 2 (dlaždice 16k/8k, render/l2.js): jen kde se úroveň 1 zvětšuje; dlaždice bez místa v atlasu zůstanou na úrovni 1
+    vec2 g = uv * uL2.xy, tc = floor(g); ivec2 ti = ivec2(int(mod(tc.x, uL2.x)), int(clamp(tc.y, 0.0, uL2.y - 1.0)));
+    vec4 ix = texelFetch(tL2i, ti, 0); float sl = floor(ix.r * 255.0 + 0.5) - 1.0;
+    float tpp = max(fwidth(uv.x) * uL2.x, fwidth(uv.y) * uL2.y) * 1024.0; /* texelů úrovně 2 na pixel */
+    l2w = sl >= 0.0 ? ix.g * (1.0 - smoothstep(1.0, 1.7, tpp)) * uHi : 0.0;
+    if (l2w > 0.0) { vec2 so = vec2(mod(sl, uL2.z), floor(sl / uL2.z)), f = clamp(g - tc, 0.0, 1.0);
+      alb = mix(alb, textureLod(tL2, (so * 1026.0 + 1.0 + f * 1024.0) / uL2s, 0.0).rgb, l2w); }
+  }
   vec3 N = normalize(vN);
   if (uDet > 0.0) { // jemná kresba pod rozlišením mapy (šum podle velikosti pixelu) – jen zblízka
     float fw = length(fwidth(vO)), amp = 0.0; vec3 g = vec3(0.0);
@@ -64,7 +74,7 @@ void main(){
   float lit; vec3 add = vec3(0.0);
   if (uKind > 3.5) { // Země: mraky, oceán, noční světla, modrý opar
     vec3 aux = uHasAux > 0.5 ? texture2D(tAux, uv + vec2(uTime, 0.0)).rgb : vec3(0.0); vec3 aux0 = uHasAux > 0.5 ? texture2D(tAux, uv).rgb : vec3(0.0);
-    float cl = aux.r * (1.0 - 0.45 * uHi); /* zblízka (s podrobnou mapou) mraky zřídnou, ať je vidět povrch */ lit = clamp((mu0 + 0.06) / 1.06, 0.0, 1.0);
+    float cl = aux.r * (1.0 - 0.45 * uHi) * (1.0 - 0.5 * l2w); /* mraky jsou jen 2048 px – nad podrobnou pevninou se ještě ztenčí */ /* zblízka (s podrobnou mapou) mraky zřídnou, ať je vidět povrch */ lit = clamp((mu0 + 0.06) / 1.06, 0.0, 1.0);
     vec3 H = normalize(L + V); float sp = pow(max(dot(N, H), 0.0), 70.0) * aux0.g * (1.0 - cl) * 0.7;
     alb = mix(alb, vec3(0.93), cl * 0.92);
     alb = mix(alb, vec3(0.35, 0.55, 1.0), pow(1.0 - mu, 2.5) * 0.55);

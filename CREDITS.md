@@ -83,6 +83,13 @@ Ze 201 těles má **44 skutečnou mapu** ze snímků sond (na kartě 📷). Zbyl
 | Proteus | Stellarium (textures/proteus.png) | CC BY 4.0 – zpracoval Oleg Pluton (Helleformer) | – |
 | Prometheus | Stellarium (textures/prometheus.png) | JPL (maps.jpl.nasa.gov, D. Seal) – volně s uvedením zdroje; přesný původ u této mapy Stellarium neuvádí | – |
 
+**Podrobné mapy zblízka (verze 1.8m, úroveň 2):** u 13 těles se zblízka dočítají dlaždice z primárních mozaik v rozlišení 16 384 px
+(Země, Měsíc, Mars, Merkur, Pluto) nebo 8 192 px (Venuše, Europa, Ganymed, Callisto, Vesta, Enceladus, Dione, Iapetus). Zdroje jsou tytéž
+jako u velkých map v tabulce výše, navíc: Země – NASA Blue Marble Next Generation 21 600 × 10 800 (R. Stöckli, NASA Earth Observatory);
+Měsíc – NASA Scientific Visualization Studio, CGI Moon Kit 16k (LROC WAC; NASA/GSFC/Arizona State University); Mars – USGS Astrogeology,
+Viking MDIM 2.1 Global Mosaic 232 m (NASA/JPL/USGS), barva z barevné mozaiky Viking. Všechno volné dílo NASA/USGS s žádostí o uvedení
+autorů. Postup výroby a seznam souborů: `zdroje/MAPY.md`, oddíl „Úroveň 2“.
+
 Další obrazové podklady:
 - **Mléčná dráha**: panorama Axela Mellingera (Univerzita v Postupimi), převzato ze Stellaria; svolení „upravovat a šířit při uvedení autora“.
 - **Prstence Saturnu**: radiální profil ze Stellaria.

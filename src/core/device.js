@@ -2,13 +2,13 @@
    Prohlížeč neumí říct, kolik paměti je volné: Chrome a Edge prozradí jen hrubou třídu (nejvýš „8 GB“), Firefox a Safari nic
    a paměť grafické karty nezjistí žádný. Rozhoduje se proto podle třídy zařízení a podle vlastního měření prvních úloh.
      úsporná – telefon, tablet, málo paměti, malá největší textura nebo snížená kvalita: jen povinné minimum
-     běžná   – neznámá paměť nebo 4–8 GB: podrobná Země a Měsíc předem, jen když první úlohy běží svižně
-     bohatá  – aspoň 8 GB, 4 jádra a textury do 8192 px: předem i Jupiter, Saturn a Mars
+     běžná   – neznámá paměť nebo 4–8 GB: podrobná Země, Měsíc a Mars předem, jen když první úlohy běží svižně
+     bohatá  – aspoň 8 GB, 4 jádra a textury do 8192 px: předem i Jupiter a Saturn
    Rozpočet je odhad paměti grafické karty pro mapy těles v MB (mapa 4096 × 2048 zabere se zmenšeninami asi 45 MB).
    Ruční volba pro zkoušky: ?trida=usporna | bezna | bohata */
 export const TRIDY = {
   usporna: { nazev: 'úsporné', rozpocet: 120, bonus: 0 },
-  bezna: { nazev: 'běžné', rozpocet: 300, bonus: 2 },
+  bezna: { nazev: 'běžné', rozpocet: 300, bonus: 3 },
   bohata: { nazev: 'výkonné', rozpocet: 600, bonus: 5 },
 };
 export function detectDevice(renderer, quality) {
