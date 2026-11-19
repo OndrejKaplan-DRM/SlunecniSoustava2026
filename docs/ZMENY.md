@@ -31,6 +31,17 @@ Samostatná linie „grafika povrchů“ vedle 1.9 (dráhy a úkazy na `iterace-
 - **Země zblízka:** mraky (jen 2048 px) se nad podrobnou pevninou ztenčí o polovinu.
 - **Nápověda:** jeden odstavec o doostření zblízka.
 - **Test** `tools/test/t_l2.mjs`: zdálky nic, zblízka dlaždice, telefon nic, snímky před/po, chyby stránky.
+- **2. kolo (po Ondřejově zkoušce na notebooku 19. 11. večer):**
+  - **Pyramida dlaždic** 8k → 16k → 32k (`maps/l2/<id>/<z>-<řádek>-<sloupec>.webp`, `l2.json` = nejjemnější stupeň): stupeň 8k navazuje
+    na úroveň 1 a odstranil rozmazané pásmo mezi úrovní 1 a 16k (Měsíc z 2 000 km, Merkur z 3 400 km, Mars). Shader prolíná stupně
+    od hrubého k jemnému; chybí-li jemná dlaždice, ukáže se hrubší. Atlas 12 míst (50 MB) v běžné třídě, 24 (101 MB) ve výkonné.
+    Index 32 × 28 (všechny stupně nad sebou). Předem se ve webové verzi stahují stupně 8k a 16k (32k až podle potřeby).
+  - **Země 32k** z Blue Marble NG 500 m (8 dlaždic 21 600²) a **Měsíc 32k**: barva SVS 16k, nejjemnější kresba z LROC WAC 100 m
+    (krátery menší než asi 1 km se stínem; γ 0,6; barvy SVS sladěné s velkou mapou). Úroveň 2 celkem 159 MB (dřív 71).
+  - Výběr dlaždic počítá se zúžením texelu k pólům (shader je tam ukáže až zblízka) – u pólů už nezabírají místa v atlasu zbytečně.
+  - **Noční světla Země** 8192 × 4096 (Black Marble 2016, jeden kanál R8) místo 2048 px – načítají se s velkou mapou Země.
+  - Nástroje: `tools/maps/l2_tiles.py` (stupně, převod starých názvů), `make_l2.py` píše pyramidu (`L2_L1`, `L2_Q2`).
+  - Test `t_l2.mjs`: stupně v `S.l2.state().lv`, pohled `…:noc` pro noční světla, snímky `<id>_<n>_L1|L2.jpg`.
 - Soubor na flashku s `--hi` obsahuje i úroveň 2 (180 MB; `--bez-l2` ji vynechá). Data jsou nově v neaktivních prvcích
   `<script type="text/x-s200">` a `window.S200_ASSETS` je Proxy (src/core/asset.js beze změny): po otevření v sandboxu 503 MB paměti
   stránky místo 618 MB se starým způsobem (1.8a s 81 MB: 406 MB), halda JavaScriptu 30 MB místo 381 MB. Starý způsob: `--json`.

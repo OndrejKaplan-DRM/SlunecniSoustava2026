@@ -14,7 +14,7 @@ Projít před každým sloučením do `main` a zveřejněním (stránka, artefak
 - [ ] `node tools/test/t_displej.mjs` (4K, televize se zvětšením 300–400 %, malé okno, přesun okna) bez chyb.
 - [ ] `node tools/test/t_okna.mjs` (18 sestav od telefonu po monitor QHD × obě rozhraní × všechna okna: nic mimo obrazovku, nic uříznutého, zavírací tlačítka dost velká, žádné visící okno) – 0 nálezů. Běží asi 15 minut; `SHOT=1` uloží snímky.
 - [ ] `node tools/test/t_pasy.mjs` (pásy planetek: vidět v přehledu, zblízka pryč, nejdou vybrat) bez chyb.
-- [ ] `node tools/test/t_l2.mjs /tmp/l2 moon:0.25,earth:0.2:46:9,mars:0.25:-8:-75,mercury:0.25` (podrobné mapy zblízka: zdálky nic, zblízka dlaždice, telefon nic; snímky `<id>_L1.jpg` a `<id>_L2.jpg` před/po) bez chyb.
+- [ ] `node tools/test/t_l2.mjs /tmp/l2 moon:0.15,moon:1.13,earth:0.12:46:10,earth:0.3:48:15:noc,mars:0.25:-8:-75,mercury:1.4` (podrobné mapy zblízka: zdálky nic, zblízka dlaždice všech stupňů, noční světla, telefon nic; snímky `<id>_<n>_L1.jpg` a `<id>_<n>_L2.jpg` před/po) bez chyb.
 - [ ] `src/core/flags.js`: žádná nedodělaná funkce není ve stavu `vse`; vývojářský režim není po čistém otevření zapnutý.
 
 ## Data a texty

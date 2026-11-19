@@ -32,7 +32,7 @@ export const BODY_FS = /* glsl */ `
 #include <common>
 #include <logdepthbuf_pars_fragment>
 uniform sampler2D tMap; uniform sampler2D tAux; uniform sampler2D tRing; uniform sampler2D tHi; uniform float uHi;
-uniform sampler2D tL2; uniform sampler2D tL2i; uniform vec4 uL2; uniform vec2 uL2s;
+uniform sampler2D tL2; uniform sampler2D tL2i; uniform vec4 uL2; uniform vec2 uL2s; uniform sampler2D tLights; uniform float uLights;
 uniform float uHasMap; uniform float uHasAux; uniform float uCity; uniform float uRed; uniform float uKind; uniform float uDet; uniform float uSeed; uniform float uFill; uniform float uGam;
 uniform float uAtmK; uniform float uSunR; uniform float uRad; uniform float uTime;
 uniform vec3 uCol; uniform vec3 uSun; uniform vec3 uAtmCol; uniform vec3 uPole; uniform vec3 uCtr; uniform vec3 uRingSh; uniform mat3 uRot;
@@ -48,13 +48,20 @@ void main(){
   vec3 alb = uHasMap > 0.0 ? mix(uCol, texture2D(tMap, uv).rgb, uHasMap) : uCol;   // mapa se po načtení plynule prolne
   if (uHi > 0.0) alb = mix(alb, texture2D(tHi, uv).rgb, uHi);   // velká mapa (maps/hi) se zblízka prolne přes malou
   float l2w = 0.0;
-  if (uL2.w > 0.0) { // úroveň 2 (dlaždice 16k/8k, render/l2.js): jen kde se úroveň 1 zvětšuje; dlaždice bez místa v atlasu zůstanou na úrovni 1
-    vec2 g = uv * uL2.xy, tc = floor(g); ivec2 ti = ivec2(int(mod(tc.x, uL2.x)), int(clamp(tc.y, 0.0, uL2.y - 1.0)));
-    vec4 ix = texelFetch(tL2i, ti, 0); float sl = floor(ix.r * 255.0 + 0.5) - 1.0;
-    float tpp = max(fwidth(uv.x) * uL2.x, fwidth(uv.y) * uL2.y) * 1024.0; /* texelů úrovně 2 na pixel */
-    l2w = sl >= 0.0 ? ix.g * (1.0 - smoothstep(1.0, 1.7, tpp)) * uHi : 0.0;
-    if (l2w > 0.0) { vec2 so = vec2(mod(sl, uL2.z), floor(sl / uL2.z)), f = clamp(g - tc, 0.0, 1.0);
-      alb = mix(alb, textureLod(tL2, (so * 1026.0 + 1.0 + f * 1024.0) / uL2s, 0.0).rgb, l2w); }
+  if (uL2.w > 0.0) { // úroveň 2 (pyramida dlaždic 8k/16k/32k, render/l2.js): stupně od hrubého k jemnému, každý jen kde se zvětšuje
+    float tp0 = max(fwidth(uv.x) * 8.0, fwidth(uv.y) * 4.0) * 1024.0; /* texelů stupně 0 (8k) na pixel; stupeň z má 2^z krát víc */
+    for (int z = 0; z < 3; z++) {
+      if (float(z) > uL2.x) break;
+      float sc = float(1 << z), wz = 1.0 - smoothstep(1.0, 1.7, tp0 * sc);
+      if (wz <= 0.0) break;
+      vec2 gd = vec2(8.0, 4.0) * sc, g = uv * gd, tc = floor(g);
+      vec4 ix = texelFetch(tL2i, ivec2(int(mod(tc.x, gd.x)), int(clamp(tc.y, 0.0, gd.y - 1.0)) + 4 * ((1 << z) - 1)), 0);
+      float sl = floor(ix.r * 255.0 + 0.5) - 1.0;
+      if (sl < 0.0) continue; /* dlaždice není v atlasu – zůstane hrubší stupeň */
+      float a = ix.g * wz * uHi; vec2 so = vec2(mod(sl, uL2.z), floor(sl / uL2.z)), f = clamp(g - tc, 0.0, 1.0);
+      alb = mix(alb, textureLod(tL2, (so * 1026.0 + 1.0 + f * 1024.0) / uL2s, 0.0).rgb, a);
+      l2w = max(l2w, a);
+    }
   }
   vec3 N = normalize(vN);
   if (uDet > 0.0) { // jemná kresba pod rozlišením mapy (šum podle velikosti pixelu) – jen zblízka
@@ -79,7 +86,8 @@ void main(){
     alb = mix(alb, vec3(0.93), cl * 0.92);
     alb = mix(alb, vec3(0.35, 0.55, 1.0), pow(1.0 - mu, 2.5) * 0.55);
     add += vec3(1.0, 0.92, 0.8) * sp * sh * step(0.0, mu0);
-    add += vec3(1.0, 0.72, 0.38) * aux0.b * aux0.b * smoothstep(0.08, -0.14, mu0) * (1.0 - cl * 0.7) * 0.9 * uCity;
+    float city = uLights > 0.0 ? texture2D(tLights, uv).r : aux0.b; /* noční světla: zblízka 8192 px (Black Marble), jinak z pomocné mapy */
+    add += vec3(1.0, 0.72, 0.38) * city * city * smoothstep(0.08, -0.14, mu0) * (1.0 - cl * 0.7) * 0.9 * uCity;
     alb *= mix(vec3(1.0, 0.55, 0.35), vec3(1.0), smoothstep(-0.02, 0.28, mu0));
   } else if (uKind > 1.5 && uKind < 2.5) { lit = clamp((mu0 + 0.07) / 1.07, 0.0, 1.0) * (0.72 + 0.28 * pow(mu, 0.45)); }
   else { float ls = 2.0 * m0 / (m0 + mu + 0.03); lit = mix(m0, min(ls, 1.5) * 0.62, 0.6) * step(0.0, mu0); }

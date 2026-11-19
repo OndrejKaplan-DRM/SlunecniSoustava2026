@@ -1902,7 +1902,7 @@ export function createUI(S, A) {
   api.device = DV;
   S.hiTab = DV.trida !== 'usporna'; /* tablet a dotyková tabule s dostatkem paměti smí podrobné mapy */
   /* úroveň 2 (dlaždice 16k/8k zblízka): počet míst v atlasu podle třídy – úsporná nic, běžná 8 (32 MB), výkonná 16 (64 MB) */
-  if (S.l2) S.l2.slots = { usporna: 0, bezna: 8, bohata: 16 }[DV.trida] ?? 8;
+  if (S.l2) S.l2.slots = { usporna: 0, bezna: 12, bohata: 24 }[DV.trida] ?? 12;
   api.loadStat = st;
   const timed = (fn) => () => {
     const t = performance.now();

@@ -1,1 +1,1 @@
-{"callisto": [8, 4], "dione": [8, 4], "earth": [16, 8], "enceladus": [8, 4], "europa": [8, 4], "ganymede": [8, 4], "iapetus": [8, 4], "mars": [16, 8], "mercury": [16, 8], "moon": [16, 8], "pluto": [16, 8], "venus": [8, 4], "vesta": [8, 4]}
+{"callisto": 0, "dione": 0, "earth": 2, "enceladus": 0, "europa": 0, "ganymede": 0, "iapetus": 0, "mars": 1, "mercury": 1, "moon": [2, 1], "pluto": 1, "venus": 0, "vesta": 0}
