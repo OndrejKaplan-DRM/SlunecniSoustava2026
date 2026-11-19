@@ -31,7 +31,9 @@ Samostatná linie „grafika povrchů“ vedle 1.9 (dráhy a úkazy na `iterace-
 - **Země zblízka:** mraky (jen 2048 px) se nad podrobnou pevninou ztenčí o polovinu.
 - **Nápověda:** jeden odstavec o doostření zblízka.
 - **Test** `tools/test/t_l2.mjs`: zdálky nic, zblízka dlaždice, telefon nic, snímky před/po, chyby stránky.
-- Soubor na flashku s `--hi` obsahuje i úroveň 2 (180 MB; `--bez-l2` ji vynechá).
+- Soubor na flashku s `--hi` obsahuje i úroveň 2 (180 MB; `--bez-l2` ji vynechá). Data jsou nově v neaktivních prvcích
+  `<script type="text/x-s200">` a `window.S200_ASSETS` je Proxy (src/core/asset.js beze změny): po otevření v sandboxu 503 MB paměti
+  stránky místo 618 MB se starým způsobem (1.8a s 81 MB: 406 MB), halda JavaScriptu 30 MB místo 381 MB. Starý způsob: `--json`.
 
 ## 1.8a – zobrazení na všech zařízeních, delší ukázka, pásy planetek
 Limit velikosti souboru nově 100 MB (dřív 110).

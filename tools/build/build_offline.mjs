@@ -20,6 +20,27 @@ const used = new Set(
   (fs.readFileSync('src/audio/audio.js', 'utf8').match(/'z\d{3}'/g) || []).map((s) => s.slice(1, -1))
 );
 for (const z of used) A[`zvuky/${z}.mp3`] = uri(`zvuky/${z}.mp3`);
+/* 1.8m: data se neukládají do jednoho velkého objektu v JavaScriptu (prohlížeč pak drží text skriptu i všechny řetězce zvlášť –
+   u 180 MB dvojnásobek paměti), ale do neaktivních prvků <script type="text/x-s200">, každý soubor zvlášť. window.S200_ASSETS je Proxy:
+   při čtení cesty vrátí data URI složené z textu prvku (dočasný řetězec), jinak undefined – src/core/asset.js se nemění.
+   Původní způsob: přepínač --json. */
+const jsonAssets = () => `<script>window.S200_ASSETS=${JSON.stringify(A)};</script>`;
+function domAssets() {
+  const ix = {},
+    parts = [];
+  let n = 0;
+  for (const [p, u] of Object.entries(A)) {
+    const k = u.indexOf(','),
+      id = 'a' + (n++).toString(36);
+    ix[p] = [id, u.slice(5, k)]; /* „image/webp;base64“ */
+    parts.push(`<script type="text/x-s200" id="${id}">${u.slice(k + 1)}</script>`);
+  }
+  return (
+    `<script>(function(){var I=${JSON.stringify(ix)};window.S200_ASSETS=new Proxy({},{get:function(o,p){var e=I[p],d=e&&document.getElementById(e[0]);` +
+    `return d?'data:'+e[1]+','+d.textContent:undefined},has:function(o,p){return !!I[p]}});})();</script>\n` +
+    parts.join('\n')
+  );
+}
 let html = fs.readFileSync('dist/index.html', 'utf8');
 const app = fs.readFileSync('dist/app.js', 'utf8').replace(/<\/script/gi, '<\\/script');
 if (
@@ -39,7 +60,7 @@ html = html
   .replace('</style>', '#zvb { display: none !important; }\n</style>')
   .replace(
     '<script src="app.js"></script>',
-    () => `<script>window.S200_ASSETS=${JSON.stringify(A)};</script>\n<script>${app}</script>`
+    () => (process.argv.includes('--json') ? jsonAssets() : domAssets()) + `\n<script>${app}</script>`
   );
 fs.writeFileSync(out, html);
 console.log(
