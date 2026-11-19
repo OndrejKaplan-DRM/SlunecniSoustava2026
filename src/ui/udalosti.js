@@ -1051,6 +1051,22 @@ export function createUdalosti(S, A, ui) {
     }
   };
   S.bus.on('tap', ukMin);
+  S.bus.on('fly', ukMin); /* 1.8a: i při přeletu k jinému tělesu (ikona v liště, číslo, seznam) */
+  /* 1.8a: Esc kartu úkazu sbalí do proužku (nezavírá ji – zavření by vrátilo čas). Když je otevřené jiné okno, patří Esc jemu. */
+  window.addEventListener(
+    'keydown',
+    (ev) => {
+      if (ev.key !== 'Escape' || !cur || mini) return;
+      if (
+        document.querySelector('.pop.on, #help.on, #list.on, #gamebox.on') ||
+        document.body.classList.contains('cine')
+      )
+        return;
+      if (ui.tut && ui.tut.running()) return;
+      ukMin();
+    },
+    true
+  );
   setInterval(() => {
     if (!cur || mini) ukTouch = performance.now();
     else if (performance.now() - ukTouch > 120000) ukMin();

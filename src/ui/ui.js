@@ -982,6 +982,15 @@ export function createUI(S, A) {
       A.play(['orbit_off', 'orbit_on', 'orbit_on', 'orbit_on', 'orbit_all', 'orbit_all'][S.orbMode]);
       toast('Dráhy: ' + ORB_LAB[S.orbMode]);
     },
+    belts() {
+      S.belts.on = !S.belts.on;
+      ui2(S.belts.on);
+      toast(
+        S.belts.on
+          ? 'Pásy planetek zapnuté: hlavní pás mezi Marsem a Jupiterem a Kuiperův pás za Neptunem (ilustrace, vidět jsou z přehledu soustavy).'
+          : 'Pásy planetek vypnuté.'
+      );
+    },
     lab() {
       S.labMode = (S.labMode + 1) % (K() ? 2 : 3);
       A.play(S.labMode ? 'labels_on' : 'labels_off');
@@ -1726,6 +1735,21 @@ export function createUI(S, A) {
     },
     true
   );
+  /* 1.8a: okna nezůstávají viset, když se pozornost přesune jinam.
+     – přelet k tělesu (ikona v liště, dvojklik, číslo, položka seznamu) zavře okna, která zakrývají pohled:
+       nápovědu, porovnání, Stroj času, seznam úkazů, album a nabídku ☰; na telefonu i seznam těles a deník (zabírají celou obrazovku);
+     – tah nebo klik do vesmíru zavře okna uprostřed (nápověda, porovnání).
+     Boční okna na počítači (seznam těles, deník) zůstávají: slouží k prohlížení a pohled nezakrývají. Ukázka si okna řídí sama. */
+  const SWEEP = ['#help', '#cmp', '#tm', '#uk', '#album', '#more', '#dev'],
+    sweep = (sels) => {
+      if (tut.running()) return;
+      for (const s of sels) if ($(s).classList.contains('on')) toggle(s, false);
+    };
+  S.bus.on('fly', () => sweep(document.body.classList.contains('mob') ? [...SWEEP, '#list', '#gamebox'] : SWEEP));
+  cv.addEventListener('pointerdown', (e) => {
+    if (e.isTrusted)
+      sweep(document.body.classList.contains('mob') ? [...SWEEP, '#list', '#gamebox'] : ['#help', '#cmp', '#dev']);
+  });
   $('#more').addEventListener('click', (e) => {
     const t = e.target.closest('button');
     if (!t || !act[t.dataset.a]) return;

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bg" cx="38%" cy="30%" r="85%"><stop offset="0" stop-color="#332b82"/><stop offset=".55" stop-color="#1b1747"/><stop offset="1" stop-color="#07061a"/></radialGradient>
+    <radialGradient id="pl" cx="36%" cy="30%" r="80%"><stop offset="0" stop-color="#fff0a8"/><stop offset=".5" stop-color="#ffd23f"/><stop offset="1" stop-color="#f08a1d"/></radialGradient>
+    <clipPath id="disc"><circle cx="256" cy="268" r="118"/></clipPath>
+    <clipPath id="front"><rect x="-280" y="0" width="560" height="220"/></clipPath>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="url(#bg)"/>
+  <rect x="7" y="7" width="498" height="498" rx="110" fill="none" stroke="#5148b0" stroke-width="10"/>
+  <g fill="#f6f3ff">
+    <circle cx="96" cy="112" r="6"/><circle cx="404" cy="86" r="4"/><circle cx="436" cy="400" r="5"/><circle cx="84" cy="372" r="3.5"/><circle cx="150" cy="440" r="4"/><circle cx="330" cy="52" r="3"/>
+    <path d="M118 196l5 13 13 5-13 5-5 13-5-13-13-5 13-5z"/>
+  </g>
+  <g transform="translate(256 268) rotate(-22)" fill="none" stroke="#ff7d6e" stroke-width="26" stroke-linecap="round"><ellipse rx="204" ry="58"/></g>
+  <circle cx="256" cy="268" r="118" fill="url(#pl)"/>
+  <g clip-path="url(#disc)" fill="none" stroke="#e98a1c" stroke-width="16" opacity=".45" transform="rotate(-22 256 268)">
+    <path d="M110 232h300M110 300h300"/>
+  </g>
+  <circle cx="256" cy="268" r="118" fill="none" stroke="#07061a" stroke-opacity=".18" stroke-width="6"/>
+  <g transform="translate(256 268) rotate(-22)" fill="none" stroke="#ff7d6e" stroke-width="26" stroke-linecap="round" clip-path="url(#front)"><ellipse rx="204" ry="58"/></g>
+  <g transform="translate(256 268) rotate(-22)" fill="none" stroke="#ffd0c9" stroke-width="5" clip-path="url(#front)" opacity=".8"><ellipse rx="204" ry="58"/></g>
+  <circle cx="398" cy="150" r="30" fill="#5ee6c5"/>
+  <circle cx="388" cy="141" r="9" fill="#bff7e8"/>
+</svg>

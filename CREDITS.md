@@ -27,6 +27,11 @@ Stav k 13. 11. 2026, verze 1.2.
 - Fyzikální údaje těles: katalog Stellaria, doplněný a opravený (měsíce Pluta: Weaver et al. 2016, *Science* 351, aae0030; 2I/Borisov a 3I/ATLAS: JPL SBDB).
 - Hvězdy a souhvězdí: katalog jasných hvězd a čáry souhvězdí ze Stellaria (GPL v2+ / volná data).
 
+## Ikona aplikace
+Ikona na záložce prohlížeče a na ploše telefonu (`dist/icon.svg`, `dist/icon-180.png`) je vlastní návrh autora, převzatý z jeho projektu
+Kosmická výprava (`OndrejKaplan-DRM/SolarSystemExperimentsRepo`, `kosmicka-vyprava/icon/`). Pásy planetek (hlavní pás a Kuiperův pás) jsou
+ilustrace počítaná programem (`src/render/belts.js`), žádná cizí data.
+
 ## Povrchy těles
 Ze 201 těles má **44 skutečnou mapu** ze snímků sond (na kartě 📷). Zbylých 157 má **ilustraci** vytvořenou programem v tomto projektu (na kartě 🎨, `tools/maps/`), žádná cizí práva se na ně nevztahují.
 

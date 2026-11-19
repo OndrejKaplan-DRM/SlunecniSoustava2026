@@ -238,6 +238,9 @@ export function createMobile(S, A, ui) {
       if (M.mob || M.tab) show();
       misShow(7000);
     });
+  /* 1.8a: Safari na iPhonu a iPadu jinak dovolí zvětšit celou stránku dvěma prsty na okně (a rozhraní pak „ujede“) */
+  for (const g of ['gesturestart', 'gesturechange'])
+    document.addEventListener(g, (e) => e.preventDefault(), { passive: false });
   addEventListener('resize', layout);
   S.bus.on('mode', () => setTimeout(layout, 0)); /* dětské písmo je širší – lišta se přeměří */
   addEventListener('orientationchange', () => setTimeout(layout, 250));

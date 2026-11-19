@@ -36,14 +36,22 @@ await page.goto(`http://localhost:${srv.address().port}/`);
 await page.waitForFunction(() => window.S200);
 const out = process.argv[2];
 fs.mkdirSync(out, { recursive: true });
-for (let runN = 0; runN < 2; runN++) {
+/* 1.8a: tři běhy – 1. náhodný plán z úvodní obrazovky (dospělé), 2. vynucené všechny pokročilé kapitoly, 3. náhodný plán v dětském rozhraní */
+let bad = 0;
+const VSE = ['cmp', 'superkarta', 'ukazy', 'where', 'cine', 'search', 'small', 'game'];
+for (let runN = 0; runN < 3; runN++) {
   if (runN === 0) await page.click('#sp-tut');
-  else await page.evaluate(() => S200.ui.tut.start());
+  else if (runN === 1) await page.evaluate((v) => void S200.ui.tut.start(v), VSE);
+  else
+    await page.evaluate(() => {
+      S200.ui.setMode(true);
+      void S200.ui.tut.start();
+    });
   const t0 = Date.now(),
     log = [];
   let last = '',
     k = 0;
-  while (Date.now() - t0 < 260000) {
+  while (Date.now() - t0 < 480000) {
     await page.waitForTimeout(700);
     const st = await page.evaluate(() => ({
       r: S200.ui.tut.running(),
@@ -55,13 +63,47 @@ for (let runN = 0; runN < 2; runN++) {
     if (st.n !== last) {
       last = st.n;
       log.push(`${((Date.now() - t0) / 1000).toFixed(0)}s ${st.n} ${st.kid ? 'K' : 'A'} ${st.t}`);
-      if (runN === 0) {
-        await page.waitForTimeout(2600);
-        await page.screenshot({ path: `${out}/t${String(k++).padStart(2, '0')}.jpg`, type: 'jpeg', quality: 70 });
+      if (runN < 2 || process.env.SHOT3) {
+        await page.waitForTimeout(runN === 0 ? 2600 : 3400);
+        await page.screenshot({
+          path: `${out}/t${runN}_${String(k++).padStart(2, '0')}.jpg`,
+          type: 'jpeg',
+          quality: 70,
+        });
       }
     }
   }
   console.log(`běh ${runN + 1}: ${((Date.now() - t0) / 1000).toFixed(0)} s\n` + log.join('\n'));
+  /* doběhla ukázka až na poslední krok a uklidila po sobě? */
+  const fin = await page.evaluate(() => ({
+    n: document.querySelector('#tut-n').textContent,
+    log: S200.ui.tut.log,
+    pops: ['#help', '#gamebox', '#list', '#album', '#tm', '#cmp', '#more', '#uk', '#sk', '#ukc'].filter((q) =>
+      document.querySelector(q).classList.contains('on')
+    ),
+    cine: document.body.classList.contains('cine'),
+    sun: S200.S.sunMode,
+    gamma: S200.S.gamma,
+    paused: S200.S.paused,
+    kid: S200.ui.kid(),
+    oor: Math.abs(S200.S.jd - (Date.now() / 86400000 + 2440587.5)) > 2,
+  }));
+  const [a, b] = fin.n.split('/').map(Number);
+  const chk = (c, t) => {
+    if (!c) {
+      bad++;
+      console.log('FAIL běh ' + (runN + 1) + ': ' + t + ' ' + JSON.stringify(fin));
+    }
+  };
+  chk(a === b && b > 3, 'ukázka nedoběhla do konce');
+  chk(!fin.pops.length && !fin.cine, 'po ukázce zůstalo otevřené okno nebo kino');
+  chk(
+    fin.sun === 0 && fin.gamma < 0.01 && !fin.paused,
+    'po ukázce zůstal filtr Slunce, přisvětlení nebo zastavený čas'
+  );
+  chk(!fin.oor, 'po ukázce nezůstal dnešní čas');
+  chk(fin.kid === (runN === 2), 'po ukázce jiné rozhraní než před ní');
+  console.log('kapitoly: ' + fin.log.join(' '));
 }
 console.log(
   JSON.stringify(
@@ -75,6 +117,8 @@ console.log(
     }))
   )
 );
-console.log([...new Set(errs)].filter((e) => !/GPU stall/.test(e)).join('\n') || 'bez chyb');
+const ee = [...new Set(errs)].filter((e) => !/GPU stall/.test(e));
+console.log(ee.join('\n') || (bad ? '' : 'bez chyb'));
+if (bad || ee.length) process.exitCode = 1;
 await browser.close();
 srv.close();

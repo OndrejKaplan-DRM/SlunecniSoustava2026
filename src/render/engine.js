@@ -27,6 +27,7 @@ import {
   RING,
 } from '../core/sim.js';
 import * as SH from './shaders.js';
+import { createBelts } from './belts.js';
 import { STAR_N, STAR_POS, STAR_MAG, STAR_TK, CON_LINES, CON_IDS, STAR_NAMES } from '../data/stardata.js';
 import { CON_CZ, STAR_CZ } from '../data/connames.js';
 import CAT from '../data/cat.json';
@@ -266,6 +267,8 @@ export function createEngine(canvas, overlay) {
     pts.renderOrder = -20;
     scene.add(pts);
   }
+  /* 1.8a: hlavní pás planetek a Kuiperův pás (ilustrační tečky na skutečných typech drah) */
+  const belts = (S.belts = createBelts(scene, S, sstep));
 
   const eq2s = (ra, de) => {
     const x = Math.cos(de) * Math.cos(ra),
@@ -1106,6 +1109,7 @@ export function createEngine(canvas, overlay) {
     wake();
     S.sel = j;
     S.on.select(j);
+    S.bus.emit('fly', j); /* 1.8a: pozornost se přesouvá k tělesu – rozhraní uklidí okna, která by zůstala viset */
     if (j === S.focus && !cam.fly) {
       cam.altT = opts.alt || arriveAlt(j);
       cam.fly = { ph: 2, t: 0, ly: cam.ly, lp: cam.lp };
@@ -1351,6 +1355,7 @@ export function createEngine(canvas, overlay) {
     S.jd += S.dJd;
     updateAll(S.jd);
     updateCamera(dt);
+    if (belts.update(S.camPos, F, cam.alt, PR, dt)) wake();
     const C = S.camPos,
       big = [];
     S.items.length = 0;

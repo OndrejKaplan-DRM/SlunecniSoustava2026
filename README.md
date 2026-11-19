@@ -6,7 +6,7 @@ Interaktivní 3D model Sluneční soustavy v prohlížeči: 201 těles ve skute�
 dospělé a dětské rozhraní, minutová ukázka ovládání, čtyři pohledy na Slunce, zvuky, hudba a hra pro mladého astronoma.
 
 - **Spustit:** https://ondrejkaplan-drm.github.io/SlunecniSoustava2026/
-- **Verze:** 1.2 (13. 11. 2026); rozpracovaná 1.7 na větvi `iterace-18` (přehled změn: `docs/ZMENY.md`) · zdarma, bez reklam, bez registrace a bez sběru dat
+- **Verze:** 1.2 (13. 11. 2026); rozpracovaná 1.8a na větvi `iterace-19` (přehled změn: `docs/ZMENY.md`) · zdarma, bez reklam, bez registrace a bez sběru dat
 - **Bez internetu:** `npm run offline:hi` vyrobí jeden soubor HTML, který se otevře dvojklikem (na flashku, do školy)
 - **Autor:** Ing. Ondřej Kaplan, Ph.D. (ondrej.kaplan@gmail.com) – námět, zadání, odborná kontrola a testování. Kód napsal podle jeho zadání model Claude Fable 5.2 (Anthropic).
 - **Licence:** kód MIT (`LICENSE`); mapy, písmo, zvuky a hudba mají vlastní licence – přehled v `CREDITS.md`
@@ -52,6 +52,7 @@ src/                  zdrojový kód (ES moduly)
   render/             vykreslování (WebGL, Three.js)
     engine.js         scéna, kamera, lety, načítání map (malé a velké), souhvězdí, 2D vrstva
     shaders.js        GLSL: tělesa, Slunce, prstence, atmosféry, hvězdy, souhvězdí
+    belts.js          hlavní pás planetek a Kuiperův pás (ilustrační tečky na skutečných typech drah)
     ball.js           kotouče těles na 2D plátně (porovnání velikostí, ikony)
   ui/                 rozhraní
     ui.js             karta tělesa, lišty, hra, klávesy a ukazatel
@@ -60,7 +61,7 @@ src/                  zdrojový kód (ES moduly)
     mobile.js         rozložení podle zařízení: telefon, tablet, velká obrazovka, malé okno
     superkarta.js     podrobná karta tělesa (pětiklik; jen dospělé rozhraní)
     udalosti.js       úkazy na obloze: seznam, karty, ukázka a návrat
-    tutorial.js       ukázka ovládání
+    tutorial.js       dvouminutová ukázka ovládání (každá kapitola si sama připraví pohled)
     zvuky.js          zkušebna zvuků
   audio/
     audio.js          syntéza, nahrávky, prostředí těles, hudba

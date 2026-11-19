@@ -4,7 +4,7 @@ Projít před každým sloučením do `main` a zveřejněním (stránka, artefak
 
 ## Kód a testy
 - [ ] `npm run build` bez chyb (`./build.sh 2>&1 | grep -c ERROR` dá 0)
-- [ ] `npm test` – ukázka 10/10, „bez chyb“
+- [ ] `npm test` – ukázka ve třech bězích (náhodný plán, všechny pokročilé kapitoly, dětské rozhraní) doběhne do konce a uklidí po sobě, „bez chyb“ (asi 10 minut)
 - [ ] `npm run test:fakta` – bez chyb
 - [ ] `npm run test:model` – polohy planet, Pluta a Měsíce proti JPL DE422 (roky −1000 až 3000) v mezích
 - [ ] `npx prettier --check "src/**/*.js" "tools/**/*.mjs"` čisté (kromě `tools/zvuky/picks.json`)
@@ -12,6 +12,8 @@ Projít před každým sloučením do `main` a zveřejněním (stránka, artefak
 
 - [ ] `node tools/test/t_karty.mjs` (32 karet úkazů, Superkarta všech těles, `?dev`) a `node tools/test/t_preload.mjs` bez chyb.
 - [ ] `node tools/test/t_displej.mjs` (4K, televize se zvětšením 300–400 %, malé okno, přesun okna) bez chyb.
+- [ ] `node tools/test/t_okna.mjs` (18 sestav od telefonu po monitor QHD × obě rozhraní × všechna okna: nic mimo obrazovku, nic uříznutého, zavírací tlačítka dost velká, žádné visící okno) – 0 nálezů. Běží asi 15 minut; `SHOT=1` uloží snímky.
+- [ ] `node tools/test/t_pasy.mjs` (pásy planetek: vidět v přehledu, zblízka pryč, nejdou vybrat) bez chyb.
 - [ ] `src/core/flags.js`: žádná nedodělaná funkce není ve stavu `vse`; vývojářský režim není po čistém otevření zapnutý.
 
 ## Data a texty
