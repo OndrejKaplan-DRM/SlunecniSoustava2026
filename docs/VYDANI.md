@@ -11,6 +11,7 @@ Projít před každým sloučením do `main` a zveřejněním (stránka, artefak
 - [ ] snímky v 1366 × 768, 1920 × 1080, 3840 × 2160 a na telefonu (`tools/test/mobshot.mjs`): nic se nepřekrývá, nápověda se dá dočíst
 
 - [ ] `node tools/test/t_karty.mjs` (32 karet úkazů, Superkarta všech těles, `?dev`) a `node tools/test/t_preload.mjs` bez chyb.
+- [ ] `node tools/test/t_displej.mjs` (4K, televize se zvětšením 300–400 %, malé okno, přesun okna) bez chyb.
 - [ ] `src/core/flags.js`: žádná nedodělaná funkce není ve stavu `vse`; vývojářský režim není po čistém otevření zapnutý.
 
 ## Data a texty

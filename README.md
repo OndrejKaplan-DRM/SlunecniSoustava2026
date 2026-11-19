@@ -6,7 +6,7 @@ Interaktivní 3D model Sluneční soustavy v prohlížeči: 201 těles ve skute�
 dospělé a dětské rozhraní, minutová ukázka ovládání, čtyři pohledy na Slunce, zvuky, hudba a hra pro mladého astronoma.
 
 - **Spustit:** https://ondrejkaplan-drm.github.io/SlunecniSoustava2026/
-- **Verze:** 1.2 (13. 11. 2026); rozpracovaná 1.4 na větvi `iterace-16` · zdarma, bez reklam, bez registrace a bez sběru dat
+- **Verze:** 1.2 (13. 11. 2026); rozpracovaná 1.7 na větvi `iterace-18` (přehled změn: `docs/ZMENY.md`) · zdarma, bez reklam, bez registrace a bez sběru dat
 - **Bez internetu:** `npm run offline:hi` vyrobí jeden soubor HTML, který se otevře dvojklikem (na flashku, do školy)
 - **Autor:** Ing. Ondřej Kaplan, Ph.D. (ondrej.kaplan@gmail.com) – námět, zadání, odborná kontrola a testování. Kód napsal podle jeho zadání model Claude Fable 5.2 (Anthropic).
 - **Licence:** kód MIT (`LICENSE`); mapy, písmo, zvuky a hudba mají vlastní licence – přehled v `CREDITS.md`
@@ -46,6 +46,9 @@ src/                  zdrojový kód (ES moduly)
     ephem.js          efemeridy: planety (přesný fit 1900–2050 + dlouhodobá teorie −1000 až 3000), malá tělesa, měsíce
     shape.js          trojosé tvary malých těles
     asset.js          adresa souboru (nebo data URI ve verzi v jednom souboru)
+    flags.js          registr funkcí: kdo kterou funkci uvidí (obě rozhraní, jen dospělí, jen ?dev)
+    device.js         třída zařízení a rozpočet paměti pro chytré načítání
+    preload.js        přednačtení s lištou, která necouvá
   render/             vykreslování (WebGL, Three.js)
     engine.js         scéna, kamera, lety, načítání map (malé a velké), souhvězdí, 2D vrstva
     shaders.js        GLSL: tělesa, Slunce, prstence, atmosféry, hvězdy, souhvězdí
@@ -54,7 +57,9 @@ src/                  zdrojový kód (ES moduly)
     ui.js             karta tělesa, lišty, hra, klávesy a ukazatel
     extras.js         2D vrstva: útvary, sondy, pravítko, minimapa
     orient.js         šipky ke Slunci a Zemi, orientační body
-    mobile.js         telefon a tablet
+    mobile.js         rozložení podle zařízení: telefon, tablet, velká obrazovka, malé okno
+    superkarta.js     podrobná karta tělesa (pětiklik; jen dospělé rozhraní)
+    udalosti.js       úkazy na obloze: seznam, karty, ukázka a návrat
     tutorial.js       ukázka ovládání
     zvuky.js          zkušebna zvuků
   audio/

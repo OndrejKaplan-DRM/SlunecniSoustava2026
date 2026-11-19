@@ -38,8 +38,12 @@ export function createMobile(S, A, ui) {
       f = M.force;
     /* 1.7: telefon = dotyk bez myši. Počítač (i s dotykovým displejem, i připojený k televizi se zvětšením 300 %)
        telefonní rozložení sám nikdy nedostane: malé okno nebo málo bodů znamená jen zmenšené počítačové rozhraní. */
+    /* 1.7.1: telefony s perem hlásí i jemný ukazatel – mobilní prohlížeč (podle svého označení) je proto telefon vždy */
     const fineAny = matchMedia('(any-pointer: fine)').matches,
-      phone = coarse && !fineAny,
+      uaMob =
+        (navigator.userAgentData && navigator.userAgentData.mobile) ||
+        /Mobi|Android|iPhone|iPod/.test(navigator.userAgent || ''),
+      phone = coarse && (!fineAny || !!uaMob),
       small = f === 'auto' && !phone && (w < 1100 || h < 560),
       shrink = small ? Math.max(0.5, Math.min(1, w / 1100, h / 560)) : 1;
     M.mob = f === 'mob' || (f === 'auto' && phone && (w < 700 || Math.min(w, h) < 520));
