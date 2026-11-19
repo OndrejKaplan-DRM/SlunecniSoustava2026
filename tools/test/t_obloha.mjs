@@ -329,6 +329,14 @@ ok(
   'po návratu do dospělého rozhraní je položka zpět'
 );
 
+/* ukázka úkazu má oblohu pro sebe: s otevřenou kartou úkazu se jména objektů nekreslí */
+await page.evaluate(() => {
+  S200.obloha.on(true);
+  S200.uk.card(S200.uk.ids()[0]);
+});
+await frames(4);
+s = await st();
+ok(s.on && s.vis.length === 0 && !(await isOn('#dsc')), 'při ukázce úkazu se jména objektů schovají');
 ok(
   cizi.length === 0,
   `stránka nenačítá nic z cizích serverů (${cizi.length})` + (cizi.length ? ' ' + cizi.slice(0, 3).join(' ') : '')

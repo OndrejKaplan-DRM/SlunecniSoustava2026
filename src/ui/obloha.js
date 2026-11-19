@@ -265,7 +265,8 @@ export function createObloha(S, A, ui) {
   }
   S.overlays.push((ctx, e) => {
     lastF = e.F;
-    if (!on || !ok()) {
+    /* otevřená karta úkazu = ukázka úkazu má oblohu pro sebe (ve verzi 1.9 je to samostatná scéna) */
+    if (!on || !ok() || (ukc && isOn(ukc) && !ukc.classList.contains('min'))) {
       for (const o of OBJ) o.vis = false;
       return;
     }

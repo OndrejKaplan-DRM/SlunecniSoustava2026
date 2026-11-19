@@ -43,6 +43,11 @@ Limit velikosti souboru nově 250 MB včetně grafiky. Jen dospělé rozhraní (
 - **Sloučení s větví 1.9:** nové soubory kolidovat nemohou. Čekaný konflikt: číslo verze v `dist/index.html` (dva řádky – vzít „1.9“),
   tabulka nahoře v tomto souboru a `dist/app.js` (výstup sestavení: nevybírat ručně, po sloučení zdrojáků pustit `./build.sh`).
   Kdyby větev 1.9 měnila seznam `POPS` nebo objekt `api` v `ui.js`, stačí zachovat řádky `pops: POPS` a `actions: act`.
+- **Zkouška sloučení (19. 11. 2026 večer, jen místně, nic se neposlalo):** `iterace-19b` + `iterace-20` (verze 1.9, `1e06803`) v oddělené
+  pracovní kopii – konflikty přesně ve třech čekaných souborech (`dist/index.html` 2 řádky s číslem verze, tabulka v tomto souboru,
+  `dist/app.js`); zdrojáky se sloučily samy. Po `./build.sh` na sloučeném stromu prošly `t_obloha` (počítač, telefon), `t_scena`
+  (287 kontrol), `t_ukazy desk` a `t_okna` (notebook 1366, iPhone na šířku). S `iterace-21` (mapy úrovně 2, `4f019b2`) zkoušeno jen
+  `git merge-tree`: tytéž tři soubory. Při otevřené kartě úkazu se jména objektů na obloze nekreslí (ukázka úkazu má scénu pro sebe).
 
 ## 1.8a – zobrazení na všech zařízeních, delší ukázka, pásy planetek
 Limit velikosti souboru nově 100 MB (dřív 110).
