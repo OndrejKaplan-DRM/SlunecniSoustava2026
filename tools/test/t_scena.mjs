@@ -163,7 +163,7 @@ for (const lay of which) {
   await page.evaluate(() => document.querySelector('#ukc [data-u="show"]').click());
   await page.waitForTimeout(900);
   // 3) pohledy na zatmění Slunce
-  ok(s.views.join() === 'a,m,t', `zatmění Slunce má tři pohledy (${s.views})`);
+  ok(s.views.join() === 'a,z,m,t', `zatmění Slunce má čtyři pohledy (${s.views})`);
   await page.evaluate(() => S200.uk.view('m'));
   await page.waitForTimeout(1500);
   s = await stav();
@@ -228,7 +228,7 @@ for (const lay of which) {
     const e = s.tela.find((b) => b.id === 'earth'),
       m = s.tela.find((b) => b.id === 'moon');
     ok(
-      s.views.join() === 'a,t' && s.focus === 'earth' && volne(s, e) && volne(s, m),
+      s.views.join() === 'a,z,t' && s.focus === 'earth' && volne(s, e) && volne(s, m),
       `zatmění Měsíce shora: obě tělesa ve volné ploše (${e.x},${e.y}; ${m.x},${m.y})`
     );
   }
