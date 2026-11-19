@@ -1852,6 +1852,8 @@ export function createUI(S, A) {
     },
     time: timeAct,
     refresh,
+    pops: POPS /* moduly s vlastními okny (obloha.js) se sem zapisují, aby se okna zavírala navzájem a na Esc */,
+    actions: act /* a sem přidávají akce pro položky nabídky ☰ */,
   };
   const tut = createTutorial(S, A, api);
   api.tut = tut;

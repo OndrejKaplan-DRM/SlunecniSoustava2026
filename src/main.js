@@ -9,6 +9,7 @@ import { createOrient } from './ui/orient.js';
 import { createUdalosti } from './ui/udalosti.js';
 import { createFlags } from './core/flags.js';
 import { createSuperkarta } from './ui/superkarta.js';
+import { createObloha } from './ui/obloha.js';
 let S;
 try {
   S = createEngine(document.getElementById('gl'), document.getElementById('ov'));
@@ -37,6 +38,8 @@ const sk = createSuperkarta(S, A, ui);
 /* ukázka ovládání umí předvést i Superkartu a úkazy */
 ui.sk = sk;
 ui.uk = uk;
+/* 1.8b: objekty vzdáleného vesmíru na fotce oblohy (jen dospělé rozhraní) */
+const obloha = (ui.obloha = createObloha(S, A, ui));
 /* 1.8a: pásy planetek – při prvním spatření krátké vysvětlení, že jde o ilustraci */
 S.bus.on('belt', (b) => {
   if (ui.tut.running() || document.body.classList.contains('spl')) return;
@@ -55,4 +58,4 @@ S.bus.on('belt', (b) => {
 F.setKid(document.body.classList.contains('kid'));
 S.bus.on('mode', (k) => F.setKid(k));
 S.start();
-window.S200 = { S, ui, sim, A, mob, zv, orient, uk, sk, F };
+window.S200 = { S, ui, sim, A, mob, zv, orient, uk, sk, F, obloha };

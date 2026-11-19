@@ -12,7 +12,7 @@ a volají jeho funkce (`flyTo`, `jump`, `setSunMode`…); zpět dostávají udá
 - Venuše: velká mapa ukazuje povrch (radar), malá oblačnost; míru prolnutí řídí jen velikost kotouče.
 - Konvence: střed mapy = délka 0°, východ vpravo; nultý poledník vázaně rotujících těles míří k mateřskému tělesu.
 
-## Moduly přidané ve verzích 1.4–1.8a
+## Moduly přidané ve verzích 1.4–1.8b
 - `core/flags.js` – registr funkcí: každá funkce má stav `vse`, `dospeli`, `dev` nebo `off`; `S.F.on(klíč)` říká, zda je teď dostupná
   (podle rozhraní a parametru `?dev`). Třídy `no-<klíč>` na `<body>` schovávají prvky v CSS.
 - `core/device.js` – třída zařízení (úsporná, běžná, bohatá) z počtu jader, paměti a grafiky; určuje rozpočet paměti a kolik
@@ -24,6 +24,12 @@ a volají jeho funkce (`flyTo`, `jump`, `setSunMode`…); zpět dostávají udá
   hluboko uvnitř prstence. Tečky nejsou v katalogu, nejdou vybrat a nemají jména – je to ilustrace.
 - Okna: seznam `POPS` v `ui/ui.js` (okna se navzájem zavírají) a od 1.8a „úklid“ `SWEEP`: událost `fly` na sběrnici (každý přelet)
   a tah do vesmíru zavřou okna, která zakrývají pohled. Karta úkazu se při přeletu a na Esc sbalí do proužku.
+- `ui/obloha.js` (1.8b) – objekty vzdáleného vesmíru na fotce oblohy: jména a kroužky ve 2D vrstvě (`S.overlays`), seznam `#ds`,
+  malá karta `#dsc`, velká karta `#dsk`, zvětšená fotografie `#dsz`. Modul je záměrně soběstačný – styly (`<style>`), okna, položku
+  nabídky ☰ i odstavec nápovědy vkládá do stránky sám a do `POPS` a `act` se zapisuje přes `ui.pops` a `ui.actions`; `dist/index.html`
+  o něm neví. Směr objektu ve scéně dává `S.eq2s(α, δ)`. „Ukázat na obloze“ nemění těleso ani výšku: nastaví otočení kolem tělesa
+  (`cam.yaw`, `cam.pitch`) a odklon pohledu (`cam.lp`) tak, aby objekt přišel na zvolené místo obrazovky a těleso zůstalo stranou.
+  Fotografie se načítají až při otevření karty (`AS('sky/…')`), ve verzi v jednom souboru jsou vložené jako ostatní podklady.
 - Výšky oken v CSS se počítají z `var(--vh)` (na telefonu `100dvh`) a dělí měřítkem rozhraní `var(--bk)`.
 
 ## Co je velké a zaslouží rozdělit

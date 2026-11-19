@@ -10,9 +10,39 @@ a v souboru na vyzkoušení (`node tools/build/build_offline.mjs <výstup.html> 
 | 1.4, 1.5 | 14.–18. 11. 2026 | `iterace-16` (`1f56f45`) | `iterace-15` |
 | 1.6 | 18. 11. 2026 | `iterace-17` (`d991ab9`) | `iterace-16` |
 | 1.7, 1.7.1 | 18.–19. 11. 2026 | `iterace-18` (`06f1a52`) | `iterace-17` |
-| 1.8a | 19. 11. 2026 | `iterace-19` | `iterace-18` |
+| 1.8a | 19. 11. 2026 | `iterace-19` (`8b21072`) | `iterace-18` |
+| 1.8b | 19. 11. 2026 | `iterace-19b` | `iterace-19` (souběžně s verzí 1.9 z jiné sešny) |
 
-Větve na sebe navazují v řadě, takže `iterace-19` obsahuje vše předchozí.
+Větve na sebe navazují v řadě, takže `iterace-19` obsahuje vše předchozí. `iterace-19b` je boční větev z `iterace-19`
+určená ke sloučení s větví verze 1.9 (viz „Sloučení“ na konci oddílu 1.8b).
+
+## 1.8b – objekty na obloze (mlhoviny, hvězdokupy, galaxie)
+Limit velikosti souboru nově 250 MB včetně grafiky. Jen dospělé rozhraní (`obloha` v `src/core/flags.js`).
+- **Co to je:** fotka Mléčné dráhy za planetami ukazuje i objekty daleko za Sluneční soustavou. Nová vrstva pojmenuje 19 z nich –
+  jen ty, které jsou na naší fotce (2048 × 1024 bodů) opravdu vidět: Velké a Malé Magellanovo mračno, galaxie v Andromedě, mlhoviny
+  v Orionu, Carina, Laguna, Orlí, Severní Amerika, Rozeta, mračna u ρ Ophiuchi, Koňská hlava, Uhelný pytel, střed Galaxie,
+  Omega Centauri, 47 Tucanae, Plejády, Dvojitá hvězdokupa v Perseu, M 7 a M 11.
+- **Ovládání:** ☰ → „Objekty na obloze“ otevře seznam a zapne jména a kroužky na obloze (po startu jsou vypnuté, aby obloha nebyla
+  přeplácaná). Klik na jméno nebo kroužek = malá karta, dvojklik = velká karta. V seznamu klik = karta a pohled na objekt.
+  „Ukázat na obloze“ natočí pohled tak, aby objekt nebyl za tělesem ani pod kartou (na telefonu přijde nad kartu), „Zpět k tělesu“
+  vrátí původní pohled. Kroužek má skutečnou úhlovou velikost objektu (nejméně 8 bodů).
+- **Velká karta** („něco jako Wikipedie objektu“): nahoře výřez z naší oblohy s kroužkem a hlavní fotografie, pod nimi tabulka údajů
+  (druh, vzdálenost, souhvězdí, poloha, velikost na obloze, jasnost) s odkazem na zdroj u každého čísla, tři krátké odstavce (co to je,
+  co je na fotkách, kde je na obloze), další fotografie a seznam zdrojů. Klik na fotografii ji zvětší. Odkazy se otevírají v novém
+  okně; aplikace sama z internetu nic nenačítá.
+- **Data:** 40 fotografií (ESO, ESA/Hubble, ESA/Webb – CC BY 4.0; jeden snímek NASA/JPL – volné užití s uvedením autora), zmenšené na nejvýš 1280 bodů, WebP, 11,2 MB
+  v `dist/sky/`. Poloha, velikost a jasnost z katalogu OpenNGC, vzdálenosti a zajímavosti z tiskových zpráv a popisů snímků
+  (u každého objektu vyjmenováno). Vše staví `python3 -I tools/data/obloha_build.py`; původ a licence: `zdroje/OBLOHA.md`.
+- **Poctivě:** naše fotka oblohy má 0,18° na bod, takže výřez „na naší obloze“ je hrubý – ukazuje, kde objekt je, ne jak vypadá.
+  U čtyř objektů (M 16, Dvojitá hvězdokupa, M 7, M 11) karta neuvádí úhlovou velikost, protože údaj OpenNGC se výrazně liší od jiných
+  katalogů a druhý zdroj jsem neověřila. U Velkého Magellanova mračna na telefonu je pohled po „Ukázat na obloze“ vzhůru nohama
+  (objekt leží 5° od jižního pólu ekliptiky a má přijít nad kartu; jinak to geometrie kamery nedovolí).
+- **Kód:** celé v `src/ui/obloha.js` (styly, okna, položku nabídky i odstavec nápovědy si modul vkládá sám), data `src/data/obloha.json`.
+  Mimo modul jen: `ui.js` (+2 řádky: `api.pops`, `api.actions`), `main.js` (+3), `flags.js` (+1), `build_offline.mjs` (+1),
+  `dist/index.html` (jen číslo verze na dvou místech). Test `tools/test/t_obloha.mjs` (počítač a telefon), tři nová okna v `t_okna.mjs`.
+- **Sloučení s větví 1.9:** nové soubory kolidovat nemohou. Čekaný konflikt: číslo verze v `dist/index.html` (dva řádky – vzít „1.9“),
+  tabulka nahoře v tomto souboru a `dist/app.js` (výstup sestavení: nevybírat ručně, po sloučení zdrojáků pustit `./build.sh`).
+  Kdyby větev 1.9 měnila seznam `POPS` nebo objekt `api` v `ui.js`, stačí zachovat řádky `pops: POPS` a `actions: act`.
 
 ## 1.8a – zobrazení na všech zařízeních, delší ukázka, pásy planetek
 Limit velikosti souboru nově 100 MB (dřív 110).

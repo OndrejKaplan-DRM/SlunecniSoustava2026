@@ -11,6 +11,7 @@
 export const REG = {
   ukazy: ['dospeli', 'Úkazy na obloze (seznam, karty, supernovy)'],
   superkarta: ['dospeli', 'Superkarta tělesa (pětiklik na těleso, jeho ikonu nebo název v kartě)'],
+  obloha: ['dospeli', 'Objekty na obloze (mlhoviny, hvězdokupy a galaxie na fotce Mléčné dráhy: jména, karty, zdroje)'],
   nastroje: ['dospeli', 'Odborné nástroje (měření, osa a poledníky, reálný jas, otáčení s tělesem, kino)'],
   nacitani: ['dev', 'Technický výpis načítání na úvodu'],
   zvuky: ['dev', 'Zkušebna zvuků (dříve jen ?zvuky)'],
