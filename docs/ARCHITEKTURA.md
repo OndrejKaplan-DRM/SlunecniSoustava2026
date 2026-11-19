@@ -24,6 +24,7 @@ a volají jeho funkce (`flyTo`, `jump`, `setSunMode`…); zpět dostávají udá
   (a planetám, pokud není `evStrict`), `belts.js`, sondy v `extras.js` a šipky v `orient.js` ustoupí. Kameru skládají `setCam`, `setCamOver`
   a `aimDir` do volné plochy vedle karty; `S.cam.ly` a `S.cam.lp` (pootočení pohledu) se při návratu nulují.
 - `render/belts.js` – hlavní pás planetek a Kuiperův pás: dvě mračna bodů, polohu každého bodu počítá vertex shader z elementů dráhy
+- `render/l2.js` (1.8m) – úroveň 2 map: dlaždice 1024 px (+1 px okraje) z mozaik 16k/8k (`data/l2.json`, `maps/l2/<id>/<řádek>-<sloupec>.webp`). Pro těleso v ohnisku vybere 13 × 9 paprsky dlaždice, kde by se velká mapa roztahovala, rozbalí je (`createImageBitmap`) a nahraje do jednoho atlasu (`WebGLRenderTarget`, 8 nebo 16 míst; `renderer.copyTextureToTexture`). Malá textura indexu (16 × 8, RGBA: místo + 1, průhlednost) říká shaderu `BODY_FS`, kde dlaždice leží; shader ji prolne jen tam, kde se zvětšuje.
   a času modelu (Keplerova rovnice řadou do e²). Průhlednost řídí `update()` jednou za snímek: podle výšky kamery nad tělesem
   (u tělesa zblízka pás zmizí), podle zdánlivé velikosti prstence (malý prstenec = slabší a menší tečky) a podle toho, zda je kamera
   hluboko uvnitř prstence. Tečky nejsou v katalogu, nejdou vybrat a nemají jména – je to ilustrace.

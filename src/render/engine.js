@@ -28,6 +28,7 @@ import {
 } from '../core/sim.js';
 import * as SH from './shaders.js';
 import { createBelts } from './belts.js';
+import { createL2 } from './l2.js';
 import { STAR_N, STAR_POS, STAR_MAG, STAR_TK, CON_LINES, CON_IDS, STAR_NAMES } from '../data/stardata.js';
 import { CON_CZ, STAR_CZ } from '../data/connames.js';
 import CAT from '../data/cat.json';
@@ -657,6 +658,9 @@ export function createEngine(canvas, overlay) {
   }));
   S.R = R;
   const gamU = { fill: { value: 0 }, gam: { value: 1 } };
+  /* úroveň 2 map (dlaždice 16k/8k, render/l2.js) – jeden atlas pro těleso v ohnisku */
+  const l2 = createL2({ THREE, renderer, AS, wake: () => wake() });
+  S.l2 = l2;
   let texCount = 0;
   const m9 = new Array(9);
 
@@ -670,6 +674,10 @@ export function createEngine(canvas, overlay) {
       tMap: { value: blank },
       tHi: { value: blank },
       uHi: { value: 0 },
+      tL2: l2.U.tL2,
+      tL2i: l2.U.tL2i,
+      uL2s: l2.U.uL2s,
+      uL2: { value: new THREE.Vector4(1, 1, 4, 0) },
       tAux: { value: blank },
       uCity: { value: 1 },
       uRed: { value: i === MOON ? 1 : 0 },
@@ -1101,6 +1109,7 @@ export function createEngine(canvas, overlay) {
   const fwd = new THREE.Vector3(),
     right = new THREE.Vector3(),
     up = new THREE.Vector3(),
+    L2CAM = { fwd, right, up },
     dv = new THREE.Vector3(),
     tmp = new THREE.Vector3(),
     tmp2 = new THREE.Vector3(),
@@ -1475,6 +1484,21 @@ export function createEngine(canvas, overlay) {
         mesh.matrixWorldNeedsUpdate = true;
         U.uRot.value.set(m9[0], m9[3], m9[6], m9[1], m9[4], m9[7], m9[2], m9[5], m9[8]);
         U.uPole.value.set(m9[6], m9[7], m9[8]);
+        if (i === S.focus)
+          l2.frame(i, b.id, U.uL2, {
+            now,
+            dt,
+            can: r.hi === 2 && hiCan(),
+            pr,
+            W,
+            H,
+            F,
+            c: rel,
+            R: b.R,
+            m9,
+            cam: L2CAM,
+          });
+        else if (U.uL2.value.w) U.uL2.value.w = 0;
         mesh.geometry = GEO[pr > 260 ? 2 : pr > 14 ? 1 : 0];
         if (i !== SUN) {
           const hx = P[i * 3],
@@ -1490,7 +1514,7 @@ export function createEngine(canvas, overlay) {
             else U.uOcc.value[k].set(P[j * 3] - hx, P[j * 3 + 1] - hy, P[j * 3 + 2] - hz, B[j].R);
           }
           {
-            const th = (r.hi === 2 ? r.hw : r.mw || 512) * 0.22;
+            const th = (r.hi === 2 ? (l2.has(b.id) ? l2.grid(b.id)[0] * 1024 : r.hw) : r.mw || 512) * 0.22;
             U.uDet.value =
               S.quality > 0 && pr > th
                 ? Math.min(1, (pr - th) / (th * 1.5)) * (kindOf(b) === 2 || i === EARTH ? 0.25 : 1)
@@ -2098,11 +2122,12 @@ export function createEngine(canvas, overlay) {
       if (r.tex === 2) px += ((r.mw || 512) * (r.mw || 512)) / 2;
       if (r.hi === 2) px += ((r.hw || 4096) * (r.hw || 4096)) / 2;
     }
-    return (px * 4 * 1.33) / 1048576;
+    return (px * 4 * 1.33) / 1048576 + l2.mem();
   };
   S.hiPinned = () => [...hiPin];
   /* pojistka: když grafická karta přijde o kontext (došla paměť), velké mapy se vypnou */
   renderer.domElement.addEventListener('webglcontextlost', () => {
+    l2.drop();
     S.hiOff = true;
     hiPin.clear();
     HI_MAX = 2;

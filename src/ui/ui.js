@@ -1915,13 +1915,16 @@ export function createUI(S, A) {
   const PL = createPreload(),
     sndIds = A.firstSounds(),
     DV = detectDevice(S.renderer, S.quality),
-    BONUS = ['earth', 'moon', 'jupiter', 'saturn', 'mars'].map((id) => idx.get(id)).slice(0, DV.bonus),
+    /* 1.8m: pořadí podle toho, kam uživatel míří nejčastěji (Ondřej: Země, Měsíc, Mars; Slunce je procedurální – stačí shadery) */
+    BONUS = ['earth', 'moon', 'mars', 'jupiter', 'saturn'].map((id) => idx.get(id)).slice(0, DV.bonus),
     plT0 = performance.now(),
     plLog = [],
     st = { ms: [], bonus: [], skip: [], why: '' },
     SOFT = 10000;
   api.device = DV;
   S.hiTab = DV.trida !== 'usporna'; /* tablet a dotyková tabule s dostatkem paměti smí podrobné mapy */
+  /* úroveň 2 (dlaždice 16k/8k zblízka): počet míst v atlasu podle třídy – úsporná nic, běžná 8 (32 MB), výkonná 16 (64 MB) */
+  if (S.l2) S.l2.slots = { usporna: 0, bezna: 8, bohata: 16 }[DV.trida] ?? 8;
   api.loadStat = st;
   const timed = (fn) => () => {
     const t = performance.now();
@@ -2011,6 +2014,18 @@ export function createUI(S, A) {
   });
   setTimeout(() => PL.run(), 60);
   api.preload = PL;
+  /* 1.8m: webová verze si v klidu po startu stáhne dlaždice úrovně 2 pro Zemi, Měsíc a Mars (jen soubory do mezipaměti) */
+  if (S.l2)
+    setTimeout(() => {
+      api.l2pre = S.l2.prefetch(
+        ['earth', 'moon', 'mars'],
+        () =>
+          !sp.classList.contains('on') &&
+          !S.flying() &&
+          !document.body.classList.contains('tutoring') &&
+          !document.hidden
+      );
+    }, 20000);
   /* Start počká na dokončení přípravy (nejdéle 9 s), aby ukázka neškobrtla o první překlad shaderu. */
   /* Úvod je čistý: jen Země, která se pomalu otáčí; rozhraní se rozsvítí až po startu. */
   document.body.classList.add('spl');
