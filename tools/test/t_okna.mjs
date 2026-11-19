@@ -73,7 +73,7 @@ const MERENI = () => {
     H = innerHeight,
     touch = document.body.classList.contains('touch') || document.body.classList.contains('mob');
   const SEL =
-    '#top #tools #mission #card #cardtab #minfo #list #gamebox #help #more #album #uk #ukc #tm #cmp #dev #sk #mini #guide #hud #dock #sub #sunchip #tut'.split(
+    '#top #tools #mission #card #cardtab #minfo #list #gamebox #help #more #album #uk #ukc #tm #cmp #dev #sk #ds #dsc #dsk #mini #guide #hud #dock #sub #sunchip #tut'.split(
       ' '
     );
   const vis = (e) => {
@@ -127,7 +127,22 @@ const MERENI = () => {
     }
   }
   // zavírací tlačítka oken
-  for (const s of ['#list', '#gamebox', '#help', '#album', '#uk', '#ukc', '#tm', '#cmp', '#dev', '#sk', '#card']) {
+  for (const s of [
+    '#list',
+    '#gamebox',
+    '#help',
+    '#album',
+    '#uk',
+    '#ukc',
+    '#tm',
+    '#cmp',
+    '#dev',
+    '#sk',
+    '#ds',
+    '#dsc',
+    '#dsk',
+    '#card',
+  ]) {
     if (!R[s]) continue;
     const e = document.querySelector(s),
       x = e.querySelector('.x, [data-mc="x"], [data-close], [data-u="x"], [data-u="zavrit"]');
@@ -166,8 +181,8 @@ const MERENI = () => {
           t = document.elementFromPoint(cx, cy),
           kdo = t && t.closest(ks[a]) ? ks[a] : t && t.closest(ks[b]) ? ks[b] : '?';
         /* záměr: okna uprostřed a nabídka leží nad vším; na telefonu zabírají okna celou obrazovku */
-        const MODAL = ['#help', '#cmp', '#sk', '#more', '#album', '#dev'].concat(
-          document.body.classList.contains('mob') ? ['#list', '#tm', '#gamebox', '#uk', '#ukc'] : []
+        const MODAL = ['#help', '#cmp', '#sk', '#dsk', '#more', '#album', '#dev'].concat(
+          document.body.classList.contains('mob') ? ['#list', '#tm', '#gamebox', '#uk', '#ukc', '#ds', '#dsc'] : []
         );
         if (MODAL.includes(kdo)) continue;
         o.prekryv.push(`${ks[a]} × ${ks[b]} ${w | 0}×${h | 0} (nahoře ${kdo})`);
@@ -197,9 +212,35 @@ const OKNA = [
   ['ukazy', () => S200.ui.act('uk'), 1],
   ['superkarta', () => S200.sk.open(S200.sim.idx.get('saturn')), 1],
   ['karta_ukazu', () => S200.uk.card(S200.uk.ids()[0]), 1],
+  /* 1.8b: objekty na obloze */
+  ['obl_seznam', () => S200.obloha.list(), 1],
+  [
+    'obl_karta',
+    () => {
+      S200.obloha.card('m42');
+      S200.obloha.aim('m42', true);
+    },
+    1,
+  ],
+  ['obl_velka', () => S200.obloha.big('carina'), 1],
 ];
 const zavriVse = () => {
-  for (const s of ['#help', '#gamebox', '#list', '#album', '#tm', '#cmp', '#dev', '#more', '#zv', '#uk', '#sk'])
+  for (const s of [
+    '#help',
+    '#gamebox',
+    '#list',
+    '#album',
+    '#tm',
+    '#cmp',
+    '#dev',
+    '#more',
+    '#zv',
+    '#uk',
+    '#sk',
+    '#ds',
+    '#dsc',
+    '#dsk',
+  ])
     if (document.querySelector(s).classList.contains('on')) S200.ui.toggle(s, false);
   {
     const x = document.querySelector('#ukc.on [data-u="close"]');

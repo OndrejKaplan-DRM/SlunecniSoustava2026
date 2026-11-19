@@ -32,6 +32,14 @@ Ikona na záložce prohlížeče a na ploše telefonu (`dist/icon.svg`, `dist/ic
 Kosmická výprava (`OndrejKaplan-DRM/SolarSystemExperimentsRepo`, `kosmicka-vyprava/icon/`). Pásy planetek (hlavní pás a Kuiperův pás) jsou
 ilustrace počítaná programem (`src/render/belts.js`), žádná cizí data.
 
+## Objekty na obloze (verze 1.8b)
+Fotografie mlhovin, hvězdokup a galaxií v kartách „Objekty na obloze“ (`dist/sky/`, 40 snímků) pocházejí z veřejných archivů
+**ESO**, **ESA/Hubble** a **ESA/Webb** (licence CC BY 4.0: smí se šířit a upravovat při uvedení autora) a z archivu **NASA** (jeden snímek NASA/JPL-Caltech/UCLA; volné užití s uvedením autora podle zásad NASA/JPL).
+Jsou zmenšené a převedené do WebP; autor každého snímku je uveden přímo v kartě pod fotografií a spolu s odkazem na stránku snímku
+v tabulce `zdroje/OBLOHA.md`. Poloha, úhlová velikost a jasnost objektů jsou z katalogu **OpenNGC** (Mattia Verga, CC BY-SA 4.0),
+vzdálenosti a zajímavosti z tiskových zpráv ESO, ESA/Hubble a ESA/Webb vyjmenovaných u každého objektu. Tyto fotografie **nespadají
+pod licenci MIT** tohoto projektu.
+
 ## Povrchy těles
 Ze 201 těles má **44 skutečnou mapu** ze snímků sond (na kartě 📷). Zbylých 157 má **ilustraci** vytvořenou programem v tomto projektu (na kartě 🎨, `tools/maps/`), žádná cizí práva se na ně nevztahují.
 

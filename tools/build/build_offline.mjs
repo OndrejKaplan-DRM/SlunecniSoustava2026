@@ -10,6 +10,7 @@ for (const f of fs.readdirSync('dist/maps')) if (f.endsWith('.webp')) A['maps/' 
 if (process.argv.includes('--hi'))
   for (const f of fs.readdirSync('dist/maps/hi')) if (f.endsWith('.webp')) A['maps/hi/' + f] = uri('maps/hi/' + f); // volitelně i velké mapy
 for (const f of fs.readdirSync('dist/music')) A['music/' + f] = uri('music/' + f);
+for (const f of fs.readdirSync('dist/sky')) if (f.endsWith('.webp')) A['sky/' + f] = uri('sky/' + f); // fotografie objektů na obloze (1.8b)
 const used = new Set(
   (fs.readFileSync('src/audio/audio.js', 'utf8').match(/'z\d{3}'/g) || []).map((s) => s.slice(1, -1))
 );
