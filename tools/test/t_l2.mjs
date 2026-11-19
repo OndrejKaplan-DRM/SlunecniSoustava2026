@@ -1,6 +1,7 @@
 // Úroveň 2 map (pyramida dlaždic 8k/16k/32k): načtení zblízka, nic zdálky, nic na telefonu, snímky před/po, chyby stránky.
 // Použití: node tools/test/t_l2.mjs <složka> [id:výška_v_poloměrech[:šířka:délka[:noc]],…]   (výchozí moon:0.3,earth:0.35,mars:0.3)
 // „noc“ (jen Země): čas, kdy je nad místem noc – zkouší noční světla 8192 px; snímek <id>_<n>_L2.jpg.
+// id:výška:term – místo 80° od bodu pod Sluncem (Slunce nízko, terminátor; reliéf Měsíce).
 // Bez šířky a délky se kamera postaví nad místo 25° západně od bodu, kde je Slunce v nadhlavníku (šikmé světlo, den).
 // Snímky: <složka>/<id>_L1.jpg (jen úroveň 1, tak jak to bylo do 1.8a) a <id>_L2.jpg (s dlaždicemi).
 import { chromium } from '/home/claude/.npm-global/lib/node_modules/playwright/index.mjs';
@@ -108,19 +109,19 @@ const waitHi = (page, id) =>
     T(id + ': zdálky (6 R) žádné dlaždice', far.loaded === 0 && far.loading === 0, JSON.stringify(far));
     await fly(page, id, alt);
     await page.evaluate(
-      ([id, la, lo, noc]) => {
+      ([id, la, lo, noc, term]) => {
         const S = S200.S,
           j = S200.sim.idx.get(id),
           m = [],
           P = S200.sim.P;
         if (id === 'earth' && la !== undefined)
           S.jd =
-            (la < -60 ? 2461395.5 : 2461212.5) +
+            (la < -60 || (noc && la > 55) ? 2461395.5 : 2461212.5) + /* polární noc: prosinec */
             (noc ? 23.2 : 11.3) / 24; /* 21. 6. 2026 (jižní polární oblast 21. 12.), poledne (nebo noc) nad Evropou */
         S200.sim.updateAll && S200.sim.updateAll(S.jd);
         S200.sim.basis(j, S.jd, m);
         let lat, lon;
-        if (la === undefined) {
+        if (la === undefined || term) {
           const d = Math.hypot(P[j * 3], P[j * 3 + 1], P[j * 3 + 2]),
             sx = -P[j * 3] / d,
             sy = -P[j * 3 + 1] / d,
@@ -129,7 +130,7 @@ const waitHi = (page, id) =>
             by = m[3] * sx + m[4] * sy + m[5] * sz,
             bz = m[6] * sx + m[7] * sy + m[8] * sz;
           lat = Math.asin(bz) * 0.6;
-          lon = Math.atan2(by, bx) - 0.44;
+          lon = Math.atan2(by, bx) - (term ? 1.4 : 0.44); /* „term“: 80° od bodu pod Sluncem – Slunce nízko nad obzorem */
         } else {
           lat = (la * Math.PI) / 180;
           lon = (lo * Math.PI) / 180;
@@ -146,25 +147,30 @@ const waitHi = (page, id) =>
         S.cam.ly = S.cam.lp = 0;
         S.wake();
       },
-      [id, view[0] === undefined ? undefined : +view[0], view[1] === undefined ? undefined : +view[1], view[2] === 'noc']
+      [
+        id,
+        view[0] === undefined || view[0] === 'term' ? undefined : +view[0],
+        view[1] === undefined ? undefined : +view[1],
+        view[2] === 'noc',
+        view[0] === 'term',
+      ]
     );
     const hi = await waitHi(page, id);
     T(id + ': úroveň 1 načtená', hi === 2, 'hi=' + hi);
     const st = await waitL2(page);
-    T(
-      id + ': úroveň 2 načtená zblízka',
-      st.loaded > 0 && st.owner === (await page.evaluate((x) => S200.sim.idx.get(x), id)),
-      JSON.stringify(st)
-    );
+    const own = st.owner === (await page.evaluate((x) => S200.sim.idx.get(x), id));
+    if (+alt >= 1 && !st.want)
+      T(id + ': z ' + alt + ' R úroveň 2 není potřeba (velká mapa se ještě neroztahuje)', own && !st.loading, JSON.stringify(st));
+    else T(id + ': úroveň 2 načtená zblízka', st.loaded > 0 && own, JSON.stringify(st));
     if (view[2] === 'noc') {
       const li = await page.evaluate(async (id) => {
         const S = S200.S,
           j = S200.sim.idx.get(id),
           t0 = performance.now();
-        while (performance.now() - t0 < 20000 && S.R[j].lights !== 2) await new Promise((r) => setTimeout(r, 200));
-        return S.R[j].lights;
+        while (performance.now() - t0 < 20000 && S.R[j].xt !== 2) await new Promise((r) => setTimeout(r, 200));
+        return S.R[j].xt;
       }, id);
-      T(id + ': noční světla 8192 px načtená', li === 2, 'lights=' + li);
+      T(id + ': noční světla 8192 px načtená', li === 2, 'xt=' + li);
     }
     const nm = `${id}_${++shot}`;
     if (view[2] === 'noc') {

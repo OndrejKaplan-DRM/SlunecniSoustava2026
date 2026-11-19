@@ -101,12 +101,22 @@ doostření by Měsíc „zešedl“; zachytil to snímek z testu 19. 11. večer
 γ 0,6 je kompromis z porovnání výřezů (0,3 skoro nic nepřidá, 1,0 je proti měkké barevné mapě příliš tvrdé). Omezení: stínování
 je „zapečené“ z jednoho směru Slunce, aplikace osvětluje podle skutečné polohy Slunce – u kráterů menších než asi 1 km to může
 u terminátoru vypadat jako opačné nasvícení. Stejně tak mají zapečené stínování zdroje Marsu (MDIM), Merkuru (MDIS) a Země (BMNG topography).
-Poctivější cesta (výšková mapa a výpočet stínování podle Slunce, např. LOLA 128 px/°) je zapsaná jako možné pokračování.
+Od 3. kola k tomu reliéf podle skutečného Slunce z výškové mapy LOLA (oddíl níže) pro tvary větší než asi 4 km.
 
 **Póly (Antarktida, Arktida, póly Měsíce).** Mapy jsou ve válcové projekci: u pólu je texel v délce zúžený o cos šířky, v šířce ne.
 Shader volí stupeň podle horšího směru, takže u pólu ukáže jemnější stupeň až zblízka a ve směru poledníků zůstává obraz roztažený –
 na Antarktidě z 1 300 km to vypadá jako jemné „pruhy“ k pólu (ověřeno: nejsou to mraky, zůstanou i bez pomocné mapy). Oprava by
 chtěla zvláštní dlaždice v polární projekci (čepičky nad ±60°) – zapsáno jako možné pokračování.
+
+### Reliéf Měsíce (verze 1.8m, pokus)
+`dist/maps/hi/moon_relief.webp`, 5760 × 5760 šedá, 5,4 MiB: nahoře sklon terénu k východu, dole k severu (5760 × 2880 každý,
+1,9 km/px), hodnota 128 + sklon · 160. Zdroj USGS Astrogeology, LRO LOLA DEM 128 px/° (`Lunar_LRO_LOLA_DEM_Global_128ppd_v04.cub`,
+2,1 GB, 237 m/px), zprůměrováno 8 × 8; výroba `python3 -I tools/maps/moon_relief.py <cube> <výstup>`. Načítá se s velkou mapou Měsíce
+(jeden kanál R8, 44 MB v grafice) a shader podle sklonu nakloní normálu – osvětlení terénu tak odpovídá skutečnému Slunci:
+u terminátoru krátery a pohoří vrhají „stín“ na odvrácenou stěnu (bez vržených stínů na okolí). Kontrola polohy: korelace sklonu
+k východu s jemnou kresbou mozaiky WAC je nejvyšší při posunu 0 (0,18; ±2 px už 0,10 a 0,03), a vyšla kladná – mozaika WAC
+je tedy snímaná se Sluncem od západu (zapečené stínování na stupni 32k). Krátery menší než asi 4 km reliéf nemají (rozlišení mapy);
+nejjemnější pak dodává zapečené stínování WAC.
 
 ### Noční světla Země (verze 1.8m)
 `dist/maps/hi/earth_lights.webp`, 8192 × 4096, šedá (načítá se jako jeden kanál R8, 43 MB v grafice se zmenšeninami), 0,7 MB.

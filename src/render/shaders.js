@@ -32,7 +32,7 @@ export const BODY_FS = /* glsl */ `
 #include <common>
 #include <logdepthbuf_pars_fragment>
 uniform sampler2D tMap; uniform sampler2D tAux; uniform sampler2D tRing; uniform sampler2D tHi; uniform float uHi;
-uniform sampler2D tL2; uniform sampler2D tL2i; uniform vec4 uL2; uniform vec2 uL2s; uniform sampler2D tLights; uniform float uLights;
+uniform sampler2D tL2; uniform sampler2D tL2i; uniform vec4 uL2; uniform vec2 uL2s; uniform sampler2D tLights; uniform float uLights; uniform sampler2D tRel; uniform float uRel;
 uniform float uHasMap; uniform float uHasAux; uniform float uCity; uniform float uRed; uniform float uKind; uniform float uDet; uniform float uSeed; uniform float uFill; uniform float uGam;
 uniform float uAtmK; uniform float uSunR; uniform float uRad; uniform float uTime;
 uniform vec3 uCol; uniform vec3 uSun; uniform vec3 uAtmCol; uniform vec3 uPole; uniform vec3 uCtr; uniform vec3 uRingSh; uniform mat3 uRot;
@@ -64,6 +64,12 @@ void main(){
     }
   }
   vec3 N = normalize(vN);
+  if (uRel > 0.0) { // reliéf (Měsíc, LOLA): sklony k východu (horní polovina mapy) a k severu (dolní), 128 + sklon · 160
+    float sE = texture2D(tRel, vec2(uv.x, 0.5 + uv.y * 0.5)).r, sN = texture2D(tRel, vec2(uv.x, uv.y * 0.5)).r;
+    vec3 E = vec3(-o.y, o.x, 0.0); float el = length(E); E = el > 1e-4 ? E / el : vec3(1.0, 0.0, 0.0);
+    vec3 gt = E * ((sE * 255.0 - 128.0) / 160.0) + cross(o, E) * ((sN * 255.0 - 128.0) / 160.0); /* spád terénu v tečné rovině */
+    N = normalize(N - (uRot * gt) * uRel);
+  }
   if (uDet > 0.0) { // jemná kresba pod rozlišením mapy (šum podle velikosti pixelu) – jen zblízka
     float fw = length(fwidth(vO)), amp = 0.0; vec3 g = vec3(0.0);
     for (int k = 0; k < 3; k++) { float s = 180.0 * pow(4.0, float(k)); float w = smoothstep(3.0 / s, 0.8 / s, fw); if (w <= 0.0) continue;

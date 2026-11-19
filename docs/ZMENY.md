@@ -16,7 +16,8 @@ a v souboru na vyzkoušení (`node tools/build/build_offline.mjs <výstup.html> 
 Větve na sebe navazují v řadě, takže `iterace-19` obsahuje vše předchozí.
 
 ## 1.8m – podrobné mapy zblízka (úroveň 2) a strategie načítání
-Samostatná linie „grafika povrchů“ vedle 1.9 (dráhy a úkazy na `iterace-20`); limit souboru 250 MB.
+Samostatná linie „grafika povrchů“ vedle 1.9 (dráhy a úkazy na `iterace-20`); limit souboru 250 MB, od 2. kola 300 MB, od 3. kola 400 MB
+(celkem po sloučení všech větví).
 - **Úroveň 2 map** (`src/render/l2.js`, `src/data/l2.json`, `dist/maps/l2/<id>/`): dlaždice 1024 px z primárních mozaik 16 384 px (Země,
   Měsíc, Mars, Merkur, Pluto) a 8 192 px (Venuše, Europa, Ganymed, Callisto, Vesta, Enceladus, Dione, Iapetus) – 13 těles, 1 120 dlaždic,
   71 MB. Načítají se jen pro těleso v ohnisku a jen ty, na které se díváš (13 × 9 paprsků z kamery; dlaždice je potřeba, kde by se úroveň 1
@@ -45,6 +46,12 @@ Samostatná linie „grafika povrchů“ vedle 1.9 (dráhy a úkazy na `iterace-
   - Soubor na flashku s `--hi`: 298,2 MiB (312,7 MB, 2 293 souborů); v sandboxu připraven za 4,8 s, paměť stránky 637 MB,
     po přiblížení k Měsíci 815 MB, 0 požadavků ven, 0 chyb.
   - Test ukázky `tut.mjs`: první běh čeká, až úvod zmizí a ukázka běží (start s přednačtením trvá v sandboxu asi 4 s; padal i na `9fe1848`).
+- **3. kolo (19. 11. 2026 v noci):**
+  - **Reliéf Měsíce (pokus):** sklony terénu z výškové mapy LOLA 128 px/° (`maps/hi/moon_relief.webp`, 5760 × 2880 ×2, 5,4 MiB),
+    načítají se s velkou mapou Měsíce; shader podle nich nakloní normálu – u terminátoru krátery a pohoří podle skutečného Slunce.
+    Doplňkové mapy k velké mapě obecně (`EXTRA` v `engine.js`: světla Země, reliéf Měsíce).
+  - **Polární záře Země** se středem v geomagnetickém pólu podle WMM2025 (80,79° s. š., 72,76° z. d.; dřív 80,6° s. š., 107° z. d.).
+  - Test `t_l2.mjs`: pohled `id:výška:term` (Slunce nízko), z výšky nad 1 R se dlaždice nečekají (velká mapa se ještě neroztahuje).
 - Soubor na flashku s `--hi` obsahuje i úroveň 2 (180 MB; `--bez-l2` ji vynechá). Data jsou nově v neaktivních prvcích
   `<script type="text/x-s200">` a `window.S200_ASSETS` je Proxy (src/core/asset.js beze změny): po otevření v sandboxu 503 MB paměti
   stránky místo 618 MB se starým způsobem (1.8a s 81 MB: 406 MB), halda JavaScriptu 30 MB místo 381 MB. Starý způsob: `--json`.

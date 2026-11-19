@@ -584,11 +584,15 @@ export function createEngine(canvas, overlay) {
     neptune: 0.25,
     pluto: 0.06,
   };
-  /* sklon magnetického dipólu k ose rotace ve stupních (Země 9,4; Jupiter 9,6; Saturn < 1; Uran 59; Neptun 47) */
-  const MAGTILT = { earth: 9.4, jupiter: 9.6, saturn: 0, uranus: 59, neptune: 47 };
-  const magPole = (deg) => {
+  /* sklon magnetického dipólu k ose rotace ve stupních (Země 9,2; Jupiter 9,6; Saturn < 1; Uran 59; Neptun 47) */
+  const MAGTILT = { earth: 9.21, jupiter: 9.6, saturn: 0, uranus: 59, neptune: 47 };
+  /* zeměpisná délka severního geomagnetického pólu (střed oválu polární záře): Země 72,76° z. d. – NOAA, WMM2025 pro 2025.0
+     (80,79° s. š. geocentricky; jižní pól protilehlý: 80,79° j. š., 107,24° v. d.). Do 1.8m −107° (blíž dávné poloze
+     severního magnetického pólu v Kanadě). Ostatní planety: směr náklonu jen ilustrační. */
+  const MAGAZ = { earth: -72.76 };
+  const magPole = (deg, id) => {
     const t = deg * DEG,
-      az = -1.87; /* směr náklonu v souřadnicích tělesa – stejný jako dřív u Země */
+      az = MAGAZ[id] !== undefined ? MAGAZ[id] * DEG : -1.87;
     return new THREE.Vector3(Math.sin(t) * Math.cos(az), Math.sin(t) * Math.sin(az), Math.cos(t));
   };
   const AUR = {
@@ -679,6 +683,8 @@ export function createEngine(canvas, overlay) {
       uCity: { value: 1 },
       tLights: { value: blank },
       uLights: { value: 0 },
+      tRel: { value: blank },
+      uRel: { value: 0 },
       uRed: { value: i === MOON ? 1 : 0 },
       tRing: { value: blank },
       uHasMap: { value: 0 },
@@ -702,7 +708,7 @@ export function createEngine(canvas, overlay) {
       uOcc: { value: [new THREE.Vector4(), new THREE.Vector4(), new THREE.Vector4(), new THREE.Vector4()] },
       uAur: { value: new THREE.Vector4(...(AUR[b.id] ? AUR[b.id][0] : [0, 0.3, 0.05, 0])) },
       uAurC: { value: new THREE.Vector3(...(AUR[b.id] ? AUR[b.id][1] : [0, 0, 0])) },
-      uAurP: { value: magPole(MAGTILT[b.id] || 0) },
+      uAurP: { value: magPole(MAGTILT[b.id] || 0, b.id) },
       uExp: { value: 1 },
       uAbc: { value: new THREE.Vector3(...sp.a) },
       uShp: { value: new THREE.Vector3(sp.lump, sp.neck, sp.seed) },
@@ -963,23 +969,31 @@ export function createEngine(canvas, overlay) {
     /* telefon velké mapy nenačítá; tablet jen když na ně má paměť (S.hiTab nastaví rozhraní podle třídy zařízení) */
     !/\bmob\b/.test(document.body.className) &&
     (S.hiTab || !/\btab\b/.test(document.body.className));
-  /* Noční světla Země zblízka (verze 1.8m): NASA Black Marble 2016 (3 km), 8192 × 4096, jeden kanál (R8, 43 MB se zmenšeninami);
-     načítají se po velké mapě Země a zahazují se s ní. Bez nich zůstávají světla z malé pomocné mapy (2048 px). */
-  function needLights(i) {
+  /* Doplňkové mapy k velké mapě (verze 1.8m), jeden kanál (R8), načítají se po velké mapě tělesa a zahazují se s ní:
+     - Země: noční světla, NASA Black Marble 2016 (3 km), 8192 × 4096 (43 MB v grafice se zmenšeninami); bez nich zůstávají
+       světla z malé pomocné mapy (2048 px);
+     - Měsíc: reliéf (pokus) – sklony terénu k východu a k severu z výškové mapy LOLA (LRO), 5760 × 2880 každý, nad sebou
+       v jednom obrázku 5760 × 5760 (44 MB); shader podle nich nakloní normálu, takže osvětlení terénu odpovídá skutečnému
+       Slunci (u terminátoru krátery a pohoří). */
+  const EXTRA = {
+    earth: { url: 'maps/hi/earth_lights.webp', tex: 'tLights', on: 'uLights' },
+    moon: { url: 'maps/hi/moon_relief.webp', tex: 'tRel', on: 'uRel' },
+  };
+  function needExtra(i) {
     const r = R[i],
-      url = 'maps/hi/earth_lights.webp';
-    if (r.lights || (typeof window !== 'undefined' && window.S200_ASSETS && !window.S200_ASSETS[url])) return;
-    r.lights = 1;
-    fetch(AS(url))
+      e = EXTRA[B[i].id];
+    if (!e || r.xt || (typeof window !== 'undefined' && window.S200_ASSETS && !window.S200_ASSETS[e.url])) return;
+    r.xt = 1;
+    fetch(AS(e.url))
       .then((q) => {
         if (!q.ok) throw new Error('http');
         return q.blob();
       })
       .then((bl) => createImageBitmap(bl, { imageOrientation: 'flipY', premultiplyAlpha: 'none', colorSpaceConversion: 'none' }))
       .then((bm) => {
-        if (r.hi !== 2 || r.lights !== 1) {
+        if (r.hi !== 2 || r.xt !== 1) {
           bm.close();
-          if (r.lights === 1) r.lights = 0;
+          if (r.xt === 1) r.xt = 0;
           return;
         }
         const t = new THREE.Texture(bm);
@@ -994,32 +1008,33 @@ export function createEngine(canvas, overlay) {
         } catch (e) {
           /* nahraje se při prvním kreslení */
         }
-        r.U.tLights.value = t;
-        r.U.uLights.value = 1;
-        r.lights = 2;
-        r.lw = bm.width;
+        r.U[e.tex].value = t;
+        r.U[e.on].value = 1;
+        r.xt = 2;
+        r.xpx = bm.width * bm.height;
         wake();
       })
       .catch(() => {
-        r.lights = -1;
+        r.xt = -1;
       });
   }
-  function dropLights(i) {
-    const r = R[i];
-    if (r.lights !== 2) {
-      if (r.lights === 1) r.lights = 0;
+  function dropExtra(i) {
+    const r = R[i],
+      e = EXTRA[B[i].id];
+    if (r.xt !== 2) {
+      if (r.xt === 1) r.xt = 0;
       return;
     }
-    const t = r.U.tLights.value;
-    r.U.tLights.value = blank;
-    r.U.uLights.value = 0;
-    r.lights = 0;
+    const t = r.U[e.tex].value;
+    r.U[e.tex].value = blank;
+    r.U[e.on].value = 0;
+    r.xt = 0;
     t.dispose();
     if (t.image && t.image.close) t.image.close();
   }
   function dropHi(i) {
     const r = R[i];
-    dropLights(i);
+    dropExtra(i);
     if (r.hi !== 2) return;
     const t = r.U.tHi.value;
     r.U.tHi.value = blank;
@@ -1077,7 +1092,7 @@ export function createEngine(canvas, overlay) {
         r.U.uHi.value = 0.001;
         r.hi = 2;
         r.hw = bm.width;
-        if (id === 'earth') needLights(i);
+        needExtra(i);
         hiLog.push({
           id,
           load: Math.round(t1 - t0),
@@ -2153,7 +2168,7 @@ export function createEngine(canvas, overlay) {
       const r = R[i];
       if (r.tex === 2) px += ((r.mw || 512) * (r.mw || 512)) / 2;
       if (r.hi === 2) px += ((r.hw || 4096) * (r.hw || 4096)) / 2;
-      if (r.lights === 2) px += (r.lw * r.lw) / 8; /* jeden kanál místo čtyř */
+      if (r.xt === 2) px += r.xpx / 4; /* jeden kanál místo čtyř */
     }
     return (px * 4 * 1.33) / 1048576 + l2.mem();
   };
