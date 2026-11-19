@@ -13,7 +13,7 @@ Projít před každým sloučením do `main` a zveřejněním (stránka, artefak
 - [ ] `node tools/test/t_karty.mjs` (32 karet úkazů, Superkarta všech těles, `?dev`) a `node tools/test/t_preload.mjs` bez chyb.
 - [ ] `node tools/test/t_displej.mjs` (4K, televize se zvětšením 300–400 %, malé okno, přesun okna) bez chyb.
 - [ ] `node tools/test/t_okna.mjs` (18 sestav od telefonu po monitor QHD × obě rozhraní × všechna okna: nic mimo obrazovku, nic uříznutého, zavírací tlačítka dost velká, žádné visící okno) – 0 nálezů. Běží asi 15 minut; `SHOT=1` uloží snímky.
-- [ ] `node tools/test/t_obloha.mjs /tmp/obl desk` a `… phone` (objekty na obloze: data, zdroje, pohled na objekt, karty, dětské rozhraní nic neukáže) bez chyb.
+- [ ] `node tools/test/t_obloha.mjs /tmp/obl desk` a `… phone` (objekty na obloze: data a zdroje, nenápadný režim, bublina, scéna objektu, všech 62 objektů jde přiblížit, dětské rozhraní nic neukáže) bez chyb.
 - [ ] `node tools/test/t_pasy.mjs` (pásy planetek: vidět v přehledu, zblízka pryč, nejdou vybrat) bez chyb.
 - [ ] `src/core/flags.js`: žádná nedodělaná funkce není ve stavu `vse`; vývojářský režim není po čistém otevření zapnutý.
 

@@ -6,7 +6,7 @@
 //   překryv – dvě okna se překrývají (kromě dvojic, kde je to záměr: nabídka ☰ a okna uprostřed leží nad vším)
 //   volno  – podíl obrazovky, kde je vidět vesmír (ne okno)
 // a potom „visící okna“: co zůstane otevřené po výběru jiného tělesa, po Esc, po kliknutí do vesmíru, po startu ukázky a v kině.
-// Použití: node tools/test/t_okna.mjs [složka] [filtr sestav, např. iphone,ipad] ; SHOT=1 uloží snímek každého stavu.
+// Použití: node tools/test/t_okna.mjs [složka] [filtr sestav, např. iphone,ipad] ; SHOT=1 uloží snímek každého stavu; OKNA=obl_ změří jen okna, jejichž jméno tak začíná.
 import { chromium } from '/home/claude/.npm-global/lib/node_modules/playwright/index.mjs';
 import http from 'http';
 import fs from 'fs';
@@ -30,7 +30,8 @@ const srv = http
 const port = srv.address().port,
   out = process.argv[2] || '/tmp/okna',
   filtr = (process.argv[3] || '').split(',').filter(Boolean),
-  SHOT = !!process.env.SHOT;
+  SHOT = !!process.env.SHOT,
+  JEN = (process.env.OKNA || '').split(',').filter(Boolean); /* OKNA=obl_ změří jen vyjmenovaná okna */
 fs.mkdirSync(out, { recursive: true });
 const UA_IPHONE =
     'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1',
@@ -73,7 +74,7 @@ const MERENI = () => {
     H = innerHeight,
     touch = document.body.classList.contains('touch') || document.body.classList.contains('mob');
   const SEL =
-    '#top #tools #mission #card #cardtab #minfo #list #gamebox #help #more #album #uk #ukc #tm #cmp #dev #sk #ds #dsc #dsk #mini #guide #hud #dock #sub #sunchip #tut'.split(
+    '#top #tools #mission #card #cardtab #minfo #list #gamebox #help #more #album #uk #ukc #tm #cmp #dev #sk #ds #dsb #dss #mini #guide #hud #dock #sub #sunchip #tut'.split(
       ' '
     );
   const vis = (e) => {
@@ -139,13 +140,12 @@ const MERENI = () => {
     '#dev',
     '#sk',
     '#ds',
-    '#dsc',
-    '#dsk',
+    '#dss',
     '#card',
   ]) {
     if (!R[s]) continue;
     const e = document.querySelector(s),
-      x = e.querySelector('.x, [data-mc="x"], [data-close], [data-u="x"], [data-u="zavrit"]');
+      x = e.querySelector('.x, [data-mc="x"], [data-close], [data-u="x"], [data-u="zavrit"], [data-c="x"]');
     if (!x || !vis(x)) {
       o.krizek.push(`${s}: zavírací tlačítko chybí`);
       continue;
@@ -181,8 +181,8 @@ const MERENI = () => {
           t = document.elementFromPoint(cx, cy),
           kdo = t && t.closest(ks[a]) ? ks[a] : t && t.closest(ks[b]) ? ks[b] : '?';
         /* záměr: okna uprostřed a nabídka leží nad vším; na telefonu zabírají okna celou obrazovku */
-        const MODAL = ['#help', '#cmp', '#sk', '#dsk', '#more', '#album', '#dev'].concat(
-          document.body.classList.contains('mob') ? ['#list', '#tm', '#gamebox', '#uk', '#ukc', '#ds', '#dsc'] : []
+        const MODAL = ['#help', '#cmp', '#sk', '#dss', '#dsb', '#more', '#album', '#dev'].concat(
+          document.body.classList.contains('mob') ? ['#list', '#tm', '#gamebox', '#uk', '#ukc', '#ds'] : []
         );
         if (MODAL.includes(kdo)) continue;
         o.prekryv.push(`${ks[a]} × ${ks[b]} ${w | 0}×${h | 0} (nahoře ${kdo})`);
@@ -212,36 +212,42 @@ const OKNA = [
   ['ukazy', () => S200.ui.act('uk'), 1],
   ['superkarta', () => S200.sk.open(S200.sim.idx.get('saturn')), 1],
   ['karta_ukazu', () => S200.uk.card(S200.uk.ids()[0]), 1],
-  /* 1.8b: objekty na obloze */
+  /* 1.8c: objekty na obloze – seznam, bublina se jménem u objektu, scéna objektu */
   ['obl_seznam', () => S200.obloha.list(), 1],
   [
-    'obl_karta',
+    'obl_bublina',
     () => {
-      S200.obloha.card('m42');
-      S200.obloha.aim('m42', true);
+      S200.obloha.fast(true);
+      S200.obloha.aim('m42');
+      S200.obloha.sel('m42');
     },
     1,
   ],
-  ['obl_velka', () => S200.obloha.big('carina'), 1],
+  [
+    'obl_scena',
+    () =>
+      new Promise((r) => {
+        /* scéna je hotová, až je otevřená a hlavní rozhraní dozmizelo (jinak by měření zastihlo přechod) */
+        S200.obloha.fast(true);
+        S200.obloha.open('carina');
+        const t = setInterval(() => {
+          const s = S200.obloha.state().stage;
+          if (s && s.ph === 'open') {
+            clearInterval(t);
+            setTimeout(r, 1100);
+          }
+        }, 100);
+      }),
+    1,
+  ],
 ];
 const zavriVse = () => {
-  for (const s of [
-    '#help',
-    '#gamebox',
-    '#list',
-    '#album',
-    '#tm',
-    '#cmp',
-    '#dev',
-    '#more',
-    '#zv',
-    '#uk',
-    '#sk',
-    '#ds',
-    '#dsc',
-    '#dsk',
-  ])
+  for (const s of ['#help', '#gamebox', '#list', '#album', '#tm', '#cmp', '#dev', '#more', '#zv', '#uk', '#sk', '#ds'])
     if (document.querySelector(s).classList.contains('on')) S200.ui.toggle(s, false);
+  if (S200.obloha) {
+    S200.obloha.close(true);
+    S200.obloha.sel(null);
+  }
   {
     const x = document.querySelector('#ukc.on [data-u="close"]');
     x && x.click();
@@ -290,6 +296,7 @@ for (const s of SESTAVY) {
     /* úvodní obrazovka se měří zvlášť níž; tady okna jedno po druhém */
     for (const [okno, fn, jenDosp] of OKNA) {
       if (jenDosp && kid) continue;
+      if (JEN.length && !JEN.some((j) => okno.startsWith(j))) continue;
       await p.evaluate(zavriVse);
       await p.evaluate(() => S200.ui.refresh && S200.ui.refresh());
       await p.evaluate(fn);

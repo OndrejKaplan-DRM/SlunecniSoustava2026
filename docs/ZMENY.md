@@ -11,10 +11,46 @@ a v souboru na vyzkoušení (`node tools/build/build_offline.mjs <výstup.html> 
 | 1.6 | 18. 11. 2026 | `iterace-17` (`d991ab9`) | `iterace-16` |
 | 1.7, 1.7.1 | 18.–19. 11. 2026 | `iterace-18` (`06f1a52`) | `iterace-17` |
 | 1.8a | 19. 11. 2026 | `iterace-19` (`8b21072`) | `iterace-18` |
-| 1.8b | 19. 11. 2026 | `iterace-19b` | `iterace-19` (souběžně s verzí 1.9 z jiné sešny) |
+| 1.8b, 1.8c | 19. 11. 2026 | `iterace-19b` | `iterace-19` (souběžně s verzí 1.9 z jiné sešny) |
 
 Větve na sebe navazují v řadě, takže `iterace-19` obsahuje vše předchozí. `iterace-19b` je boční větev z `iterace-19`
 určená ke sloučení s větví verze 1.9 (viz „Sloučení“ na konci oddílu 1.8b).
+
+## 1.8c – objekty na obloze podruhé: nenápadné kroužky, scéna objektu, 62 objektů
+Limit velikosti souboru nově 400 MB. Cílový počet objektů podle zadání je asi 150 (včetně výrazných hvězd); tato verze jich má 62.
+Přestavba podle připomínek k 1.8b („velká karta vypadá jako vložená wikipedie“, „ať to neruší“, „málo objektů“).
+- **Nenápadně.** Tři režimy v seznamu: Vypnuto · Nenápadně (výchozí) · Stále vidět. V nenápadném režimu se po startu nic nekreslí;
+  objekt se prozradí, až na něj najede ukazatel (zlatavý kroužek a jméno, funguje i v kině). Slabé přerušované kroužky se jmény se
+  ukážou spolu se souhvězdími; při prvním zapnutí souhvězdí jednou krátké vysvětlení. Jméno si hledá místo kolem kroužku (pod, nad,
+  vpravo, vlevo) tak, aby nepřekrylo jiné jméno objektu, tělesa, hvězdy ani souhvězdí; když místo není, zůstane jen kroužek a jméno
+  se ukáže pod ukazatelem. K tomu engine nově zveřejňuje obdélníky už nakreslených jmen (`S.labRects`, `S.skyRects`; dva řádky
+  v `engine.js`). Objekty, které na naší fotce vidět nejsou, mají jen malý kroužek bez jména.
+- **Klik = bublina** se jménem, druhem a vzdáleností přímo u objektu a tlačítkem „Přiblížit“. Okno „malá karta“ zaniklo.
+- **Dvojklik (nebo „Přiblížit“, nebo klik v seznamu) = scéna objektu.** Hlavní rozhraní ustoupí, obloha ztmavne, kroužek se rozroste
+  do fotografie: uvnitř je nejdřív zvětšený (tedy rozostřený) výřez z naší fotky natočený podle skutečné polohy, který se prolne do
+  snímku z velkého dalekohledu – „zaostření“. Teprve pak přijdou texty: druh a souhvězdí, jméno, jedna věta, dlaždice (vzdálenost,
+  velikost na obloze, jasnost, souhvězdí) a tři záložky: *Co to je* · *Kde to je* (celá obloha s vyznačeným místem, výřez z naší fotky,
+  viditelnost z Česka spočítaná z polohy, logaritmická stupnice vzdáleností) · *Zdroje*. Pod fotografií popisek s autorem a pás náhledů;
+  klik na fotografii ji roztáhne přes celou plochu. Šipky listují mezi objekty, Esc zavře. Zavřením se fotografie vrátí do kroužku,
+  rozhraní se objeví tak, jak bylo, a pohled se vrátí tam, kde byl před natočením na oblohu. Okna „velká karta“ a „zvětšená fotografie“
+  zanikla; scéna není okno, ale režim (třída `ds-stage` na `<body>`).
+- **62 objektů** (dřív 19), 108 fotografií, 26,4 MB v `dist/sky/` (i s náhledy a výřezy). Přibylo 11 galaxií (M 33, M 81, M 82, M 51,
+  Sombrero, M 87 se snímkem stínu černé díry, Centaurus A, M 83, NGC 253, Tykadla, Stephanův kvintet), 12 zářících mlhovin (Tarantule,
+  Trifid, Omega, Plamen, Běžící kuře, Kočičí tlapka, Humr, Kreveta, Kužel, Racek, Bublina, Thorova přilba), temná mlhovina Dýmka,
+  nová skupina „Umírající hvězdy a jejich pozůstatky“ (Krabí, Řasová, Prstencová, Činka, Helix, Kočičí oko, Motýlí), 6 kulových
+  a 6 otevřených hvězdokup. U každého objektu údaj `vid`: 2 = na naší fotce dobře vidět (20 objektů), 1 = slabě (17), 0 = není vidět (25);
+  scéna to říká otevřeně („kroužek ukazuje místo, kde leží“).
+- **Zdroje:** vzdálenost a údaje v textu nových objektů jsou ze stránek použitých snímků (pole „Distance“ a popis snímku v archivech
+  ESO, ESA/Hubble, ESA/Webb); kde se zdroje liší, karta uvádí oba údaje. Odstavce „kde je na obloze“ psané z hlavy zmizely: viditelnost
+  z Česka a měsíc večerní viditelnosti se teď počítají z polohy objektu a jsou tak označené.
+- **Vyřazeno pro chybějící zdroj vzdálenosti:** Kolo od vozu, Webbovo první hluboké pole, Jižní prstencová mlhovina, pozůstatek
+  supernovy v Plachtách, Hubbleovo ultrahluboké pole, M 24. Nenašla jsem použitelný snímek: Kalifornie, Srdce, Čarodějnická hlava,
+  Kosatec, IC 1396, Jesličky, M 6.
+- **Kód:** `src/ui/obloha.js` přepsán (stále soběstačný). Zkouška `t_obloha.mjs` přepsána (na počítači i na telefonu, včetně otevření
+  všech 62 objektů ze dvou míst), v `t_okna.mjs` nová trojice stavů (seznam, bublina, scéna) a proměnná `OKNA=obl_` pro měření jen
+  vybraných oken.
+- **Neověřeno:** animace přiblížení jsem viděla jen na zastavených snímcích; dvojí ťuknutí na dotyku emulace nestihne (zkouší se
+  cesta přes tlačítko „Přiblížit“); u M 87 a Stephanova kvintetu je údaj o vzdálenosti jen v textu stránky, ne v poli „Distance“.
 
 ## 1.8b – objekty na obloze (mlhoviny, hvězdokupy, galaxie)
 Limit velikosti souboru nově 250 MB včetně grafiky. Jen dospělé rozhraní (`obloha` v `src/core/flags.js`).
