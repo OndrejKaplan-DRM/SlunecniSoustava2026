@@ -32,13 +32,20 @@ Ikona na záložce prohlížeče a na ploše telefonu (`dist/icon.svg`, `dist/ic
 Kosmická výprava (`OndrejKaplan-DRM/SolarSystemExperimentsRepo`, `kosmicka-vyprava/icon/`). Pásy planetek (hlavní pás a Kuiperův pás) jsou
 ilustrace počítaná programem (`src/render/belts.js`), žádná cizí data.
 
-## Objekty na obloze (verze 1.8b)
-Fotografie mlhovin, hvězdokup a galaxií v kartách „Objekty na obloze“ (`dist/sky/`, 108 snímků) pocházejí z veřejných archivů
+## Objekty na obloze (verze 1.8b až 2.0)
+Fotografie hvězd, mlhovin, hvězdokup a galaxií ve scénách „Objekty na obloze“ (`dist/sky/`, 233 snímků) pocházejí z veřejných archivů
 **ESO**, **ESA/Hubble** a **ESA/Webb** (licence CC BY 4.0: smí se šířit a upravovat při uvedení autora) a z archivu **NASA** (jeden snímek NASA/JPL-Caltech/UCLA; volné užití s uvedením autora podle zásad NASA/JPL).
 Jsou zmenšené a převedené do WebP; autor každého snímku je uveden přímo v kartě pod fotografií a spolu s odkazem na stránku snímku
 v tabulce `zdroje/OBLOHA.md`. Poloha, úhlová velikost a jasnost objektů jsou z katalogu **OpenNGC** (Mattia Verga, CC BY-SA 4.0),
 vzdálenosti a zajímavosti z tiskových zpráv ESO, ESA/Hubble a ESA/Webb vyjmenovaných u každého objektu. Tyto fotografie **nespadají
 pod licenci MIT** tohoto projektu.
+
+Hvězdy (větev `iterace-23b`): poloha, jasnost a spektrální třída jsou z katalogu **Hipparcos** (ESA 1997), paralaxa z jeho nového zpracování
+(F. van Leeuwen 2007), obojí staženo z archivu ESA (https://gea.esac.esa.int/archive/). Zajímavosti o hvězdách jsou vlastním shrnutím úvodních
+odstavců hesel **anglické Wikipedie** (CC BY-SA 4.0; odkaz na heslo je u každé hvězdy ve zdrojích). Výřezy „okolí hvězdy“ (43 obrázků) jsou
+z mapy hvězd **NASA SVS Deep Star Maps 2020** (https://svs.gsfc.nasa.gov/4851/; NASA/Goddard Space Flight Center Scientific Visualization Studio,
+Gaia DR2: ESA/Gaia/DPAC; volné užití s uvedením autora). Jsou vykreslené z katalogů, nejsou to fotografie; úprava: výřez 12° × 12°, převod jasu,
+slabá záře kolem nejjasnějších hvězd, u slabších hvězd kroužek uprostřed.
 
 ## Povrchy těles
 Ze 201 těles má **44 skutečnou mapu** ze snímků sond (na kartě 📷). Zbylých 157 má **ilustraci** vytvořenou programem v tomto projektu (na kartě 🎨, `tools/maps/`), žádná cizí práva se na ně nevztahují.

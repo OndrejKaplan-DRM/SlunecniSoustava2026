@@ -1,6 +1,7 @@
 {
- "stav": "19. 11. 2026",
+ "stav": "20. 11. 2026",
  "skupiny": {
+  "hvezda": "Hvězdy",
   "galaxie": "Galaxie",
   "mlhovina": "Zářící mlhoviny",
   "temna": "Temné mlhoviny",
@@ -3781,6 +3782,5517 @@
      "u": "https://esahubble.org/images/heic1509a/"
     }
    ]
+  },
+  {
+   "id": "m78",
+   "cs": "Mlhovina M 78",
+   "ozn": "M 78 · NGC 2068",
+   "druh": "mlhovina",
+   "typ": "odrazná mlhovina",
+   "souhv": "Orion",
+   "ra": 86.6909,
+   "de": 0.0793,
+   "maj": 4.5,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.04,
+   "vel": true,
+   "vid": 0,
+   "prio": 462,
+   "ly": 1400,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Namodralá mlhovina v Orionu, která sama nesvítí.",
+   "txt": [
+    "M 78 je odrazná mlhovina: oblak prachu, který nezáří vlastním světlem, jen odráží světlo blízkých hvězd. Leží asi 1 400 světelných let od nás."
+   ],
+   "foto": "Snímek pořídila širokoúhlá kamera na 2,2metrovém dalekohledu observatoře La Silla v Chile.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m78_1.webp",
+     "t": "m78_1t.webp",
+     "w": 1000,
+     "h": 969,
+     "cap": "Mlhovina M 78 (ESO, La Silla)",
+     "autor": "ESO/Igor Chekalin",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1105a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: Messier 78: a reflection nebula in Orion (eso1105a)",
+     "u": "https://www.eso.org/public/images/eso1105a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "n1999",
+   "cs": "Mlhovina NGC 1999",
+   "ozn": "NGC 1999",
+   "druh": "mlhovina",
+   "typ": "odrazná mlhovina",
+   "souhv": "Orion",
+   "ra": 84.1056,
+   "de": -6.7159,
+   "maj": 2.0,
+   "min": 2.0,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.02,
+   "vel": true,
+   "vid": 0,
+   "prio": 463,
+   "ly": 1500,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Malá odrazná mlhovina v Orionu.",
+   "txt": [
+    "NGC 1999 leží asi 1 500 světelných let daleko. Hubbleův dalekohled ji vyfotil jen pár týdnů poté, co ho astronauti v prosinci 1999 opravili."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "n1999_1.webp",
+     "t": "n1999_1t.webp",
+     "w": 983,
+     "h": 1000,
+     "cap": "Mlhovina NGC 1999 (Hubble)",
+     "autor": "NASA/ESA and the Hubble Heritage Team (STScI)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/opo0010a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: A reflection nebula in Orion (opo0010a)",
+     "u": "https://esahubble.org/images/opo0010a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "n3324",
+   "cs": "Mlhovina NGC 3324 (Kosmické útesy)",
+   "ozn": "NGC 3324",
+   "druh": "mlhovina",
+   "typ": "zářící mlhovina, hvězdná porodnice",
+   "souhv": "Lodní kýl",
+   "ra": 159.3175,
+   "de": -58.6196,
+   "maj": 4.8,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.04,
+   "vel": true,
+   "vid": 0,
+   "prio": 464,
+   "ly": 7500,
+   "lyz": null,
+   "lytxt": "asi 7 500 sv. l. (ESO); ESA/Webb uvádí 7 600",
+   "lysrc": 0,
+   "lead": "Hvězdná porodnice v souhvězdí Lodního kýlu.",
+   "txt": [
+    "Záření několika hmotných modrobílých hvězd vyhloubilo v okolním plynu a prachu dutinu a jejich ultrafialové světlo plyn rozsvěcuje. Okraj této dutiny ukazuje snímek dalekohledu Jamese Webba nazvaný „Kosmické útesy“."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "n3324_1.webp",
+     "t": "n3324_1t.webp",
+     "w": 1000,
+     "h": 579,
+     "cap": "„Kosmické útesy“ v infračerveném světle (Webb)",
+     "autor": "NASA, ESA, CSA, and STScI",
+     "arch": "ESA/Webb",
+     "lic": "CC BY 4.0",
+     "url": "https://esawebb.org/images/weic2205a/"
+    },
+    {
+     "f": "n3324_2.webp",
+     "t": "n3324_2t.webp",
+     "w": 1000,
+     "h": 1000,
+     "cap": "Celá mlhovina (ESO, La Silla)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1207a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: The star formation region NGC 3324 (eso1207a)",
+     "u": "https://www.eso.org/public/images/eso1207a/"
+    },
+    {
+     "t": "ESA/Webb: NIRCam Image of the “Cosmic Cliffs” in Carina (weic2205a)",
+     "u": "https://esawebb.org/images/weic2205a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "cra",
+   "cs": "Mlhovina NGC 6729",
+   "ozn": "NGC 6729",
+   "druh": "mlhovina",
+   "typ": "oblast zrodu hvězd",
+   "souhv": "Jižní koruna",
+   "ra": 285.4808,
+   "de": -36.9576,
+   "maj": 25.0,
+   "min": 20.0,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": true,
+   "vid": 0,
+   "prio": 465,
+   "ly": 400,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Blízká hvězdná porodnice v souhvězdí Jižní koruny.",
+   "txt": [
+    "Mladé hvězdy tu samy vidět nejsou, skrývá je prach. Hmota, kterou vyvrhují, ale naráží do okolního plynu rychlostí až milion kilometrů za hodinu."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "cra_1.webp",
+     "t": "cra_1t.webp",
+     "w": 999,
+     "h": 1000,
+     "cap": "Detail hvězdné porodnice (dalekohled VLT)",
+     "autor": "ESO/Sergey Stepanenko",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1109a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: Close-up of the drama of star formation (eso1109a)",
+     "u": "https://www.eso.org/public/images/eso1109a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "n1333",
+   "cs": "Mlhovina NGC 1333",
+   "ozn": "NGC 1333",
+   "druh": "mlhovina",
+   "typ": "oblast zrodu hvězd",
+   "souhv": "Perseus",
+   "ra": 52.23,
+   "de": 31.37,
+   "maj": 19.5,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.2,
+   "vel": true,
+   "vid": 0,
+   "prio": 466,
+   "ly": 960,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Blízká hvězdná porodnice v Perseovi.",
+   "txt": [
+    "NGC 1333 je součástí velkého molekulového mračna v Perseovi. Hubbleův dalekohled ji vyfotil ke 33. výročí svého startu; snímek skládá světlo od ultrafialového po blízké infračervené."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "n1333_1.webp",
+     "t": "n1333_1t.webp",
+     "w": 656,
+     "h": 1000,
+     "cap": "Snímek k 33. výročí (Hubble)",
+     "autor": "NASA, ESA, STScI",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic2304a/"
+    },
+    {
+     "f": "n1333_2.webp",
+     "t": "n1333_2t.webp",
+     "w": 1000,
+     "h": 818,
+     "cap": "V infračerveném světle (Webb)",
+     "autor": "ESA/Webb, NASA & CSA, A. Scholz, K. Muzic, A. Langeveld, R. Jayawardhana",
+     "arch": "ESA/Webb",
+     "lic": "CC BY 4.0",
+     "url": "https://esawebb.org/images/potm2408a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Hubble celebrates its 33rd anniversary with NGC 1333 (heic2304a)",
+     "u": "https://esahubble.org/images/heic2304a/"
+    },
+    {
+     "t": "ESA/Webb: Peeking into Perseus (potm2408a)",
+     "u": "https://esawebb.org/images/potm2408a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "n604",
+   "cs": "Mlhovina NGC 604",
+   "ozn": "NGC 604",
+   "druh": "mlhovina",
+   "typ": "obří hvězdná porodnice v sousední galaxii",
+   "souhv": "Trojúhelník",
+   "ra": 23.6383,
+   "de": 30.7849,
+   "maj": 1.93,
+   "min": 1.2,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.02,
+   "vel": true,
+   "vid": 0,
+   "prio": 467,
+   "ly": 2730000,
+   "lyz": null,
+   "lytxt": "2,73 milionu sv. l. (ESA/Webb, text); pole „Distance“ téže stránky uvádí zaokrouhleně 3 miliony",
+   "lysrc": 0,
+   "lead": "Obří oblak plynu, ve kterém se rodí hvězdy. Neleží v Mléčné dráze, ale v sousední galaxii M 33.",
+   "txt": [
+    "NGC 604 je obrovská oblast zrodu hvězd v galaxii v Trojúhelníku, 2,73 milionu světelných let od nás. Dalekohled Jamese Webba ji vyfotil v blízkém i ve středním infračerveném světle."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "n604_1.webp",
+     "t": "n604_1t.webp",
+     "w": 1000,
+     "h": 811,
+     "cap": "V blízkém infračerveném světle (Webb)",
+     "autor": "NASA, ESA, CSA, STScI",
+     "arch": "ESA/Webb",
+     "lic": "CC BY 4.0",
+     "url": "https://esawebb.org/images/weic2407a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Webb: NGC 604 (NIRCam image) (weic2407a)",
+     "u": "https://esawebb.org/images/weic2407a/"
+    },
+    {
+     "t": "ESA/Hubble: NGC 604 — a gigantic gas cloud in the Triangulum Galaxy (heic1901b)",
+     "u": "https://esahubble.org/images/heic1901b/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "reef",
+   "cs": "Mlhoviny NGC 2014 a NGC 2020",
+   "ozn": "NGC 2014 · NGC 2020",
+   "druh": "mlhovina",
+   "typ": "hvězdná porodnice v sousední galaxii",
+   "souhv": "Mečoun",
+   "ra": 83.0828,
+   "de": -67.6898,
+   "maj": 5.1,
+   "min": 3.5,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.04,
+   "vel": true,
+   "vid": 0,
+   "prio": 468,
+   "ly": 163000,
+   "lyz": null,
+   "lytxt": "asi 163 000 sv. l. (ESA/Hubble); ESO uvádí 160 000",
+   "lysrc": 0,
+   "lead": "Dvojice mlhovin ve Velkém Magellanově mračnu.",
+   "txt": [
+    "Obří mlhovina NGC 2014 a její sousedka NGC 2020 jsou součástí rozsáhlé hvězdné porodnice v sousední galaxii. Podle ESA patří k nejfotogeničtějším porodnicím hvězd, jaké Hubbleův dalekohled za 30 let vyfotil."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "reef_1.webp",
+     "t": "reef_1t.webp",
+     "w": 1000,
+     "h": 687,
+     "cap": "Obě mlhoviny (Hubble)",
+     "autor": "NASA, ESA, and STScI",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic2007a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Tapestry of Blazing Starbirth (heic2007a)",
+     "u": "https://esahubble.org/images/heic2007a/"
+    },
+    {
+     "t": "ESO: Two very different glowing gas clouds in the Large Magellanic Cloud (eso1335a)",
+     "u": "https://www.eso.org/public/images/eso1335a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "n2174",
+   "cs": "Mlhovina Opičí hlava",
+   "ozn": "NGC 2174",
+   "druh": "mlhovina",
+   "typ": "zářící mlhovina, hvězdná porodnice",
+   "souhv": "Orion",
+   "ra": 92.3484,
+   "de": 20.6596,
+   "maj": 40.0,
+   "min": 30.0,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 0,
+   "prio": 469,
+   "ly": 6400,
+   "lyz": null,
+   "lytxt": "asi 6 400 sv. l. (ESA/Hubble, text); pole „Distance“ téže stránky uvádí 6 500",
+   "lysrc": 0,
+   "lead": "Hvězdná porodnice v Orionu, které se říká Opičí hlava.",
+   "txt": [
+    "Oblast je plná mladých hvězd zabalených do zářícího plynu a prachu. Hubbleův dalekohled vyfotil její část ke 24. výročí svého pobytu na oběžné dráze."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "n2174_1.webp",
+     "t": "n2174_1t.webp",
+     "w": 1000,
+     "h": 1000,
+     "cap": "Část mlhoviny v infračerveném světle (Hubble)",
+     "autor": "NASA, ESA, and the Hubble Heritage Team (STScI/AURA)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic1406a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: New Hubble image of NGC 2174 (heic1406a)",
+     "u": "https://esahubble.org/images/heic1406a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "n2467",
+   "cs": "Mlhovina NGC 2467",
+   "ozn": "NGC 2467",
+   "druh": "mlhovina",
+   "typ": "zářící mlhovina, hvězdná porodnice",
+   "souhv": "Lodní záď",
+   "ra": 118.0976,
+   "de": -26.4433,
+   "maj": 4.2,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.25,
+   "vel": true,
+   "vid": 0,
+   "prio": 470,
+   "ly": 13000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Velmi činná hvězdná porodnice v souhvězdí Lodní zádě.",
+   "txt": [
+    "Oblast je stará nejvýš několik milionů let a hvězdy se v ní z velkých oblaků plynu a prachu rodí dál. Někomu připomíná barevného ducha, jinému hlavu mandrila."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "n2467_1.webp",
+     "t": "n2467_1t.webp",
+     "w": 1000,
+     "h": 1000,
+     "cap": "Mlhovina a okolí (ESO, La Silla)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso0544a/"
+    },
+    {
+     "f": "n2467_2.webp",
+     "t": "n2467_2t.webp",
+     "w": 1000,
+     "h": 976,
+     "cap": "Detail (Hubble)",
+     "autor": "NASA, ESA and Orsola De Marco (Macquarie University)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic1012a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: NGC 2467 and surroundings (eso0544a)",
+     "u": "https://www.eso.org/public/images/eso0544a/"
+    },
+    {
+     "t": "ESA/Hubble: A cosmic concoction in NGC 2467 (heic1012a)",
+     "u": "https://esahubble.org/images/heic1012a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "n6188",
+   "cs": "Mlhovina NGC 6188 a hvězdokupa NGC 6193",
+   "ozn": "NGC 6188 · NGC 6193",
+   "druh": "mlhovina",
+   "typ": "zářící mlhovina s mladou hvězdokupou",
+   "souhv": "Oltář",
+   "ra": 250.0243,
+   "de": -48.6623,
+   "maj": 20.0,
+   "min": 12.0,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.4,
+   "vel": false,
+   "vid": 0,
+   "prio": 471,
+   "ly": 4000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Mlhovina v souhvězdí Oltáře, kterou rozsvěcuje sousední hvězdokupa.",
+   "txt": [
+    "Mlhovinu NGC 6188 rozzářilo záření nejjasnějších hvězd mladé hvězdokupy NGC 6193, která leží hned vedle. Obě patří k velké skupině mladých hvězd zvané Ara OB1."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "n6188_1.webp",
+     "t": "n6188_1t.webp",
+     "w": 932,
+     "h": 1000,
+     "cap": "Hvězdokupa a mlhovina (dalekohled VST)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1510a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: Star cluster NGC 6193 and nebula NGC 6188 (eso1510a)",
+     "u": "https://www.eso.org/public/images/eso1510a/"
+    },
+    {
+     "t": "ESO, tisková zpráva: A Grand Extravaganza of New Stars (eso1510)",
+     "u": "https://www.eso.org/public/news/eso1510/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "b68",
+   "cs": "Barnard 68",
+   "ozn": "Barnard 68",
+   "druh": "temna",
+   "typ": "temná mlhovina (Bokova globule)",
+   "souhv": "Hadonoš",
+   "ra": 260.6594,
+   "de": -23.8262,
+   "maj": null,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.15,
+   "vel": true,
+   "vid": 0,
+   "prio": 472,
+   "ly": 500,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Malý oblak prachu, který vypadá jako díra v hvězdném poli.",
+   "txt": [
+    "Barnard 68 je takzvaná Bokova globule. Je tak neprůhledná, že viditelné světlo hvězd za ní vůbec nepropustí. Hvězdy prosvítají jen v infračerveném světle, a proto jsou na složeném snímku červené."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "b68_1.webp",
+     "t": "b68_1t.webp",
+     "w": 1000,
+     "h": 994,
+     "cap": "Ve viditelném a infračerveném světle (ESO)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso0102b/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: Bok globule B68 (eso0102b)",
+     "u": "https://www.eso.org/public/images/eso0102b/"
+    },
+    {
+     "t": "Poloha: ESO: poloha středu snímku eso0102b",
+     "u": "https://www.eso.org/public/images/eso0102b/"
+    }
+   ]
+  },
+  {
+   "id": "lupus3",
+   "cs": "Temné mračno Lupus 3",
+   "ozn": "Lupus 3",
+   "druh": "temna",
+   "typ": "temná mlhovina, hvězdná porodnice",
+   "souhv": "Štír",
+   "ra": 242.4003,
+   "de": -39.0498,
+   "maj": null,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.4,
+   "vel": true,
+   "vid": 0,
+   "prio": 473,
+   "ly": 600,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Tmavý oblak, ve kterém vznikají hvězdy, a vedle něj hvězdy, které se z něj už vynořily.",
+   "txt": [
+    "Lupus 3 leží asi 600 světelných let od nás. Je pravděpodobné, že v podobné hvězdné porodnici se před více než čtyřmi miliardami let zrodilo i Slunce."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "lupus3_1.webp",
+     "t": "lupus3_1t.webp",
+     "w": 1000,
+     "h": 975,
+     "cap": "Temný oblak a mladé hvězdy (ESO, La Silla)",
+     "autor": "ESO/F. Comeron",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1303a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: The Lupus 3 dark cloud and associated hot young stars (eso1303a)",
+     "u": "https://www.eso.org/public/images/eso1303a/"
+    },
+    {
+     "t": "Poloha: ESO: poloha středu snímku eso1303a",
+     "u": "https://www.eso.org/public/images/eso1303a/"
+    }
+   ]
+  },
+  {
+   "id": "n6888",
+   "cs": "Mlhovina Srpek",
+   "ozn": "NGC 6888",
+   "druh": "zanik",
+   "typ": "obálka kolem Wolfovy–Rayetovy hvězdy",
+   "souhv": "Labuť",
+   "ra": 303.0273,
+   "de": 38.3549,
+   "maj": 20.0,
+   "min": 10.0,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.17,
+   "vel": false,
+   "vid": 0,
+   "prio": 474,
+   "ly": 4500,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Obálka plynu, kterou kolem sebe rozfoukala umírající hmotná hvězda.",
+   "txt": [
+    "Hvězda WR 136 odhodila před 250 000 lety své vnější vrstvy a teď je silným hvězdným větrem trhá. Patří mezi Wolfovy–Rayetovy hvězdy: mimořádně horké, vzácné a krátce žijící."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "n6888_1.webp",
+     "t": "n6888_1t.webp",
+     "w": 800,
+     "h": 1000,
+     "cap": "Část mlhoviny (Hubble)",
+     "autor": "Brian D. Moore, Jeff Hester, Paul Scowen, Reginald Dufour and NASA/ESA",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/opo0023a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: The Crescent Nebula (opo0023a)",
+     "u": "https://esahubble.org/images/opo0023a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "eskymak",
+   "cs": "Mlhovina Eskymák",
+   "ozn": "NGC 2392",
+   "druh": "zanik",
+   "typ": "planetární mlhovina",
+   "souhv": "Blíženci",
+   "ra": 112.2948,
+   "de": 20.9118,
+   "maj": 0.86,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.01,
+   "vel": true,
+   "vid": 0,
+   "prio": 475,
+   "ly": 5000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 1,
+   "lead": "Zářící zbytky umírající hvězdy podobné Slunci.",
+   "txt": [
+    "Planetární mlhovina v Blížencích: složitá stavba slupek a proudů plynu kolem dožívající hvězdy. Byl to jeden z prvních snímků, které Hubbleův dalekohled pořídil po opravě v prosinci 1999."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "eskymak_1.webp",
+     "t": "eskymak_1t.webp",
+     "w": 1000,
+     "h": 1000,
+     "cap": "Mlhovina Eskymák (Hubble)",
+     "autor": "NASA, ESA, Andrew Fruchter (STScI), and the ERO team (STScI + ST-ECF)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic9910a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: NGC 2392 (heic9910a)",
+     "u": "https://esahubble.org/images/heic9910a/"
+    },
+    {
+     "t": "ESA/Hubble, tisková zpráva: Hubble reopens eye on the Universe (heic9910)",
+     "u": "https://esahubble.org/news/heic9910/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "saturn_n",
+   "cs": "Mlhovina Saturn",
+   "ozn": "NGC 7009",
+   "druh": "zanik",
+   "typ": "planetární mlhovina",
+   "souhv": "Vodnář",
+   "ra": 316.045,
+   "de": -11.3632,
+   "maj": 0.7,
+   "min": 0.52,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.01,
+   "vel": true,
+   "vid": 0,
+   "prio": 476,
+   "ly": 5000,
+   "lyz": null,
+   "lytxt": "asi 5 000 sv. l. (ESO, 2017); starší údaj ESA/Hubble je 2 300",
+   "lysrc": 1,
+   "lead": "Planetární mlhovina v souhvězdí Vodnáře.",
+   "txt": [
+    "Mlhovina Saturn vypadá jako řada podivně tvarovaných bublin. Přístroj MUSE na dalekohledu VLT u ní poprvé zmapoval, kde uvnitř planetární mlhoviny leží prach."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "saturn_n_1.webp",
+     "t": "saturn_n_1t.webp",
+     "w": 985,
+     "h": 1000,
+     "cap": "Mlhovina Saturn (dalekohled VLT, přístroj MUSE)",
+     "autor": "ESO/J. Walsh",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1731a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: MUSE image of the Saturn Nebula (eso1731a)",
+     "u": "https://www.eso.org/public/images/eso1731a/"
+    },
+    {
+     "t": "ESO, tisková zpráva: The Strange Structures of the Saturn Nebula (eso1731)",
+     "u": "https://www.eso.org/public/news/eso1731/"
+    },
+    {
+     "t": "ESA/Hubble: Hubble's Planetary Nebula Gallery. A View of NGC 7009 (opo9738g)",
+     "u": "https://esahubble.org/images/opo9738g/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "ic418",
+   "cs": "Mlhovina Spirograf",
+   "ozn": "IC 418",
+   "druh": "zanik",
+   "typ": "planetární mlhovina",
+   "souhv": "Zajíc",
+   "ra": 81.8675,
+   "de": -12.6973,
+   "maj": 0.2,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.0,
+   "vel": true,
+   "vid": 0,
+   "prio": 477,
+   "ly": 2000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Planetární mlhovina v souhvězdí Zajíce s jemnou kresbou.",
+   "txt": [
+    "Hubbleův dalekohled v mlhovině odhalil jemné vzory, které připomínají obrazce ze spirografu. Jak vznikly, zatím není jisté."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "ic418_1.webp",
+     "t": "ic418_1t.webp",
+     "w": 939,
+     "h": 1000,
+     "cap": "Mlhovina Spirograf (Hubble)",
+     "autor": "NASA/ESA and The Hubble Heritage Team (STScI/AURA)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/opo0028a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: The Spirograph Nebula (opo0028a)",
+     "u": "https://esahubble.org/images/opo0028a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "m76",
+   "cs": "Malá Činka",
+   "ozn": "M 76 · NGC 650",
+   "druh": "zanik",
+   "typ": "planetární mlhovina",
+   "souhv": "Perseus",
+   "ra": 25.582,
+   "de": 51.5755,
+   "maj": 1.12,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.01,
+   "vel": true,
+   "vid": 0,
+   "prio": 478,
+   "ly": 3400,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Planetární mlhovina v Perseovi, oblíbený cíl amatérských astronomů.",
+   "txt": [
+    "Název „planetární“ je zavádějící: s planetami nemá nic společného. Je to plyn odvržený dožívající hvězdou. Hubbleův dalekohled Malou Činku vyfotil ke 34. výročí svého startu."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m76_1.webp",
+     "t": "m76_1t.webp",
+     "w": 1000,
+     "h": 631,
+     "cap": "Malá Činka (Hubble)",
+     "autor": "NASA, ESA, STScI, A. Pagan (STScI)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic2408a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Little Dumbbell Nebula (M76) (heic2408a)",
+     "u": "https://esahubble.org/images/heic2408a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "casa",
+   "cs": "Cassiopeia A",
+   "ozn": "Cas A",
+   "druh": "zanik",
+   "typ": "pozůstatek supernovy",
+   "souhv": "Kasiopeja",
+   "ra": 350.8587,
+   "de": 58.8149,
+   "maj": null,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.1,
+   "vel": true,
+   "vid": 0,
+   "prio": 479,
+   "ly": 11000,
+   "lyz": null,
+   "lytxt": "asi 11 000 sv. l. (ESA/Hubble); ESA/Webb uvádí 11 090",
+   "lysrc": 0,
+   "lead": "Rozpínající se trosky hvězdy, která vybuchla jako supernova.",
+   "txt": [
+    "Cassiopeia A je pozůstatek po výbuchu hmotné hvězdy v souhvězdí Kasiopeji. Barevná vlákna na snímcích jsou plyn, který hvězda při výbuchu rozmetala do okolí."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "casa_1.webp",
+     "t": "casa_1t.webp",
+     "w": 873,
+     "h": 1000,
+     "cap": "V blízkém infračerveném světle (Webb)",
+     "autor": "NASA, ESA, CSA, STScI, D. Milisavljevic (Purdue University), T. Temim (Princeton University), I. De Looze (University of Gent)",
+     "arch": "ESA/Webb",
+     "lic": "CC BY 4.0",
+     "url": "https://esawebb.org/images/weic2330a/"
+    },
+    {
+     "f": "casa_2.webp",
+     "t": "casa_2t.webp",
+     "w": 1000,
+     "h": 720,
+     "cap": "Ve viditelném světle (Hubble)",
+     "autor": "NASA, ESA, and the Hubble Heritage (STScI/AURA)-ESA/Hubble Collaboration. Acknowledgement: Robert A. Fesen (Dartmouth College, USA) and James Long (ESA/Hubble)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic0609a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Cassiopeia A - The colourful aftermath of a violent stellar death (heic0609a)",
+     "u": "https://esahubble.org/images/heic0609a/"
+    },
+    {
+     "t": "ESA/Webb: Cas A (NIRCam image) (weic2330a)",
+     "u": "https://esawebb.org/images/weic2330a/"
+    },
+    {
+     "t": "Poloha: ESA/Hubble: poloha středu snímku heic0609a",
+     "u": "https://esahubble.org/images/heic0609a/"
+    }
+   ]
+  },
+  {
+   "id": "vela",
+   "cs": "Pozůstatek supernovy v Plachtách",
+   "ozn": "Vela SNR · mlhovina Tužka (NGC 2736)",
+   "druh": "zanik",
+   "typ": "pozůstatek supernovy",
+   "souhv": "Plachty",
+   "ra": 127.8583,
+   "de": -43.9868,
+   "maj": null,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 2.0,
+   "vel": true,
+   "vid": 0,
+   "prio": 480,
+   "ly": 800,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 1,
+   "lead": "To, co zbylo po výbuchu hmotné hvězdy. Jeden z nejbližších pozůstatků supernov.",
+   "txt": [
+    "Oranžová a růžová vlákna plynu jsou zbytky hvězdy, která vybuchla asi před 11 000 lety. Leží jen 800 světelných let od nás. Jeho malou částí je mlhovina Tužka."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "vela_1.webp",
+     "t": "vela_1t.webp",
+     "w": 1000,
+     "h": 1000,
+     "cap": "Část pozůstatku (dalekohled VST, 554 milionů bodů)",
+     "autor": "ESO/VPHAS+ team. Acknowledgement: Cambridge Astronomical Survey Unit",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso2214a/"
+    },
+    {
+     "f": "vela_2.webp",
+     "t": "vela_2t.webp",
+     "w": 1000,
+     "h": 1000,
+     "cap": "Mlhovina Tužka, NGC 2736 (ESO, La Silla)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1236a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: The Vela supernova remnant imaged by the VLT Survey Telescope (eso2214a)",
+     "u": "https://www.eso.org/public/images/eso2214a/"
+    },
+    {
+     "t": "ESO, tisková zpráva: ESO captures the ghost of a giant star (eso2214)",
+     "u": "https://www.eso.org/public/news/eso2214/"
+    },
+    {
+     "t": "ESO: The Pencil Nebula, a strangely shaped leftover from a vast explosion (eso1236a)",
+     "u": "https://www.eso.org/public/images/eso1236a/"
+    },
+    {
+     "t": "Poloha: ESO: poloha středu snímku eso2214a",
+     "u": "https://www.eso.org/public/images/eso2214a/"
+    }
+   ]
+  },
+  {
+   "id": "jprstenec",
+   "cs": "Jižní prstencová mlhovina",
+   "ozn": "NGC 3132",
+   "druh": "zanik",
+   "typ": "planetární mlhovina",
+   "souhv": "Plachty",
+   "ra": 151.7572,
+   "de": -40.4366,
+   "maj": 0.5,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.0,
+   "vel": true,
+   "vid": 0,
+   "prio": 481,
+   "ly": 2500,
+   "lyz": null,
+   "lytxt": "asi 2 500 sv. l. (ESA/Webb); ESA/Hubble uvádí 2 000",
+   "lysrc": 1,
+   "lead": "Planetární mlhovina v souhvězdí Plachet.",
+   "txt": [
+    "Prstenec plynu odvrhla umírající hvězda uprostřed. Dalekohled Jamese Webba mlhovinu vyfotil dvěma kamerami: v blízkém a ve středním infračerveném světle."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "jprstenec_1.webp",
+     "t": "jprstenec_1t.webp",
+     "w": 1000,
+     "h": 464,
+     "cap": "Dvěma kamerami vedle sebe (Webb)",
+     "autor": "NASA, ESA, CSA, STScI, and the Webb ERO Production Team",
+     "arch": "ESA/Webb",
+     "lic": "CC BY 4.0",
+     "url": "https://esawebb.org/images/weic2207a/"
+    },
+    {
+     "f": "jprstenec_2.webp",
+     "t": "jprstenec_2t.webp",
+     "w": 1000,
+     "h": 748,
+     "cap": "Ve viditelném světle (Hubble)",
+     "autor": "Hubble Heritage Team (STScI/AURA/NASA/ESA)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/opo9839a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Webb: Southern Ring Nebula (NIRCam and MIRI Images Side by Side) (weic2207a)",
+     "u": "https://esawebb.org/images/weic2207a/"
+    },
+    {
+     "t": "ESA/Webb, tisková zpráva: Webb Captures Dying Star’s Final ‘Performance’ in Fine Detail (weic2207)",
+     "u": "https://esawebb.org/news/weic2207/"
+    },
+    {
+     "t": "ESA/Hubble: A glowing pool of light (opo9839a)",
+     "u": "https://esahubble.org/images/opo9839a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "meduza",
+   "cs": "Mlhovina Medúza",
+   "ozn": "Abell 21 · Sharpless 2-274",
+   "druh": "zanik",
+   "typ": "planetární mlhovina",
+   "souhv": "Blíženci",
+   "ra": 112.2972,
+   "de": 13.2658,
+   "maj": null,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.1,
+   "vel": true,
+   "vid": 0,
+   "prio": 482,
+   "ly": 1500,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Barevný oblak plynu, který kolem sebe odhodila dožívající hvězda.",
+   "txt": [
+    "Když hvězda uprostřed mlhoviny dožívala, odhodila své vnější vrstvy do prostoru. Podobně jednou skončí i Slunce."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "meduza_1.webp",
+     "t": "meduza_1t.webp",
+     "w": 960,
+     "h": 1000,
+     "cap": "Mlhovina Medúza (dalekohled VLT)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1520a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: ESO’s Very Large Telescope images the Medusa Nebula (eso1520a)",
+     "u": "https://www.eso.org/public/images/eso1520a/"
+    },
+    {
+     "t": "Poloha: ESO: poloha středu snímku eso1520a",
+     "u": "https://www.eso.org/public/images/eso1520a/"
+    }
+   ]
+  },
+  {
+   "id": "sn1987a",
+   "cs": "Supernova 1987A",
+   "ozn": "SN 1987A",
+   "druh": "zanik",
+   "typ": "pozůstatek supernovy v sousední galaxii",
+   "souhv": "Mečoun",
+   "ra": 83.865,
+   "de": -69.2689,
+   "maj": null,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.1,
+   "vel": true,
+   "vid": 0,
+   "prio": 483,
+   "ly": 170000,
+   "lyz": null,
+   "lytxt": "asi 170 000 sv. l. (ESA/Hubble); ESA/Webb uvádí 168 000",
+   "lysrc": 0,
+   "lead": "Hvězda ve Velkém Magellanově mračnu, jejíž výbuch lidé spatřili 23. února 1987.",
+   "txt": [
+    "Byla to jedna z nejjasnějších supernov od vynálezu dalekohledu před více než 400 lety. Hubbleův dalekohled ji sleduje od svého startu v roce 1990."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "sn1987a_1.webp",
+     "t": "sn1987a_1t.webp",
+     "w": 1000,
+     "h": 1000,
+     "cap": "Okolí supernovy (Hubble)",
+     "autor": "ESA/Hubble & NASA",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/potw1142a/"
+    },
+    {
+     "f": "sn1987a_2.webp",
+     "t": "sn1987a_2t.webp",
+     "w": 1000,
+     "h": 975,
+     "cap": "V infračerveném světle (Webb)",
+     "autor": "NASA, ESA, CSA, M. Matsuura (Cardiff University), R. Arendt (NASA’s Goddard Spaceflight Center & University of Maryland, Baltimore County), C. Fransson (Stockholm University), J. Larsson (KTH Royal Institute of Technology), A. Pagan (STScI)",
+     "arch": "ESA/Webb",
+     "lic": "CC BY 4.0",
+     "url": "https://esawebb.org/images/SN1987a-1/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Hubble revisits an old friend (potw1142a)",
+     "u": "https://esahubble.org/images/potw1142a/"
+    },
+    {
+     "t": "ESA/Webb: SN 1987A (NIRCam image) (SN1987a-1)",
+     "u": "https://esawebb.org/images/SN1987a-1/"
+    },
+    {
+     "t": "Poloha: ESA/Hubble: poloha středu snímku potw1142a",
+     "u": "https://esahubble.org/images/potw1142a/"
+    }
+   ]
+  },
+  {
+   "id": "m101",
+   "cs": "Galaxie Větrník",
+   "ozn": "M 101 · NGC 5457",
+   "druh": "galaxie",
+   "typ": "spirální galaxie",
+   "souhv": "Velká medvědice",
+   "ra": 210.8023,
+   "de": 54.3489,
+   "maj": 23.99,
+   "min": 23.07,
+   "mag": 7.9,
+   "pole": 18.0,
+   "kr": 0.2,
+   "vel": true,
+   "vid": 0,
+   "prio": 484,
+   "ly": 23000000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Velká spirální galaxie ve Velké medvědici, kterou vidíme shora.",
+   "txt": [
+    "Větrník je jedním z nejznámějších příkladů galaxie s výraznými, pravidelnými spirálními rameny. Hubbleův snímek byl v době zveřejnění největším a nejpodrobnějším snímkem spirální galaxie, jaký dalekohled pořídil."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m101_1.webp",
+     "t": "m101_1t.webp",
+     "w": 1000,
+     "h": 782,
+     "cap": "Celá galaxie (Hubble)",
+     "autor": "Image: European Space Agency & NASA Acknowledgements: Project Investigators for the original Hubble data: K.D. Kuntz (GSFC), F. Bresolin (University of Hawaii), J. Trauger (JPL), J. Mould (NOAO), and Y.-H. Chu (University of Illinois, Urbana) Image processing: Davide De Martin (ESA/Hubble) CFHT image: Canada-France-Hawaii Telescope/J.-C. Cuillandre/Coelum NOAO image: George Jacoby, Bruce Bohannan, Mark Hanna/NOAO/AURA/NSF",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic0602a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Largest ever galaxy portrait - stunning HD image of Pinwheel Galaxy (heic0602a)",
+     "u": "https://esahubble.org/images/heic0602a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "m74",
+   "cs": "Galaxie Fantom",
+   "ozn": "M 74 · NGC 628",
+   "druh": "galaxie",
+   "typ": "spirální galaxie",
+   "souhv": "Ryby",
+   "ra": 24.174,
+   "de": 15.7837,
+   "maj": 9.89,
+   "min": 9.33,
+   "mag": 9.31,
+   "pole": 18.0,
+   "kr": 0.08,
+   "vel": true,
+   "vid": 0,
+   "prio": 485,
+   "ly": 32000000,
+   "lyz": null,
+   "lytxt": "asi 32 milionů sv. l. (ESA/Webb); starší údaj ESA/Hubble je 25 milionů",
+   "lysrc": 0,
+   "lead": "Spirální galaxie v Rybách, natočená k nám skoro přesně čelem.",
+   "txt": [
+    "Díky tomu, že ji vidíme shora, jsou dobře vidět její spirální ramena. Růžové skvrny v nich jsou velké oblasti, kde vznikají nové hvězdy."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m74_1.webp",
+     "t": "m74_1t.webp",
+     "w": 1000,
+     "h": 572,
+     "cap": "Střed galaxie v infračerveném světle (Webb)",
+     "autor": "ESA/Webb, NASA & CSA, J. Lee and the PHANGS-JWST Team. Acknowledgement: J. Schmidt",
+     "arch": "ESA/Webb",
+     "lic": "CC BY 4.0",
+     "url": "https://esawebb.org/images/potm2208a/"
+    },
+    {
+     "f": "m74_2.webp",
+     "t": "m74_2t.webp",
+     "w": 1000,
+     "h": 963,
+     "cap": "Ve viditelném světle (Hubble)",
+     "autor": "NASA, ESA, and The Hubble Heritage (STScI/AURA)-ESA/Hubble Collaboration",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic0719a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Webb: Webb Inspects the Heart of the Phantom Galaxy (potm2208a)",
+     "u": "https://esawebb.org/images/potm2208a/"
+    },
+    {
+     "t": "ESA/Hubble: Holiday wishes from the Hubble Space Telescope (heic0719a)",
+     "u": "https://esahubble.org/images/heic0719a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "m77",
+   "cs": "Galaxie M 77",
+   "ozn": "M 77 · NGC 1068",
+   "druh": "galaxie",
+   "typ": "spirální galaxie s příčkou a aktivním jádrem",
+   "souhv": "Velryba",
+   "ra": 40.6696,
+   "de": -0.0133,
+   "maj": 6.11,
+   "min": 5.61,
+   "mag": 9.29,
+   "pole": 18.0,
+   "kr": 0.05,
+   "vel": true,
+   "vid": 0,
+   "prio": 486,
+   "ly": 45000000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Spirální galaxie ve Velrybě, natočená k nám čelem.",
+   "txt": [
+    "Na snímku vypadá klidně: třpytivá ramena protkaná pruhy prachu. Podle ESO ale snímek nic neprozradí o tom, jak bouřlivá galaxie ve skutečnosti je."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m77_1.webp",
+     "t": "m77_1t.webp",
+     "w": 1000,
+     "h": 999,
+     "cap": "Galaxie M 77 (dalekohled VLT)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1720a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: Dazzling galaxy Messier 77 (eso1720a)",
+     "u": "https://www.eso.org/public/images/eso1720a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "m106",
+   "cs": "Galaxie M 106",
+   "ozn": "M 106 · NGC 4258",
+   "druh": "galaxie",
+   "typ": "spirální galaxie",
+   "souhv": "Honicí psi",
+   "ra": 184.7396,
+   "de": 47.304,
+   "maj": 16.98,
+   "min": 7.24,
+   "mag": 9.29,
+   "pole": 18.0,
+   "kr": 0.14,
+   "vel": true,
+   "vid": 0,
+   "prio": 487,
+   "ly": 23000000,
+   "lyz": null,
+   "lytxt": "asi 23 milionů sv. l. (ESA/Webb); ESA/Hubble uvádí něco přes 20 milionů",
+   "lysrc": 0,
+   "lead": "Poměrně blízká spirální galaxie v Honicích psech.",
+   "txt": [
+    "Hubbleův snímek vznikl ve spolupráci s astronomy amatéry: Robert Gendler a Jay GaBany doplnili data dalekohledu vlastními pozorováními."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m106_1.webp",
+     "t": "m106_1t.webp",
+     "w": 1000,
+     "h": 781,
+     "cap": "Galaxie M 106 (Hubble a amatérské snímky)",
+     "autor": "NASA, ESA, the Hubble Heritage Team (STScI/AURA), and R. Gendler (for the Hubble Heritage Team). Acknowledgment: J. GaBany",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic1302a/"
+    },
+    {
+     "f": "m106_2.webp",
+     "t": "m106_2t.webp",
+     "w": 790,
+     "h": 1000,
+     "cap": "Střed galaxie v infračerveném světle (Webb)",
+     "autor": "ESA/Webb, NASA & CSA, J. Glenn",
+     "arch": "ESA/Webb",
+     "lic": "CC BY 4.0",
+     "url": "https://esawebb.org/images/potm2407a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Webb: The hidden intricacies of Messier 106 (potm2407a)",
+     "u": "https://esawebb.org/images/potm2407a/"
+    },
+    {
+     "t": "ESA/Hubble: Hubble view of Messier 106 (heic1302a)",
+     "u": "https://esahubble.org/images/heic1302a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "lev3",
+   "cs": "Trojice galaxií ve Lvu",
+   "ozn": "M 65 · M 66 · NGC 3628",
+   "druh": "galaxie",
+   "typ": "skupina tří spirálních galaxií",
+   "souhv": "Lev",
+   "ra": 169.9313,
+   "de": 13.3102,
+   "maj": null,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.45,
+   "vel": true,
+   "vid": 0,
+   "prio": 488,
+   "ly": 35000000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Tři jasné galaxie blízko sebe v souhvězdí Lva.",
+   "txt": [
+    "Galaxie M 65, M 66 a NGC 3628 leží asi 35 milionů světelných let daleko. Největší z nich, M 66, vyfotil zblízka Hubbleův dalekohled."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "lev3_1.webp",
+     "t": "lev3_1t.webp",
+     "w": 1000,
+     "h": 809,
+     "cap": "Celá trojice (dalekohled VST)",
+     "autor": "ESO/INAF-VST/OmegaCAM. Acknowledgement: OmegaCen/Astro-WISE/Kapteyn Institute",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1126a/"
+    },
+    {
+     "f": "lev3_2.webp",
+     "t": "lev3_2t.webp",
+     "w": 1000,
+     "h": 692,
+     "cap": "Galaxie M 66 (Hubble)",
+     "autor": "NASA, ESA and the Hubble Heritage (STScI/AURA)-ESA/Hubble Collaboration. Acknowledgement: Davide De Martin and Robert Gendler",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic1006a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: VST’s view of the Leo Triplet and beyond (eso1126a)",
+     "u": "https://www.eso.org/public/images/eso1126a/"
+    },
+    {
+     "t": "ESA/Hubble: Hubble snaps heavyweight of the Leo Triplet (heic1006a)",
+     "u": "https://esahubble.org/images/heic1006a/"
+    },
+    {
+     "t": "Poloha: ESO: poloha středu snímku eso1126a",
+     "u": "https://www.eso.org/public/images/eso1126a/"
+    }
+   ]
+  },
+  {
+   "id": "n1365",
+   "cs": "Galaxie NGC 1365",
+   "ozn": "NGC 1365",
+   "druh": "galaxie",
+   "typ": "spirální galaxie s příčkou",
+   "souhv": "Pec",
+   "ra": 53.4015,
+   "de": -36.1404,
+   "maj": 12.02,
+   "min": 6.14,
+   "mag": 10.1,
+   "pole": 18.0,
+   "kr": 0.1,
+   "vel": true,
+   "vid": 0,
+   "prio": 489,
+   "ly": 60000000,
+   "lyz": null,
+   "lytxt": "asi 60 milionů sv. l. (ESO); ESA/Webb uvádí 56 milionů",
+   "lysrc": 0,
+   "lead": "Nápadná spirální galaxie s příčkou, člen kupy galaxií v Peci.",
+   "txt": [
+    "Je to spirální galaxie s příčkou: středem jí prochází pás hvězd. Snímek pořídila infračervená kamera HAWK-I na dalekohledu VLT."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "n1365_1.webp",
+     "t": "n1365_1t.webp",
+     "w": 1000,
+     "h": 993,
+     "cap": "V infračerveném světle (dalekohled VLT)",
+     "autor": "ESO/P. Grosbøl",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1038a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: HAWK-I infrared image of the spectacular barred spiral galaxy NGC 1365 (eso1038a)",
+     "u": "https://www.eso.org/public/images/eso1038a/"
+    },
+    {
+     "t": "ESA/Webb: NGC 1365 (MIRI Image) (weic2306e)",
+     "u": "https://esawebb.org/images/weic2306e/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "n300",
+   "cs": "Galaxie NGC 300",
+   "ozn": "NGC 300",
+   "druh": "galaxie",
+   "typ": "spirální galaxie",
+   "souhv": "Sochař",
+   "ra": 13.7228,
+   "de": -37.6844,
+   "maj": 19.41,
+   "min": 13.06,
+   "mag": 8.66,
+   "pole": 18.0,
+   "kr": 0.16,
+   "vel": true,
+   "vid": 0,
+   "prio": 490,
+   "ly": 6000000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Blízká spirální galaxie v souhvězdí Sochaře.",
+   "txt": [
+    "Snímek vznikl z mnoha expozic pořízených během několika let. Astronomové díky nim sestavili neobvykle důkladný soupis hvězd v galaxii."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "n300_1.webp",
+     "t": "n300_1t.webp",
+     "w": 1000,
+     "h": 1000,
+     "cap": "Galaxie NGC 300 (ESO, La Silla)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1037a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: Wide Field Imager view of the southern spiral NGC 300 (eso1037a)",
+     "u": "https://www.eso.org/public/images/eso1037a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "n6744",
+   "cs": "Galaxie NGC 6744",
+   "ozn": "NGC 6744",
+   "druh": "galaxie",
+   "typ": "spirální galaxie",
+   "souhv": "Páv",
+   "ra": 287.4421,
+   "de": -63.8575,
+   "maj": 15.67,
+   "min": 9.75,
+   "mag": 9.25,
+   "pole": 18.0,
+   "kr": 0.13,
+   "vel": true,
+   "vid": 0,
+   "prio": 491,
+   "ly": 30000000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Velká spirální galaxie, která se podobá naší Mléčné dráze.",
+   "txt": [
+    "Kdybychom mohli Mléčnou dráhu vyfotit zvenčí, vypadala by nejspíš podobně. Snímek NGC 6744 proto působí jako pohlednice naší Galaxie poslaná z dálky."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "n6744_1.webp",
+     "t": "n6744_1t.webp",
+     "w": 1000,
+     "h": 841,
+     "cap": "Galaxie NGC 6744 (ESO, La Silla)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1118a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: Wide Field Imager view of a Milky Way look-alike, NGC 6744 (eso1118a)",
+     "u": "https://www.eso.org/public/images/eso1118a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "n4565",
+   "cs": "Galaxie Jehla",
+   "ozn": "NGC 4565",
+   "druh": "galaxie",
+   "typ": "spirální galaxie viděná z boku",
+   "souhv": "Vlas Bereniky",
+   "ra": 189.0866,
+   "de": 25.9877,
+   "maj": 16.75,
+   "min": 2.89,
+   "mag": 10.86,
+   "pole": 18.0,
+   "kr": 0.14,
+   "vel": true,
+   "vid": 0,
+   "prio": 492,
+   "ly": 30000000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Jedna z nejznámějších spirálních galaxií, které vidíme přesně z boku.",
+   "txt": [
+    "Z boku vypadá galaxie jako tenká jehla se žlutavou výdutí uprostřed. Objevil ji roku 1785 William Herschel, objevitel Uranu."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "n4565_1.webp",
+     "t": "n4565_1t.webp",
+     "w": 1000,
+     "h": 999,
+     "cap": "Galaxie Jehla (dalekohled VLT)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso0525a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: Spiral galaxy NGC 4565 (eso0525a)",
+     "u": "https://www.eso.org/public/images/eso0525a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "m63",
+   "cs": "Galaxie Slunečnice",
+   "ozn": "M 63 · NGC 5055",
+   "druh": "galaxie",
+   "typ": "spirální galaxie",
+   "souhv": "Honicí psi",
+   "ra": 198.9555,
+   "de": 42.0293,
+   "maj": 11.83,
+   "min": 7.16,
+   "mag": 8.61,
+   "pole": 18.0,
+   "kr": 0.1,
+   "vel": true,
+   "vid": 0,
+   "prio": 493,
+   "ly": 35000000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Spirální galaxie v Honicích psech, jejíž ramena připomínají květ slunečnice.",
+   "txt": [
+    "Přezdívku dostala podle uspořádání spirálních ramen. Objevil ji roku 1779 Pierre Méchain a Charles Messier ji zařadil do svého katalogu jako 63. položku."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m63_1.webp",
+     "t": "m63_1t.webp",
+     "w": 1000,
+     "h": 938,
+     "cap": "Galaxie Slunečnice (Hubble)",
+     "autor": "ESA/Hubble & NASA",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/potw1536a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: A galactic sunflower (potw1536a)",
+     "u": "https://esahubble.org/images/potw1536a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "m64",
+   "cs": "Galaxie Černé oko",
+   "ozn": "M 64 · NGC 4826",
+   "druh": "galaxie",
+   "typ": "spirální galaxie",
+   "souhv": "Vlas Bereniky",
+   "ra": 194.1818,
+   "de": 21.683,
+   "maj": 10.52,
+   "min": 5.33,
+   "mag": 8.52,
+   "pole": 18.0,
+   "kr": 0.09,
+   "vel": true,
+   "vid": 0,
+   "prio": 494,
+   "ly": 18000000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Galaxie s nápadným tmavým pásem prachu před jasným jádrem.",
+   "txt": [
+    "Tmavý pás jí dal přezdívku Černé oko. Galaxie vznikla srážkou dvou galaxií; zůstal po ní nejen neobvyklý vzhled, ale i podivné pohyby uvnitř."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m64_1.webp",
+     "t": "m64_1t.webp",
+     "w": 842,
+     "h": 1000,
+     "cap": "Střed galaxie (Hubble)",
+     "autor": "NASA/ESA and The Hubble Heritage Team (AURA/STScI)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/opo0404a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: An abrasive collision gives one galaxy a \"black eye\" (opo0404a)",
+     "u": "https://esahubble.org/images/opo0404a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "kolo",
+   "cs": "Galaxie Kolo od vozu",
+   "ozn": "Cartwheel · ESO 350-40",
+   "druh": "galaxie",
+   "typ": "prstencová galaxie",
+   "souhv": "Sochař",
+   "ra": 9.4232,
+   "de": -33.7131,
+   "maj": null,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.1,
+   "vel": true,
+   "vid": 0,
+   "prio": 495,
+   "ly": 500000000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 1,
+   "lead": "Vzácná galaxie ve tvaru kola v souhvězdí Sochaře.",
+   "txt": [
+    "Galaxie leží asi 500 milionů světelných let daleko. Dalekohled Jamese Webba ji vyfotil dvěma kamerami najednou, v blízkém a ve středním infračerveném světle."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "kolo_1.webp",
+     "t": "kolo_1t.webp",
+     "w": 1000,
+     "h": 920,
+     "cap": "Kolo od vozu a dvě sousední galaxie (Webb)",
+     "autor": "NASA, ESA, CSA, STScI",
+     "arch": "ESA/Webb",
+     "lic": "CC BY 4.0",
+     "url": "https://esawebb.org/images/weic2211a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Webb: Cartwheel Galaxy (NIRCam and MIRI Composite Image) (weic2211a)",
+     "u": "https://esawebb.org/images/weic2211a/"
+    },
+    {
+     "t": "ESA/Webb, tisková zpráva: Webb Captures Stellar Gymnastics in The Cartwheel Galaxy (weic2211)",
+     "u": "https://esawebb.org/news/weic2211/"
+    },
+    {
+     "t": "Poloha: ESA/Webb: poloha středu snímku weic2211a",
+     "u": "https://esawebb.org/images/weic2211a/"
+    }
+   ]
+  },
+  {
+   "id": "fornax",
+   "cs": "Kupa galaxií v Peci",
+   "ozn": "Fornax Cluster",
+   "druh": "galaxie",
+   "typ": "kupa galaxií",
+   "souhv": "Pec",
+   "ra": 53.8801,
+   "de": -35.5756,
+   "maj": null,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 1.0,
+   "vel": true,
+   "vid": 0,
+   "prio": 496,
+   "ly": 65000000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 1,
+   "lead": "Jedna z nejbližších kup galaxií za naší Místní skupinou.",
+   "txt": [
+    "Kupy galaxií obsahují sto až tisíc galaxií a měří 5 až 30 milionů světelných let. Na snímku je vpravo dole spirální galaxie NGC 1365 a vlevo velká eliptická galaxie NGC 1399."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "fornax_1.webp",
+     "t": "fornax_1t.webp",
+     "w": 1000,
+     "h": 699,
+     "cap": "Střed kupy (dalekohled VST)",
+     "autor": "ESO. Acknowledgement: Aniello Grado and Luca Limatola",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1612a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: VST image of the Fornax galaxy cluster (eso1612a)",
+     "u": "https://www.eso.org/public/images/eso1612a/"
+    },
+    {
+     "t": "ESO, tisková zpráva: Inside the Fiery Furnace (eso1612)",
+     "u": "https://www.eso.org/public/news/eso1612/"
+    },
+    {
+     "t": "Poloha: ESO: poloha středu snímku eso1612a",
+     "u": "https://www.eso.org/public/images/eso1612a/"
+    }
+   ]
+  },
+  {
+   "id": "coma",
+   "cs": "Kupa galaxií ve Vlasech Bereniky",
+   "ozn": "Coma Cluster",
+   "druh": "galaxie",
+   "typ": "kupa galaxií",
+   "souhv": "Vlas Bereniky",
+   "ra": 195.1185,
+   "de": 28.0444,
+   "maj": null,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.8,
+   "vel": true,
+   "vid": 0,
+   "prio": 497,
+   "ly": 300000000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Obří kupa s tisíci galaxií.",
+   "txt": [
+    "Celá kupa má tvar koule o průměru přes 20 milionů světelných let. Většina galaxií v jejím středu je eliptických: na snímku vypadají jako beztvaré zlatohnědé chomáče."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "coma_1.webp",
+     "t": "coma_1t.webp",
+     "w": 1000,
+     "h": 710,
+     "cap": "Část kupy (Hubble)",
+     "autor": "NASA, ESA, and the Hubble Heritage Team (STScI/AURA). Acknowledgment: D. Carter (Liverpool John Moores University) and the Coma HST ACS Treasury Team.",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic0813a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: The Coma Galaxy Cluster as seen by Hubble (heic0813a)",
+     "u": "https://esahubble.org/images/heic0813a/"
+    },
+    {
+     "t": "Poloha: ESA/Hubble: poloha středu snímku heic0813a",
+     "u": "https://esahubble.org/images/heic0813a/"
+    }
+   ]
+  },
+  {
+   "id": "pandora",
+   "cs": "Pandořina kupa",
+   "ozn": "Abell 2744",
+   "druh": "galaxie",
+   "typ": "kupa galaxií",
+   "souhv": "Sochař",
+   "ra": 3.5762,
+   "de": -30.379,
+   "maj": null,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.1,
+   "vel": true,
+   "vid": 0,
+   "prio": 498,
+   "ly": 3000000000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Vzdálená obří kupa galaxií v souhvězdí Sochaře.",
+   "txt": [
+    "Světlo z Pandořiny kupy k nám letí miliardy let. Dalekohled Jamese Webba ji vyfotil v infračerveném světle."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "pandora_1.webp",
+     "t": "pandora_1t.webp",
+     "w": 1000,
+     "h": 761,
+     "cap": "Pandořina kupa (Webb)",
+     "autor": "NASA, ESA, CSA, I. Labbe (Swinburne University of Technology), R. Bezanson (University of Pittsburgh), A. Pagan (STScI)",
+     "arch": "ESA/Webb",
+     "lic": "CC BY 4.0",
+     "url": "https://esawebb.org/images/weic2305a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Webb: Pandora’s Cluster (Abell 2744) (weic2305a)",
+     "u": "https://esawebb.org/images/weic2305a/"
+    },
+    {
+     "t": "Poloha: ESA/Webb: poloha středu snímku weic2305a",
+     "u": "https://esawebb.org/images/weic2305a/"
+    }
+   ]
+  },
+  {
+   "id": "smacs",
+   "cs": "První hluboké pole dalekohledu Webb",
+   "ozn": "SMACS 0723",
+   "druh": "galaxie",
+   "typ": "kupa galaxií a gravitační čočka",
+   "souhv": "Létající ryba",
+   "ra": 110.7857,
+   "de": -73.4498,
+   "maj": null,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.1,
+   "vel": true,
+   "vid": 0,
+   "prio": 499,
+   "ly": 4600000000,
+   "lyz": null,
+   "lytxt": "kupu vidíme takovou, jaká byla před 4,6 miliardy let (ESA/Webb)",
+   "lysrc": 0,
+   "lead": "Nejhlubší snímek vesmíru, jaký byl do té doby pořízen (rok 2022).",
+   "txt": [
+    "Snímek ukazuje kupu galaxií SMACS 0723, jak vypadala před 4,6 miliardy let. Její hmotnost působí jako gravitační čočka: zvětšuje a deformuje ještě vzdálenější galaxie za ní. Některé z nich vidíme z doby, kdy byl vesmír mladší než miliarda let."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "smacs_1.webp",
+     "t": "smacs_1t.webp",
+     "w": 980,
+     "h": 1000,
+     "cap": "První hluboké pole (Webb)",
+     "autor": "NASA, ESA, CSA, and STScI",
+     "arch": "ESA/Webb",
+     "lic": "CC BY 4.0",
+     "url": "https://esawebb.org/images/weic2209a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Webb, tisková zpráva: Webb Delivers Deepest Image of Universe Yet (weic2209)",
+     "u": "https://esawebb.org/news/weic2209/"
+    },
+    {
+     "t": "ESA/Webb: Webb’s First Deep Field (NIRCam Image) (weic2209a)",
+     "u": "https://esawebb.org/images/weic2209a/"
+    },
+    {
+     "t": "Poloha: ESA/Webb: poloha středu snímku weic2209a",
+     "u": "https://esawebb.org/images/weic2209a/"
+    }
+   ]
+  },
+  {
+   "id": "q3c273",
+   "cs": "Kvasar 3C 273",
+   "ozn": "3C 273",
+   "druh": "galaxie",
+   "typ": "kvasar: zářivé jádro vzdálené galaxie",
+   "souhv": "Panna",
+   "ra": 187.2774,
+   "de": 2.0529,
+   "maj": null,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.1,
+   "vel": true,
+   "vid": 0,
+   "prio": 500,
+   "ly": 2500000000,
+   "lyz": null,
+   "lytxt": "světlo k nám letělo asi 2,5 miliardy let (ESA/Hubble, text); pole „Distance“ téže stránky uvádí 2 miliardy",
+   "lysrc": 0,
+   "lead": "Jeden z nejjasnějších kvasarů na obloze.",
+   "txt": [
+    "Kvasar je mimořádně zářivé jádro galaxie. 3C 273 sídlí v obří eliptické galaxii v souhvězdí Panny a jeho světlo k nám letělo asi 2,5 miliardy let."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "q3c273_1.webp",
+     "t": "q3c273_1t.webp",
+     "w": 1000,
+     "h": 988,
+     "cap": "Kvasar 3C 273 (Hubble)",
+     "autor": "ESA/Hubble & NASA",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/potw1346a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Best image of bright quasar 3C 273 (potw1346a)",
+     "u": "https://esahubble.org/images/potw1346a/"
+    },
+    {
+     "t": "Poloha: ESA/Hubble: poloha středu snímku potw1346a",
+     "u": "https://esahubble.org/images/potw1346a/"
+    }
+   ]
+  },
+  {
+   "id": "m3",
+   "cs": "Hvězdokupa M 3",
+   "ozn": "M 3 · NGC 5272",
+   "druh": "kulova",
+   "typ": "kulová hvězdokupa",
+   "souhv": "Honicí psi",
+   "ra": 205.5468,
+   "de": 28.3754,
+   "maj": 16.2,
+   "min": null,
+   "mag": 6.39,
+   "pole": 18.0,
+   "kr": 0.13,
+   "vel": true,
+   "vid": 0,
+   "prio": 501,
+   "ly": 34000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Podle mnohých jedna z nejkrásnějších kulových hvězdokup.",
+   "txt": [
+    "M 3 obsahuje půl milionu hvězd a je stará asi osm miliard let."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m3_1.webp",
+     "t": "m3_1t.webp",
+     "w": 1000,
+     "h": 874,
+     "cap": "Střed hvězdokupy (Hubble)",
+     "autor": "ESA/Hubble & NASA, G. Piotto et al.",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/potw1914a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Blue rejuvenation (potw1914a)",
+     "u": "https://esahubble.org/images/potw1914a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "m5",
+   "cs": "Hvězdokupa M 5",
+   "ozn": "M 5 · NGC 5904",
+   "druh": "kulova",
+   "typ": "kulová hvězdokupa",
+   "souhv": "Had",
+   "ra": 229.6406,
+   "de": 2.0827,
+   "maj": 15.0,
+   "min": null,
+   "mag": 5.95,
+   "pole": 18.0,
+   "kr": 0.12,
+   "vel": true,
+   "vid": 0,
+   "prio": 502,
+   "ly": 25000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Jedna z nejstarších kulových hvězdokup Mléčné dráhy.",
+   "txt": [
+    "Většina hvězd v M 5 vznikla před více než 12 miliardami let. Hubbleův dalekohled v ní přesto našel i hvězdy, které vypadají nečekaně mladě."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m5_1.webp",
+     "t": "m5_1t.webp",
+     "w": 1000,
+     "h": 1000,
+     "cap": "Střed hvězdokupy (Hubble)",
+     "autor": "ESA/Hubble & NASA",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/potw1118a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Breathing new life into an old cluster (potw1118a)",
+     "u": "https://esahubble.org/images/potw1118a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "m92",
+   "cs": "Hvězdokupa M 92",
+   "ozn": "M 92 · NGC 6341",
+   "druh": "kulova",
+   "typ": "kulová hvězdokupa",
+   "souhv": "Herkules",
+   "ra": 259.2803,
+   "de": 43.1365,
+   "maj": 14.4,
+   "min": null,
+   "mag": 6.52,
+   "pole": 18.0,
+   "kr": 0.12,
+   "vel": true,
+   "vid": 0,
+   "prio": 503,
+   "ly": 27000,
+   "lyz": null,
+   "lytxt": "asi 27 000 sv. l. (ESA/Webb); ESA/Hubble uvádí 25 000",
+   "lysrc": 0,
+   "lead": "Kulová hvězdokupa v Herkulovi.",
+   "txt": [
+    "V M 92 je asi 300 000 hvězd namačkaných v kouli o průměru kolem 100 světelných let."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m92_1.webp",
+     "t": "m92_1t.webp",
+     "w": 1000,
+     "h": 981,
+     "cap": "Střed hvězdokupy (Hubble)",
+     "autor": "ESA/Hubble & NASA Acknowledgement: Gilles Chapdelaine",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/potw1449a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Webb: Webb Observes a Globular Cluster Sparkling with Separate Stars (m92a)",
+     "u": "https://esawebb.org/images/m92a/"
+    },
+    {
+     "t": "ESA/Hubble: All that glitters (potw1449a)",
+     "u": "https://esahubble.org/images/potw1449a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "m54",
+   "cs": "Hvězdokupa M 54",
+   "ozn": "M 54 · NGC 6715",
+   "druh": "kulova",
+   "typ": "kulová hvězdokupa v sousední galaxii",
+   "souhv": "Střelec",
+   "ra": 283.7636,
+   "de": -30.4785,
+   "maj": 5.1,
+   "min": null,
+   "mag": 7.7,
+   "pole": 18.0,
+   "kr": 0.04,
+   "vel": true,
+   "vid": 0,
+   "prio": 504,
+   "ly": 90000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Kulová hvězdokupa, která nepatří k Mléčné dráze.",
+   "txt": [
+    "Vypadá jako mnoho jiných kulových hvězdokup, ale má tajemství: je součástí malé sousední galaxie, trpasličí galaxie ve Střelci."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m54_1.webp",
+     "t": "m54_1t.webp",
+     "w": 1000,
+     "h": 948,
+     "cap": "Hvězdokupa M 54 (dalekohled VST)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1428a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: The globular star cluster Messier 54 (eso1428a)",
+     "u": "https://www.eso.org/public/images/eso1428a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "m55",
+   "cs": "Hvězdokupa M 55",
+   "ozn": "M 55 · NGC 6809",
+   "druh": "kulova",
+   "typ": "kulová hvězdokupa",
+   "souhv": "Střelec",
+   "ra": 294.9975,
+   "de": -30.9621,
+   "maj": 12.0,
+   "min": null,
+   "mag": 6.49,
+   "pole": 18.0,
+   "kr": 0.1,
+   "vel": true,
+   "vid": 0,
+   "prio": 505,
+   "ly": 17000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Velká koule prastarých hvězd ve Střelci.",
+   "txt": [
+    "Snímek je pořízený v infračerveném světle přehlídkovým dalekohledem VISTA na observatoři Paranal v Chile."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m55_1.webp",
+     "t": "m55_1t.webp",
+     "w": 1000,
+     "h": 1000,
+     "cap": "V infračerveném světle (dalekohled VISTA)",
+     "autor": "ESO/J. Emerson/VISTA. Acknowledgment: Cambridge Astronomical Survey Unit",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1220a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: VISTA infrared image of the globular star cluster Messier 55 (eso1220a)",
+     "u": "https://www.eso.org/public/images/eso1220a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "n2808",
+   "cs": "Hvězdokupa NGC 2808",
+   "ozn": "NGC 2808",
+   "druh": "kulova",
+   "typ": "kulová hvězdokupa",
+   "souhv": "Lodní kýl",
+   "ra": 138.0106,
+   "de": -64.8628,
+   "maj": 9.0,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.07,
+   "vel": true,
+   "vid": 0,
+   "prio": 506,
+   "ly": 30000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Kulová hvězdokupa, ve které Hubbleův dalekohled našel tři generace hvězd.",
+   "txt": [
+    "Astronomy to překvapilo: tři generace hvězd se neshodují s obrazem, který o kulových hvězdokupách do té doby měli."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "n2808_1.webp",
+     "t": "n2808_1t.webp",
+     "w": 998,
+     "h": 1000,
+     "cap": "Střed hvězdokupy (Hubble)",
+     "autor": "European Space Agency, NASA, G. Piotto (University of Padua, Italy) and A. Sarajedini (University of Florida, USA). Acknowledgement: Davide de Martin (ESA/Hubble)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic0708a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Multiple generations of stars in a globular cluster (heic0708a)",
+     "u": "https://esahubble.org/images/heic0708a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "terzan5",
+   "cs": "Hvězdokupa Terzan 5",
+   "ozn": "Terzan 5",
+   "druh": "kulova",
+   "typ": "hvězdokupa ve středové výduti Galaxie",
+   "souhv": "Střelec",
+   "ra": 267.0202,
+   "de": -24.7821,
+   "maj": null,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.1,
+   "vel": true,
+   "vid": 0,
+   "prio": 507,
+   "ly": 19000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 1,
+   "lead": "Hvězdokupa ukrytá za hustými oblaky prachu směrem ke středu Galaxie.",
+   "txt": [
+    "Čtyřicet let se považovala za obyčejnou kulovou hvězdokupu. Podle novějších výsledků je to spíš pozůstatek jednoho z prastarých stavebních kamenů středové výdutě Galaxie."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "terzan5_1.webp",
+     "t": "terzan5_1t.webp",
+     "w": 1000,
+     "h": 588,
+     "cap": "Hvězdokupa Terzan 5 (dalekohled VLT a Hubble)",
+     "autor": "ESO/F. Ferraro",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1630a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: The unusual cluster Terzan 5 (eso1630a)",
+     "u": "https://www.eso.org/public/images/eso1630a/"
+    },
+    {
+     "t": "ESO, tisková zpráva: Astronomers Discover Rare Fossil Relic of Early Milky Way (eso1630)",
+     "u": "https://www.eso.org/public/news/eso1630/"
+    },
+    {
+     "t": "Poloha: ESO: poloha středu snímku eso1630a",
+     "u": "https://www.eso.org/public/images/eso1630a/"
+    }
+   ]
+  },
+  {
+   "id": "m67",
+   "cs": "Hvězdokupa M 67",
+   "ozn": "M 67 · NGC 2682",
+   "druh": "otevrena",
+   "typ": "stará otevřená hvězdokupa",
+   "souhv": "Rak",
+   "ra": 132.8339,
+   "de": 11.8119,
+   "maj": 33.0,
+   "min": null,
+   "mag": 6.9,
+   "pole": 18.0,
+   "kr": 0.28,
+   "vel": true,
+   "vid": 0,
+   "prio": 508,
+   "ly": 2500,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Stará otevřená hvězdokupa v souhvězdí Raka.",
+   "txt": [
+    "Hvězdy v M 67 jsou přibližně stejně staré jako Slunce a mají i stejné chemické složení."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m67_1.webp",
+     "t": "m67_1t.webp",
+     "w": 955,
+     "h": 1000,
+     "cap": "Hvězdokupa M 67 a okolí (Digitized Sky Survey 2)",
+     "autor": "ESO/Digitized Sky Survey 2 Acknowledgement: Davide De Martin",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1402c/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: Wide-field view of the open star cluster Messier 67 (eso1402c)",
+     "u": "https://www.eso.org/public/images/eso1402c/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "m47",
+   "cs": "Hvězdokupa M 47",
+   "ozn": "M 47 · NGC 2422",
+   "druh": "otevrena",
+   "typ": "mladá otevřená hvězdokupa",
+   "souhv": "Lodní záď",
+   "ra": 114.1459,
+   "de": -14.4826,
+   "maj": 19.8,
+   "min": null,
+   "mag": 4.4,
+   "pole": 18.0,
+   "kr": 0.17,
+   "vel": true,
+   "vid": 0,
+   "prio": 509,
+   "ly": 1600,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 1,
+   "lead": "Mladá otevřená hvězdokupa s jasnými modrými hvězdami.",
+   "txt": [
+    "Mezi modrými hvězdami září i několik červených obrů. Hvězdokupa je řídká: na ploše asi 12 světelných let je vidět jen kolem padesáti hvězd."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m47_1.webp",
+     "t": "m47_1t.webp",
+     "w": 1000,
+     "h": 965,
+     "cap": "Hvězdokupa M 47 (ESO, La Silla)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1441a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: The star cluster Messier 47 (eso1441a)",
+     "u": "https://www.eso.org/public/images/eso1441a/"
+    },
+    {
+     "t": "ESO, tisková zpráva: The Hot Blue Stars of Messier 47 (eso1441)",
+     "u": "https://www.eso.org/public/news/eso1441/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "n3766",
+   "cs": "Hvězdokupa NGC 3766",
+   "ozn": "NGC 3766",
+   "druh": "otevrena",
+   "typ": "mladá otevřená hvězdokupa",
+   "souhv": "Kentaur",
+   "ra": 174.06,
+   "de": -61.6052,
+   "maj": 6.9,
+   "min": null,
+   "mag": 5.3,
+   "pole": 18.0,
+   "kr": 0.06,
+   "vel": true,
+   "vid": 0,
+   "prio": 510,
+   "ly": 7000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Skupina mladých hvězd v Kentauru.",
+   "txt": [
+    "Pečlivá měření švýcarským dalekohledem na observatoři La Silla ukázala, že 36 hvězd této hvězdokupy patří k nové, dosud neznámé třídě proměnných hvězd."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "n3766_1.webp",
+     "t": "n3766_1t.webp",
+     "w": 1000,
+     "h": 959,
+     "cap": "Hvězdokupa NGC 3766 (ESO, La Silla)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1326a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: The star cluster NGC 3766 (eso1326a)",
+     "u": "https://www.eso.org/public/images/eso1326a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "n6520",
+   "cs": "Hvězdokupa NGC 6520 a temný oblak Barnard 86",
+   "ozn": "NGC 6520 · Barnard 86",
+   "druh": "otevrena",
+   "typ": "otevřená hvězdokupa a temná mlhovina",
+   "souhv": "Střelec",
+   "ra": 270.8506,
+   "de": -27.8861,
+   "maj": 5.4,
+   "min": null,
+   "mag": 7.6,
+   "pole": 18.0,
+   "kr": 0.05,
+   "vel": true,
+   "vid": 0,
+   "prio": 511,
+   "ly": 6000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Jasná hvězdokupa a hned vedle ní podivně tvarovaný temný oblak.",
+   "txt": [
+    "Dvojice leží před nejjasnější částí Mléčné dráhy, kde je hvězd tolik, že mezi nimi skoro nezbývá tmavé nebe."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "n6520_1.webp",
+     "t": "n6520_1t.webp",
+     "w": 1000,
+     "h": 972,
+     "cap": "Hvězdokupa a temný oblak (ESO, La Silla)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1307a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: The bright star cluster NGC 6520 and the strangely shaped dark cloud Barnard 86 (eso1307a)",
+     "u": "https://www.eso.org/public/images/eso1307a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "n3293",
+   "cs": "Hvězdokupa NGC 3293",
+   "ozn": "NGC 3293",
+   "druh": "otevrena",
+   "typ": "mladá otevřená hvězdokupa",
+   "souhv": "Lodní kýl",
+   "ra": 158.9532,
+   "de": -58.2245,
+   "maj": 5.1,
+   "min": null,
+   "mag": 4.7,
+   "pole": 18.0,
+   "kr": 0.04,
+   "vel": true,
+   "vid": 0,
+   "prio": 512,
+   "ly": 8000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Mladá hvězdokupa před oblaky zářícího plynu v Lodním kýlu.",
+   "txt": [
+    "Ještě před deseti miliony let tu byl jen oblak plynu a prachu. Pak v něm začaly vznikat hvězdy a zbyla tato jasná skupina."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "n3293_1.webp",
+     "t": "n3293_1t.webp",
+     "w": 1000,
+     "h": 972,
+     "cap": "Hvězdokupa NGC 3293 (ESO, La Silla)",
+     "autor": "ESO/G. Beccari",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1422a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: The star cluster NGC 3293 (eso1422a)",
+     "u": "https://www.eso.org/public/images/eso1422a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "arches",
+   "cs": "Hvězdokupa Arches",
+   "ozn": "Arches Cluster",
+   "druh": "otevrena",
+   "typ": "hustá hvězdokupa mladých hmotných hvězd",
+   "souhv": "Střelec",
+   "ra": 266.4605,
+   "de": -28.8224,
+   "maj": null,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.05,
+   "vel": true,
+   "vid": 0,
+   "prio": 513,
+   "ly": 25000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Hvězdokupa mladých, hmotných hvězd těsně u středu Galaxie.",
+   "txt": [
+    "Na obloze leží jen asi pětinu stupně od středu Mléčné dráhy (vypočteno z polohy). Snímek je pořízený v infračerveném světle."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "arches_1.webp",
+     "t": "arches_1t.webp",
+     "w": 1000,
+     "h": 910,
+     "cap": "V infračerveném světle (dalekohled VLT)",
+     "autor": "ESO/P. Espinoza",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso0921a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: The Arches cluster (eso0921a)",
+     "u": "https://www.eso.org/public/images/eso0921a/"
+    },
+    {
+     "t": "Poloha: ESO: poloha středu snímku eso0921a",
+     "u": "https://www.eso.org/public/images/eso0921a/"
+    }
+   ]
+  },
+  {
+   "id": "sirius",
+   "cs": "Sirius",
+   "ozn": "α Canis Majoris · HIP 32349",
+   "druh": "hvezda",
+   "typ": "dvojhvězda: bílá hvězda a bílý trpaslík",
+   "souhv": "Velký pes",
+   "ra": 101.2872,
+   "de": -16.7161,
+   "maj": null,
+   "min": null,
+   "mag": -1.44,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 11,
+   "ly": 8.6,
+   "lyz": null,
+   "lytxt": "z paralaxy 379,21 ± 1,58 mas (družice Hipparcos, zpracování 2007) vychází 8,6 sv. l.",
+   "lysrc": 0,
+   "lead": "Nejjasnější hvězda noční oblohy. Září tolik hlavně proto, že je blízko: světlo od ní letí necelých devět let.",
+   "txt": [
+    "Sirius je dvojhvězda. Kolem jasné bílé hvězdy Sirius A obíhá jednou za 50 let slabý průvodce Sirius B, bílý trpaslík; vzdálenost obou hvězd se při tom mění od 8 do 31 astronomických jednotek. Sirius se ke Sluneční soustavě pomalu blíží, takže bude v příštích 60 000 letech ještě o něco jasnější."
+   ],
+   "foto": "Na Hubbleově snímku je Sirius A záměrně přeexponovaný, aby byl vidět slabý Sirius B (tečka vlevo dole). Kříž a kroužky kolem hvězd nejsou skutečné, vytváří je dalekohled.",
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "sirius_1.webp",
+     "t": "sirius_1t.webp",
+     "w": 916,
+     "h": 1000,
+     "cap": "Sirius A a jeho průvodce Sirius B (Hubble)",
+     "autor": "NASA, ESA, H. Bond (STScI), and M. Barstow (University of Leicester)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic0516a/"
+    },
+    {
+     "f": "sirius_2.webp",
+     "t": "sirius_2t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 32349: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=32349"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Sirius“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Sirius"
+    },
+    {
+     "t": "ESA/Hubble: The Dog Star, Sirius A, and its tiny companion (heic0516a)",
+     "u": "https://esahubble.org/images/heic0516a/"
+    }
+   ],
+   "sp": "A0",
+   "barva": "bílá",
+   "iau": "Sirius",
+   "magtxt": "nejjasnější hvězda noční oblohy"
+  },
+  {
+   "id": "kanopus",
+   "cs": "Kanopus",
+   "ozn": "α Carinae · Canopus · HIP 30438",
+   "druh": "hvezda",
+   "typ": "jasný obr",
+   "souhv": "Lodní kýl",
+   "ra": 95.988,
+   "de": -52.6957,
+   "maj": null,
+   "min": null,
+   "mag": -0.62,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 14,
+   "ly": 310,
+   "lyz": "asi ",
+   "lytxt": "z paralaxy 10,55 ± 0,56 mas (družice Hipparcos, zpracování 2007) vychází 294 až 326 sv. l.; Wikipedie uvádí kolem 310 sv. l.",
+   "lysrc": 0,
+   "lead": "Druhá nejjasnější hvězda noční oblohy. Patří jižní obloze.",
+   "txt": [
+    "Kanopus je obří hvězda: svítí víc než 10 000krát silněji než Slunce, je asi 71krát větší a devětkrát až desetkrát hmotnější."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "kanopus_1.webp",
+     "t": "kanopus_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 30438: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=30438"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Canopus“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Canopus"
+    }
+   ],
+   "sp": "F0 Ib",
+   "barva": "žlutobílá",
+   "iau": "Canopus",
+   "magtxt": "2. nejjasnější hvězda noční oblohy"
+  },
+  {
+   "id": "alfacen",
+   "cs": "Alfa Centauri",
+   "ozn": "α Centauri · Rigil Kentaurus a Toliman · HIP 71683",
+   "druh": "hvezda",
+   "typ": "trojhvězda, nejbližší hvězdný systém",
+   "souhv": "Kentaur",
+   "ra": 219.9021,
+   "de": -60.834,
+   "maj": null,
+   "min": null,
+   "mag": -0.01,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 17,
+   "ly": 4.3,
+   "lyz": null,
+   "lytxt": "z paralaxy 754,81 ± 4,11 mas (družice Hipparcos, zpracování 2007) vychází 4,3 sv. l.",
+   "lysrc": 0,
+   "lead": "Nejbližší hvězdy, které jsou vidět pouhým okem, a třetí nejjasnější „hvězda“ noční oblohy.",
+   "txt": [
+    "Okem vypadá jako jedna hvězda, ve skutečnosti jsou to dvě hvězdy podobné Slunci: Rigil Kentaurus (A) a Toliman (B). Oběhnou se jednou za 79 let; nejblíž jsou si asi jako Saturn a Slunce, nejdál asi jako Pluto a Slunce. K systému patří i třetí hvězda, červený trpaslík Proxima Centauri, který je Slunci ze všech hvězd nejblíž."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "alfacen_1.webp",
+     "t": "alfacen_1t.webp",
+     "w": 1000,
+     "h": 653,
+     "cap": "Alfa Centauri A a B (Hubble)",
+     "autor": "ESA/Hubble & NASA",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/potw1635a/"
+    },
+    {
+     "f": "alfacen_2.webp",
+     "t": "alfacen_2t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 71683: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=71683"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Alpha Centauri“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Alpha_Centauri"
+    },
+    {
+     "t": "ESA/Hubble: Best image of Alpha Centauri A and B (potw1635a)",
+     "u": "https://esahubble.org/images/potw1635a/"
+    }
+   ],
+   "sp": "G2 V",
+   "barva": "žlutá, podobná Slunci",
+   "iau": "Rigil Kentaurus",
+   "magtxt": "jen složka A; obě hvězdy dohromady −0,27 mag (Wikipedie)"
+  },
+  {
+   "id": "arktur",
+   "cs": "Arktur",
+   "ozn": "α Boötis · Arcturus · HIP 69673",
+   "druh": "hvezda",
+   "typ": "červený obr",
+   "souhv": "Pastýř",
+   "ra": 213.9153,
+   "de": 19.1824,
+   "maj": null,
+   "min": null,
+   "mag": -0.05,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 20,
+   "ly": 36.7,
+   "lyz": null,
+   "lytxt": "z paralaxy 88,83 ± 0,54 mas (družice Hipparcos, zpracování 2007) vychází 36,5 až 36,9 sv. l.",
+   "lysrc": 0,
+   "lead": "Nejjasnější hvězda severní poloviny oblohy a čtvrtá nejjasnější vůbec. Oranžový obr v souhvězdí Pastýře.",
+   "txt": [
+    "Arktur je stárnoucí hvězda, asi 7 miliard let stará. Hmotností se podobá Slunci, ale když spotřeboval vodík ve svém jádru, nafoukl se na 25násobek jeho průměru a svítí asi 170krát víc."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "arktur_1.webp",
+     "t": "arktur_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 69673: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=69673"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Arcturus“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Arcturus"
+    }
+   ],
+   "sp": "K2 III",
+   "barva": "oranžová",
+   "iau": "Arcturus",
+   "magtxt": "4. nejjasnější hvězda noční oblohy"
+  },
+  {
+   "id": "vega",
+   "cs": "Vega",
+   "ozn": "α Lyrae · HIP 91262",
+   "druh": "hvezda",
+   "typ": "bílá hvězda hlavní posloupnosti",
+   "souhv": "Lyra",
+   "ra": 279.2347,
+   "de": 38.7837,
+   "maj": null,
+   "min": null,
+   "mag": 0.03,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 23,
+   "ly": 25,
+   "lyz": null,
+   "lytxt": "z paralaxy 130,23 ± 0,36 mas (družice Hipparcos, zpracování 2007) vychází 25 až 25,1 sv. l.",
+   "lysrc": 0,
+   "lead": "Pátá nejjasnější hvězda noční oblohy a jeden z vrcholů Letního trojúhelníku (s Denebem a Altairem).",
+   "txt": [
+    "Vega je 2,1krát hmotnější než Slunce a má jen asi desetinu jeho stáří. Kolem roku 12 000 př. n. l. byla Polárkou a kolem roku 13 700 jí bude znovu, protože zemská osa se pomalu stáčí. Byla to první hvězda po Slunci, kterou se podařilo vyfotografovat, a podle její jasnosti se nastavovala stupnice hvězdných velikostí."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "vega_1.webp",
+     "t": "vega_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 91262: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=91262"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Vega“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Vega"
+    }
+   ],
+   "sp": "A0 V",
+   "barva": "bílá",
+   "iau": "Vega",
+   "magtxt": "5. nejjasnější hvězda noční oblohy"
+  },
+  {
+   "id": "kapela",
+   "cs": "Kapela",
+   "ozn": "α Aurigae · Capella · HIP 24608",
+   "druh": "hvezda",
+   "typ": "čtyřhvězda: dva žlutí obři a dva červení trpaslíci",
+   "souhv": "Vozka",
+   "ra": 79.1723,
+   "de": 45.998,
+   "maj": null,
+   "min": null,
+   "mag": 0.08,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 26,
+   "ly": 42.8,
+   "lyz": null,
+   "lytxt": "z paralaxy 76,2 ± 0,46 mas (družice Hipparcos, zpracování 2007) vychází 42,5 až 43,1 sv. l.",
+   "lysrc": 0,
+   "lead": "Šestá nejjasnější hvězda noční oblohy. Jméno znamená latinsky „kozička“.",
+   "txt": [
+    "Okem vypadá jako jedna hvězda, ale jsou to čtyři. Hlavní dvojici tvoří dva žlutí obři, každý asi 2,5krát hmotnější než Slunce. Jsou u sebe blíž než Země u Slunce a oběhnou se jednou za 104 dní. Daleko od nich obíhá dvojice malých červených trpaslíků."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "kapela_1.webp",
+     "t": "kapela_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 24608: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=24608"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Capella“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Capella"
+    }
+   ],
+   "sp": null,
+   "barva": null,
+   "iau": "Capella",
+   "magtxt": "6. nejjasnější hvězda noční oblohy"
+  },
+  {
+   "id": "rigel",
+   "cs": "Rigel",
+   "ozn": "β Orionis · HIP 24436",
+   "druh": "hvezda",
+   "typ": "modrý veleobr",
+   "souhv": "Orion",
+   "ra": 78.6345,
+   "de": -8.2016,
+   "maj": null,
+   "min": null,
+   "mag": 0.18,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 29,
+   "ly": 860,
+   "lyz": "asi ",
+   "lytxt": "z paralaxy 3,78 ± 0,34 mas (družice Hipparcos, zpracování 2007) vychází 792 až 948 sv. l.; Wikipedie uvádí přibližně 850 sv. l.",
+   "lysrc": 0,
+   "lead": "Modrobílý veleobr v Orionu, obvykle sedmá nejjasnější hvězda noční oblohy.",
+   "txt": [
+    "Rigel je nejméně čtyřhvězda, okem ale splývá v jediný bod. Hlavní hvězda má průměr přes sedmdesát Sluncí, povrch horký 12 100 K a je 18krát až 24krát hmotnější než Slunce. Je stará jen sedm až devět milionů let, a přesto už spotřebovala vodík v jádru. Skončí výbuchem supernovy."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "rigel_1.webp",
+     "t": "rigel_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 24436: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=24436"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Rigel“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Rigel"
+    }
+   ],
+   "sp": "B8 Ia",
+   "barva": "modrobílá, horká",
+   "iau": "Rigel",
+   "magtxt": "obvykle 7. nejjasnější hvězda noční oblohy"
+  },
+  {
+   "id": "prokyon",
+   "cs": "Prokyon",
+   "ozn": "α Canis Minoris · Procyon · HIP 37279",
+   "druh": "hvezda",
+   "typ": "dvojhvězda: žlutobílá hvězda a bílý trpaslík",
+   "souhv": "Malý pes",
+   "ra": 114.8255,
+   "de": 5.225,
+   "maj": null,
+   "min": null,
+   "mag": 0.4,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 32,
+   "ly": 11.5,
+   "lyz": null,
+   "lytxt": "z paralaxy 284,56 ± 1,26 mas (družice Hipparcos, zpracování 2007) vychází 11,4 až 11,5 sv. l.",
+   "lysrc": 0,
+   "lead": "Osmá nejjasnější hvězda noční oblohy a jeden z nejbližších sousedů Slunce.",
+   "txt": [
+    "Stejně jako Sirius má i Prokyon slabého průvodce, bílého trpaslíka. Obě hvězdy se oběhnou jednou za necelých 41 let."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "prokyon_1.webp",
+     "t": "prokyon_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 37279: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=37279"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Procyon“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Procyon"
+    }
+   ],
+   "sp": "F5 IV–V",
+   "barva": "žlutobílá",
+   "iau": "Procyon",
+   "magtxt": "obvykle 8. nejjasnější hvězda noční oblohy"
+  },
+  {
+   "id": "achernar",
+   "cs": "Achernar",
+   "ozn": "α Eridani · HIP 7588",
+   "druh": "hvezda",
+   "typ": "horká modrobílá hvězda, která se rychle otáčí",
+   "souhv": "Eridanus",
+   "ra": 24.4285,
+   "de": -57.2368,
+   "maj": null,
+   "min": null,
+   "mag": 0.45,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 35,
+   "ly": 139,
+   "lyz": null,
+   "lytxt": "z paralaxy 23,39 ± 0,57 mas (družice Hipparcos, zpracování 2007) vychází 136 až 143 sv. l.",
+   "lysrc": 0,
+   "lead": "Devátá nejjasnější hvězda noční oblohy, nejjasnější v souhvězdí Eridanu.",
+   "txt": [
+    "Z deseti nejjasnějších hvězd je Achernar nejteplejší a nejmodřejší. Otáčí se tak rychle, že není kulatý, ale zřetelně zploštělý. Ve vzdálenosti 7,35 astronomické jednotky kolem něj obíhá menší průvodce."
+   ],
+   "foto": "První obrázek není fotografie, ale graf: obrys hvězdy, jak vyšel z měření interferometru VLTI.",
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "achernar_1.webp",
+     "t": "achernar_1t.webp",
+     "w": 956,
+     "h": 1000,
+     "cap": "Zploštělý tvar Achernaru změřený propojenými dalekohledy VLTI (graf)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso0316b/"
+    },
+    {
+     "f": "achernar_2.webp",
+     "t": "achernar_2t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 7588: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=7588"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Achernar“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Achernar"
+    },
+    {
+     "t": "ESO: The shape of Achernar (eso0316b)",
+     "u": "https://www.eso.org/public/images/eso0316b/"
+    }
+   ],
+   "sp": "B3 V",
+   "barva": "modrobílá, horká",
+   "iau": "Achernar",
+   "magtxt": "9. nejjasnější hvězda noční oblohy"
+  },
+  {
+   "id": "betelgeuze",
+   "cs": "Betelgeuze",
+   "ozn": "α Orionis · Betelgeuse · HIP 27989",
+   "druh": "hvezda",
+   "typ": "červený veleobr",
+   "souhv": "Orion",
+   "ra": 88.7929,
+   "de": 7.4071,
+   "maj": null,
+   "min": null,
+   "mag": 0.45,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 38,
+   "ly": 500,
+   "lyz": "asi ",
+   "lytxt": "z paralaxy 6,55 ± 0,83 mas (družice Hipparcos, zpracování 2007) vychází 442 až 570 sv. l.; vzdálenost se měří obtížně; Wikipedie uvádí 400 až 600 sv. l., ESO asi 600",
+   "lysrc": 0,
+   "lead": "Červený veleobr v Orionu. Jedna z největších hvězd, jaké jsou vidět pouhým okem.",
+   "txt": [
+    "Kdyby Betelgeuze stála na místě Slunce, sahal by její povrch až za pás planetek: pohltila by dráhy Merkuru, Venuše, Země i Marsu. Její jasnost kolísá mezi 0,0 a 1,6 mag s hlavní periodou kolem 400 dní. Je mladší než 10 milionů let a skončí výbuchem supernovy, nejspíš během příštích 100 000 let."
+   ],
+   "foto": "Čtveřice snímků z dalekohledu VLT ukazuje povrch hvězdy v lednu 2019 a pak během nečekaného pohasnutí na přelomu let 2019 a 2020.",
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "betelgeuze_1.webp",
+     "t": "betelgeuze_1t.webp",
+     "w": 1000,
+     "h": 470,
+     "cap": "Povrch Betelgeuze před pohasnutím a během něj, 2019–2020 (dalekohled VLT)",
+     "autor": "ESO/M. Montargès et al.",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso2109a/"
+    },
+    {
+     "f": "betelgeuze_2.webp",
+     "t": "betelgeuze_2t.webp",
+     "w": 1000,
+     "h": 1000,
+     "cap": "Betelgeuze v rádiových vlnách (ALMA)",
+     "autor": "ALMA (ESO/NAOJ/NRAO)/E. O’Gorman/P. Kervella",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/potw1726a/"
+    },
+    {
+     "f": "betelgeuze_3.webp",
+     "t": "betelgeuze_3t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 27989: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=27989"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Betelgeuse“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Betelgeuse"
+    },
+    {
+     "t": "ESO: Betelgeuse’s surface before and during its 2019–2020 Great Dimming (eso2109a)",
+     "u": "https://www.eso.org/public/images/eso2109a/"
+    },
+    {
+     "t": "ESO: Betelgeuse captured by ALMA (potw1726a)",
+     "u": "https://www.eso.org/public/images/potw1726a/"
+    }
+   ],
+   "sp": "M2 Ib",
+   "barva": "červená, chladná",
+   "iau": "Betelgeuse",
+   "magtxt": "proměnná: 0,0 až 1,6 mag"
+  },
+  {
+   "id": "hadar",
+   "cs": "Hadar",
+   "ozn": "β Centauri · HIP 68702",
+   "druh": "hvezda",
+   "typ": "trojhvězda",
+   "souhv": "Kentaur",
+   "ra": 210.9559,
+   "de": -60.373,
+   "maj": null,
+   "min": null,
+   "mag": 0.61,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 41,
+   "ly": 390,
+   "lyz": "asi ",
+   "lytxt": "z paralaxy 8,32 ± 0,5 mas (družice Hipparcos, zpracování 2007) vychází 370 až 417 sv. l.; Wikipedie uvádí 361 sv. l. (z oběhu složek)",
+   "lysrc": 0,
+   "lead": "Jedenáctá nejjasnější hvězda noční oblohy, druhá nejjasnější v Kentauru.",
+   "txt": [
+    "Hadar je trojhvězda; její hlavní složka je horký modrobílý obr. Na obloze svítí hned vedle Alfy Centauri, ve skutečnosti je ale asi devadesátkrát dál (porovnání vzdáleností v této aplikaci)."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "hadar_1.webp",
+     "t": "hadar_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 68702: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=68702"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Beta Centauri“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Beta_Centauri"
+    }
+   ],
+   "sp": "B1 III",
+   "barva": "modrobílá, horká",
+   "iau": "Hadar",
+   "magtxt": "11. nejjasnější hvězda noční oblohy"
+  },
+  {
+   "id": "altair",
+   "cs": "Altair",
+   "ozn": "α Aquilae · HIP 97649",
+   "druh": "hvezda",
+   "typ": "bílá hvězda, která se rychle otáčí",
+   "souhv": "Orel",
+   "ra": 297.6958,
+   "de": 8.8683,
+   "maj": null,
+   "min": null,
+   "mag": 0.76,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 44,
+   "ly": 16.7,
+   "lyz": null,
+   "lytxt": "z paralaxy 194,95 ± 0,57 mas (družice Hipparcos, zpracování 2007) vychází 16,7 až 16,8 sv. l.",
+   "lysrc": 0,
+   "lead": "Dvanáctá nejjasnější hvězda noční oblohy a jeden z vrcholů Letního trojúhelníku (s Vegou a Denebem).",
+   "txt": [
+    "Altair se na rovníku otáčí rychlostí asi 286 km/s. To není daleko od rychlosti, při které by se roztrhl (asi 400 km/s). Proto není kulatý, ale na pólech zploštělý; potvrdila to měření propojenými dalekohledy."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "altair_1.webp",
+     "t": "altair_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 97649: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=97649"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Altair“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Altair"
+    }
+   ],
+   "sp": "A7 IV–V",
+   "barva": "bílá",
+   "iau": "Altair",
+   "magtxt": "12. nejjasnější hvězda noční oblohy"
+  },
+  {
+   "id": "acrux",
+   "cs": "Acrux",
+   "ozn": "α Crucis · HIP 60718",
+   "druh": "hvezda",
+   "typ": "vícenásobná hvězda",
+   "souhv": "Jižní kříž",
+   "ra": 186.6496,
+   "de": -63.0991,
+   "maj": null,
+   "min": null,
+   "mag": 0.77,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 47,
+   "ly": 320,
+   "lyz": "asi ",
+   "lytxt": "z paralaxy 10,13 ± 0,5 mas (družice Hipparcos, zpracování 2007) vychází 307 až 339 sv. l.; Wikipedie uvádí 348 sv. l.",
+   "lysrc": 0,
+   "lead": "Nejjasnější hvězda Jižního kříže a nejjižnější z hvězd první velikosti.",
+   "txt": [
+    "Okem jedna hvězda, v dalekohledu trojhvězda. Dvě nejjasnější složky jsou horké modrobílé hvězdy mnohokrát hmotnější a zářivější než Slunce."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "acrux_1.webp",
+     "t": "acrux_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 60718: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=60718"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Acrux“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Acrux"
+    }
+   ],
+   "sp": "B0.5 IV",
+   "barva": "modrobílá, horká",
+   "iau": "Acrux",
+   "magtxt": "13. nejjasnější hvězda noční oblohy"
+  },
+  {
+   "id": "aldebaran",
+   "cs": "Aldebaran",
+   "ozn": "α Tauri · HIP 21421",
+   "druh": "hvezda",
+   "typ": "červený obr",
+   "souhv": "Býk",
+   "ra": 68.9802,
+   "de": 16.5093,
+   "maj": null,
+   "min": null,
+   "mag": 0.87,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 50,
+   "ly": 66.6,
+   "lyz": null,
+   "lytxt": "z paralaxy 48,94 ± 0,77 mas (družice Hipparcos, zpracování 2007) vychází 65,6 až 67,7 sv. l.",
+   "lysrc": 0,
+   "lead": "Oranžový obr v souhvězdí Býka, obvykle čtrnáctá nejjasnější hvězda noční oblohy.",
+   "txt": [
+    "Aldebaran má průměr asi 45 Sluncí, i když jeho hmotnost je podobná. Je přes šest miliard let starý a vodík v jádru už spotřeboval. Na obloze svítí před hvězdokupou Hyády, ale nepatří k ní. Jméno znamená arabsky „následovník“."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "aldebaran_1.webp",
+     "t": "aldebaran_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 21421: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=21421"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Aldebaran“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Aldebaran"
+    }
+   ],
+   "sp": "K5 III",
+   "barva": "oranžová",
+   "iau": "Aldebaran",
+   "magtxt": "kolísá: 0,75 až 0,95 mag (Wikipedie)"
+  },
+  {
+   "id": "antares",
+   "cs": "Antares",
+   "ozn": "α Scorpii · HIP 80763",
+   "druh": "hvezda",
+   "typ": "červený veleobr",
+   "souhv": "Štír",
+   "ra": 247.3519,
+   "de": -26.432,
+   "maj": null,
+   "min": null,
+   "mag": 1.06,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 53,
+   "ly": 550,
+   "lyz": "asi ",
+   "lytxt": "z paralaxy 5,89 ± 1 mas (družice Hipparcos, zpracování 2007) vychází 473 až 667 sv. l.",
+   "lysrc": 0,
+   "lead": "Červené „srdce Štíra“. Jeden z největších veleobrů viditelných pouhým okem.",
+   "txt": [
+    "Kdyby Antares stál na místě Slunce, sahal by až někam do pásu planetek. Je 13krát až 16krát hmotnější než Slunce a jeho jasnost pomalu a nepravidelně kolísá. Má horkého průvodce a osvětluje mlhoviny kolem hvězdy ró Ophiuchi, které má v popředí."
+   ],
+   "foto": "Podle ESO to byl v době zveřejnění (2017) nejpodrobnější obraz povrchu jiné hvězdy než Slunce.",
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "antares_1.webp",
+     "t": "antares_1t.webp",
+     "w": 1000,
+     "h": 1000,
+     "cap": "Povrch Antara sestavený z měření propojených dalekohledů (VLTI)",
+     "autor": "ESO/K. Ohnaka",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1726a/"
+    },
+    {
+     "f": "antares_2.webp",
+     "t": "antares_2t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 80763: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=80763"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Antares“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Antares"
+    },
+    {
+     "t": "ESO: VLTI reconstructed view of the surface of Antares (eso1726a)",
+     "u": "https://www.eso.org/public/images/eso1726a/"
+    }
+   ],
+   "sp": "M1 Ib",
+   "barva": "červená, chladná",
+   "iau": "Antares",
+   "magtxt": "proměnná: 0,6 až 1,6 mag (Wikipedie)"
+  },
+  {
+   "id": "spika",
+   "cs": "Spika",
+   "ozn": "α Virginis · Spica · HIP 65474",
+   "druh": "hvezda",
+   "typ": "těsná dvojhvězda horkých modrobílých hvězd",
+   "souhv": "Panna",
+   "ra": 201.2982,
+   "de": -11.1613,
+   "maj": null,
+   "min": null,
+   "mag": 0.98,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 56,
+   "ly": 250,
+   "lyz": "asi ",
+   "lytxt": "z paralaxy 13,06 ± 0,7 mas (družice Hipparcos, zpracování 2007) vychází 237 až 264 sv. l.",
+   "lysrc": 0,
+   "lead": "Nejjasnější hvězda Panny.",
+   "txt": [
+    "Spika je dvojice hvězd, které jsou u sebe tak blízko, že nejsou kulaté, ale vejčité; rozlišit je lze jen rozborem jejich světla. Dál od nich obíhá třetí hvězda. S Arkturem patří Spika k Jarnímu trojúhelníku."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "spika_1.webp",
+     "t": "spika_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 65474: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=65474"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Spica“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Spica"
+    }
+   ],
+   "sp": "B1 V",
+   "barva": "modrobílá, horká",
+   "iau": "Spica",
+   "magtxt": "jedna z 20 nejjasnějších hvězd"
+  },
+  {
+   "id": "pollux",
+   "cs": "Pollux",
+   "ozn": "β Geminorum · HIP 37826",
+   "druh": "hvezda",
+   "typ": "oranžový obr s planetou",
+   "souhv": "Blíženci",
+   "ra": 116.329,
+   "de": 28.0262,
+   "maj": null,
+   "min": null,
+   "mag": 1.16,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 59,
+   "ly": 33.8,
+   "lyz": null,
+   "lytxt": "z paralaxy 96,54 ± 0,27 mas (družice Hipparcos, zpracování 2007) vychází 33,7 až 33,9 sv. l.",
+   "lysrc": 0,
+   "lead": "Nejjasnější hvězda Blíženců a nejbližší obří hvězda u Slunce.",
+   "txt": [
+    "V roce 2006 byla u Polluxe oznámena planeta, která později dostala jméno Thestias. Ačkoli nese řecké písmeno beta, je Pollux o půl magnitudy jasnější než sousední Kastor (alfa)."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "pollux_1.webp",
+     "t": "pollux_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 37826: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=37826"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Pollux (star)“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Pollux_%28star%29"
+    }
+   ],
+   "sp": "K0 III",
+   "barva": "oranžová",
+   "iau": "Pollux",
+   "magtxt": null
+  },
+  {
+   "id": "fomalhaut",
+   "cs": "Fomalhaut",
+   "ozn": "α Piscis Austrini · HIP 113368",
+   "druh": "hvezda",
+   "typ": "bílá hvězda s diskem prachu",
+   "souhv": "Jižní ryba",
+   "ra": 344.4127,
+   "de": -29.6222,
+   "maj": null,
+   "min": null,
+   "mag": 1.17,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 62,
+   "ly": 25.1,
+   "lyz": null,
+   "lytxt": "z paralaxy 129,81 ± 0,47 mas (družice Hipparcos, zpracování 2007) vychází 25 až 25,2 sv. l.",
+   "lysrc": 0,
+   "lead": "Nejjasnější hvězda souhvězdí Jižní ryby. Obklopuje ji disk prachu a trosek.",
+   "txt": [
+    "Fomalhaut vyzařuje víc infračerveného světla, než by měl: prozradilo to disk prachu kolem něj. V disku se zdálo být vidět planetu (Fomalhaut b). Rozbory z let 2019 a 2023 ale ukázaly, že to planeta není, nýbrž rozpínající se oblak trosek po srážce dvou těles."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "fomalhaut_1.webp",
+     "t": "fomalhaut_1t.webp",
+     "w": 1000,
+     "h": 895,
+     "cap": "Disk prachu v infračerveném světle (Webb)",
+     "autor": "NASA, ESA, CSA, A. Pagan (STScI), A. Gáspár (University of Arizona)",
+     "arch": "ESA/Webb",
+     "lic": "CC BY 4.0",
+     "url": "https://esawebb.org/images/weic2312a/"
+    },
+    {
+     "f": "fomalhaut_2.webp",
+     "t": "fomalhaut_2t.webp",
+     "w": 1000,
+     "h": 680,
+     "cap": "Prstenec prachu v rádiových vlnách (ALMA)",
+     "autor": "ALMA (ESO/NAOJ/NRAO). Visible light image: the NASA/ESA Hubble Space TelescopeAcknowledgement: A.C. Boley (University of Florida, Sagan Fellow), M.J. Payne, E.B. Ford, M. Shabran (University of Florida), S. Corder (North American ALMA Science Center, National Radio Astronomy Observatory), and W. Dent (ALMA, Chile), P. Kalas, J. Graham, E. Chiang, E. Kite (University of California, Berkeley), M. Clampin (NASA Goddard Space Flight Center), M. Fitzgerald (Lawrence Livermore National Laboratory), and K. Stapelfeldt and J. Krist (NASA Jet Propulsion Laboratory)",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1216a/"
+    },
+    {
+     "f": "fomalhaut_3.webp",
+     "t": "fomalhaut_3t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 113368: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=113368"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Fomalhaut“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Fomalhaut"
+    },
+    {
+     "t": "ESA/Webb: Webb inspects dusty debris disc around Fomalhaut (weic2312a)",
+     "u": "https://esawebb.org/images/weic2312a/"
+    },
+    {
+     "t": "ESO: ALMA observes a ring around the bright star Fomalhaut (eso1216a)",
+     "u": "https://www.eso.org/public/images/eso1216a/"
+    }
+   ],
+   "sp": "A3 V",
+   "barva": "bílá",
+   "iau": "Fomalhaut",
+   "magtxt": null
+  },
+  {
+   "id": "deneb",
+   "cs": "Deneb",
+   "ozn": "α Cygni · HIP 102098",
+   "druh": "hvezda",
+   "typ": "bílý veleobr",
+   "souhv": "Labuť",
+   "ra": 310.358,
+   "de": 45.2803,
+   "maj": null,
+   "min": null,
+   "mag": 1.25,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 65,
+   "ly": 1400,
+   "lyz": "asi ",
+   "lytxt": "z paralaxy 2,31 ± 0,32 mas (družice Hipparcos, zpracování 2007) vychází 1 240 až 1 640 sv. l.; novější odhad podle Wikipedie je 2 030 sv. l.",
+   "lysrc": 0,
+   "lead": "Nejjasnější hvězda Labutě a vrchol Letního trojúhelníku. Patří k nejvzdálenějším jasným hvězdám na obloze.",
+   "txt": [
+    "Deneb je veleobr přibližně 120 000krát zářivější než Slunce; o titul nejzářivější hvězdy první velikosti soupeří s Rigelem. Jeho vzdálenost je nejistá, a tím i skutečná svítivost."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "deneb_1.webp",
+     "t": "deneb_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 102098: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=102098"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Deneb“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Deneb"
+    }
+   ],
+   "sp": "A2 Ia",
+   "barva": "bílá",
+   "iau": "Deneb",
+   "magtxt": "19. nejjasnější hvězda noční oblohy"
+  },
+  {
+   "id": "mimosa",
+   "cs": "Mimosa",
+   "ozn": "β Crucis · HIP 62434",
+   "druh": "hvezda",
+   "typ": "trojhvězda",
+   "souhv": "Jižní kříž",
+   "ra": 191.9303,
+   "de": -59.6888,
+   "maj": null,
+   "min": null,
+   "mag": 1.25,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 68,
+   "ly": 280,
+   "lyz": "asi ",
+   "lytxt": "z paralaxy 11,71 ± 0,98 mas (družice Hipparcos, zpracování 2007) vychází 257 až 304 sv. l.",
+   "lysrc": 0,
+   "lead": "Druhá nejjasnější hvězda Jižního kříže, dvacátá nejjasnější hvězda noční oblohy.",
+   "txt": [
+    "Mimosa je trojhvězda. Její hlavní složka je horký modrobílý obr."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "mimosa_1.webp",
+     "t": "mimosa_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 62434: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=62434"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Mimosa (star)“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Mimosa_%28star%29"
+    }
+   ],
+   "sp": "B0.5 III",
+   "barva": "modrobílá, horká",
+   "iau": "Mimosa",
+   "magtxt": "20. nejjasnější hvězda noční oblohy"
+  },
+  {
+   "id": "regulus",
+   "cs": "Regulus",
+   "ozn": "α Leonis · HIP 49669",
+   "druh": "hvezda",
+   "typ": "čtyřhvězda",
+   "souhv": "Lev",
+   "ra": 152.093,
+   "de": 11.9672,
+   "maj": null,
+   "min": null,
+   "mag": 1.36,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 71,
+   "ly": 79.3,
+   "lyz": null,
+   "lytxt": "z paralaxy 41,13 ± 0,35 mas (družice Hipparcos, zpracování 2007) vychází 78,6 až 80 sv. l.",
+   "lysrc": 0,
+   "lead": "Nejjasnější hvězda Lva. Leží jen půl stupně od ekliptiky (vypočteno z polohy), takže kolem ní procházejí planety i Měsíc.",
+   "txt": [
+    "Regulus vypadá jako jedna hvězda, ale je to čtyřhvězda uspořádaná do dvou párů. Hlavní modrobílá hvězda má těsného průvodce, ze kterého se stává bílý trpaslík. S pěti dalšími hvězdami tvoří Regulus obrazec zvaný Srp, hlavu Lva."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "regulus_1.webp",
+     "t": "regulus_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 49669: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=49669"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Regulus“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Regulus"
+    }
+   ],
+   "sp": "B7 V",
+   "barva": "modrobílá, horká",
+   "iau": "Regulus",
+   "magtxt": null
+  },
+  {
+   "id": "polarka",
+   "cs": "Polárka",
+   "ozn": "α Ursae Minoris · Polaris · HIP 11767",
+   "druh": "hvezda",
+   "typ": "žlutý veleobr, cefeida",
+   "souhv": "Malá medvědice",
+   "ra": 37.9546,
+   "de": 89.2641,
+   "maj": null,
+   "min": null,
+   "mag": 1.97,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 182,
+   "ly": 433,
+   "lyz": null,
+   "lytxt": "z paralaxy 7,54 ± 0,11 mas (družice Hipparcos, zpracování 2007) vychází 426 až 439 sv. l.",
+   "lysrc": 0,
+   "lead": "Hvězda, která ukazuje sever: leží necelý stupeň od severního nebeského pólu.",
+   "txt": [
+    "Polárka je trojhvězda. Hlavní složka je žlutý veleobr a zároveň nejbližší cefeida, tedy hvězda, která pravidelně pulzuje; podle cefeid se měří vzdálenosti ve vesmíru. Vzdálenějšího průvodce objevil roku 1779 William Herschel. Polárkou je jen dočasně: zemská osa se pomalu stáčí a pól se od ní zase vzdálí."
+   ],
+   "foto": "Hubbleův dalekohled na těchto snímcích poprvé přímo zachytil těsného průvodce Polárky.",
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "polarka_1.webp",
+     "t": "polarka_1t.webp",
+     "w": 1000,
+     "h": 800,
+     "cap": "Polárka a její průvodci (Hubble)",
+     "autor": "NASA, ESA, N. Evans (Harvard-Smithsonian CfA), and H. Bond (STScI)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/opo0602a/"
+    },
+    {
+     "f": "polarka_2.webp",
+     "t": "polarka_2t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 11767: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=11767"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Polaris“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Polaris"
+    },
+    {
+     "t": "ESA/Hubble: Hubble Images Polaris's Companion (opo0602a)",
+     "u": "https://esahubble.org/images/opo0602a/"
+    }
+   ],
+   "sp": "F7 Ib–II",
+   "barva": "žlutobílá",
+   "iau": "Polaris",
+   "magtxt": "kolísá kolem 1,98 mag (Wikipedie)"
+  },
+  {
+   "id": "kastor",
+   "cs": "Kastor",
+   "ozn": "α Geminorum · Castor · HIP 36850",
+   "druh": "hvezda",
+   "typ": "šestihvězda",
+   "souhv": "Blíženci",
+   "ra": 113.6495,
+   "de": 31.8883,
+   "maj": null,
+   "min": null,
+   "mag": 1.58,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 183,
+   "ly": 51,
+   "lyz": "asi ",
+   "lytxt": "z paralaxy 64,12 ± 3,75 mas (družice Hipparcos, zpracování 2007) vychází 48,1 až 54 sv. l.",
+   "lysrc": 0,
+   "lead": "Druhá nejjasnější hvězda Blíženců.",
+   "txt": [
+    "Okem jedna hvězda, ve skutečnosti šest hvězd uspořádaných do tří párů."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "kastor_1.webp",
+     "t": "kastor_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 36850: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=36850"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Castor (star)“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Castor_%28star%29"
+    }
+   ],
+   "sp": "A2 V",
+   "barva": "bílá",
+   "iau": "Castor",
+   "magtxt": null
+  },
+  {
+   "id": "mizar",
+   "cs": "Mizar a Alkor",
+   "ozn": "ζ Ursae Majoris · HIP 65378",
+   "druh": "hvezda",
+   "typ": "dvojice hvězd viditelná okem; dohromady šest hvězd",
+   "souhv": "Velká medvědice",
+   "ra": 200.9814,
+   "de": 54.9254,
+   "maj": null,
+   "min": null,
+   "mag": 2.23,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 184,
+   "ly": 86,
+   "lyz": "asi ",
+   "lytxt": "z paralaxy 38,01 ± 1,71 mas (družice Hipparcos, zpracování 2007) vychází 82,1 až 89,9 sv. l.; Wikipedie uvádí pro Mizar a Alkor asi 83 sv. l.",
+   "lysrc": 0,
+   "lead": "Hvězda v oji Velkého vozu. Kdo má dobré oči, uvidí těsně vedle ní slabší hvězdičku Alkor.",
+   "txt": [
+    "Mizar a Alkor jsou známá dvojice hvězd viditelná pouhým okem. Mizar sám je čtyřhvězda a Alkor dvojhvězda, takže dohromady jde o šest hvězd. Patří do skupiny hvězd, které se vesmírem pohybují společně (pohybová skupina Velké medvědice)."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "mizar_1.webp",
+     "t": "mizar_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 65378: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=65378"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Mizar“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Mizar"
+    }
+   ],
+   "sp": "A2 V",
+   "barva": "bílá",
+   "iau": "Mizar",
+   "magtxt": null
+  },
+  {
+   "id": "algol",
+   "cs": "Algol",
+   "ozn": "β Persei · HIP 14576",
+   "druh": "hvezda",
+   "typ": "zákrytová proměnná hvězda",
+   "souhv": "Perseus",
+   "ra": 47.0422,
+   "de": 40.9556,
+   "maj": null,
+   "min": null,
+   "mag": 2.09,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 185,
+   "ly": 90,
+   "lyz": "asi ",
+   "lytxt": "z paralaxy 36,27 ± 1,4 mas (družice Hipparcos, zpracování 2007) vychází 86,6 až 93,5 sv. l.",
+   "lysrc": 0,
+   "lead": "„Ďáblova hvězda“ v Perseovi: každé necelé tři dny na pár hodin zeslábne.",
+   "txt": [
+    "Algol je trojhvězda. Dvě z jeho hvězd se navzájem pravidelně zakrývají: obvykle svítí stálou jasností 2,1 mag, ale jednou za 2,86 dne na zhruba deset hodin zeslábne na 3,4 mag. Byla to jedna z prvních objevených proměnných hvězd a dala jméno celé skupině zákrytových proměnných."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "algol_1.webp",
+     "t": "algol_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 14576: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=14576"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Algol“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Algol"
+    }
+   ],
+   "sp": "B8 V",
+   "barva": "modrobílá, horká",
+   "iau": "Algol",
+   "magtxt": "kolísá: 2,1 až 3,4 mag (Wikipedie)"
+  },
+  {
+   "id": "mira",
+   "cs": "Mira",
+   "ozn": "ο Ceti · HIP 10826",
+   "druh": "hvezda",
+   "typ": "pulzující červený obr",
+   "souhv": "Velryba",
+   "ra": 34.8366,
+   "de": -2.9776,
+   "maj": null,
+   "min": null,
+   "mag": 6.47,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 1,
+   "prio": 356,
+   "ly": 300,
+   "lyz": "asi ",
+   "lytxt": "z paralaxy 10,91 ± 1,22 mas (družice Hipparcos, zpracování 2007) vychází 269 až 337 sv. l.; ESO uvádí asi 400 sv. l.",
+   "lysrc": 0,
+   "lead": "Pulzující červený obr ve Velrybě, první objevená proměnná hvězda (kromě supernov).",
+   "txt": [
+    "Mira je dvojhvězda: červený obr, který se pravidelně nafukuje a smršťuje, a bílý trpaslík. Podle ní se jmenuje celá skupina pulzujících hvězd, miridy."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci je vidět jako slabší hvězda.",
+   "imgs": [
+    {
+     "f": "mira_1.webp",
+     "t": "mira_1t.webp",
+     "w": 945,
+     "h": 1000,
+     "cap": "Mira A a její průvodce v rádiových vlnách (ALMA)",
+     "autor": "ESO/S. Ramstedt (Uppsala University, Sweden) & W. Vlemmings (Chalmers University of Technology, Sweden)",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/potw1447a/"
+    },
+    {
+     "f": "mira_2.webp",
+     "t": "mira_2t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 10826: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=10826"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Mira“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Mira"
+    },
+    {
+     "t": "ESO: Seeing into the heart of Mira A and its partner (potw1447a)",
+     "u": "https://www.eso.org/public/images/potw1447a/"
+    }
+   ],
+   "sp": "M5",
+   "barva": "červená, chladná",
+   "iau": "Mira",
+   "magtxt": "silně proměnná"
+  },
+  {
+   "id": "albireo",
+   "cs": "Albireo",
+   "ozn": "β Cygni · HIP 95947",
+   "druh": "hvezda",
+   "typ": "barevná dvojhvězda",
+   "souhv": "Labuť",
+   "ra": 292.6803,
+   "de": 27.9597,
+   "maj": null,
+   "min": null,
+   "mag": 3.05,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 1,
+   "prio": 357,
+   "ly": 430,
+   "lyz": "asi ",
+   "lytxt": "z paralaxy 7,51 ± 0,33 mas (družice Hipparcos, zpracování 2007) vychází 416 až 454 sv. l.",
+   "lysrc": 0,
+   "lead": "V malém dalekohledu jedna z nejhezčích dvojhvězd oblohy: žlutá hvězda s modrým průvodcem.",
+   "txt": [
+    "Okem vypadá Albireo jako jediná hvězda třetí velikosti. Už malý dalekohled ji rozloží na dvě: jasnější žlutou (která je sama těsnou trojhvězdou) a slabší modrou."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci je vidět jako slabší hvězda.",
+   "imgs": [
+    {
+     "f": "albireo_1.webp",
+     "t": "albireo_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 95947: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=95947"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Albireo“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Albireo"
+    }
+   ],
+   "sp": "K3 II",
+   "barva": "oranžová",
+   "iau": "Albireo",
+   "magtxt": null
+  },
+  {
+   "id": "proxima",
+   "cs": "Proxima Centauri",
+   "ozn": "α Centauri C · HIP 70890",
+   "druh": "hvezda",
+   "typ": "červený trpaslík, nejbližší hvězda",
+   "souhv": "Kentaur",
+   "ra": 217.429,
+   "de": -62.6795,
+   "maj": null,
+   "min": null,
+   "mag": 11.01,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 0,
+   "prio": 548,
+   "ly": 4.2,
+   "lyz": null,
+   "lytxt": "z paralaxy 771,64 ± 2,6 mas (družice Hipparcos, zpracování 2007) vychází 4,2 sv. l.",
+   "lysrc": 0,
+   "lead": "Hvězda, která je Slunci nejblíž. Přesto je tak slabá, že ji bez dalekohledu neuvidíš.",
+   "txt": [
+    "Proxima je malý červený trpaslík: má jen asi osminu hmotnosti Slunce a sedminu jeho průměru. Objevil ji roku 1915 Robert Innes. Patří k systému Alfa Centauri: kolem jeho dvou jasných hvězd obíhá jednou za asi 550 000 let a na obloze je od nich 2,2° daleko. Občas se prudce zjasní, je to eruptivní hvězda."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci vidět není: je slabší, než kam sahá její katalog hvězd (asi 6,5 mag). Kroužek ukazuje místo, kde leží.",
+   "imgs": [
+    {
+     "f": "proxima_1.webp",
+     "t": "proxima_1t.webp",
+     "w": 1000,
+     "h": 980,
+     "cap": "Proxima Centauri (Hubble)",
+     "autor": "ESA/Hubble & NASA",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/potw1343a/"
+    },
+    {
+     "f": "proxima_2.webp",
+     "t": "proxima_2t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 70890: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=70890"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Proxima Centauri“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Proxima_Centauri"
+    },
+    {
+     "t": "ESA/Hubble: New shot of Proxima Centauri, our nearest neighbour (potw1343a)",
+     "u": "https://esahubble.org/images/potw1343a/"
+    }
+   ],
+   "sp": "M5 V",
+   "barva": "červená, chladná",
+   "iau": "Proxima Centauri",
+   "magtxt": "okem vidět není (hranice je asi 6 mag)"
+  },
+  {
+   "id": "barnard",
+   "cs": "Barnardova hvězda",
+   "ozn": "Barnard's Star · HIP 87937",
+   "druh": "hvezda",
+   "typ": "červený trpaslík",
+   "souhv": "Hadonoš",
+   "ra": 269.4521,
+   "de": 4.6934,
+   "maj": null,
+   "min": null,
+   "mag": 9.54,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 0,
+   "prio": 549,
+   "ly": 5.9,
+   "lyz": null,
+   "lytxt": "z paralaxy 548,31 ± 1,51 mas (družice Hipparcos, zpracování 2007) vychází 5,9 až 6 sv. l.",
+   "lysrc": 0,
+   "lead": "Po trojici Alfa Centauri nejbližší hvězda u Slunce. Okem vidět není.",
+   "txt": [
+    "Barnardova hvězda je malý červený trpaslík se 16 % hmotnosti Slunce a 19 % jeho průměru. Je to nejbližší hvězda severní poloviny oblohy. Podle Wikipedie kolem ní obíhají čtyři malé planety, lehčí než Země."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci vidět není: je slabší, než kam sahá její katalog hvězd (asi 6,5 mag). Kroužek ukazuje místo, kde leží.",
+   "imgs": [
+    {
+     "f": "barnard_1.webp",
+     "t": "barnard_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 87937: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=87937"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Barnard's Star“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Barnard%27s_Star"
+    }
+   ],
+   "sp": "sdM4",
+   "barva": "červená, chladná",
+   "iau": "Barnard's Star",
+   "magtxt": "okem vidět není (hranice je asi 6 mag)"
+  },
+  {
+   "id": "thuban",
+   "cs": "Thuban",
+   "ozn": "α Draconis · HIP 68756",
+   "druh": "hvezda",
+   "typ": "dvojhvězda, dávná Polárka",
+   "souhv": "Drak",
+   "ra": 211.0973,
+   "de": 64.3759,
+   "maj": null,
+   "min": null,
+   "mag": 3.67,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 1,
+   "prio": 360,
+   "ly": 303,
+   "lyz": null,
+   "lytxt": "z paralaxy 10,76 ± 0,17 mas (družice Hipparcos, zpracování 2007) vychází 298 až 308 sv. l.",
+   "lysrc": 0,
+   "lead": "Nenápadná hvězda v Drakovi, která byla Polárkou ve 4. až 2. tisíciletí př. n. l.",
+   "txt": [
+    "Zemská osa se pomalu stáčí, a tak se severní nebeský pól posouvá mezi hvězdami. Před pěti tisíci lety ukazoval k Thubanu, dnes k Polárce a kolem roku 13 700 bude poblíž Vegy."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci je vidět jako slabší hvězda.",
+   "imgs": [
+    {
+     "f": "thuban_1.webp",
+     "t": "thuban_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 68756: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=68756"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Thuban“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Thuban"
+    }
+   ],
+   "sp": "A0 III",
+   "barva": "bílá",
+   "iau": "Thuban",
+   "magtxt": null
+  },
+  {
+   "id": "alnilam",
+   "cs": "Alnilam",
+   "ozn": "ε Orionis · HIP 26311",
+   "druh": "hvezda",
+   "typ": "modrý veleobr",
+   "souhv": "Orion",
+   "ra": 84.0534,
+   "de": -1.2019,
+   "maj": null,
+   "min": null,
+   "mag": 1.69,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 2,
+   "prio": 191,
+   "ly": 2000,
+   "lyz": "asi ",
+   "lytxt": "z paralaxy 1,65 ± 0,45 mas (družice Hipparcos, zpracování 2007) vychází 1 550 až 2 720 sv. l.; paralaxa je na hranici přesnosti; Wikipedie uvádí asi 1 250 sv. l.",
+   "lysrc": 0,
+   "lead": "Prostřední hvězda Orionova pásu.",
+   "txt": [
+    "Alnilam je modrý veleobr asi 28krát hmotnější než Slunce a 270 000krát zářivější."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci patří k nejjasnějším hvězdám.",
+   "imgs": [
+    {
+     "f": "alnilam_1.webp",
+     "t": "alnilam_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 26311: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=26311"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Alnilam“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Alnilam"
+    }
+   ],
+   "sp": "B0 Ia",
+   "barva": "modrobílá, horká",
+   "iau": "Alnilam",
+   "magtxt": null
+  },
+  {
+   "id": "etacar",
+   "cs": "Eta Carinae",
+   "ozn": "η Carinae",
+   "druh": "hvezda",
+   "typ": "dvojice mimořádně hmotných hvězd",
+   "souhv": "Lodní kýl",
+   "ra": 161.2653,
+   "de": -59.6839,
+   "maj": null,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 1,
+   "prio": 362,
+   "ly": 7500,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 1,
+   "lead": "Jedna z nejzářivějších hvězd Galaxie. V roce 1843 byla druhou nejjasnější hvězdou na obloze.",
+   "txt": [
+    "Eta Carinae jsou nejméně dvě hvězdy, které dohromady září víc než pětmilionkrát silněji než Slunce a oběhnou se jednou za 5,54 roku. Při „Velké erupci“, která začala roku 1837, se zjasnily tak, že v březnu 1843 překonaly všechny hvězdy kromě Siria; po roce 1856 zmizely očím. Od roku 1940 se zase zjasňují. Leží uvnitř mlhoviny Carina."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci leží uvnitř mlhoviny Carina.",
+   "imgs": [
+    {
+     "f": "etacar_1.webp",
+     "t": "etacar_1t.webp",
+     "w": 985,
+     "h": 1000,
+     "cap": "Plyn vyvržený při erupcích, v ultrafialovém světle (Hubble)",
+     "autor": "NASA, ESA, N. Smith (University of Arizona, Tucson), and J. Morse (BoldlyGo Institute, New York)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic1912a/"
+    },
+    {
+     "f": "etacar_2.webp",
+     "t": "etacar_2t.webp",
+     "w": 991,
+     "h": 1000,
+     "cap": "V infračerveném světle (dalekohled VLT)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso0817a/"
+    },
+    {
+     "f": "etacar_3.webp",
+     "t": "etacar_3t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Poloha: ESA/Hubble: poloha středu snímku heic1912a",
+     "u": "https://esahubble.org/images/heic1912a/"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Eta Carinae“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Eta_Carinae"
+    },
+    {
+     "t": "ESA/Hubble: Cosmic Fireworks in Ultraviolet (heic1912a)",
+     "u": "https://esahubble.org/images/heic1912a/"
+    },
+    {
+     "t": "ESO: Eta Carinae (eso0817a)",
+     "u": "https://www.eso.org/public/images/eso0817a/"
+    }
+   ],
+   "sp": null,
+   "barva": null,
+   "iau": "Eta Carinae",
+   "magtxt": null
+  },
+  {
+   "id": "betapic",
+   "cs": "Beta Pictoris",
+   "ozn": "β Pictoris · HIP 27321",
+   "druh": "hvezda",
+   "typ": "mladá hvězda s diskem a planetami",
+   "souhv": "Malíř",
+   "ra": 86.8212,
+   "de": -51.0665,
+   "maj": null,
+   "min": null,
+   "mag": 3.85,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 1,
+   "prio": 363,
+   "ly": 63.4,
+   "lyz": null,
+   "lytxt": "z paralaxy 51,44 ± 0,12 mas (družice Hipparcos, zpracování 2007) vychází 63,3 až 63,6 sv. l.",
+   "lysrc": 0,
+   "lead": "Mladá hvězda, kolem které se právě dotváří planetární soustava.",
+   "txt": [
+    "Beta Pictoris je stará jen asi 23 milionů let. Obklopuje ji disk prachu a trosek, ve kterém obíhají tři potvrzené planety; všechny se podařilo přímo vyfotografovat."
+   ],
+   "foto": "Samotná hvězda je na snímcích zakrytá nebo odečtená, jinak by slabý disk přezářila.",
+   "nase": "Na obloze v aplikaci je vidět jako slabší hvězda.",
+   "imgs": [
+    {
+     "f": "betapic_1.webp",
+     "t": "betapic_1t.webp",
+     "w": 1000,
+     "h": 996,
+     "cap": "Disk a planeta v infračerveném světle (ESO)",
+     "autor": "ESO/A.-M. Lagrange et al.",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso0842a/"
+    },
+    {
+     "f": "betapic_2.webp",
+     "t": "betapic_2t.webp",
+     "w": 1000,
+     "h": 632,
+     "cap": "Disk trosek (Webb)",
+     "autor": "NASA, ESA, CSA, STScI, C. Stark and K. Lawson (NASA GSFC), J. Kammerer (ESO), and M. Perrin (STScI).",
+     "arch": "ESA/Webb",
+     "lic": "CC BY 4.0",
+     "url": "https://esawebb.org/images/weic2401a/"
+    },
+    {
+     "f": "betapic_3.webp",
+     "t": "betapic_3t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 27321: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=27321"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Beta Pictoris“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Beta_Pictoris"
+    },
+    {
+     "t": "ESO: Beta Pictoris as seen in infrared light (eso0842a)",
+     "u": "https://www.eso.org/public/images/eso0842a/"
+    },
+    {
+     "t": "ESA/Webb: Star system Beta Pictoris (MIRI image) (weic2401a)",
+     "u": "https://esawebb.org/images/weic2401a/"
+    }
+   ],
+   "sp": "A3 V",
+   "barva": "bílá",
+   "iau": "Beta Pictoris",
+   "magtxt": null
+  },
+  {
+   "id": "peg51",
+   "cs": "51 Pegasi",
+   "ozn": "51 Pegasi · Helvetios · HIP 113357",
+   "druh": "hvezda",
+   "typ": "hvězda podobná Slunci s planetou",
+   "souhv": "Pegas",
+   "ra": 344.3666,
+   "de": 20.7688,
+   "maj": null,
+   "min": null,
+   "mag": 5.45,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 1,
+   "prio": 364,
+   "ly": 50.9,
+   "lyz": null,
+   "lytxt": "z paralaxy 64,07 ± 0,38 mas (družice Hipparcos, zpracování 2007) vychází 50,6 až 51,2 sv. l.",
+   "lysrc": 0,
+   "lead": "U této hvězdy byla roku 1995 objevena první planeta obíhající kolem jiné hvězdy podobné Slunci.",
+   "txt": [
+    "Planeta 51 Pegasi b je takzvaný horký Jupiter. O dvacet let později se stala i první exoplanetou, jejíž odražené světlo se podařilo přímo zachytit ve spektru. Hvězda má vlastní jméno Helvetios, planeta Dimidium."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci je vidět jako slabší hvězda.",
+   "imgs": [
+    {
+     "f": "peg51_1.webp",
+     "t": "peg51_1t.webp",
+     "w": 1000,
+     "h": 629,
+     "cap": "Planeta 51 Pegasi b (kresba, ne fotografie)",
+     "autor": "ESO/M. Kornmesser/Nick Risinger (skysurvey.org)",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1517a/"
+    },
+    {
+     "f": "peg51_2.webp",
+     "t": "peg51_2t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 113357: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=113357"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „51 Pegasi“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/51_Pegasi"
+    },
+    {
+     "t": "ESO: Artist’s impression of the exoplanet 51 Pegasi b (eso1517a)",
+     "u": "https://www.eso.org/public/images/eso1517a/"
+    }
+   ],
+   "sp": "G5 V",
+   "barva": "žlutá, podobná Slunci",
+   "iau": "Helvetios",
+   "magtxt": null
+  },
+  {
+   "id": "deltacep",
+   "cs": "Delta Cephei",
+   "ozn": "δ Cephei · HIP 110991",
+   "druh": "hvezda",
+   "typ": "pulzující veleobr, vzor cefeid",
+   "souhv": "Kefeus",
+   "ra": 337.2928,
+   "de": 58.4152,
+   "maj": null,
+   "min": null,
+   "mag": 4.07,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 1,
+   "prio": 365,
+   "ly": 870,
+   "lyz": "asi ",
+   "lytxt": "z paralaxy 3,77 ± 0,16 mas (družice Hipparcos, zpracování 2007) vychází 830 až 903 sv. l.; Wikipedie uvádí asi 890 sv. l.",
+   "lysrc": 0,
+   "lead": "Hvězda, podle které se jmenují cefeidy: pulzující hvězdy, jimiž se měří vzdálenosti ve vesmíru.",
+   "txt": [
+    "Delta Cephei pravidelně mění jasnost a je vzorem celé skupiny proměnných hvězd. Je součástí čtyřhvězdy."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci je vidět jako slabší hvězda.",
+   "imgs": [
+    {
+     "f": "deltacep_1.webp",
+     "t": "deltacep_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 110991: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=110991"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Delta Cephei“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Delta_Cephei"
+    }
+   ],
+   "sp": "G2 Ib",
+   "barva": "žlutá",
+   "iau": "Delta Cephei",
+   "magtxt": "proměnná (cefeida)"
+  },
+  {
+   "id": "cyg61",
+   "cs": "61 Cygni",
+   "ozn": "61 Cygni · HIP 104214",
+   "druh": "hvezda",
+   "typ": "dvojhvězda oranžových trpaslíků",
+   "souhv": "Labuť",
+   "ra": 316.7248,
+   "de": 38.7494,
+   "maj": null,
+   "min": null,
+   "mag": 5.2,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 1,
+   "prio": 366,
+   "ly": 11.4,
+   "lyz": null,
+   "lytxt": "z paralaxy 286,82 ± 6,78 mas (družice Hipparcos, zpracování 2007) vychází 11,1 až 11,6 sv. l.",
+   "lysrc": 0,
+   "lead": "První hvězda, u které se podařilo změřit vzdálenost.",
+   "txt": [
+    "Roku 1838 změřil Friedrich Bessel její paralaxu a vyšlo mu asi 10,4 světelného roku, velmi blízko dnešní hodnotě. Pozornost na sebe hvězda upoutala už roku 1804 tím, jak rychle se pohybuje po obloze: ze všech hvězd viditelných okem má největší vlastní pohyb. Jsou to dva oranžoví trpaslíci, kteří se oběhnou jednou za asi 659 let."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci je vidět jako slabší hvězda.",
+   "imgs": [
+    {
+     "f": "cyg61_1.webp",
+     "t": "cyg61_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 104214: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=104214"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „61 Cygni“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/61_Cygni"
+    }
+   ],
+   "sp": "K5 V",
+   "barva": "oranžová",
+   "iau": "61 Cygni",
+   "magtxt": "jasnější složka; na tmavé obloze vidět okem"
+  },
+  {
+   "id": "mucep",
+   "cs": "Granátová hvězda",
+   "ozn": "μ Cephei · HIP 107259",
+   "druh": "hvezda",
+   "typ": "červený veleobr",
+   "souhv": "Kefeus",
+   "ra": 325.8769,
+   "de": 58.78,
+   "maj": null,
+   "min": null,
+   "mag": 4.23,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 1,
+   "prio": 367,
+   "ly": 3000,
+   "lyz": "do ",
+   "lytxt": "nejistá: hvězda zřejmě patří k asociaci Cepheus OB2, která leží do 3 000 sv. l. (Wikipedie); paralaxa družice Hipparcos (0,55 ± 0,20 mas) je na hranici měřitelnosti",
+   "lysrc": 1,
+   "lead": "Jedna z největších známých hvězd. Je sytě červená, odtud jméno.",
+   "txt": [
+    "Kdyby stála na místě Slunce, pohltila by přinejmenším dráhu Marsu a pás planetek. Okem je vidět za dobrých podmínek jako hvězda čtvrté velikosti."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci je vidět jako slabší hvězda.",
+   "imgs": [
+    {
+     "f": "mucep_1.webp",
+     "t": "mucep_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 107259: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=107259"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Mu Cephei“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Mu_Cephei"
+    }
+   ],
+   "sp": "M2 Ia",
+   "barva": "červená, chladná",
+   "iau": "Garnet Star",
+   "magtxt": null
+  },
+  {
+   "id": "tauceti",
+   "cs": "Tau Ceti",
+   "ozn": "τ Ceti · HIP 8102",
+   "druh": "hvezda",
+   "typ": "hvězda podobná Slunci",
+   "souhv": "Velryba",
+   "ra": 26.017,
+   "de": -15.9375,
+   "maj": null,
+   "min": null,
+   "mag": 3.49,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 1,
+   "prio": 368,
+   "ly": 11.9,
+   "lyz": null,
+   "lytxt": "z paralaxy 273,96 ± 0,17 mas (družice Hipparcos, zpracování 2007) vychází 11,9 sv. l.",
+   "lysrc": 0,
+   "lead": "Nejbližší osamělá hvězda podobná Slunci.",
+   "txt": [
+    "Tau Ceti má asi 78 % hmotnosti Slunce. Je klidná a stálá, proto se u ní často hledají planety; do roku 2025 ale žádná jednoznačně potvrzena nebyla. Obklopuje ji víc než desetkrát tolik prachu, než kolik je ho ve Sluneční soustavě. Z Tau Ceti by bylo Slunce vidět jako hvězda 2,6 mag v souhvězdí Pastýře."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci je vidět jako slabší hvězda.",
+   "imgs": [
+    {
+     "f": "tauceti_1.webp",
+     "t": "tauceti_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 8102: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=8102"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Tau Ceti“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Tau_Ceti"
+    }
+   ],
+   "sp": "G8 V",
+   "barva": "žlutá, podobná Slunci",
+   "iau": "Tau Ceti",
+   "magtxt": null
+  },
+  {
+   "id": "epseri",
+   "cs": "Epsilon Eridani",
+   "ozn": "ε Eridani · Ran · HIP 16537",
+   "druh": "hvezda",
+   "typ": "mladší oranžový trpaslík s planetou",
+   "souhv": "Eridanus",
+   "ra": 53.2327,
+   "de": -9.4583,
+   "maj": null,
+   "min": null,
+   "mag": 3.72,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 1,
+   "prio": 369,
+   "ly": 10.5,
+   "lyz": null,
+   "lytxt": "z paralaxy 310,94 ± 0,16 mas (družice Hipparcos, zpracování 2007) vychází 10,5 sv. l.",
+   "lysrc": 0,
+   "lead": "Třetí nejbližší hvězda viditelná pouhým okem.",
+   "txt": [
+    "Epsilon Eridani je menší a chladnější než Slunce a má jen asi miliardu let. Je proto neklidnější: její hvězdný vítr je 30krát silnější než sluneční. Obíhá kolem ní obří planeta a disk trosek."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci je vidět jako slabší hvězda.",
+   "imgs": [
+    {
+     "f": "epseri_1.webp",
+     "t": "epseri_1t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 16537: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=16537"
+    },
+    {
+     "t": "Wikipedie (anglicky), heslo „Epsilon Eridani“, úvodní odstavce (stav 20. 11. 2026)",
+     "u": "https://en.wikipedia.org/wiki/Epsilon_Eridani"
+    }
+   ],
+   "sp": "K2 V",
+   "barva": "oranžová",
+   "iau": "Ran",
+   "magtxt": null
+  },
+  {
+   "id": "epsind",
+   "cs": "Epsilon Indi",
+   "ozn": "ε Indi · HIP 108870",
+   "druh": "hvezda",
+   "typ": "oranžový trpaslík s planetou",
+   "souhv": "Indián",
+   "ra": 330.8402,
+   "de": -56.786,
+   "maj": null,
+   "min": null,
+   "mag": 4.69,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 1,
+   "prio": 370,
+   "ly": 11.8,
+   "lyz": null,
+   "lytxt": "z paralaxy 276,06 ± 0,28 mas (družice Hipparcos, zpracování 2007) vychází 11,8 sv. l.",
+   "lysrc": 0,
+   "lead": "Blízká oranžová hvězda jižní oblohy, u které dalekohled Jamese Webba přímo vyfotil planetu.",
+   "txt": [
+    "Planeta nese označení Epsilon Indi Ab. Na snímku je světlo samotné hvězdy zakryté, aby ji nepřezářilo."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci je vidět jako slabší hvězda.",
+   "imgs": [
+    {
+     "f": "epsind_1.webp",
+     "t": "epsind_1t.webp",
+     "w": 1000,
+     "h": 1000,
+     "cap": "Planeta Epsilon Indi Ab (Webb)",
+     "autor": "ESA/Webb, NASA, CSA, STScI, E. Matthews (Max Planck Institute for Astronomy)",
+     "arch": "ESA/Webb",
+     "lic": "CC BY 4.0",
+     "url": "https://esawebb.org/images/weic2421a/"
+    },
+    {
+     "f": "epsind_2.webp",
+     "t": "epsind_2t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 108870: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=108870"
+    },
+    {
+     "t": "ESA/Webb: Exoplanet Epsilon Indi Ab (MIRI image) (weic2421a)",
+     "u": "https://esawebb.org/images/weic2421a/"
+    }
+   ],
+   "sp": "K5 V",
+   "barva": "oranžová",
+   "iau": "Epsilon Indi",
+   "magtxt": null
+  },
+  {
+   "id": "vycma",
+   "cs": "VY Canis Majoris",
+   "ozn": "VY CMa · HIP 35793",
+   "druh": "hvezda",
+   "typ": "červený hyperobr",
+   "souhv": "Velký pes",
+   "ra": 110.743,
+   "de": -25.7676,
+   "maj": null,
+   "min": null,
+   "mag": 8.08,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 0,
+   "prio": 561,
+   "ly": 4000,
+   "lyz": "asi ",
+   "lytxt": "asi 4 000 sv. l. (ESO); paralaxu této hvězdy družice Hipparcos spolehlivě nezměřila",
+   "lysrc": 1,
+   "lead": "Jedna z největších známých hvězd Mléčné dráhy. Okem vidět není.",
+   "txt": [
+    "VY Canis Majoris je 30krát až 40krát hmotnější než Slunce a 300 000krát zářivější. Kdyby stála na místě Slunce, sahala by až k dráze Jupiteru. Je na konci života a rychle ztrácí hmotu."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci vidět není: je slabší, než kam sahá její katalog hvězd (asi 6,5 mag). Kroužek ukazuje místo, kde leží.",
+   "imgs": [
+    {
+     "f": "vycma_1.webp",
+     "t": "vycma_1t.webp",
+     "w": 1000,
+     "h": 929,
+     "cap": "Okolí hvězdy (dalekohled VLT, přístroj SPHERE)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1546a/"
+    },
+    {
+     "f": "vycma_2.webp",
+     "t": "vycma_2t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 35793: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=35793"
+    },
+    {
+     "t": "ESO: VLT image of the surroundings of VY Canis Majoris seen with SPHERE (eso1546a)",
+     "u": "https://www.eso.org/public/images/eso1546a/"
+    }
+   ],
+   "sp": "M3",
+   "barva": "červená, chladná",
+   "iau": "VY Canis Majoris",
+   "magtxt": "okem vidět není (hranice je asi 6 mag)"
+  },
+  {
+   "id": "rscl",
+   "cs": "R Sculptoris",
+   "ozn": "R Scl · HIP 6759",
+   "druh": "hvezda",
+   "typ": "stárnoucí červený obr",
+   "souhv": "Sochař",
+   "ra": 21.7421,
+   "de": -32.5432,
+   "maj": null,
+   "min": null,
+   "mag": 6.57,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 0,
+   "prio": 562,
+   "ly": 1500,
+   "lyz": "asi ",
+   "lytxt": "asi 1 500 sv. l. (ESO); z paralaxy družice Hipparcos (3,76 ± 0,75 mas) vychází kolem 870",
+   "lysrc": 1,
+   "lead": "Stará hvězda, kolem které radioteleskopy našly nečekanou spirálu plynu.",
+   "txt": [
+    "Spirálu v odvrženém plynu odhalila soustava radioteleskopů ALMA. Nic takového předtím u podobné hvězdy vidět nebylo; nejspíš ji způsobuje skrytý průvodce, který kolem hvězdy obíhá."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci vidět není: je slabší, než kam sahá její katalog hvězd (asi 6,5 mag). Kroužek ukazuje místo, kde leží.",
+   "imgs": [
+    {
+     "f": "rscl_1.webp",
+     "t": "rscl_1t.webp",
+     "w": 1000,
+     "h": 625,
+     "cap": "Spirála plynu kolem hvězdy (ALMA)",
+     "autor": "ALMA (ESO/NAOJ/NRAO)/M. Maercker et al.",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1239a/"
+    },
+    {
+     "f": "rscl_2.webp",
+     "t": "rscl_2t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 6759: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=6759"
+    },
+    {
+     "t": "ESO: Curious spiral spotted by ALMA around red giant star R Sculptoris (data visualisation) (eso1239a)",
+     "u": "https://www.eso.org/public/images/eso1239a/"
+    }
+   ],
+   "sp": "C",
+   "barva": "sytě červená (uhlíková)",
+   "iau": "R Sculptoris",
+   "magtxt": "proměnná, na hranici viditelnosti okem"
+  },
+  {
+   "id": "pi1gru",
+   "cs": "Pí¹ Gruis",
+   "ozn": "π¹ Gruis · HIP 110478",
+   "druh": "hvezda",
+   "typ": "stárnoucí červený obr",
+   "souhv": "Jeřáb",
+   "ra": 335.6842,
+   "de": -45.9479,
+   "maj": null,
+   "min": null,
+   "mag": 6.42,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": false,
+   "vid": 0,
+   "prio": 563,
+   "ly": 530,
+   "lyz": "asi ",
+   "lytxt": "z paralaxy 6,13 ± 0,76 mas (družice Hipparcos, zpracování 2007) vychází 473 až 607 sv. l.",
+   "lysrc": 0,
+   "lead": "První hvězda kromě Slunce, na jejímž povrchu byly přímo vidět obří bubliny horkého plynu.",
+   "txt": [
+    "Dalekohled VLT na povrchu tohoto červeného obra přímo zachytil granulaci: buňky stoupajícího a klesajícího plynu. Každá zabírá víc než čtvrtinu průměru hvězdy a měří asi 120 milionů kilometrů."
+   ],
+   "foto": null,
+   "nase": "Na obloze v aplikaci vidět není: je slabší, než kam sahá její katalog hvězd (asi 6,5 mag). Kroužek ukazuje místo, kde leží.",
+   "imgs": [
+    {
+     "f": "pi1gru_1.webp",
+     "t": "pi1gru_1t.webp",
+     "w": 1000,
+     "h": 1000,
+     "cap": "Povrch hvězdy (dalekohled VLT, přístroj PIONIER)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1741a/"
+    },
+    {
+     "f": "pi1gru_2.webp",
+     "t": "pi1gru_2t.webp",
+     "w": 720,
+     "h": 720,
+     "cap": "Okolí hvězdy na mapě hvězd, 12° × 12° (vykresleno z katalogů, ne fotografie)",
+     "autor": "NASA/Goddard Space Flight Center Scientific Visualization Studio. Gaia DR2: ESA/Gaia/DPAC",
+     "arch": "NASA SVS",
+     "lic": "volné užití s uvedením autora (zásady NASA)",
+     "url": "https://svs.gsfc.nasa.gov/4851/"
+    }
+   ],
+   "src": [
+    {
+     "t": "Katalog Hipparcos, HIP 110478: poloha, jasnost, spektrální třída (ESA 1997) a paralaxa z nového zpracování (F. van Leeuwen 2007)",
+     "u": "https://vizier.cfa.harvard.edu/viz-bin/VizieR-5?-source=I/311/hip2&HIP=110478"
+    },
+    {
+     "t": "ESO: The surface of the red giant star π1 Gruis from PIONIER on the VLT (eso1741a)",
+     "u": "https://www.eso.org/public/images/eso1741a/"
+    }
+   ],
+   "sp": "S5.7",
+   "barva": "červená, chladná",
+   "iau": "Pi1 Gruis",
+   "magtxt": "proměnná, na hranici viditelnosti okem"
   }
  ]
 }
