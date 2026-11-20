@@ -1,7 +1,8 @@
 # Přehled změn podle verzí
 
-Veřejně (větev `main`, stránka, artefakt) je verze **1.2**. Vše od 1.3 výš je pracovní: žije jen na větvích `iterace-N`
-a v souboru na vyzkoušení (`node tools/build/build_offline.mjs <výstup.html> --hi`). Bod návratu je větev `verze-1.2`.
+Veřejně (větev `main`, stránka, artefakt) je od 20. 11. 2026 verze **2.0 – kandidát k vydání** (`iterace-24`); artefakt je bez dlaždic
+úrovně 2. Bod návratu k předchozí veřejné verzi 1.2 je větev `verze-1.2` (`1f96e61`). Soubor na vyzkoušení:
+`node tools/build/build_offline.mjs <výstup.html> --hi`.
 
 | Verze | Datum | Větev (poslední commit) | Vychází z |
 |---|---|---|---|
@@ -15,7 +16,7 @@ a v souboru na vyzkoušení (`node tools/build/build_offline.mjs <výstup.html> 
 | 1.8m | 19.–20. 11. 2026 | `iterace-21` (`b42b4c2`, 3. kolo map) | `iterace-19` (boční větev, podrobné mapy) |
 | 1.9 | 19. 11. 2026 | `iterace-20` (`1e06803`) | `iterace-19` |
 | 1.10 | 19.–20. 11. 2026 | `iterace-22` (`6b680c7`) | `iterace-20` + sloučené `iterace-19b` (1.8b) a `iterace-21` |
-| 2.0 | 20. 11. 2026 | `iterace-23` | `iterace-22` (1.10) + sloučené `iterace-19b` (1.8c) |
+| 2.0 | 20. 11. 2026 | `iterace-23` (`829047a`), zveřejněno z `iterace-24` | `iterace-22` (1.10) + sloučené `iterace-19b` (1.8c) |
 
 Do verze 1.8a na sebe větve navazují v řadě. Verze 1.8b, 1.8m a 1.9 vznikly souběžně ve třech sešnách z `iterace-19`;
 `iterace-22` je slučuje a přidává pohled z povrchu, takže obsahuje vše předchozí.
@@ -33,6 +34,11 @@ v `obloha.js` přežila přestavbu 1.8c (ověřeno v kódu). Nové funkce v 2.0 
   opakování na téže sestavě 0 nálezů – nestabilní, příčina neověřená (pravděpodobně délka náhodné hádanky nebo okamžik měření).
 - **Soubor na flashku** 339,2 MiB (355 667 582 B, 2 572 souborů, limit 400 MB); v sandboxu připraven za 8,6 s, paměť stránky 604 MB,
   po přiblížení k Měsíci 1 000 MB, 0 požadavků ven, 0 chyb.
+- **Zveřejnění 20. 11. 2026** (větev `iterace-24` = `iterace-23` + tato úprava; `main`, stránka, artefakt – se souhlasem autora
+  z 20. 11. 01:01): `render/l2.js` pozná kopii webu bez složky `maps/l2` – po třech chybějících dlaždicích bez jediné načtené se úroveň 2
+  vypne (`L2.slots = 0`) a přednačítání skončí u první chybějící. Artefakt proto jde bez 2 016 dlaždic (159 MiB) a zblízka ukazuje
+  velké mapy; stránka a soubor na flashku mají dlaždice všechny. Sonda: 1 dotaz po startu, 3 u Měsíce, pak žádný; `t_l2` 22 kontrol,
+  `t_hi` 11/11, `t_povrch` (počítač) 49 kontrol bez chyb.
 
 ## 1.10 – sloučení tří větví a pohled z povrchu tělesa
 Sloučeno: 1.9 (mizející dráhy, scéna úkazu), 1.8b (19 objektů na obloze) a 1.8m (podrobné mapy úrovně 2). Konflikty jen ve třech
