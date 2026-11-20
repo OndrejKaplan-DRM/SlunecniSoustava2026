@@ -14,6 +14,12 @@ import { shape } from '../core/sim.js';
 const RAD = Math.PI / 180;
 const nf = (x, d = 0) => x.toLocaleString('cs-CZ', { maximumFractionDigits: d, minimumFractionDigits: 0 });
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+/* nedělitelné mezery: čísla po tisících („1 350“), označení („M 42“, „NGC 1976“) a jednotky se nesmí zalomit */
+const nb = (t) =>
+  t
+    .replace(/(\d) (?=\d{3}(?!\d))/g, '$1\u00a0')
+    .replace(/\b(M|NGC|IC) (?=\d)/g, '$1\u00a0')
+    .replace(/(\d) (?=(°C|km\/h|%|mag)\b)/g, '$1\u00a0');
 const STAV = DATA.stav; /* den, kdy byly údaje a odkazy ověřeny */
 const KEY = 's200obl';
 const MESIC =
@@ -625,8 +631,8 @@ export function createObloha(S, A, ui) {
         `</ol><p><small>Údaje a odkazy: stav ${STAV}. Texty jsou stručné shrnutí uvedených zdrojů, fotografie jsou zmenšené. Odkazy se otevírají v novém okně a potřebují internet; aplikace sama z internetu nic nenačítá.</small></p>`
       );
     return (
-      o.txt.map((p) => `<p>${p}</p>`).join('') +
-      (o.foto ? `<p class="ss-foto"><b>Na fotografiích.</b> ${o.foto}</p>` : '')
+      o.txt.map((p) => `<p>${nb(p)}</p>`).join('') +
+      (o.foto ? `<p class="ss-foto"><b>Na fotografiích.</b> ${nb(o.foto)}</p>` : '')
     );
   }
   function fill(o) {
@@ -635,7 +641,7 @@ export function createObloha(S, A, ui) {
     stage.tab = 'co';
     elS.querySelector('.ss-n').textContent = `${i + 1} / ${OBJ.length}`;
     right.innerHTML =
-      `<div class="ss-kick">${SKUP[o.druh]} · souhvězdí ${o.souhv}</div><h2>${o.cs}</h2><div class="ss-ozn">${o.ozn} · ${o.typ}</div><p class="ss-lead">${o.lead}</p>` +
+      `<div class="ss-kick">${SKUP[o.druh]} · souhvězdí ${o.souhv}</div><h2>${o.cs}</h2><div class="ss-ozn">${o.ozn} · ${o.typ}</div><p class="ss-lead">${nb(o.lead)}</p>` +
       `<div class="ss-tiles">${tiles(o)}</div><div class="ss-tabs"><button data-t="co" class="sel">Co to je</button><button data-t="kde">Kde to je</button><button data-t="zdr">Zdroje</button></div>` +
       `<div class="ss-body">${tab(o, 'co')}</div>`;
     right.scrollTop = 0;
