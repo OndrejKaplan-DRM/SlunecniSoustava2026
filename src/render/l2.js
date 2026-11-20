@@ -115,6 +115,8 @@ export function createL2({ THREE, renderer, AS, wake }) {
     nSlots = 0;
   };
   const offline = () => typeof window !== 'undefined' && window.S200_ASSETS;
+  let miss404 = 0,
+    got = 0;
   function request(key, id, g) {
     const url = 'maps/l2/' + id + '/' + key + '.webp';
     if (offline() && !window.S200_ASSETS[url])
@@ -124,7 +126,10 @@ export function createL2({ THREE, renderer, AS, wake }) {
     const t0 = performance.now();
     fetch(AS(url))
       .then((q) => {
-        if (!q.ok) throw new Error('http');
+        if (!q.ok) {
+          if (q.status === 404) miss404++;
+          throw new Error('http');
+        }
         return q.blob();
       })
       .then((bl) =>
@@ -132,6 +137,7 @@ export function createL2({ THREE, renderer, AS, wake }) {
       )
       .then((bm) => {
         busy--;
+        got++;
         if (g !== gen) return bm.close();
         ready.push({ key, bm, t0 });
         wake();
@@ -139,6 +145,9 @@ export function createL2({ THREE, renderer, AS, wake }) {
       .catch(() => {
         busy--;
         if (g === gen) tiles.set(key, { bad: true });
+        /* kopie webu bez složky maps/l2 (artefakt): po třech chybějících dlaždicích bez jediné načtené se úroveň 2 vypne
+           a dál se na ni nikdo neptá – zůstane velká mapa */
+        if (miss404 >= 3 && got === 0) L2.slots = 0;
       });
   }
   function upload(now) {
@@ -312,6 +321,7 @@ export function createL2({ THREE, renderer, AS, wake }) {
           while (!ok()) await new Promise((r) => setTimeout(r, 1500));
           try {
             const q = await fetch(AS('maps/l2/' + id + '/' + key + '.webp'), { priority: 'low' });
+            if (!q.ok) return n; /* dlaždice na serveru nejsou – dál se neptat */
             await q.blob();
             n++;
           } catch (e) {
