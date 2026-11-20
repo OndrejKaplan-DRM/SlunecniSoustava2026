@@ -46,8 +46,7 @@ for (let runN = 0; runN < 3; runN++) {
     await page.waitForFunction(() => !document.querySelector('#splash.on') && S200.ui.tut.running(), null, {
       timeout: 60000,
     });
-  }
-  else if (runN === 1) await page.evaluate((v) => void S200.ui.tut.start(v), VSE);
+  } else if (runN === 1) await page.evaluate((v) => void S200.ui.tut.start(v), VSE);
   else
     await page.evaluate(() => {
       S200.ui.setMode(true);

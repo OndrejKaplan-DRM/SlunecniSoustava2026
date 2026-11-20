@@ -26,6 +26,13 @@ objekty na obloze podruhé – 62 objektů, nenápadné kroužky, bublina, scén
 v `dist/index.html`, tabulka v tomto souboru, popis `ui/obloha.js` v `docs/ARCHITEKTURA.md`; `dist/app.js` sestaven znovu.
 Zdrojáky (`src/render/engine.js`, `src/ui/obloha.js`) se sloučily samy; hlídka 1.10 „objekt pod obzorem při pohledu z povrchu“
 v `obloha.js` přežila přestavbu 1.8c (ověřeno v kódu). Nové funkce v 2.0 nejsou – jen sloučení, číslo verze a regrese.
+- **Regrese na sloučeném stromu** (`aed264d`, sandbox Chromium + swiftshader, po jednom): ukázka 3 běhy, `test:fakta` 201 těles,
+  `test:model` 120 okamžiků, Prettier (po přeformátování dvou testů), `t_preload`, `t_karty` (pět kliknutí myší přeskočeno – 3,5 snímku/s),
+  `t_hi` 11/11, `t_l2` 22 kontrol, `t_obloha` počítač 45 kontrol a telefon, `t_pasy`, `t_scena` 287, `t_povrch` 199, `t_ukazy` počítač,
+  `t_displej` – bez chyb. `t_okna`: 5 nálezů v jednom běhu, všechny stejné (notebook 1280, dětské rozhraní: `#mission` přes `#card`),
+  opakování na téže sestavě 0 nálezů – nestabilní, příčina neověřená (pravděpodobně délka náhodné hádanky nebo okamžik měření).
+- **Soubor na flashku** 339,2 MiB (355 667 582 B, 2 572 souborů, limit 400 MB); v sandboxu připraven za 8,6 s, paměť stránky 604 MB,
+  po přiblížení k Měsíci 1 000 MB, 0 požadavků ven, 0 chyb.
 
 ## 1.10 – sloučení tří větví a pohled z povrchu tělesa
 Sloučeno: 1.9 (mizející dráhy, scéna úkazu), 1.8b (19 objektů na obloze) a 1.8m (podrobné mapy úrovně 2). Konflikty jen ve třech

@@ -116,7 +116,7 @@ const waitHi = (page, id) =>
           P = S200.sim.P;
         if (id === 'earth' && la !== undefined)
           S.jd =
-            (la < -60 || (noc && la > 55) ? 2461395.5 : 2461212.5) + /* polární noc: prosinec */
+            (la < -60 || (noc && la > 55) ? 2461395.5 : 2461212.5) /* polární noc: prosinec */ +
             (noc ? 23.2 : 11.3) / 24; /* 21. 6. 2026 (jižní polární oblast 21. 12.), poledne (nebo noc) nad Evropou */
         S200.sim.updateAll && S200.sim.updateAll(S.jd);
         S200.sim.basis(j, S.jd, m);
@@ -130,7 +130,8 @@ const waitHi = (page, id) =>
             by = m[3] * sx + m[4] * sy + m[5] * sz,
             bz = m[6] * sx + m[7] * sy + m[8] * sz;
           lat = Math.asin(bz) * 0.6;
-          lon = Math.atan2(by, bx) - (term ? 1.4 : 0.44); /* „term“: 80° od bodu pod Sluncem – Slunce nízko nad obzorem */
+          lon =
+            Math.atan2(by, bx) - (term ? 1.4 : 0.44); /* „term“: 80° od bodu pod Sluncem – Slunce nízko nad obzorem */
         } else {
           lat = (la * Math.PI) / 180;
           lon = (lo * Math.PI) / 180;
@@ -160,7 +161,11 @@ const waitHi = (page, id) =>
     const st = await waitL2(page);
     const own = st.owner === (await page.evaluate((x) => S200.sim.idx.get(x), id));
     if (+alt >= 1 && !st.want)
-      T(id + ': z ' + alt + ' R úroveň 2 není potřeba (velká mapa se ještě neroztahuje)', own && !st.loading, JSON.stringify(st));
+      T(
+        id + ': z ' + alt + ' R úroveň 2 není potřeba (velká mapa se ještě neroztahuje)',
+        own && !st.loading,
+        JSON.stringify(st)
+      );
     else T(id + ': úroveň 2 načtená zblízka', st.loaded > 0 && own, JSON.stringify(st));
     if (view[2] === 'noc') {
       const li = await page.evaluate(async (id) => {
