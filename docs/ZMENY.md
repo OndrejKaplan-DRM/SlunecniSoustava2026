@@ -47,6 +47,13 @@ je zapsáno rozhodnutí „62 objektů je konečný počet pro 2.0, 150 a hvězd
   těleso); objekt pod obzorem pohled nemění. Pod denní oblohou a při ukázce úkazu vrstva mlčí.
 - **Sestavení dat** (`tools/data/obloha_build.py`): na konci kontroluje, že vzdálenost každého nového objektu je doslova na některé
   z jeho zdrojových stránek (0 nálezů). Mapa hvězd NASA SVS (443 MB) se stahuje do pracovní složky, do repozitáře nejde.
+- **Oprava souboru na flashku** (`tools/build/build_offline.mjs`, chyba od 1.8m): vložené soubory měly id „a“ + pořadí v soustavě
+  o základu 36, takže soubor s pořadím 785 dostal id `alt` – stejné jako prvek s výškou nad tělesem – a nenačetl se. V plné verzi 2.0
+  (355 MB) to je dlaždice Země úrovně 2 `2-4-20`, tady by to byl výřez u Siria. Předpona je nově `_a`. Stránky na webu se chyba netýká.
+- **Zkoušky** (sandbox, po jednom): `t_obloha` počítač 51 kontrol a telefon 46, inspekce oken objektů na 18 sestavách (0 nálezů), ukázka,
+  `test:fakta`, `test:model`, `t_preload`, `t_povrch` (počítač), `t_scena` (počítač), `t_ukazy` (počítač), `t_karty` – bez chyb.
+  Znovu neběžely: `t_hi`, `t_l2`, `t_pasy`, `t_displej` a ostatní sestavy `t_povrch` a `t_scena` (kód, který hlídají, se neměnil).
+- **Soubory:** plná verze 370 601 455 B (353,4 MiB, limit 400 MB), bez úrovně 2 map 148 088 257 B; z `file://` bez chyb a bez sítě.
 - Nic z toho neběželo na skutečném zařízení; zvuk jsem neslyšela (nové zvuky nejsou).
 
 ## 2.0 – kandidát k vydání: všechny souběžné větve v jednom stromu (20. 11. 2026)

@@ -31,8 +31,10 @@ function domAssets() {
     parts = [];
   let n = 0;
   for (const [p, u] of Object.entries(A)) {
+    /* Předpona nesmí dát id, které už na stránce je: „a“ + 785 v soustavě o základu 36 je „alt“ (prvek s výškou nad tělesem)
+       a soubor s pořadím 785 se pak nenačetl (v plné verzi dlaždice Země 2-4-20). */
     const k = u.indexOf(','),
-      id = 'a' + (n++).toString(36);
+      id = '_a' + (n++).toString(36);
     ix[p] = [id, u.slice(5, k)]; /* „image/webp;base64“ */
     parts.push(`<script type="text/x-s200" id="${id}">${u.slice(k + 1)}</script>`);
   }
