@@ -1,8 +1,9 @@
 # Přehled změn podle verzí
 
-Veřejně (větev `main`, stránka, artefakt) je od 20. 11. 2026 verze **2.0 – kandidát k vydání** (`iterace-24`); artefakt je bez dlaždic
-úrovně 2. Bod návratu k předchozí veřejné verzi 1.2 je větev `verze-1.2` (`1f96e61`). Soubor na vyzkoušení:
-`node tools/build/build_offline.mjs <výstup.html> --hi`.
+**Stav 20. 11. 2026 večer:** větev `main` = `iterace-23b` – verze 2.0 (kandidát k vydání) **se 157 objekty na obloze**. Stránka
+(`gh-pages` `2df88a7`) zůstává na stavu `iterace-24` (`89bb59b`, 2.0 kandidát se 62 objekty); zveřejnění nového stavu na stránce čeká
+na Ondřejovo „ano“. Bod návratu k předchozí veřejné verzi 1.2 je větev `verze-1.2` (`1f96e61`), bod návratu před rozšířením objektů
+je `iterace-24`. Soubor na vyzkoušení: `node tools/build/build_offline.mjs <výstup.html> --hi` (bez podrobných map navíc `--bez-l2`).
 
 | Verze | Datum | Větev (poslední commit) | Vychází z |
 |---|---|---|---|
@@ -17,16 +18,16 @@ Veřejně (větev `main`, stránka, artefakt) je od 20. 11. 2026 verze **2.0 –
 | 1.9 | 19. 11. 2026 | `iterace-20` (`1e06803`) | `iterace-19` |
 | 1.10 | 19.–20. 11. 2026 | `iterace-22` (`6b680c7`) | `iterace-20` + sloučené `iterace-19b` (1.8b) a `iterace-21` |
 | 2.0 | 20. 11. 2026 | `iterace-23` (`829047a`), zveřejněno z `iterace-24` | `iterace-22` (1.10) + sloučené `iterace-19b` (1.8c) |
-| 2.0 + objekty 157 | 20. 11. 2026 | `iterace-23b` | `iterace-24` (boční větev: hvězdy a další objekty na obloze; do veřejné verze jen po Ondřejově rozhodnutí) |
+| 2.0 + objekty 157 | 20. 11. 2026 | `iterace-23b` = `main` (sloučeno 20. 11. večer) | `iterace-24` (hvězdy a další objekty na obloze; na stránce zatím není) |
 
 Do verze 1.8a na sebe větve navazují v řadě. Verze 1.8b, 1.8m a 1.9 vznikly souběžně ve třech sešnách z `iterace-19`;
 `iterace-22` je slučuje a přidává pohled z povrchu, takže obsahuje vše předchozí.
 
 ## Boční větev `iterace-23b`: objekty na obloze 62 → 157, hvězdy, jména bez překryvů (20. 11. 2026)
-Vychází z `iterace-23` a má v sobě i zveřejněný stav `iterace-24` (`89bb59b`). **Není součástí veřejné verze 2.0**: v plánu dokončení
-je zapsáno rozhodnutí „62 objektů je konečný počet pro 2.0, 150 a hvězdy až po vydání“; tato větev je připravená pro obě možnosti
-(přidat ještě do 2.0, nebo vydat po ní). Do `main` se dá sloučit bez konfliktu ve zdrojácích, dokud se tam nezmění `src/ui/obloha.js`,
-`src/data/obloha.json` a `tools/data/obloha_build.py`; `dist/app.js` se sestaví znovu.
+Vychází z `iterace-23` a má v sobě i zveřejněný stav `iterace-24` (`89bb59b`). V plánu dokončení bylo původně zapsáno „62 objektů je
+konečný počet pro 2.0, 150 a hvězdy až po vydání“; Ondřej 20. 11. v 18:23 rozhodl jinak („cílového počtu objektů bylo dosaženo, nebo byl
+překonán (preferuji) … vše pushni do hlavní větve“), takže větev je **od 20. 11. večer v `main`**. Na stránku (`gh-pages`) ani do
+artefaktu nešla. Pomocné skripty výběru objektů jsou v `tools/archiv/obloha/`.
 - **157 objektů** (dosud 62): **43 hvězd** a 52 dalších objektů vzdáleného vesmíru (10 mlhovin, 2 temné mlhoviny, 10 umírajících hvězd
   a pozůstatků, 17 galaxií a kup galaxií, 7 kulových a 6 otevřených hvězdokup). Fotografií 233 (dosud 108), `dist/sky/` 36,6 MB (dosud 26,4 MB).
 - **Hvězdy** (nová skupina „Hvězdy“): 21 nejjasnějších hvězd noční oblohy a 22 dalších (Polárka, Mizar a Alkor, Algol, Mira, Albireo, Proxima

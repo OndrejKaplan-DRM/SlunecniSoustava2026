@@ -1,0 +1,24 @@
+import { chromium } from '/home/claude/.npm-global/lib/node_modules/playwright/index.mjs';
+const f = process.argv[2];
+const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+const page = await (await browser.newContext({ viewport: { width: 1366, height: 768 } })).newPage();
+const errs = [], cizi = [];
+page.on('console', (m) => { if (m.type() === 'error') errs.push(m.text().slice(0, 200) + ' @' + (m.location().url || '').slice(0, 120)); });
+page.on('pageerror', (e) => errs.push('PAGEERROR ' + e.message));
+page.on('request', (q) => { const u = q.url(); if (!u.startsWith('file:') && !u.startsWith('data:') && !u.startsWith('blob:')) cizi.push(u.slice(0, 100)); });
+const t0 = Date.now();
+await page.goto('file://' + f, { timeout: 300000 });
+await page.waitForFunction(() => window.S200, null, { timeout: 300000 });
+await page.evaluate(() => { localStorage.clear(); document.querySelector('#sp-adult').click(); document.querySelector('#sp-go').click(); });
+await page.waitForFunction(() => !document.querySelector('#splash.on'), null, { timeout: 300000 });
+const t1 = Date.now();
+const r = await page.evaluate(async () => {
+  const O = S200.obloha; O.fast(true);
+  const zk = ['sky/sirius_nase.webp', 'maps/l2/earth/2-4-20.webp', 'maps/earth.webp', 'sky/m42_1.webp'].map((p) => { const u = window.S200_ASSETS[p]; return u === undefined ? null : /^data:image\/webp;base64,UklGR/.test(u); }); O.open('sirius');
+  await new Promise((r) => { const t = setInterval(() => { const s = O.state().stage; if (s && s.ph === 'open') { clearInterval(t); r(); } }, 200); setTimeout(() => { clearInterval(t); r(); }, 60000); });
+  await new Promise((r) => setTimeout(r, 2500));
+  const imgs = [...document.querySelectorAll('img')].filter((i) => i.clientWidth > 0);
+  return { n: O.ids().length, zk, stage: O.state().stage, imgs: imgs.length, bad: imgs.filter((i) => !i.naturalWidth).length, badsrc: imgs.filter((i) => !i.naturalWidth).map((i) => (i.getAttribute('src') || '').slice(0, 80) + ' #' + i.id + '.' + i.className), ver: (document.body.innerText.match(/Verze [0-9.]+[^\n·]*/) || [''])[0] };
+});
+console.log(JSON.stringify({ soubor: f.split('/').pop(), start_s: (t1 - t0) / 1000, ...r, cizi: cizi.length, errs }));
+await browser.close();
