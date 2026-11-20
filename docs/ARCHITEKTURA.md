@@ -38,6 +38,9 @@ a volají jeho funkce (`flyTo`, `jump`, `setSunMode`…); zpět dostávají udá
   `ds-stage` na `<body>` zprůhlední hlavní rozhraní, „čočka“ `.ss-lens` se animuje (Web Animations) z kroužku do místa fotografie a zpět,
   obsah kreslí `fill()` a `tab()`; (4) natočení pohledu `aim()` nemění těleso ani výšku, jen otočení kolem tělesa a odklon pohledu,
   a `back()` vrací pohled uložený před natočením. Zkoušky mají `S200.obloha.fast(true)` (bez animací).
+  Od větve `iterace-23b`: skupina „Hvězdy“ (`o.star`; značku a jméno hvězd, které při „Jménech hvězd“ popisuje engine, vrstva nekreslí –
+  `o.eng` podle `STAR_NAMES`); jména se vyhýbají `S.labRects` (tělesa) a `S.skyRects` (souhvězdí a hvězdy, plní engine) a při nedostatku
+  místa se odsunou a spojí čárkou (`FAR`); při pohledu z povrchu natáčí `aim()` pozorovatele (`S.surf.az`, `S.surf.el`), ne kameru na oběžné dráze.
 - `ui/povrch.js` (1.10) – pohled z povrchu tělesa. Stav drží engine v `S.surf` (místo, směr, zorné pole, sledované těleso);
   `surfCamera` v `render/engine.js` staví kameru na povrch (zenit, východ, sever z `basis`), mění zorné pole a těleso pod nohama
   nekreslí. Modul kreslí lištu `#surf`, zem s obzorem jako první vrstvu `S.overlays` a denní oblohu `#skyair`; sílu oblohy

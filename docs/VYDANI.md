@@ -13,7 +13,7 @@ Projít před každým sloučením do `main` a zveřejněním (stránka, artefak
 - [ ] `node tools/test/t_karty.mjs` (32 karet úkazů, Superkarta všech těles, `?dev`) a `node tools/test/t_preload.mjs` bez chyb.
 - [ ] `node tools/test/t_displej.mjs` (4K, televize se zvětšením 300–400 %, malé okno, přesun okna) bez chyb.
 - [ ] `node tools/test/t_okna.mjs` (18 sestav od telefonu po monitor QHD × obě rozhraní × všechna okna: nic mimo obrazovku, nic uříznutého, zavírací tlačítka dost velká, žádné visící okno) – 0 nálezů. Běží asi 15 minut; `SHOT=1` uloží snímky.
-- [ ] `node tools/test/t_obloha.mjs /tmp/obl desk` a `… phone` (objekty na obloze: data a zdroje, nenápadný režim, bublina, scéna objektu, všech 62 objektů jde přiblížit, dětské rozhraní nic neukáže) bez chyb.
+- [ ] `node tools/test/t_obloha.mjs /tmp/obl desk` a `… phone` (objekty na obloze: data a zdroje, nenápadný režim, bublina, scéna objektu, všechny objekty jdou přiblížit, jména se nepřekrývají, hvězdy, hledání, pohled z povrchu, dětské rozhraní nic neukáže) bez chyb.
 - [ ] `node tools/test/t_pasy.mjs` (pásy planetek: vidět v přehledu, zblízka pryč, nejdou vybrat) bez chyb.
 - [ ] `node tools/test/t_scena.mjs` (scéna úkazu na počítači, telefonu na výšku i na šířku a tabletu: výběr ze seznamu, časová osa, pohledy na zatmění, tělesa ve volné ploše, návrat; mizející dráhy a jejich přepínač) bez chyb. Běží asi 8 minut.
 - [ ] `node tools/test/t_povrch.mjs` (pohled z povrchu na počítači, telefonu na výšku i na šířku a tabletu: vstup a výstup, výška Slunce z Prahy proti výpočtu, denní pohyb, vzduch, meze pohledu a zorného pole, sledování, Mars, Měsíc, dětské rozhraní, zatmění „Z místa“) bez chyb.

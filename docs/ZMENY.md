@@ -16,9 +16,36 @@ a v souboru na vyzkoušení (`node tools/build/build_offline.mjs <výstup.html> 
 | 1.9 | 19. 11. 2026 | `iterace-20` (`1e06803`) | `iterace-19` |
 | 1.10 | 19.–20. 11. 2026 | `iterace-22` (`6b680c7`) | `iterace-20` + sloučené `iterace-19b` (1.8b) a `iterace-21` |
 | 2.0 | 20. 11. 2026 | `iterace-23` | `iterace-22` (1.10) + sloučené `iterace-19b` (1.8c) |
+| 2.0 + objekty 157 | 20. 11. 2026 | `iterace-23b` | `iterace-23` (boční větev: hvězdy a další objekty na obloze; do 2.0 jen po Ondřejově rozhodnutí) |
 
 Do verze 1.8a na sebe větve navazují v řadě. Verze 1.8b, 1.8m a 1.9 vznikly souběžně ve třech sešnách z `iterace-19`;
 `iterace-22` je slučuje a přidává pohled z povrchu, takže obsahuje vše předchozí.
+
+## Boční větev `iterace-23b`: objekty na obloze 62 → 157, hvězdy, jména bez překryvů (20. 11. 2026)
+Vychází z `iterace-23` (2.0, kandidát). **Není součástí kandidáta 2.0**: v plánu dokončení je zapsáno rozhodnutí „62 objektů je konečný
+počet pro 2.0, 150 a hvězdy až po vydání“; tato větev je připravená pro obě možnosti (sloučit před vydáním, nebo po něm). Dá se sloučit
+bez konfliktu, dokud se v `iterace-23` nezmění `src/ui/obloha.js`, `src/data/obloha.json` a `tools/data/obloha_build.py`.
+- **157 objektů** (dosud 62): **43 hvězd** a 52 dalších objektů vzdáleného vesmíru (10 mlhovin, 2 temné mlhoviny, 10 umírajících hvězd
+  a pozůstatků, 17 galaxií a kup galaxií, 7 kulových a 6 otevřených hvězdokup). Fotografií 233 (dosud 108), `dist/sky/` 36,6 MB (dosud 26,4 MB).
+- **Hvězdy** (nová skupina „Hvězdy“): 21 nejjasnějších hvězd noční oblohy a 22 dalších (Polárka, Mizar a Alkor, Algol, Mira, Albireo, Proxima
+  Centauri, Barnardova hvězda, Thuban, Eta Carinae, Beta Pictoris, 51 Pegasi, Delta Cephei, 61 Cygni, Granátová hvězda, Tau Ceti a další).
+  Poloha, jasnost a spektrální třída: katalog Hipparcos; vzdálenost se **počítá z paralaxy** (nové zpracování 2007) i s rozmezím podle chyby
+  měření; kde je chyba nad 3 %, píše se „asi“, a kde jiný zdroj uvádí jinou hodnotu, je to napsané (Deneb, Alnilam, Betelgeuze, Mira…).
+  U čtyř hvězd paralaxa nestačí a vzdálenost je z jiného uvedeného zdroje (Eta Carinae, VY Canis Majoris, R Sculptoris, Granátová hvězda).
+  Zajímavosti: úvodní odstavce hesel anglické Wikipedie a stránky snímků ESO a ESA. U 16 hvězd je i snímek z archivu ESO, ESA nebo NASA (u některých kresba nebo snímek okolí, je to v popisku),
+  u všech výřez okolí z mapy hvězd NASA SVS (vykresleno z katalogů, není to fotografie – je to napsané v popisku).
+- **Jména bez překryvů.** Jméno, které se nevejde těsně ke kroužku, se zkusí na osmi vzdálenějších místech a s kroužkem ho spojí tenká čárka.
+  Engine nově zveřejňuje i obdélníky jmen hvězd (`S.skyRects`), takže se jim objekty vyhýbají. Hvězdu, kterou popisuje tlačítko
+  „Jména hvězd“, tato vrstva nepopisuje podruhé. V hustých místech (střed Galaxie zdálky) se značka, která by ležela na významnějším
+  objektu, nekreslí; pod ukazatelem se objekt ukáže dál. Hvězdy mají vlastní značku (plný kroužek, žlutavé kurzivní jméno).
+  Jména se vyhýbají i oknům rozhraní (karta tělesa, seznam, lišty, minimapa; obdélníky oken se čtou nejvýš dvakrát za sekundu),
+  takže se o okraj karty neuříznou.
+- **Seznam** má hledání (jméno, označení, souhvězdí; bez háčků a čárek) a přilepené nadpisy skupin.
+- **Pohled z povrchu (1.10):** natočení na objekt funguje i tam (pozorovatel se otočí, po zavření scény se otočí zpět nebo dál sleduje
+  těleso); objekt pod obzorem pohled nemění. Pod denní oblohou a při ukázce úkazu vrstva mlčí.
+- **Sestavení dat** (`tools/data/obloha_build.py`): na konci kontroluje, že vzdálenost každého nového objektu je doslova na některé
+  z jeho zdrojových stránek (0 nálezů). Mapa hvězd NASA SVS (443 MB) se stahuje do pracovní složky, do repozitáře nejde.
+- Nic z toho neběželo na skutečném zařízení; zvuk jsem neslyšela (nové zvuky nejsou).
 
 ## 2.0 – kandidát k vydání: všechny souběžné větve v jednom stromu (20. 11. 2026)
 Sloučeno: `iterace-22` (1.10 = 1.9 + 1.8b + 1.8m se všemi třemi koly map + pohled z povrchu) a `iterace-19b` po 1.8c (`1f29f68`:

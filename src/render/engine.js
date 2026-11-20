@@ -2086,6 +2086,8 @@ export function createEngine(canvas, overlay) {
     ctx.clearRect(0, 0, W, H);
     if (S.conMode === 3 || S.starNames) {
       ctx.textBaseline = 'middle';
+      const placed = (S.skyRects =
+        []); /* jména souhvězdí a hvězd: ostatní vrstvy (objekty na obloze) se jim vyhýbají */
       const put = (o, star) => {
         const z = o.c.dot(fwd);
         if (z < 0.25) return;
@@ -2100,6 +2102,11 @@ export function createEngine(canvas, overlay) {
           ctx.font = 'italic ' + 11.5 * tk + 'px system-ui, sans-serif';
           ctx.fillStyle = 'rgba(255,236,170,0.85)';
           ctx.fillText(o.name, x + 7, y - 6);
+          if (o.wk !== tk) {
+            o.w = ctx.measureText(o.name).width;
+            o.wk = tk;
+          }
+          placed.push([x - 6, y - 14, x + 9 + o.w, y + 6]);
           ctx.strokeStyle = 'rgba(255,236,170,0.5)';
           ctx.lineWidth = 1;
           ctx.beginPath();
@@ -2155,13 +2162,12 @@ export function createEngine(canvas, overlay) {
           }
           return true;
         };
-        const placed = (S.skyRects = []) /* jména souhvězdí a hvězd: totéž */,
-          free = (x0, y0, x1, y1) => {
-            for (const q of placed) if (x0 < q[2] && x1 > q[0] && y0 < q[3] && y1 > q[1]) return false;
-            for (let i = 0; i < sg.length; i += 4)
-              if (cut(sg[i], sg[i + 1], sg[i + 2], sg[i + 3], x0, y0, x1, y1)) return false;
-            return true;
-          };
+        const free = (x0, y0, x1, y1) => {
+          for (const q of placed) if (x0 < q[2] && x1 > q[0] && y0 < q[3] && y1 > q[1]) return false;
+          for (let i = 0; i < sg.length; i += 4)
+            if (cut(sg[i], sg[i + 1], sg[i + 2], sg[i + 3], x0, y0, x1, y1)) return false;
+          return true;
+        };
         ctx.font = '600 ' + 10.5 * tk + 'px system-ui, sans-serif';
         for (const o of cons) {
           const z = o.c.dot(fwd);

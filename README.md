@@ -62,7 +62,7 @@ src/                  zdrojový kód (ES moduly)
     mobile.js         rozložení podle zařízení: telefon, tablet, velká obrazovka, malé okno
     superkarta.js     podrobná karta tělesa (pětiklik; jen dospělé rozhraní)
     udalosti.js       úkazy na obloze: seznam, karty, ukázka a návrat
-    obloha.js         objekty na obloze: mlhoviny, hvězdokupy a galaxie na fotce Mléčné dráhy (jen dospělé rozhraní)
+    obloha.js         objekty na obloze: hvězdy, mlhoviny, hvězdokupy a galaxie za Sluneční soustavou (jen dospělé rozhraní)
     povrch.js         pohled z povrchu tělesa: lišta, denní obloha, zem a obzor, hledání těles na obloze
     tutorial.js       dvouminutová ukázka ovládání (každá kapitola si sama připraví pohled)
     zvuky.js          zkušebna zvuků

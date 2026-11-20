@@ -1,5 +1,5 @@
-// Objekty vzdáleného vesmíru na fotce oblohy (verze 1.8c, jen dospělé rozhraní).
-// Mlhoviny, hvězdokupy a galaxie na fotce Mléčné dráhy za planetami:
+// Objekty na obloze za Sluneční soustavou (verze 2.0, jen dospělé rozhraní).
+// Výrazné hvězdy, mlhoviny, hvězdokupy a galaxie na fotce Mléčné dráhy za planetami:
 //   – nenápadné kroužky se jmény (ukážou se se souhvězdími; jinak se objekt prozradí, až když na něj najede ukazatel),
 //   – klik = bublina se jménem přímo u objektu, dvojklik nebo „Přiblížit“ = scéna objektu: rozhraní ustoupí, kroužek se
 //     rozroste do fotografie („přiblížení dalekohledem“), vedle ní údaje, text, poloha na obloze a zdroje; po zavření se
@@ -10,6 +10,7 @@
 import DATA from '../data/obloha.json';
 import { AS } from '../core/asset.js';
 import { shape } from '../core/sim.js';
+import { STAR_NAMES } from '../data/stardata.js';
 
 const RAD = Math.PI / 180;
 const nf = (x, d = 0) => x.toLocaleString('cs-CZ', { maximumFractionDigits: d, minimumFractionDigits: 0 });
@@ -20,6 +21,8 @@ const nb = (t) =>
     .replace(/(\d) (?=\d{3}(?!\d))/g, '$1\u00a0')
     .replace(/\b(M|NGC|IC) (?=\d)/g, '$1\u00a0')
     .replace(/(\d) (?=(°C|km\/h|%|mag)\b)/g, '$1\u00a0');
+/* hvězdy, kterým při zapnutých „Jménech hvězd“ kreslí kroužek a jméno engine (tam je tato vrstva nekreslí podruhé) */
+const ENG = new Set(STAR_NAMES.filter(([i]) => i <= 60).map(([, n]) => n));
 const STAV = DATA.stav; /* den, kdy byly údaje a odkazy ověřeny */
 const KEY = 's200obl';
 const MESIC =
@@ -29,6 +32,9 @@ const MESIC =
 
 const CSS = `
 #ds { top: 62px; left: 10px; width: 380px; max-height: calc(var(--vh) / var(--bk, 1) - 262px); }
+#ds-q { width: 100%; box-sizing: border-box; margin: 0 0 6px; padding: 7px 10px; font: inherit; font-size: 13px; color: inherit; background: rgba(20, 26, 40, 0.9); border: 1px solid rgba(124, 150, 210, 0.35); border-radius: 9px; outline: none; }
+#ds-q:focus { border-color: var(--ac); } #ds-q::placeholder { color: var(--mu); }
+#ds-list h4 { position: sticky; top: -1px; margin: 10px 0 2px; padding: 5px 2px; background: rgba(9, 13, 22, 0.96); z-index: 1; }
 #ds-list button { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; margin: 4px 0; padding: 5px 8px; line-height: 1.3; }
 #ds-list img { width: 38px; height: 38px; border-radius: 6px; flex: none; object-fit: cover; }
 #ds-list span { min-width: 0; } #ds-list small { display: block; color: var(--mu); }
@@ -55,7 +61,7 @@ body:not(.mob):has(#ds.on) #hud, body.tab:has(#ds.on) #mission, body.stack:has(#
 body.touch #dsb button { padding: 9px 16px; } body.touch #dsb em { display: none; }
 
 /* scéna objektu */
-body.ds-stage :is(.panel, #hud, #dockwrap, #mini, #ov, #cardtab, #sunchip, #guide, #toast, #cineoff, #dsb, #dsr) { opacity: 0 !important; pointer-events: none !important; transition: opacity 0.45s; }
+body.ds-stage :is(.panel, #hud, #dockwrap, #mini, #ov, #cardtab, #sunchip, #guide, #toast, #cineoff, #surf, #dsb, #dsr) { opacity: 0 !important; pointer-events: none !important; transition: opacity 0.45s; }
 #dss { display: none; position: fixed; inset: 0; z-index: 30; color: #e9eefb; font-size: clamp(14px, 1.04vw, 20px); line-height: 1.6; }
 #dss.on { display: block; }
 .ss-veil { position: absolute; inset: 0; background: radial-gradient(ellipse at 32% 50%, rgba(5, 8, 16, 0.78), rgba(2, 4, 9, 0.94)); opacity: 0; transition: opacity 0.7s; }
@@ -137,7 +143,9 @@ export function createObloha(S, A, ui) {
       Math.min(89.5, o.de + 0.5) * RAD
     ); /* o půl stupně severněji: natočení výřezu při přiblížení */
     o.vis = false;
-    o.kref = o.src.findIndex((s) => /OpenNGC|Poloha/.test(s.t)); /* zdroj polohy a katalogových údajů */
+    o.star = o.druh === 'hvezda';
+    o.eng = o.star && ENG.has(o.iau);
+    o.kref = o.src.findIndex((s) => /OpenNGC|Poloha|Hipparcos/.test(s.t)); /* zdroj polohy a katalogových údajů */
   }
   const DRAW = OBJ.slice().sort((a, b) => a.prio - b.prio); /* pořadí kreslení jmen: významnější mají přednost */
   const ok = () => !S.F || S.F.on('obloha');
@@ -173,7 +181,8 @@ export function createObloha(S, A, ui) {
   const ukc = $('#ukc'),
     ukOn = () => !!ukc && ukc.classList.contains('on') && !ukc.classList.contains('min');
   /* živá vrstva = objekty reagují na ukazatel; viditelná = kroužky a jména se kreslí stále */
-  const live = () => ok() && mode > 0 && !tutOn() && !ukOn() && !stage;
+  /* při ukázce úkazu (karta i scéna) a pod denní oblohou při pohledu z povrchu vrstva mlčí */
+  const live = () => ok() && mode > 0 && !tutOn() && !ukOn() && !S.evSet && !(S.skyDim > 0.5) && !stage;
   const shown = () => live() && (mode === 2 || S.conMode > 0);
 
   // ---------- prvky stránky (vkládají se sem, ne do index.html) ----------
@@ -190,8 +199,9 @@ export function createObloha(S, A, ui) {
       'ds',
       'panel pop',
       '<button class="x" data-c="x" aria-label="Zavřít">×</button><h3>🌌 Objekty na obloze</h3>' +
-        '<p class="ds-note" style="margin-top:0">Mlhoviny, hvězdokupy a galaxie na fotce Mléčné dráhy za planetami. Do Sluneční soustavy nepatří: leží stovky až miliardy světelných let daleko.</p>' +
+        '<p class="ds-note" style="margin-top:0">Výrazné hvězdy, mlhoviny, hvězdokupy a galaxie na obloze za planetami. Do Sluneční soustavy nepatří: leží čtyři až miliardy světelných let daleko.</p>' +
         '<div class="ds-mode"><button data-m="0">Vypnuto</button><button data-m="1" title="Kroužky se ukážou se souhvězdími; jinak se objekt prozradí, až na něj najedeš ukazatelem">Nenápadně</button><button data-m="2">Stále vidět</button></div>' +
+        '<input id="ds-q" type="search" placeholder="Hledat: jméno, M 42, NGC, souhvězdí…" autocomplete="off" spellcheck="false" aria-label="Hledat objekt">' +
         '<div id="ds-list"></div><p class="ds-note">Klik v seznamu objekt přiblíží. Na obloze: klik na kroužek ukáže jméno, dvojklik ho přiblíží.</p>'
     ),
     elR = mk('dsr', '', '<span></span>'),
@@ -219,7 +229,7 @@ export function createObloha(S, A, ui) {
   if (hr)
     hr.insertAdjacentHTML(
       'beforebegin',
-      '<p class="h-ds">🌌 Na fotce Mléčné dráhy jsou i <b>objekty daleko za Sluneční soustavou</b>: mlhoviny, hvězdokupy a galaxie. Slabé kroužky se jmény se ukážou spolu se souhvězdími (<kbd>U</kbd>); i bez nich se objekt prozradí, když na něj najedeš ukazatelem. Klik ukáže jméno, <b>dvojklik objekt přiblíží</b>: fotografie z velkých dalekohledů, údaje a odkazy na zdroje. Seznam je v nabídce ☰.</p>'
+      '<p class="h-ds">🌌 Na obloze za planetami jsou i <b>objekty daleko za Sluneční soustavou</b>: výrazné hvězdy, mlhoviny, hvězdokupy a galaxie. Slabé kroužky se jmény se ukážou spolu se souhvězdími (<kbd>U</kbd>); i bez nich se objekt prozradí, když na něj najedeš ukazatelem. Klik ukáže jméno, <b>dvojklik objekt přiblíží</b>: fotografie z velkých dalekohledů, údaje a odkazy na zdroje. Seznam je v nabídce ☰.</p>'
     );
   if (ui.pops) ui.pops.push('#ds');
   const T = (s, v) => ui.toggle(s, v),
@@ -231,8 +241,11 @@ export function createObloha(S, A, ui) {
       ? [nf(o.ly / 1e9, 1), 'mld. sv. let']
       : o.ly >= 1e6
         ? [nf(o.ly / 1e6, 1), 'mil. sv. let']
-        : [nf(o.ly), 'sv. let'];
-  const lyShort = (o) => lyNum(o).join(' ').replace('sv. let', 'sv. l.');
+        : [nf(o.ly, o.ly < 100 ? 1 : 0), o.ly < 5 ? 'sv. roku' : 'sv. let'];
+  const lyShort = (o) =>
+    lyNum(o)
+      .join(' ')
+      .replace(/sv\. (let|roku)/, 'sv. l.');
   const ang = (m) => (m >= 60 ? `${nf(m / 60, 1)}°` : m >= 1 ? `${nf(m, m < 10 ? 1 : 0)}′` : `${nf(m * 60)}″`);
   const size = (o) =>
     !o.vel || !o.maj ? null : ang(o.maj) + (o.min && Math.abs(o.min - o.maj) > o.maj * 0.08 ? ' × ' + ang(o.min) : '');
@@ -262,17 +275,28 @@ export function createObloha(S, A, ui) {
   const credit = (im) => `${esc(im.autor)} · ${im.arch} · ${im.lic}`;
 
   // ---------- seznam ----------
+  const plain = (t) =>
+    t
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/\s+/g, '');
+  for (const o of OBJ) o.key = plain(`${o.cs} ${o.ozn} ${o.souhv} ${o.typ}`);
   function drawList() {
-    let h = '';
+    const q = plain($('#ds-q').value || '');
+    let h = '',
+      n = 0;
     for (const g in SKUP) {
-      const L = OBJ.filter((o) => o.druh === g);
+      const L = OBJ.filter((o) => o.druh === g && (!q || o.key.includes(q)));
       if (!L.length) continue;
+      n += L.length;
       h += `<h4>${SKUP[g]} <small>(${L.length})</small></h4>`;
       for (const o of L)
         h += `<button data-o="${o.id}"><img src="${img(o.imgs[0].t)}" alt="" width="38" height="38" loading="lazy"><span><b>${o.cs}</b><small>${o.ozn} · ${lyShort(o)}</small></span></button>`;
     }
-    $('#ds-list').innerHTML = h;
+    $('#ds-list').innerHTML = h || '<p class="ds-note">Nic takového v seznamu není.</p>';
     drawMode();
+    return n;
   }
   function drawMode() {
     for (const b of elL.querySelectorAll('.ds-mode button')) b.classList.toggle('sel', +b.dataset.m === mode);
@@ -329,27 +353,66 @@ export function createObloha(S, A, ui) {
       }
     } else if (sel) setSel(null); /* objekt zmizel ze záběru */
   }
+  /* vzdálenější místa pro jméno, když u kroužku není volno: [směr x, směr y]; jméno pak s kroužkem spojí tenká čárka */
+  const FAR = [
+    [0.72, 0.72],
+    [-0.72, 0.72],
+    [0.72, -0.72],
+    [-0.72, -0.72],
+    [0, 1.7],
+    [0, -1.7],
+    [1.5, 0.35],
+    [-1.5, 0.35],
+  ];
+  /* okna rozhraní (karta, seznam, lišty, minimapa): jméno objektu se pod ně neschovává ani se o ně neuřízne.
+     Obdélníky se čtou nejvýš dvakrát za sekundu, ne v každém snímku. */
+  let panels = [],
+    panelsT = -1e9;
+  const panelRects = () => {
+    const t = performance.now();
+    if (t - panelsT < 450) return panels;
+    panelsT = t;
+    panels = [];
+    for (const el of document.querySelectorAll('.panel, #mini')) {
+      if (!el.clientWidth || !el.clientHeight) continue;
+      const cs = getComputedStyle(el);
+      if (cs.visibility === 'hidden' || +cs.opacity < 0.05) continue;
+      const r = el.getBoundingClientRect();
+      if (r.width > 4 && r.height > 4) panels.push([r.left - 4, r.top - 4, r.right + 4, r.bottom + 4]);
+    }
+    return panels;
+  };
   S.overlays.push((ctx, e) => {
     basis = { W: e.W, H: e.H, F: e.F, fwd: e.fwd, right: e.right, up: e.up };
     const on = live() || !!stage,
       draw = shown(),
       tk = S.txtK || 1,
       fo = e.R && e.R[S.focus],
+      under = S.surf ? S.surfBasis().n : null /* pohled z povrchu: co je pod obzorem, vidět není */,
+      engStars = S.starNames /* jména nejjasnějších hvězd právě kreslí engine */,
       boxes = [],
-      other = [...(S.labRects || []), ...((S.conMode === 3 || S.starNames) && S.skyRects ? S.skyRects : [])];
+      marks = [],
+      other = [
+        ...(S.labRects || []),
+        ...((S.conMode === 3 || S.starNames) && S.skyRects ? S.skyRects : []),
+        ...(draw ? panelRects() : []),
+      ],
+      th = 13 * tk;
     if (draw) {
       ctx.save();
-      ctx.font = `500 ${10.5 * tk}px system-ui, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
       ctx.lineJoin = 'round';
     }
+    const F_OBJ = `500 ${10.5 * tk}px system-ui, sans-serif`,
+      F_STAR = `italic 500 ${10.5 * tk}px system-ui, sans-serif`;
+    let font = '';
     for (const o of DRAW) {
       o.vis = o.lab = false;
       if (!on) continue;
       const z = o.v.dot(e.fwd);
       if (z < 0.25) continue;
-      if (S.surf && o.v.dot(S.surfBasis().n) < 0) continue; /* 1.10: při pohledu z povrchu je objekt pod obzorem */
+      if (under && o.v.dot(under) < 0) continue;
       const x = e.W / 2 + (e.F * o.v.dot(e.right)) / z,
         y = e.H / 2 - (e.F * o.v.dot(e.up)) / z;
       if (x < -30 || x > e.W + 30 || y < -30 || y > e.H + 30) continue;
@@ -357,47 +420,103 @@ export function createObloha(S, A, ui) {
       let hid = fo && fo.pr > 3 && Math.hypot(fo.sx - x, fo.sy - y) < fo.pr;
       if (!hid) for (const it of S.items) if (it.pr > 3 && Math.hypot(it.sx - x, it.sy - y) < it.pr) hid = true;
       if (hid) continue;
-      const rr = Math.max((o.vid ? 7 : 4.5) * tk, Math.min(150, (o.kr * RAD * e.F) / z));
+      const rr = o.star
+        ? (o.vid ? 6.5 : 5) * tk
+        : Math.max((o.vid ? 7 : 4.5) * tk, Math.min(150, (o.kr * RAD * e.F) / z));
       o.sx = x;
       o.sy = y;
       o.rr = rr;
       o.vis = true;
       if (!draw || o === hov || o === sel) continue;
+      if (o.eng && engStars) continue;
+      /* hustá místa (střed Galaxie při pohledu zdálky): značka, která by ležela na významnějším objektu, se nekreslí;
+         pod ukazatelem se objekt ukáže dál */
+      let dense = false;
+      for (const m of marks)
+        if (Math.hypot(m[0] - x, m[1] - y) < 8 * tk + Math.min(rr, m[2]) * 0.35) {
+          dense = true;
+          break;
+        }
+      if (dense) continue;
+      marks.push([x, y, rr]);
       ctx.globalAlpha = 1;
-      ctx.strokeStyle = o.vid ? 'rgba(214,198,255,0.34)' : 'rgba(214,198,255,0.26)';
       ctx.lineWidth = 1;
-      ctx.setLineDash(o.vid ? [2, 5] : [1.5, 3]);
+      if (o.star) {
+        ctx.strokeStyle = 'rgba(255,236,170,0.36)';
+        ctx.setLineDash([]);
+      } else {
+        ctx.strokeStyle = o.vid ? 'rgba(214,198,255,0.34)' : 'rgba(214,198,255,0.26)';
+        ctx.setLineDash(o.vid ? [2, 5] : [1.5, 3]);
+      }
       ctx.beginPath();
       ctx.arc(x, y, rr, 0, 6.2832);
       ctx.stroke();
       ctx.setLineDash([]);
-      /* jméno jen u objektů, které jsou na fotce vidět. Zkouší čtyři místa kolem kroužku (pod, nad, vpravo, vlevo)
-         a vezme první, kde nepřekryje jiné jméno objektu, tělesa, hvězdy ani souhvězdí; když není kde, zůstane jen kroužek */
+      /* Jméno jen u objektů, které jsou na obloze vidět. Zkouší čtyři místa těsně u kroužku (pod, nad, vpravo, vlevo); když je
+         všude obsazeno, zkusí osm vzdálenějších a jméno s kroužkem spojí čárkou. Nikdy nepřekryje jiné jméno objektu, tělesa,
+         hvězdy ani souhvězdí; když není kde, zůstane jen kroužek (jméno ukáže ukazatel). */
       if (!o.vid && mode < 2) continue;
-      const w = ctx.measureText(o.cs).width / 2 + 5,
-        th = 13 * tk;
-      for (const [cx, ty] of [
+      const f = o.star ? F_STAR : F_OBJ;
+      if (f !== font) ctx.font = font = f;
+      if (o.twk !== tk) {
+        o.tw = ctx.measureText(o.cs).width / 2 + 5;
+        o.twk = tk;
+      }
+      const w = o.tw,
+        fits = (cx, ty) => {
+          const b = [cx - w, ty - 2, cx + w, ty + th];
+          if (b[0] < 2 || b[2] > e.W - 2 || b[1] < 2 || b[3] > e.H - 2) return null;
+          for (const q of boxes) if (b[0] < q[2] && b[2] > q[0] && b[1] < q[3] && b[3] > q[1]) return null;
+          for (const q of other) if (b[0] < q[2] && b[2] > q[0] && b[1] < q[3] && b[3] > q[1]) return null;
+          return b;
+        };
+      let cx = 0,
+        ty = 0,
+        box = null,
+        lead = false;
+      for (const c of [
         [x, y + rr + 4],
         [x, y - rr - 4 - th],
         [x + rr + 6 + w, y - th / 2],
         [x - rr - 6 - w, y - th / 2],
-      ]) {
-        const b = [cx - w, ty - 2, cx + w, ty + th];
-        if (b[0] < 2 || b[2] > e.W - 2 || b[1] < 2 || b[3] > e.H - 2) continue;
-        const clash = (q) => b[0] < q[2] && b[2] > q[0] && b[1] < q[3] && b[3] > q[1];
-        if (boxes.some(clash) || other.some(clash)) continue;
-        boxes.push(b);
-        o.lab = true;
-        o.lw = w;
-        o.tx = cx; /* pozor: o.ly je vzdálenost ve světelných letech, proto tx/ty */
-        o.ty = ty;
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = 'rgba(3,6,12,0.6)';
-        ctx.strokeText(o.cs, cx, ty);
-        ctx.fillStyle = 'rgba(226,214,255,0.6)';
-        ctx.fillText(o.cs, cx, ty);
-        break;
+      ])
+        if ((box = fits(c[0], c[1]))) {
+          cx = c[0];
+          ty = c[1];
+          break;
+        }
+      if (!box && (o.vid === 2 || mode === 2)) {
+        const d = rr + 15 * tk;
+        for (const c of FAR) {
+          const ax = x + c[0] * d,
+            ay = y + c[1] * d;
+          cx = ax + (c[0] > 0.1 ? w : c[0] < -0.1 ? -w : 0);
+          ty = c[1] > 1 ? ay : c[1] < -1 ? ay - th : ay - th / 2;
+          if ((box = fits(cx, ty))) {
+            lead = true;
+            /* čárka od okraje kroužku ke jménu */
+            const l = Math.hypot(c[0], c[1]);
+            ctx.strokeStyle = o.star ? 'rgba(255,236,170,0.3)' : 'rgba(214,198,255,0.3)';
+            ctx.beginPath();
+            ctx.moveTo(x + (c[0] / l) * (rr + 1), y + (c[1] / l) * (rr + 1));
+            ctx.lineTo(ax - (c[0] / l) * 2, ay - (c[1] / l) * 2);
+            ctx.stroke();
+            break;
+          }
+        }
       }
+      if (!box) continue;
+      boxes.push(box);
+      o.lab = true;
+      o.lw = w;
+      o.tx = cx; /* pozor: o.ly je vzdálenost ve světelných letech, proto tx/ty */
+      o.ty = ty;
+      o.ldr = lead; /* pozor: o.lead je úvodní text objektu */
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = 'rgba(3,6,12,0.6)';
+      ctx.strokeText(o.cs, cx, ty);
+      ctx.fillStyle = o.star ? 'rgba(255,236,170,0.62)' : 'rgba(226,214,255,0.6)';
+      ctx.fillText(o.cs, cx, ty);
     }
     if (draw) ctx.restore();
     place();
@@ -409,7 +528,7 @@ export function createObloha(S, A, ui) {
       if (!o.vis) continue;
       const d = Math.hypot(o.sx - x, o.sy - y),
         inR = d < Math.max(o.rr, 13) + 3,
-        inL = o.lab && Math.abs(x - o.tx) < o.lw && y > o.ty - 3 && y < o.ty + 16;
+        inL = o.lab && Math.abs(x - o.tx) < o.lw && y > o.ty - 3 && y < o.ty + 16 * (S.txtK || 1);
       if ((inR || inL) && (!best || o.rr < best.rr)) best = o;
     }
     return best;
@@ -451,26 +570,48 @@ export function createObloha(S, A, ui) {
     }
     return { yaw: az + Math.PI, pitch, ly: 0, lp };
   }
-  function go(to, done) {
-    const cam = S.cam;
+  /* směr objektu při pohledu z povrchu: azimut a výška nad obzorem */
+  const surfAE = (o) => {
+    const q = S.surfBasis();
+    return { az: Math.atan2(o.v.dot(q.e), o.v.dot(q.no)), el: Math.asin(Math.max(-1, Math.min(1, o.v.dot(q.n)))) };
+  };
+  const WRAP = { yaw: 1, pitch: 1, az: 1 };
+  function go(to, done, obj = S.cam) {
     if (fast) {
-      Object.assign(cam, to);
+      Object.assign(obj, to);
       anim = null;
       S.wake();
       if (done) requestAnimationFrame(() => requestAnimationFrame(done));
       return;
     }
-    anim = {
-      t: 0,
-      a: { yaw: cam.yaw, pitch: cam.pitch, ly: cam.ly, lp: cam.lp },
-      b: { ...to, yaw: cam.yaw + wrap(to.yaw - cam.yaw), pitch: cam.pitch + wrap(to.pitch - cam.pitch) },
-      done,
-    };
+    const a = {},
+      b = {};
+    for (const q in to) {
+      a[q] = obj[q];
+      b[q] = WRAP[q] ? obj[q] + wrap(to[q] - obj[q]) : to[q];
+    }
+    anim = { t: 0, obj, a, b, done };
     S.wake();
   }
   function aim(o, done) {
     if (!o || !ok()) return;
     const cam = S.cam;
+    if (S.surf) {
+      /* z povrchu se pozorovatel jen otočí; objekt pod obzorem se neukáže (scéna se otevře bez natočení) */
+      const q = S.surf,
+        t = surfAE(o);
+      if (t.el < 0.03) {
+        if (done) requestAnimationFrame(() => requestAnimationFrame(done));
+        return;
+      }
+      if (!saved || saved.surf !== q) saved = { surf: q, az: q.az, el: q.el, track: q.track };
+      if (q.track >= 0) {
+        q.track = -1;
+        q.ox = q.oy = 0;
+        S.bus.emit('surf', q);
+      }
+      return go({ az: t.az, el: Math.min(1.45, t.el) }, done, q);
+    }
     if (cam.fly && cam.fly.ph !== 2) {
       pend = [o, done]; /* právě se letí k tělesu: počkat na přílet */
       return;
@@ -487,6 +628,18 @@ export function createObloha(S, A, ui) {
     const s = saved,
       cam = S.cam;
     saved = null;
+    if (s.surf) {
+      /* pohled z povrchu: otočit se zpět; pokud pozorovatel sledoval těleso, sledovat ho dál */
+      const q = S.surf;
+      if (q !== s.surf) return;
+      if (s.track >= 0) {
+        q.track = s.track;
+        S.bus.emit('surf', q);
+        return S.wake();
+      }
+      return go({ az: s.az, el: s.el }, null, q);
+    }
+    if (S.surf) return;
     if (cam.fly) cam.fly = null;
     /* jiné těleso než při natočení (skok klávesou): jen srovnat pohled zpět na těleso */
     go(
@@ -514,7 +667,7 @@ export function createObloha(S, A, ui) {
       told = true;
       store();
       ui.toast(
-        '✦ Slabé kroužky na obloze jsou mlhoviny, hvězdokupy a galaxie daleko za Sluneční soustavou. Klik ukáže jméno, dvojklik objekt přiblíží.',
+        '✦ Slabé kroužky na obloze jsou výrazné hvězdy, mlhoviny, hvězdokupy a galaxie daleko za Sluneční soustavou. Klik ukáže jméno, dvojklik objekt přiblíží.',
         8000
       );
     }
@@ -524,14 +677,14 @@ export function createObloha(S, A, ui) {
       pend = null;
       aim(p[0], p[1]);
     }
+    if (anim && anim.obj !== S.cam && anim.obj !== S.surf) anim = null; /* pozorovatel mezitím vzlétl z povrchu */
     if (anim) {
-      const cam = S.cam,
+      const obj = anim.obj,
         u = (anim.t = Math.min(1, anim.t + dt / 1.1)),
         k = u * u * (3 - 2 * u);
-      for (const q of ['yaw', 'pitch', 'ly', 'lp']) cam[q] = anim.a[q] + (anim.b[q] - anim.a[q]) * k;
+      for (const q in anim.b) obj[q] = anim.a[q] + (anim.b[q] - anim.a[q]) * k;
       if (u >= 1) {
-        cam.yaw = wrap(cam.yaw);
-        cam.pitch = wrap(cam.pitch);
+        for (const q in anim.b) if (WRAP[q]) obj[q] = wrap(obj[q]);
         const d = anim.done;
         anim = null;
         if (d) requestAnimationFrame(() => requestAnimationFrame(d));
@@ -586,7 +739,9 @@ export function createObloha(S, A, ui) {
     let h = `<div><b>${o.lyz || ''}${d[0]}</b><i>${d[1]}${ref(o.lysrc)}</i><small>vzdálenost</small></div>`;
     if (s) h += `<div><b>${s}</b><i>Měsíc v úplňku: 0,5°${ref(o.kref)}</i><small>velikost na obloze</small></div>`;
     if (o.mag != null)
-      h += `<div><b>${nf(o.mag, 1)} mag</b><i>okem do asi 6 mag${ref(o.kref)}</i><small>jasnost</small></div>`;
+      h += `<div><b>${nf(o.mag, o.star ? 2 : 1).replace('-', '−')} mag</b><i>${o.star ? o.magtxt || 'okem do asi 6 mag' : 'okem do asi 6 mag'}${ref(o.kref)}</i><small>jasnost</small></div>`;
+    if (o.star && o.sp)
+      h += `<div><b>${esc(o.sp)}</b><i>${o.barva}${ref(o.kref)}</i><small>spektrální třída</small></div>`;
     h += `<div><b>${o.souhv}</b><i>${o.de < -40 ? 'jižní obloha' : o.de > 40 ? 'severní obloha' : 'vidět i z Česka'}</i><small>souhvězdí</small></div>`;
     return h;
   }
@@ -748,7 +903,7 @@ export function createObloha(S, A, ui) {
     ph.style.opacity = '';
   };
   function openStage(o) {
-    if (!o || !ok() || stage || tutOn()) return;
+    if (!o || !ok() || stage || tutOn() || S.evSet) return;
     if (isOn(elL) && cls('mob')) T('#ds', false);
     const wasVis = o.vis && basis && o.sx > 40 && o.sy > 40 && o.sx < basis.W - 40 && o.sy < basis.H - 40;
     hov = null;
@@ -781,7 +936,16 @@ export function createObloha(S, A, ui) {
         if (!stage) return;
         stage.o = o;
         const cam = S.cam;
-        if (!cam.fly) {
+        if (S.surf) {
+          const q = S.surf,
+            t = surfAE(o);
+          if (t.el > 0.03) {
+            if (!saved || saved.surf !== q) saved = { surf: q, az: q.az, el: q.el, track: q.track };
+            q.track = -1;
+            q.az = t.az;
+            q.el = Math.min(1.45, t.el);
+          }
+        } else if (!cam.fly) {
           if (!saved || saved.focus !== S.focus)
             saved = { focus: S.focus, yaw: cam.yaw, pitch: cam.pitch, ly: cam.ly, lp: cam.lp };
           Object.assign(cam, target(o));
@@ -929,6 +1093,17 @@ export function createObloha(S, A, ui) {
     }
   });
   elB.addEventListener('click', (e) => e.target.closest('[data-c="go"]') && sel && openStage(sel));
+  const elQ = $('#ds-q');
+  elQ.addEventListener('input', drawList);
+  /* psaní do hledání nesmí spouštět zkratky aplikace; Esc nejdřív vymaže hledání */
+  elQ.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape' || elQ.value) e.stopPropagation();
+    if (e.key === 'Escape' && elQ.value) {
+      e.preventDefault();
+      elQ.value = '';
+      drawList();
+    }
+  });
   elL.addEventListener('click', (e) => {
     if (e.target.closest('[data-c="x"]')) return T('#ds', false);
     const m = e.target.closest('[data-m]');
@@ -968,6 +1143,12 @@ export function createObloha(S, A, ui) {
     setSel(null);
     if (isOn(elL)) T('#ds', false);
   });
+  /* vstup na povrch, vzlet nebo jiné místo: uložený pohled už neplatí */
+  S.bus.on('surf', (q) => {
+    if (saved && (saved.surf || q) && saved.surf !== q) saved = null;
+    if (!q || (anim && anim.obj !== q)) anim = null;
+    if (!stage) setSel(null);
+  });
   const modeOff = () => {
     if (ok()) return;
     hov = null;
@@ -1000,7 +1181,16 @@ export function createObloha(S, A, ui) {
       stage: stage && { id: stage.o.id, ph: stage.ph, tab: stage.tab, ii: stage.ii },
       anim: !!anim,
       saved: !!saved,
-      vis: OBJ.filter((o) => o.vis).map((o) => ({ id: o.id, x: o.sx, y: o.sy, r: o.rr, lab: !!o.lab })),
+      vis: OBJ.filter((o) => o.vis).map((o) => ({
+        id: o.id,
+        x: o.sx,
+        y: o.sy,
+        r: o.rr,
+        lab: !!o.lab,
+        /* obdélník jména (zkoušky: jména se nesmějí překrývat mezi sebou ani s jinými popisky) */
+        box: o.lab ? [o.tx - o.lw, o.ty - 2, o.tx + o.lw, o.ty + 13 * (S.txtK || 1)] : null,
+        lead: !!(o.lab && o.ldr),
+      })),
     }),
   };
 }

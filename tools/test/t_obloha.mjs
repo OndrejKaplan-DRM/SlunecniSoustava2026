@@ -79,7 +79,19 @@ const frames = (n = 3) =>
     n
   );
 const faze = (f, t = 60000) =>
-  page.waitForFunction((f) => (S200.obloha.state().stage || {}).ph === f, f, { timeout: t });
+  page
+    .waitForFunction((f) => (S200.obloha.state().stage || {}).ph === f, f, { timeout: t })
+    .catch(async (e) => {
+      /* ať je z výpisu vidět, kde scéna uvízla */
+      const q = await page.evaluate(() => {
+        const s = S200.obloha.state();
+        return { stage: s.stage, anim: s.anim, saved: s.saved, sel: s.sel, fly: !!S200.S.cam.fly, surf: !!S200.S.surf };
+      });
+      console.log(
+        '  scéna nedošla do fáze „' + f + '“: ' + JSON.stringify(q) + '\n  chyby: ' + errs.slice(0, 4).join(' | ')
+      );
+      throw e;
+    });
 const zavreno = () =>
   page.waitForFunction(() => !S200.obloha.state().stage && !S200.obloha.state().anim, null, { timeout: 60000 });
 const klik = (x, y) => (phone ? page.touchscreen.tap(x, y) : page.mouse.click(x, y));
@@ -117,9 +129,46 @@ const d = await page.evaluate(async () => {
     lysrc: L.filter((o) => !o.src[o.lysrc]).length,
     bezPol: L.filter((o) => o.kref < 0).length,
     dup: L.length - new Set(L.map((o) => o.id)).size,
+    hv: L.filter((o) => o.druh === 'hvezda').length,
+    hvZle: L.filter(
+      (o) => o.druh === 'hvezda' && (!o.iau || !/Hipparcos|Poloha/.test(o.src[0].t) || (o.sp && !o.barva))
+    ).map((o) => o.id),
   };
 });
-ok(d.n >= 60 && !d.dup, `${d.n} objektů, žádný dvakrát`);
+await page.evaluate(() => {
+  /* otisk dat: kreslení si do objektů ukládá pomocné hodnoty a nesmí přepsat žádný údaj */
+  const pole = [
+    'id',
+    'cs',
+    'ozn',
+    'typ',
+    'ly',
+    'lyz',
+    'lytxt',
+    'lead',
+    'txt',
+    'foto',
+    'mag',
+    'ra',
+    'de',
+    'vid',
+    'sp',
+    'nase',
+  ];
+  window.otisk = () =>
+    JSON.stringify(
+      S200.obloha
+        .ids()
+        .map((i) => S200.obloha.get(i))
+        .map((o) => pole.map((k) => o[k]))
+    );
+  window.OTISK0 = window.otisk();
+});
+ok(d.n >= 150 && !d.dup, `${d.n} objektů, žádný dvakrát`);
+ok(
+  d.hv >= 40 && d.hvZle.length === 0,
+  `${d.hv} hvězd, každá s polohou z katalogu a jménem (${d.hvZle.join(', ') || 'v pořádku'})`
+);
 ok(d.miss === 0, `všechny obrázky existují (${d.files} souborů, ${d.fot} fotografií, chybí ${d.miss})`);
 ok(d.bezFot === 0 && d.bezAut === 0, 'každý objekt má fotografii, každá fotografie autora, licenci a odkaz');
 ok(
@@ -413,6 +462,180 @@ ok(
     (zle.length ? '\n       ' + zle.slice(0, 6).join('\n       ') : '')
 );
 
+console.log('jména bez překryvů, hvězdy, hledání, pohled z povrchu');
+{
+  /* šest pohledů z dálky: jména objektů se nesmějí překrývat mezi sebou, se jmény těles, hvězd ani souhvězdí */
+  const prekryvy = await page.evaluate(async () => {
+    const S = S200.S,
+      O = S200.obloha,
+      out = [];
+    const snimky = (n) =>
+      new Promise((r) => {
+        const f = () => {
+          S.wake();
+          --n > 0 ? requestAnimationFrame(f) : r();
+        };
+        requestAnimationFrame(f);
+      });
+    O.mode(2);
+    S.jump(S200.sim.idx.get('earth'));
+    S.cam.alt = S.cam.altT = 3e7;
+    for (const [con, names, yaw, pitch] of [
+      [3, true, 0.4, 0.2],
+      [3, true, 2.6, -0.3],
+      [2, false, 4.4, 0.6],
+      [3, true, 5.5, -0.9],
+      [3, true, 4.567, 0.2527] /* Střelec: nejhustší místo oblohy */,
+      [3, true, 1.693, 0.7405] /* Orion */,
+    ]) {
+      S.conMode = con;
+      S.starNames = names;
+      S.cam.yaw = yaw;
+      S.cam.pitch = pitch;
+      S.cam.ly = S.cam.lp = 0;
+      await snimky(2);
+      await new Promise((r) => setTimeout(r, 700)); /* okna se čtou dvakrát za sekundu: počkat na ustálený stav */
+      await snimky(3);
+      const V = O.state().vis.filter((v) => v.box),
+        okna = [...document.querySelectorAll('.panel, #mini')]
+          .filter(
+            (el) =>
+              el.clientWidth &&
+              el.clientHeight &&
+              getComputedStyle(el).visibility !== 'hidden' &&
+              +getComputedStyle(el).opacity > 0.05
+          )
+          .map((el) => [el.id, el.getBoundingClientRect()])
+          .filter(([, r]) => r.width > 4 && r.height > 4)
+          .map(([id, r]) => [r.left, r.top, r.right, r.bottom, id]),
+        cizi = [...(S.labRects || []), ...(con === 3 || names ? S.skyRects || [] : []), ...okna],
+        x = (a, b) => a[0] < b[2] && a[2] > b[0] && a[1] < b[3] && a[3] > b[1];
+      let n = 0;
+      const kdo = [];
+      for (let i = 0; i < V.length; i++) {
+        for (let j = i + 1; j < V.length; j++) if (x(V[i].box, V[j].box)) (n++, kdo.push(V[i].id + '×' + V[j].id));
+        for (const q of cizi) if (x(V[i].box, q)) (n++, kdo.push(V[i].id + '×' + (q[4] || 'jméno')));
+      }
+      /* hvězda, kterou právě popisuje engine („Jména hvězd“), nesmí mít druhé jméno z této vrstvy */
+      const dvakrat = names ? V.filter((v) => O.get(v.id).eng).length : 0;
+      out.push({ jmen: V.length, carek: V.filter((v) => v.lead).length, n, kdo, dvakrat, hvezd: cizi.length });
+    }
+    S.conMode = 0;
+    S.starNames = false;
+    O.mode(1);
+    return out;
+  });
+  ok(
+    prekryvy.every((p) => p.n === 0) && prekryvy.reduce((a, p) => a + p.jmen, 0) >= (phone ? 12 : 24),
+    'jména objektů se nepřekrývají mezi sebou, se jmény těles, hvězd a souhvězdí ani s okny rozhraní (' +
+      prekryvy
+        .map((p) => `${p.jmen} jmen, ${p.carek} s čárkou, ${p.n} překryvů` + (p.n ? ' ' + p.kdo.join(' ') : ''))
+        .join('; ') +
+      ')'
+  );
+  ok(
+    prekryvy.every((p) => p.dvakrat === 0),
+    'hvězdu, kterou popisuje tlačítko „Jména hvězd“, tato vrstva nepopisuje podruhé'
+  );
+  /* hledání v seznamu */
+  const hled = await page.evaluate(() => {
+    const O = S200.obloha,
+      q = document.querySelector('#ds-q'),
+      pocet = () => document.querySelectorAll('#ds-list [data-o]').length;
+    if (!document.querySelector('#ds').classList.contains('on')) O.list();
+    const vse = pocet();
+    const zkus = (t) => {
+      q.value = t;
+      q.dispatchEvent(new Event('input'));
+      return [...document.querySelectorAll('#ds-list [data-o]')].map((b) => b.dataset.o);
+    };
+    const a = zkus('sirius'),
+      b = zkus('m 42'),
+      c = zkus('labut'),
+      d = zkus('xyzq');
+    zkus('');
+    const zpet = pocet();
+    S200.ui.toggle('#ds', false);
+    return { vse, a, b, c: c.length, d: d.length, zpet };
+  });
+  ok(
+    hled.vse === d.n &&
+      hled.a.join() === 'sirius' &&
+      hled.b.includes('m42') &&
+      hled.c >= 4 &&
+      hled.d === 0 &&
+      hled.zpet === d.n,
+    `hledání v seznamu: „sirius“ → ${hled.a.length}, „m 42“ → ${hled.b.length}, „labut“ (bez háčků) → ${hled.c}, nesmysl → ${hled.d}`
+  );
+  /* scéna hvězdy: dlaždice se spektrální třídou a vzdálenost s desetinným místem */
+  await page.evaluate(() => {
+    S200.obloha.fast(true);
+    S200.obloha.open('sirius');
+  });
+  await faze('open');
+  const hv = await page.evaluate(() => ({
+    t: document.querySelector('.ss-tiles').textContent,
+    kick: document.querySelector('.ss-kick').textContent,
+    fot: document.querySelectorAll('.ss-th button').length,
+  }));
+  ok(
+    /8,6/.test(hv.t) && /spektrální třída/.test(hv.t) && /−1,44/.test(hv.t) && /Hvězdy/.test(hv.kick) && hv.fot === 2,
+    'scéna hvězdy: vzdálenost 8,6 sv. l., jasnost −1,44 mag, spektrální třída, snímek a mapa okolí'
+  );
+  await page.evaluate(() => S200.obloha.close(true));
+  /* pohled z povrchu: objekt nad obzorem se natočí a po zavření se pozorovatel otočí zpět; objekt pod obzorem pohled nemění */
+  if (!phone) {
+    const pv = await page.evaluate(async () => {
+      const S = S200.S,
+        O = S200.obloha;
+      const snimky = (n) =>
+        new Promise((r) => {
+          const f = () => {
+            S.wake();
+            --n > 0 ? requestAnimationFrame(f) : r();
+          };
+          requestAnimationFrame(f);
+        });
+      const ceka = (f) =>
+        new Promise((r) => {
+          const t = () => ((O.state().stage || {}).ph === f ? r() : setTimeout(t, 60));
+          t();
+        });
+      S200.povrch.enter(S200.sim.idx.get('moon'), 10, 20, { quiet: true });
+      await snimky(4);
+      const b = S.surfBasis(),
+        el = (id) => Math.asin(O.get(id).v.dot(b.n)),
+        nad = O.ids().find((i) => el(i) > 0.35 && el(i) < 1.2),
+        pod = O.ids().find((i) => el(i) < -0.3),
+        q = S.surf,
+        a0 = [q.az, q.el];
+      O.open(nad);
+      await ceka('open');
+      await snimky(3);
+      const vNad = O.state().vis.some((v) => v.id === nad),
+        otoceno = Math.abs(q.az - a0[0]) + Math.abs(q.el - a0[1]) > 0.01;
+      O.close();
+      await snimky(4);
+      const zpet = Math.abs(q.az - a0[0]) < 1e-3 && Math.abs(q.el - a0[1]) < 1e-3;
+      O.open(pod);
+      await ceka('open');
+      const beze = Math.abs(q.az - a0[0]) < 1e-3 && Math.abs(q.el - a0[1]) < 1e-3,
+        podVis = O.state().vis.some((v) => v.id === pod);
+      O.close(true);
+      const stale = !!S.surf;
+      S200.povrch.exit();
+      await snimky(3);
+      return { nad, pod, vNad, otoceno, zpet, beze, podVis, stale };
+    });
+    ok(
+      pv.vNad && pv.otoceno && pv.zpet && pv.beze && !pv.podVis && pv.stale,
+      `pohled z povrchu Měsíce: ${pv.nad} nad obzorem se natočí a po zavření se pohled vrátí; ${pv.pod} pod obzorem pohled nemění ` +
+        JSON.stringify(pv)
+    );
+  }
+  await page.evaluate(() => S200.obloha.fast(true));
+}
+
 console.log('režimy, přelet, dětské rozhraní, úkaz');
 await page.evaluate(() => {
   S200.S.jump(S200.sim.idx.get('earth'));
@@ -470,10 +693,13 @@ const neporusena = await page.evaluate(() => {
     O.get('m42').ly === 1350 &&
     O.get('kun').ly === 1300 &&
     O.get('m31').ly === 2500000 &&
-    O.ids().every((i) => O.get(i).ly >= 100 && Number.isInteger(O.get(i).ly))
+    O.get('sirius').ly === 8.6 &&
+    O.ids().every((i) => O.get(i).ly >= 4) &&
+    O.ids().every((i) => typeof O.get(i).lead === 'string' && O.get(i).lead.length > 20) &&
+    window.otisk() === window.OTISK0
   );
 });
-ok(neporusena, 'vzdálenosti objektů zůstaly po celé zkoušce nezměněné');
+ok(neporusena, 'údaje objektů (vzdálenosti, texty, polohy) zůstaly po celé zkoušce nezměněné');
 ok(
   cizi.length === 0,
   `stránka nenačítá nic z cizích serverů (${cizi.length})` + (cizi.length ? ' ' + cizi.slice(0, 3).join(' ') : '')
