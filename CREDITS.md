@@ -33,7 +33,7 @@ Kosmická výprava (`OndrejKaplan-DRM/SolarSystemExperimentsRepo`, `kosmicka-vyp
 ilustrace počítaná programem (`src/render/belts.js`), žádná cizí data.
 
 ## Objekty na obloze (verze 1.8b)
-Fotografie mlhovin, hvězdokup a galaxií v kartách „Objekty na obloze“ (`dist/sky/`, 40 snímků) pocházejí z veřejných archivů
+Fotografie mlhovin, hvězdokup a galaxií v kartách „Objekty na obloze“ (`dist/sky/`, 108 snímků) pocházejí z veřejných archivů
 **ESO**, **ESA/Hubble** a **ESA/Webb** (licence CC BY 4.0: smí se šířit a upravovat při uvedení autora) a z archivu **NASA** (jeden snímek NASA/JPL-Caltech/UCLA; volné užití s uvedením autora podle zásad NASA/JPL).
 Jsou zmenšené a převedené do WebP; autor každého snímku je uveden přímo v kartě pod fotografií a spolu s odkazem na stránku snímku
 v tabulce `zdroje/OBLOHA.md`. Poloha, úhlová velikost a jasnost objektů jsou z katalogu **OpenNGC** (Mattia Verga, CC BY-SA 4.0),

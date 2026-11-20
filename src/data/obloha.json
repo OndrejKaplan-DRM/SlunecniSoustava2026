@@ -1,8 +1,10 @@
 {
+ "stav": "19. 11. 2026",
  "skupiny": {
   "galaxie": "Galaxie",
   "mlhovina": "Zářící mlhoviny",
   "temna": "Temné mlhoviny",
+  "zanik": "Umírající hvězdy a jejich pozůstatky",
   "kulova": "Kulové hvězdokupy",
   "otevrena": "Otevřené hvězdokupy",
   "stred": "Střed Galaxie"
@@ -23,27 +25,22 @@
    "pole": 43.1,
    "kr": 5.38,
    "vel": true,
+   "vid": 2,
+   "prio": 0,
    "ly": 163000,
+   "lyz": null,
    "lytxt": null,
    "lysrc": 0,
    "lead": "Malá galaxie, která obíhá kolem naší Mléčné dráhy. Z jižní polokoule je vidět pouhým okem jako odtržený kus Mléčné dráhy.",
-   "odst": [
-    {
-     "h": "Co to je",
-     "t": "Velké Magellanovo mračno je jeden z nejbližších galaktických sousedů: leží asi 163 000 světelných let od Země. Není součástí Mléčné dráhy, je to samostatná menší galaxie. Astronomové z přehlídky VMC v ní podrobně rozebrali asi 10 milionů jednotlivých hvězd a určili jejich stáří."
-    },
-    {
-     "h": "Co je na fotkách",
-     "t": "Infračervený snímek dalekohledu VISTA proniká prachem a ukazuje hvězdy v celé galaxii. Druhý snímek je mlhovina Tarantule, obří oblast zrodu hvězd uvnitř mračna."
-    },
-    {
-     "h": "Kde je na obloze",
-     "t": "V souhvězdích Mečouna a Tabulové hory, blízko jižního nebeského pólu. Z Česka nikdy nevychází nad obzor."
-    }
+   "txt": [
+    "Velké Magellanovo mračno je jeden z nejbližších galaktických sousedů: leží asi 163 000 světelných let od Země. Není součástí Mléčné dráhy, je to samostatná menší galaxie. Astronomové z přehlídky VMC v ní podrobně rozebrali asi 10 milionů jednotlivých hvězd a určili jejich stáří."
    ],
+   "foto": "Infračervený snímek dalekohledu VISTA proniká prachem a ukazuje hvězdy v celé galaxii. Druhý snímek je mlhovina Tarantule, obří oblast zrodu hvězd uvnitř mračna.",
+   "nase": null,
    "imgs": [
     {
      "f": "lmc_1.webp",
+     "t": "lmc_1t.webp",
      "w": 1146,
      "h": 1280,
      "cap": "Celé mračno v infračerveném světle (dalekohled VISTA)",
@@ -54,6 +51,7 @@
     },
     {
      "f": "lmc_2.webp",
+     "t": "lmc_2t.webp",
      "w": 1253,
      "h": 1280,
      "cap": "Mlhovina Tarantule uvnitř mračna (Hubble)",
@@ -89,27 +87,22 @@
    "pole": 20.0,
    "kr": 2.5,
    "vel": true,
+   "vid": 2,
+   "prio": 1,
    "ly": 210000,
+   "lyz": null,
    "lytxt": null,
    "lysrc": 1,
    "lead": "Menší z dvojice Magellanových mračen. I ono je samostatná trpasličí galaxie viditelná z jižní polokoule pouhým okem.",
-   "odst": [
-    {
-     "h": "Co to je",
-     "t": "Malé Magellanovo mračno leží asi 210 000 světelných let od nás. Je nápadné i pro neozbrojené oko; hned vedle něj je na obloze vidět kulová hvězdokupa 47 Tucanae, která je ale mnohem blíž a patří k Mléčné dráze."
-    },
-    {
-     "h": "Co je na fotkách",
-     "t": "Snímek VISTA je největší infračervený snímek tohoto mračna, plný milionů hvězd. Hubble a Webb ukazují dvě hvězdné porodnice uvnitř: NGC 346 a NGC 602."
-    },
-    {
-     "h": "Kde je na obloze",
-     "t": "V souhvězdí Tukana, asi 17° od jižního nebeského pólu. Z Česka není vidět."
-    }
+   "txt": [
+    "Malé Magellanovo mračno leží asi 210 000 světelných let od nás. Je nápadné i pro neozbrojené oko; hned vedle něj je na obloze vidět kulová hvězdokupa 47 Tucanae, která je ale mnohem blíž a patří k Mléčné dráze."
    ],
+   "foto": "Snímek VISTA je největší infračervený snímek tohoto mračna, plný milionů hvězd. Hubble a Webb ukazují dvě hvězdné porodnice uvnitř: NGC 346 a NGC 602.",
+   "nase": null,
    "imgs": [
     {
      "f": "smc_1.webp",
+     "t": "smc_1t.webp",
      "w": 1280,
      "h": 1133,
      "cap": "Celé mračno v infračerveném světle (VISTA)",
@@ -120,6 +113,7 @@
     },
     {
      "f": "smc_2.webp",
+     "t": "smc_2t.webp",
      "w": 1096,
      "h": 1280,
      "cap": "Hvězdná porodnice NGC 346 (Hubble)",
@@ -130,6 +124,7 @@
     },
     {
      "f": "smc_3.webp",
+     "t": "smc_3t.webp",
      "w": 1280,
      "h": 837,
      "cap": "Mladá hvězdokupa NGC 602 (Webb)",
@@ -169,27 +164,22 @@
    "pole": 18.0,
    "kr": 1.48,
    "vel": true,
+   "vid": 2,
+   "prio": 2,
    "ly": 2500000,
+   "lyz": null,
    "lytxt": null,
    "lysrc": 0,
    "lead": "Velká spirální galaxie v sousedství Mléčné dráhy. Za tmavé noci je vidět pouhým okem jako mlhavá skvrnka.",
-   "odst": [
-    {
-     "h": "Co to je",
-     "t": "Galaxie v Andromedě je velká spirální galaxie vzdálená 2,5 milionu světelných let. Světlo, které z ní dnes vidíme, je na cestě 2,5 milionu let. Na obloze je šestkrát širší než Měsíc v úplňku, okem je ale vidět jen její jasný střed."
-    },
-    {
-     "h": "Co je na fotkách",
-     "t": "Hubbleova mozaika je jeden z největších snímků, jaké kdy dalekohled pořídil: 1,5 miliardy bodů, přes 100 milionů hvězd a tisíce hvězdokup v úseku disku dlouhém přes 40 000 světelných let. Druhý snímek ukazuje celou galaxii ze Země."
-    },
-    {
-     "h": "Kde je na obloze",
-     "t": "V souhvězdí Andromedy. Z Česka je na podzim vysoko na večerní obloze; na naší fotce je to malá protáhlá skvrnka stranou od pásu Mléčné dráhy."
-    }
+   "txt": [
+    "Galaxie v Andromedě je velká spirální galaxie vzdálená 2,5 milionu světelných let. Světlo, které z ní dnes vidíme, je na cestě 2,5 milionu let. Na obloze je šestkrát širší než Měsíc v úplňku, okem je ale vidět jen její jasný střed."
    ],
+   "foto": "Hubbleova mozaika je jeden z největších snímků, jaké kdy dalekohled pořídil: 1,5 miliardy bodů, přes 100 milionů hvězd a tisíce hvězdokup v úseku disku dlouhém přes 40 000 světelných let. Druhý snímek ukazuje celou galaxii ze Země.",
+   "nase": null,
    "imgs": [
     {
      "f": "m31_1.webp",
+     "t": "m31_1t.webp",
      "w": 1280,
      "h": 409,
      "cap": "Část disku: přes 100 milionů hvězd (Hubble)",
@@ -200,6 +190,7 @@
     },
     {
      "f": "m31_2.webp",
+     "t": "m31_2t.webp",
      "w": 1280,
      "h": 828,
      "cap": "Celá galaxie ze Země, s popisky",
@@ -235,27 +226,22 @@
    "pole": 18.0,
    "kr": 0.75,
    "vel": true,
+   "vid": 2,
+   "prio": 3,
    "ly": 1350,
+   "lyz": null,
    "lytxt": "asi 1 350 sv. l. (ESO); starší zdroje uvádějí 1 500",
    "lysrc": 0,
    "lead": "Jedna z nejbližších hvězdných porodnic. V Orionově meči je vidět pouhým okem jako mlhavá hvězda.",
-   "odst": [
-    {
-     "h": "Co to je",
-     "t": "Mlhovina v Orionu je oblak plynu a prachu, ve kterém se právě rodí hvězdy. Je to jedna z nejbližších porodnic lehkých i těžkých hvězd, vzdálená asi 1 350 světelných let. Plyn rozsvěcují mladé horké hvězdy uprostřed, známé jako Trapez."
-    },
-    {
-     "h": "Co je na fotkách",
-     "t": "Hubbleova mozaika je nejostřejší pohled na celou mlhovinu. Snímek dalekohledu VST ukazuje mlhovinu i s okolní hvězdokupou."
-    },
-    {
-     "h": "Kde je na obloze",
-     "t": "Pod třemi hvězdami Orionova pásu, v jeho „meči“. Z Česka je dobře vidět v zimě. Na naší fotce je to jasná bílá tečka s růžovým okolím."
-    }
+   "txt": [
+    "Mlhovina v Orionu je oblak plynu a prachu, ve kterém se právě rodí hvězdy. Je to jedna z nejbližších porodnic lehkých i těžkých hvězd, vzdálená asi 1 350 světelných let. Plyn rozsvěcují mladé horké hvězdy uprostřed, známé jako Trapez."
    ],
+   "foto": "Hubbleova mozaika je nejostřejší pohled na celou mlhovinu. Snímek dalekohledu VST ukazuje mlhovinu i s okolní hvězdokupou.",
+   "nase": "Na naší fotce je to jasná bílá tečka s růžovým okolím.",
    "imgs": [
     {
      "f": "m42_1.webp",
+     "t": "m42_1t.webp",
      "w": 1280,
      "h": 1280,
      "cap": "Celá mlhovina, nejostřejší pohled (Hubble)",
@@ -266,6 +252,7 @@
     },
     {
      "f": "m42_2.webp",
+     "t": "m42_2t.webp",
      "w": 1280,
      "h": 994,
      "cap": "Mlhovina a hvězdokupa (dalekohled VST)",
@@ -305,27 +292,22 @@
    "pole": 18.0,
    "kr": 0.05,
    "vel": true,
+   "vid": 1,
+   "prio": 204,
    "ly": 1300,
+   "lyz": null,
    "lytxt": null,
    "lysrc": 0,
    "lead": "Tmavý oblak prachu ve tvaru koňské hlavy, který se rýsuje proti růžově zářícímu plynu. Jedna z nejznámějších siluet na obloze.",
-   "odst": [
-    {
-     "h": "Co to je",
-     "t": "Koňská hlava (Barnard 33) je hustý sloup prachu a plynu vzdálený zhruba 1 300 světelných let. Sama nesvítí; vidíme ji jen proto, že zakrývá zářící mlhovinu IC 434 za sebou. Záření okolních hvězd ji pomalu rozrušuje – astronomové odhadují, že jí zbývá asi pět milionů let."
-    },
-    {
-     "h": "Co je na fotkách",
-     "t": "Ve viditelném světle (VLT) je hlava černá. V infračerveném světle (Hubble, Webb) prach zprůhlední a je vidět jeho jemná stavba."
-    },
-    {
-     "h": "Kde je na obloze",
-     "t": "Těsně pod levou hvězdou Orionova pásu (Alnitak). Okem vidět není; na naší fotce je vidět růžová záře této oblasti hned nad mlhovinou v Orionu."
-    }
+   "txt": [
+    "Koňská hlava (Barnard 33) je hustý sloup prachu a plynu vzdálený zhruba 1 300 světelných let. Sama nesvítí; vidíme ji jen proto, že zakrývá zářící mlhovinu IC 434 za sebou. Záření okolních hvězd ji pomalu rozrušuje – astronomové odhadují, že jí zbývá asi pět milionů let."
    ],
+   "foto": "Ve viditelném světle (VLT) je hlava černá. V infračerveném světle (Hubble, Webb) prach zprůhlední a je vidět jeho jemná stavba.",
+   "nase": null,
    "imgs": [
     {
      "f": "kun_1.webp",
+     "t": "kun_1t.webp",
      "w": 1244,
      "h": 1280,
      "cap": "Ve viditelném světle (dalekohled VLT)",
@@ -336,6 +318,7 @@
     },
     {
      "f": "kun_2.webp",
+     "t": "kun_2t.webp",
      "w": 1225,
      "h": 1280,
      "cap": "V infračerveném světle (Hubble)",
@@ -346,6 +329,7 @@
     },
     {
      "f": "kun_3.webp",
+     "t": "kun_3t.webp",
      "w": 1271,
      "h": 1280,
      "cap": "Detail „hřívy“ (Webb)",
@@ -385,27 +369,22 @@
    "pole": 18.0,
    "kr": 1.0,
    "vel": true,
+   "vid": 2,
+   "prio": 5,
    "ly": 7500,
+   "lyz": null,
    "lytxt": null,
    "lysrc": 0,
    "lead": "Obrovská hvězdná porodnice na jižní obloze. Jsou v ní některé z nejjasnějších a nejhmotnějších známých hvězd.",
-   "odst": [
-    {
-     "h": "Co to je",
-     "t": "Mlhovina Carina je obrovská hvězdná porodnice asi 7 500 světelných let daleko v souhvězdí Lodního kýlu. Patří k nejbližším oblastem, kde se rodí velmi hmotné hvězdy; nejznámější z nich je obří nestálá hvězda Eta Carinae."
-    },
-    {
-     "h": "Co je na fotkách",
-     "t": "Snímek VST ukazuje celou mlhovinu. Hubbleovo panorama zachycuje její střed. Webbovy „Kosmické útesy“ jsou okraj obří dutiny v NGC 3324, kterou do plynu vyhloubilo záření a vítr mladých hvězd."
-    },
-    {
-     "h": "Kde je na obloze",
-     "t": "V jižní části Mléčné dráhy, nedaleko Jižního kříže. Z Česka není vidět. Na naší fotce je to nápadná růžová skvrna v pásu Mléčné dráhy."
-    }
+   "txt": [
+    "Mlhovina Carina je obrovská hvězdná porodnice asi 7 500 světelných let daleko v souhvězdí Lodního kýlu. Patří k nejbližším oblastem, kde se rodí velmi hmotné hvězdy; nejznámější z nich je obří nestálá hvězda Eta Carinae."
    ],
+   "foto": "Snímek VST ukazuje celou mlhovinu. Hubbleovo panorama zachycuje její střed. Webbovy „Kosmické útesy“ jsou okraj obří dutiny v NGC 3324, kterou do plynu vyhloubilo záření a vítr mladých hvězd.",
+   "nase": "Na naší fotce je to nápadná růžová skvrna v pásu Mléčné dráhy.",
    "imgs": [
     {
      "f": "carina_1.webp",
+     "t": "carina_1t.webp",
      "w": 1192,
      "h": 1280,
      "cap": "Celá mlhovina (dalekohled VST)",
@@ -416,6 +395,7 @@
     },
     {
      "f": "carina_2.webp",
+     "t": "carina_2t.webp",
      "w": 1280,
      "h": 620,
      "cap": "Střed mlhoviny (Hubble)",
@@ -426,6 +406,7 @@
     },
     {
      "f": "carina_3.webp",
+     "t": "carina_3t.webp",
      "w": 1280,
      "h": 741,
      "cap": "„Kosmické útesy“ na okraji NGC 3324 (Webb)",
@@ -465,27 +446,22 @@
    "pole": 18.0,
    "kr": 0.38,
    "vel": true,
+   "vid": 2,
+   "prio": 6,
    "ly": 4000,
+   "lyz": null,
    "lytxt": null,
    "lysrc": 0,
    "lead": "Jasná mlhovina ve Střelci, směrem ke středu Galaxie. Rodí se v ní nové hvězdy.",
-   "odst": [
-    {
-     "h": "Co to je",
-     "t": "Laguna je oblak plynu a prachu asi 4 000 světelných let daleko, ve kterém vznikají nové hvězdy. Celá mlhovina měří asi 55 × 20 světelných let."
-    },
-    {
-     "h": "Co je na fotkách",
-     "t": "Širokoúhlý snímek ESO ukazuje celou mlhovinu mezi hvězdami Mléčné dráhy. Hubbleův snímek k 28. výročí je jen malý výřez jejího středu, asi čtyři světelné roky napříč."
-    },
-    {
-     "h": "Kde je na obloze",
-     "t": "V souhvězdí Střelce, těsně nad „hubičkou čajové konvice“. Z Česka je v létě nízko nad jižním obzorem. Na naší fotce je to růžová tečka v nejjasnější části Mléčné dráhy."
-    }
+   "txt": [
+    "Laguna je oblak plynu a prachu asi 4 000 světelných let daleko, ve kterém vznikají nové hvězdy. Celá mlhovina měří asi 55 × 20 světelných let."
    ],
+   "foto": "Širokoúhlý snímek ESO ukazuje celou mlhovinu mezi hvězdami Mléčné dráhy. Hubbleův snímek k 28. výročí je jen malý výřez jejího středu, asi čtyři světelné roky napříč.",
+   "nase": "Na naší fotce je to růžová tečka v nejjasnější části Mléčné dráhy.",
    "imgs": [
     {
      "f": "laguna_1.webp",
+     "t": "laguna_1t.webp",
      "w": 1280,
      "h": 857,
      "cap": "Celá mlhovina (ESO, projekt GigaGalaxy Zoom)",
@@ -496,6 +472,7 @@
     },
     {
      "f": "laguna_2.webp",
+     "t": "laguna_2t.webp",
      "w": 1015,
      "h": 1280,
      "cap": "Střed mlhoviny (Hubble)",
@@ -531,27 +508,22 @@
    "pole": 18.0,
    "kr": 0.3,
    "vel": false,
+   "vid": 2,
+   "prio": 7,
    "ly": 6500,
+   "lyz": null,
    "lytxt": "asi 6 500 sv. l. (Hubble, Webb); ESO uvádí 7 000",
    "lysrc": 0,
    "lead": "Mlhovina, ve které leží slavné „Sloupy stvoření“ – jeden z nejznámějších snímků Hubbleova dalekohledu.",
-   "odst": [
-    {
-     "h": "Co to je",
-     "t": "Orlí mlhovina je hvězdná porodnice vzdálená asi 6 500 světelných let. Záření a vítr mladých hmotných hvězd v ní vyřezávají z plynu a prachu dlouhé sloupy; v jejich hustých koncích vznikají další hvězdy."
-    },
-    {
-     "h": "Co je na fotkách",
-     "t": "Snímek ESO ukazuje celou mlhovinu, Sloupy stvoření jsou uprostřed. Hubble je vyfotil ve viditelném světle, Webb v infračerveném, kde prach zprůhlední a objeví se hvězdy uvnitř."
-    },
-    {
-     "h": "Kde je na obloze",
-     "t": "V souhvězdí Hada, v letní Mléčné dráze nad Střelcem. Na naší fotce je to jedna z růžových teček v jasném pásu."
-    }
+   "txt": [
+    "Orlí mlhovina je hvězdná porodnice vzdálená asi 6 500 světelných let. Záření a vítr mladých hmotných hvězd v ní vyřezávají z plynu a prachu dlouhé sloupy; v jejich hustých koncích vznikají další hvězdy."
    ],
+   "foto": "Snímek ESO ukazuje celou mlhovinu, Sloupy stvoření jsou uprostřed. Hubble je vyfotil ve viditelném světle, Webb v infračerveném, kde prach zprůhlední a objeví se hvězdy uvnitř.",
+   "nase": "Na naší fotce je to jedna z růžových teček v jasném pásu.",
    "imgs": [
     {
      "f": "orli_1.webp",
+     "t": "orli_1t.webp",
      "w": 1280,
      "h": 1280,
      "cap": "Celá mlhovina (ESO)",
@@ -562,6 +534,7 @@
     },
     {
      "f": "orli_2.webp",
+     "t": "orli_2t.webp",
      "w": 1227,
      "h": 1280,
      "cap": "Sloupy stvoření ve viditelném světle (Hubble)",
@@ -572,6 +545,7 @@
     },
     {
      "f": "orli_3.webp",
+     "t": "orli_3t.webp",
      "w": 739,
      "h": 1280,
      "cap": "Sloupy stvoření v infračerveném světle (Webb)",
@@ -611,27 +585,22 @@
    "pole": 18.0,
    "kr": 1.0,
    "vel": true,
+   "vid": 1,
+   "prio": 208,
    "ly": 2590,
+   "lyz": null,
    "lytxt": "asi 2 590 sv. l. (družice Gaia, 2020); starší odhady 1 500–2 000",
    "lysrc": 0,
    "lead": "Velká mlhovina u hvězdy Deneb, která tvarem připomíná severoamerický kontinent i s Mexickým zálivem.",
-   "odst": [
-    {
-     "h": "Co to je",
-     "t": "Mlhovina Severní Amerika je oblak zářícího vodíku v souhvězdí Labutě. Její vzdálenost byla dlouho nejistá; měření družice Gaia z roku 2020 dala asi 2 590 světelných let. „Mexický záliv“ není prázdné místo, ale tmavé mračno (L935)."
-    },
-    {
-     "h": "Co je na fotkách",
-     "t": "Pozemní snímek z přehlídky oblohy Digitized Sky Survey 2 ukazuje celý „kontinent“; vpravo od něj je mlhovina Pelikán."
-    },
-    {
-     "h": "Kde je na obloze",
-     "t": "Blízko jasné hvězdy Deneb v Labuti. Z Česka je v létě skoro v nadhlavníku. Na naší fotce je to narůžovělá skvrna v pásu Mléčné dráhy."
-    }
+   "txt": [
+    "Mlhovina Severní Amerika je oblak zářícího vodíku v souhvězdí Labutě. Její vzdálenost byla dlouho nejistá; měření družice Gaia z roku 2020 dala asi 2 590 světelných let. „Mexický záliv“ není prázdné místo, ale tmavé mračno (L935)."
    ],
+   "foto": "Pozemní snímek z přehlídky oblohy Digitized Sky Survey 2 ukazuje celý „kontinent“; vpravo od něj je mlhovina Pelikán.",
+   "nase": "Na naší fotce je to narůžovělá skvrna v pásu Mléčné dráhy.",
    "imgs": [
     {
      "f": "amerika_1.webp",
+     "t": "amerika_1t.webp",
      "w": 1280,
      "h": 1280,
      "cap": "Celá mlhovina (pozemní snímek, Digitized Sky Survey 2)",
@@ -667,27 +636,22 @@
    "pole": 18.0,
    "kr": 0.67,
    "vel": true,
+   "vid": 1,
+   "prio": 209,
    "ly": 5200,
+   "lyz": null,
    "lytxt": null,
    "lysrc": 0,
    "lead": "Mlhovina ve tvaru růže s mladou hvězdokupou uprostřed.",
-   "odst": [
-    {
-     "h": "Co to je",
-     "t": "Rozeta je velká hvězdná porodnice vzdálená asi 5 200 světelných let, široká kolem 100 světelných let. Plyn rozsvěcuje záření mladých hvězd v hvězdokupě uprostřed; stejné záření postupně rozrušuje a tvaruje tmavé oblaky prachu."
-    },
-    {
-     "h": "Co je na fotkách",
-     "t": "Přehledový snímek ukazuje celou „růži“. Hubbleův snímek k 35. výročí je malý výřez jejího okraje, jen asi čtyři světelné roky napříč: tmavé oblaky prachu proti zářícímu plynu."
-    },
-    {
-     "h": "Kde je na obloze",
-     "t": "V souhvězdí Jednorožce, vlevo od Orionu. Z Česka je vidět v zimě, okem ale ne. Na naší fotce je to slabá narůžovělá skvrnka."
-    }
+   "txt": [
+    "Rozeta je velká hvězdná porodnice vzdálená asi 5 200 světelných let, široká kolem 100 světelných let. Plyn rozsvěcuje záření mladých hvězd v hvězdokupě uprostřed; stejné záření postupně rozrušuje a tvaruje tmavé oblaky prachu."
    ],
+   "foto": "Přehledový snímek ukazuje celou „růži“. Hubbleův snímek k 35. výročí je malý výřez jejího okraje, jen asi čtyři světelné roky napříč: tmavé oblaky prachu proti zářícímu plynu.",
+   "nase": "Na naší fotce je to slabá narůžovělá skvrnka.",
    "imgs": [
     {
      "f": "rozeta_1.webp",
+     "t": "rozeta_1t.webp",
      "w": 1278,
      "h": 1280,
      "cap": "Celá mlhovina, vyznačen Hubbleův výřez",
@@ -698,6 +662,7 @@
     },
     {
      "f": "rozeta_2.webp",
+     "t": "rozeta_2t.webp",
      "w": 1280,
      "h": 1255,
      "cap": "Tmavé oblaky na okraji mlhoviny (Hubble)",
@@ -733,27 +698,22 @@
    "pole": 18.0,
    "kr": 0.5,
    "vel": true,
+   "vid": 2,
+   "prio": 10,
    "ly": 390,
+   "lyz": null,
    "lytxt": null,
    "lysrc": 0,
    "lead": "Nejbližší hvězdná porodnice: barevná mračna plynu a prachu u hvězdy Antares.",
-   "odst": [
-    {
-     "h": "Co to je",
-     "t": "Komplex mračen u hvězdy ρ Ophiuchi je nejbližší oblast zrodu hvězd, jen asi 390 světelných let od nás. Díky tomu, že je tak blízko, nejsou mezi ním a námi žádné hvězdy v popředí a detaily jsou vidět velmi dobře."
-    },
-    {
-     "h": "Co je na fotkách",
-     "t": "Webbův snímek ukazuje malou část komplexu s výtrysky mladých hvězd. Širokoúhlý snímek ESO zachycuje celé okolí od barevných mračen u Antara až po střed Galaxie."
-    },
-    {
-     "h": "Kde je na obloze",
-     "t": "Na hranici Hadonoše a Štíra, hned u načervenalé hvězdy Antares. Z Česka je v létě nízko nad jihem. Na naší fotce je to nažloutlý oblak vybíhající z pásu Mléčné dráhy."
-    }
+   "txt": [
+    "Komplex mračen u hvězdy ρ Ophiuchi je nejbližší oblast zrodu hvězd, jen asi 390 světelných let od nás. Díky tomu, že je tak blízko, nejsou mezi ním a námi žádné hvězdy v popředí a detaily jsou vidět velmi dobře."
    ],
+   "foto": "Webbův snímek ukazuje malou část komplexu s výtrysky mladých hvězd. Širokoúhlý snímek ESO zachycuje celé okolí od barevných mračen u Antara až po střed Galaxie.",
+   "nase": "Na naší fotce je to nažloutlý oblak vybíhající z pásu Mléčné dráhy.",
    "imgs": [
     {
      "f": "rhooph_1.webp",
+     "t": "rhooph_1t.webp",
      "w": 1280,
      "h": 1199,
      "cap": "Část komplexu s mladými hvězdami (Webb)",
@@ -764,6 +724,7 @@
     },
     {
      "f": "rhooph_2.webp",
+     "t": "rhooph_2t.webp",
      "w": 1280,
      "h": 733,
      "cap": "Široké pole: od Antara po střed Galaxie (ESO/S. Guisard)",
@@ -796,30 +757,25 @@
    "maj": null,
    "min": null,
    "mag": null,
-   "pole": 18.0,
+   "pole": 24.0,
    "kr": 3.0,
    "vel": true,
+   "vid": 2,
+   "prio": 11,
    "ly": 600,
+   "lyz": null,
    "lytxt": null,
    "lysrc": 0,
    "lead": "Tmavá „díra“ v jižní Mléčné dráze hned vedle Jižního kříže. Ve skutečnosti oblak prachu, který zakrývá hvězdy za sebou.",
-   "odst": [
-    {
-     "h": "Co to je",
-     "t": "Uhelný pytel je jedna z nejnápadnějších temných mlhovin viditelných pouhým okem. Leží asi 600 světelných let daleko. Prach v něm pohlcuje světlo vzdálenějších hvězd, proto vypadá jako prázdné místo. Za miliony let se části mračna zhroutí a vzniknou z nich nové hvězdy."
-    },
-    {
-     "h": "Co je na fotkách",
-     "t": "Snímek ESO ukazuje jen malou část mlhoviny: tmavé šmouhy téměř zakrývají bohaté hvězdné pole za nimi."
-    },
-    {
-     "h": "Kde je na obloze",
-     "t": "V souhvězdí Jižního kříže. Z Česka není vidět. Na naší fotce je to tmavá skvrna v jasném pásu Mléčné dráhy."
-    }
+   "txt": [
+    "Uhelný pytel je jedna z nejnápadnějších temných mlhovin viditelných pouhým okem. Leží asi 600 světelných let daleko. Prach v něm pohlcuje světlo vzdálenějších hvězd, proto vypadá jako prázdné místo. Za miliony let se části mračna zhroutí a vzniknou z nich nové hvězdy."
    ],
+   "foto": "Snímek ESO ukazuje jen malou část mlhoviny: tmavé šmouhy téměř zakrývají bohaté hvězdné pole za nimi.",
+   "nase": "Na naší fotce je to tmavá skvrna v jasném pásu Mléčné dráhy.",
    "imgs": [
     {
      "f": "uhelny_1.webp",
+     "t": "uhelny_1t.webp",
      "w": 1155,
      "h": 1280,
      "cap": "Část Uhelného pytle (ESO, La Silla)",
@@ -855,27 +811,22 @@
    "pole": 18.0,
    "kr": 0.5,
    "vel": true,
+   "vid": 2,
+   "prio": 12,
    "ly": 27000,
+   "lyz": null,
    "lytxt": null,
    "lysrc": 0,
    "lead": "Směr ke středu naší Galaxie. Uprostřed sedí černá díra čtyřmilionkrát hmotnější než Slunce.",
-   "odst": [
-    {
-     "h": "Co to je",
-     "t": "Střed Mléčné dráhy leží asi 27 000 světelných let od nás ve směru souhvězdí Střelce. Ve viditelném světle ho zakrývá prach, proto se pozoruje infračerveně a rádiově. Hvězdy tu obíhají kolem neviditelného tělesa Sagittarius A* – černé díry o hmotnosti čtyř milionů Sluncí."
-    },
-    {
-     "h": "Co je na fotkách",
-     "t": "Infračervené snímky VLT a Hubblu ukazují hvězdy nahuštěné kolem středu. Třetí obrázek je první snímek stínu černé díry, který v roce 2022 zveřejnila spolupráce Event Horizon Telescope; na obloze je velký asi jako kobliha na Měsíci."
-    },
-    {
-     "h": "Kde je na obloze",
-     "t": "Na hranici Střelce, Štíra a Hadonoše. Z Česka je v létě těsně nad jižním obzorem. Na naší fotce je to nejjasnější a nejširší část pásu Mléčné dráhy."
-    }
+   "txt": [
+    "Střed Mléčné dráhy leží asi 27 000 světelných let od nás ve směru souhvězdí Střelce. Ve viditelném světle ho zakrývá prach, proto se pozoruje infračerveně a rádiově. Hvězdy tu obíhají kolem neviditelného tělesa Sagittarius A* – černé díry o hmotnosti čtyř milionů Sluncí."
    ],
+   "foto": "Infračervené snímky VLT a Hubblu ukazují hvězdy nahuštěné kolem středu. Třetí obrázek je první snímek stínu černé díry, který v roce 2022 zveřejnila spolupráce Event Horizon Telescope; na obloze je velký asi jako kobliha na Měsíci.",
+   "nase": "Na naší fotce je to nejjasnější a nejširší část pásu Mléčné dráhy.",
    "imgs": [
     {
      "f": "stred_1.webp",
+     "t": "stred_1t.webp",
      "w": 1280,
      "h": 1280,
      "cap": "Hvězdy u středu Galaxie v infračerveném světle (VLT)",
@@ -886,6 +837,7 @@
     },
     {
      "f": "stred_2.webp",
+     "t": "stred_2t.webp",
      "w": 1280,
      "h": 1106,
      "cap": "Střed Galaxie v infračerveném světle (Hubble)",
@@ -896,6 +848,7 @@
     },
     {
      "f": "stred_3.webp",
+     "t": "stred_3t.webp",
      "w": 1280,
      "h": 1280,
      "cap": "Stín černé díry Sagittarius A* (EHT, 2022)",
@@ -935,27 +888,22 @@
    "pole": 18.0,
    "kr": 0.23,
    "vel": true,
+   "vid": 2,
+   "prio": 13,
    "ly": 17700,
+   "lyz": null,
    "lytxt": null,
    "lysrc": 0,
    "lead": "Obří kulová hvězdokupa s asi 10 miliony hvězd. Z jižní polokoule je vidět pouhým okem.",
-   "odst": [
-    {
-     "h": "Co to je",
-     "t": "Omega Centauri je koule zhruba 10 milionů hvězd, které drží pohromadě gravitace. Leží 17 700 světelných let od Země. Je vidět pouhým okem a z tmavého místa vypadá skoro tak velká jako Měsíc v úplňku."
-    },
-    {
-     "h": "Co je na fotkách",
-     "t": "Snímek ESO ukazuje celou hvězdokupu. Hubble se dívá do jejího středu, kde jsou hvězdy namačkané nejhustěji."
-    },
-    {
-     "h": "Kde je na obloze",
-     "t": "V souhvězdí Kentaura na jižní obloze. Z Česka nevychází. Na naší fotce je to jasná tečka stranou od pásu Mléčné dráhy."
-    }
+   "txt": [
+    "Omega Centauri je koule zhruba 10 milionů hvězd, které drží pohromadě gravitace. Leží 17 700 světelných let od Země. Je vidět pouhým okem a z tmavého místa vypadá skoro tak velká jako Měsíc v úplňku."
    ],
+   "foto": "Snímek ESO ukazuje celou hvězdokupu. Hubble se dívá do jejího středu, kde jsou hvězdy namačkané nejhustěji.",
+   "nase": "Na naší fotce je to jasná tečka stranou od pásu Mléčné dráhy.",
    "imgs": [
     {
      "f": "omegacen_1.webp",
+     "t": "omegacen_1t.webp",
      "w": 1280,
      "h": 1204,
      "cap": "Celá hvězdokupa (ESO, La Silla)",
@@ -966,6 +914,7 @@
     },
     {
      "f": "omegacen_2.webp",
+     "t": "omegacen_2t.webp",
      "w": 1280,
      "h": 1280,
      "cap": "Střed hvězdokupy (Hubble)",
@@ -1001,27 +950,22 @@
    "pole": 18.0,
    "kr": 0.27,
    "vel": true,
+   "vid": 2,
+   "prio": 14,
    "ly": 15000,
+   "lyz": null,
    "lytxt": null,
    "lysrc": 0,
    "lead": "Jedna z nejjasnějších a nejhmotnějších kulových hvězdokup. Na obloze leží hned vedle Malého Magellanova mračna.",
-   "odst": [
-    {
-     "h": "Co to je",
-     "t": "47 Tucanae je stará kulová hvězdokupa s miliony hvězd, vzdálená asi 15 000 světelných let. Je vidět pouhým okem. Na obloze sousedí s Malým Magellanovým mračnem, to je ale asi čtrnáctkrát dál."
-    },
-    {
-     "h": "Co je na fotkách",
-     "t": "Infračervený snímek dalekohledu VISTA ukazuje celou hvězdokupu, Hubble její barevný střed."
-    },
-    {
-     "h": "Kde je na obloze",
-     "t": "V souhvězdí Tukana u jižního nebeského pólu. Z Česka není vidět. Na naší fotce je to jasná tečka těsně vedle Malého Magellanova mračna."
-    }
+   "txt": [
+    "47 Tucanae je stará kulová hvězdokupa s miliony hvězd, vzdálená asi 15 000 světelných let. Je vidět pouhým okem. Na obloze sousedí s Malým Magellanovým mračnem, to je ale asi čtrnáctkrát dál."
    ],
+   "foto": "Infračervený snímek dalekohledu VISTA ukazuje celou hvězdokupu, Hubble její barevný střed.",
+   "nase": "Na naší fotce je to jasná tečka těsně vedle Malého Magellanova mračna.",
    "imgs": [
     {
      "f": "tuc47_1.webp",
+     "t": "tuc47_1t.webp",
      "w": 1280,
      "h": 1280,
      "cap": "Celá hvězdokupa v infračerveném světle (VISTA)",
@@ -1032,6 +976,7 @@
     },
     {
      "f": "tuc47_2.webp",
+     "t": "tuc47_2t.webp",
      "w": 1280,
      "h": 1253,
      "cap": "Střed hvězdokupy (Hubble)",
@@ -1067,27 +1012,22 @@
    "pole": 18.0,
    "kr": 1.25,
    "vel": true,
+   "vid": 2,
+   "prio": 15,
    "ly": 440,
+   "lyz": null,
    "lytxt": null,
    "lysrc": 0,
    "lead": "Nejznámější hvězdokupa na obloze, lidově Kuřátka nebo Sedm sester.",
-   "odst": [
-    {
-     "h": "Co to je",
-     "t": "Plejády jsou skupina mladých modrých hvězd, které vznikly společně. Hubbleův dalekohled zpřesnil jejich vzdálenost na asi 440 světelných let. Modravý závoj kolem hvězd je mezihvězdný oblak prachu, který hvězdokupou právě prochází a odráží jejich světlo."
-    },
-    {
-     "h": "Co je na fotkách",
-     "t": "První snímek ukazuje celou hvězdokupu s modrým závojem prachu. Druhý je tmavý oblak, který odráží světlo hvězdy Merope, třetí ukazuje prach v infračerveném světle."
-    },
-    {
-     "h": "Kde je na obloze",
-     "t": "V souhvězdí Býka. Z Česka jsou krásně vidět od podzimu do jara. Na naší fotce je to malá modrá skvrnka."
-    }
+   "txt": [
+    "Plejády jsou skupina mladých modrých hvězd, které vznikly společně. Hubbleův dalekohled zpřesnil jejich vzdálenost na asi 440 světelných let. Modravý závoj kolem hvězd je mezihvězdný oblak prachu, který hvězdokupou právě prochází a odráží jejich světlo."
    ],
+   "foto": "První snímek ukazuje celou hvězdokupu s modrým závojem prachu. Druhý je tmavý oblak, který odráží světlo hvězdy Merope, třetí ukazuje prach v infračerveném světle.",
+   "nase": "Na naší fotce je to malá modrá skvrnka.",
    "imgs": [
     {
      "f": "plejady_1.webp",
+     "t": "plejady_1t.webp",
      "w": 1280,
      "h": 1024,
      "cap": "Celá hvězdokupa ze Země; čáry vyznačují pole, kde Hubble měřil vzdálenost",
@@ -1098,6 +1038,7 @@
     },
     {
      "f": "plejady_2.webp",
+     "t": "plejady_2t.webp",
      "w": 1140,
      "h": 1280,
      "cap": "Prach u hvězdy Merope (Hubble)",
@@ -1108,6 +1049,7 @@
     },
     {
      "f": "plejady_3.webp",
+     "t": "plejady_3t.webp",
      "w": 1280,
      "h": 977,
      "cap": "Prach kolem hvězdokupy v infračerveném světle (družice WISE)",
@@ -1143,27 +1085,22 @@
    "pole": 18.0,
    "kr": 0.5,
    "vel": false,
+   "vid": 1,
+   "prio": 216,
    "ly": 7100,
+   "lyz": null,
    "lytxt": "asi 7 100 a 7 400 sv. l.",
    "lysrc": 0,
    "lead": "Dvě bohaté hvězdokupy těsně vedle sebe. Okem jsou vidět jako protáhlá mlhavá skvrnka mezi Perseem a Kasiopejou.",
-   "odst": [
-    {
-     "h": "Co to je",
-     "t": "Hvězdokupy h a χ Persei leží asi 7 100 a 7 400 světelných let od Země. Na obloze jsou těsně vedle sebe; vznikly poměrně nedávno a vesmírem se pohybují společně. Už kolem roku 130 př. n. l. je zapsal řecký astronom Hipparchos."
-    },
-    {
-     "h": "Co je na fotkách",
-     "t": "Snímek zachycuje obě hvězdokupy najednou: převládají jasné modré hvězdy, mezi nimi je několik oranžových."
-    },
-    {
-     "h": "Kde je na obloze",
-     "t": "Mezi souhvězdími Persea a Kasiopeji. Z Česka nikdy nezapadají. Na naší fotce je to slabé zjasnění v severní Mléčné dráze."
-    }
+   "txt": [
+    "Hvězdokupy h a χ Persei leží asi 7 100 a 7 400 světelných let od Země. Na obloze jsou těsně vedle sebe; vznikly poměrně nedávno a vesmírem se pohybují společně. Už kolem roku 130 př. n. l. je zapsal řecký astronom Hipparchos."
    ],
+   "foto": "Snímek zachycuje obě hvězdokupy najednou: převládají jasné modré hvězdy, mezi nimi je několik oranžových.",
+   "nase": "Na naší fotce je to slabé zjasnění v severní Mléčné dráze.",
    "imgs": [
     {
      "f": "chi_1.webp",
+     "t": "chi_1t.webp",
      "w": 1280,
      "h": 1119,
      "cap": "Obě hvězdokupy (ESO/S. Brunier)",
@@ -1199,27 +1136,22 @@
    "pole": 18.0,
    "kr": 0.6,
    "vel": false,
+   "vid": 2,
+   "prio": 17,
    "ly": 800,
+   "lyz": null,
    "lytxt": null,
    "lysrc": 0,
    "lead": "Jasná hvězdokupa u „žihadla“ Štíra, známá už ve starověku.",
-   "odst": [
-    {
-     "h": "Co to je",
-     "t": "Messier 7 je skupina asi stovky hvězd vzdálená zhruba 800 světelných let. Je stará asi 200 milionů let a měří kolem 25 světelných let. Snadno ji najdeš pouhým okem; jako první ji kolem roku 130 popsal Klaudios Ptolemaios."
-    },
-    {
-     "h": "Co je na fotkách",
-     "t": "Snímek ESO ukazuje jasné modré hvězdy hvězdokupy před hustým pozadím slabých hvězd Mléčné dráhy."
-    },
-    {
-     "h": "Kde je na obloze",
-     "t": "V souhvězdí Štíra, u konce jeho ocasu. Z Česka je v létě těsně nad obzorem. Na naší fotce je to jasná skvrna na okraji nejjasnější části Mléčné dráhy."
-    }
+   "txt": [
+    "Messier 7 je skupina asi stovky hvězd vzdálená zhruba 800 světelných let. Je stará asi 200 milionů let a měří kolem 25 světelných let. Snadno ji najdeš pouhým okem; jako první ji kolem roku 130 popsal Klaudios Ptolemaios."
    ],
+   "foto": "Snímek ESO ukazuje jasné modré hvězdy hvězdokupy před hustým pozadím slabých hvězd Mléčné dráhy.",
+   "nase": "Na naší fotce je to jasná skvrna na okraji nejjasnější části Mléčné dráhy.",
    "imgs": [
     {
      "f": "m7_1.webp",
+     "t": "m7_1t.webp",
      "w": 1280,
      "h": 1242,
      "cap": "Celá hvězdokupa (ESO, La Silla)",
@@ -1255,27 +1187,22 @@
    "pole": 18.0,
    "kr": 0.07,
    "vel": false,
+   "vid": 1,
+   "prio": 218,
    "ly": 6000,
+   "lyz": null,
    "lytxt": null,
    "lysrc": 0,
    "lead": "Jedna z nejbohatších otevřených hvězdokup, zasazená do jasného hvězdného oblaku ve Štítu.",
-   "odst": [
-    {
-     "h": "Co to je",
-     "t": "Messier 11 leží asi 6 000 světelných let daleko. Patří k nejbohatším a nejhustším otevřeným hvězdokupám: na prostoru necelých 20 světelných let je téměř 3 000 hvězd. Jméno dostala podle nejjasnějších hvězd, které tvoří klín jako letící hejno kachen."
-    },
-    {
-     "h": "Co je na fotkách",
-     "t": "Snímek ESO ukazuje celou hvězdokupu, Hubble její hustý střed."
-    },
-    {
-     "h": "Kde je na obloze",
-     "t": "V malém souhvězdí Štítu pod Orlem. Z Česka je vidět v létě. Na naší fotce leží v jasném oblaku Mléčné dráhy ve Štítu."
-    }
+   "txt": [
+    "Messier 11 leží asi 6 000 světelných let daleko. Patří k nejbohatším a nejhustším otevřeným hvězdokupám: na prostoru necelých 20 světelných let je téměř 3 000 hvězd. Jméno dostala podle nejjasnějších hvězd, které tvoří klín jako letící hejno kachen."
    ],
+   "foto": "Snímek ESO ukazuje celou hvězdokupu, Hubble její hustý střed.",
+   "nase": "Na naší fotce leží v jasném oblaku Mléčné dráhy ve Štítu.",
    "imgs": [
     {
      "f": "m11_1.webp",
+     "t": "m11_1t.webp",
      "w": 1280,
      "h": 924,
      "cap": "Celá hvězdokupa (ESO, La Silla)",
@@ -1286,6 +1213,7 @@
     },
     {
      "f": "m11_2.webp",
+     "t": "m11_2t.webp",
      "w": 1280,
      "h": 1228,
      "cap": "Střed hvězdokupy (Hubble)",
@@ -1303,6 +1231,2554 @@
     {
      "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
      "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "tarantule",
+   "cs": "Mlhovina Tarantule",
+   "ozn": "30 Doradus · NGC 2070",
+   "druh": "mlhovina",
+   "typ": "obří hvězdná porodnice v sousední galaxii",
+   "souhv": "Mečoun",
+   "ra": 84.6765,
+   "de": -69.1009,
+   "maj": 16.0,
+   "min": 16.0,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.35,
+   "vel": true,
+   "vid": 2,
+   "prio": 19,
+   "ly": 170000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Obrovská hvězdná porodnice ve Velkém Magellanově mračnu. Je tak jasná, že je vidět i na naší fotce jako světlá skvrna v sousední galaxii.",
+   "txt": [
+    "Mlhovina Tarantule neleží v naší Galaxii, ale ve Velkém Magellanově mračnu, asi 170 000 světelných let daleko. Jméno dostala podle vláken plynu, která připomínají nohy pavouka."
+   ],
+   "foto": "Webbova mozaika zabírá oblast širokou 340 světelných let. Snímek ESO ukazuje mlhovinu i s okolím, celý čtvereční stupeň oblohy.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "tarantule_1.webp",
+     "t": "tarantule_1t.webp",
+     "w": 1280,
+     "h": 740,
+     "cap": "Střed mlhoviny v infračerveném světle (Webb)",
+     "autor": "NASA, ESA, CSA, and STScI",
+     "arch": "ESA/Webb",
+     "lic": "CC BY 4.0",
+     "url": "https://esawebb.org/images/weic2212a/"
+    },
+    {
+     "f": "tarantule_2.webp",
+     "t": "tarantule_2t.webp",
+     "w": 1280,
+     "h": 1278,
+     "cap": "Mlhovina a její okolí (ESO, La Silla)",
+     "autor": "ESO/R. Fosbury (ST-ECF)",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso0650a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: Portrait of a dramatic stellar crib (eso0650a)",
+     "u": "https://www.eso.org/public/images/eso0650a/"
+    },
+    {
+     "t": "ESA/Webb: Tarantula Nebula (NIRCam Image) (weic2212a)",
+     "u": "https://esawebb.org/images/weic2212a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "trifid",
+   "cs": "Mlhovina Trifid",
+   "ozn": "M 20 · NGC 6514",
+   "druh": "mlhovina",
+   "typ": "zářící, odrazná a temná mlhovina v jednom",
+   "souhv": "Střelec",
+   "ra": 270.6755,
+   "de": -22.9719,
+   "maj": 28.0,
+   "min": 28.0,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.25,
+   "vel": true,
+   "vid": 2,
+   "prio": 20,
+   "ly": 5500,
+   "lyz": null,
+   "lytxt": "asi 5 500 sv. l. (ESO); Hubble uvádí 5 000",
+   "lysrc": 0,
+   "lead": "Mlhovina rozdělená tmavými pruhy prachu na tři díly. Leží hned vedle Laguny.",
+   "txt": [
+    "Trifid je továrna na hvězdy vzdálená asi 5 500 světelných let. Jméno znamená „rozdělená na tři“: zářící střed protínají tři tmavé pruhy prachu. Je vzácnou kombinací tří druhů mlhovin najednou: zářící (růžová), odrazné (modrá) a temné."
+   ],
+   "foto": "Snímek ESO ukazuje celou mlhovinu, Hubble detail oblaku prachu, ve kterém vznikají hvězdy.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "trifid_1.webp",
+     "t": "trifid_1t.webp",
+     "w": 778,
+     "h": 1280,
+     "cap": "Celá mlhovina (ESO, La Silla)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso0930a/"
+    },
+    {
+     "f": "trifid_2.webp",
+     "t": "trifid_2t.webp",
+     "w": 1280,
+     "h": 1239,
+     "cap": "Detail oblaku prachu (Hubble)",
+     "autor": "NASA, ESA, STScI. Image processing: J. DePasquale (STScI)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic2608a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: The Trifid Nebula (eso0930a)",
+     "u": "https://www.eso.org/public/images/eso0930a/"
+    },
+    {
+     "t": "ESA/Hubble: Trifid Nebula (Wide Field Camera 3 Image) (heic2608a)",
+     "u": "https://esahubble.org/images/heic2608a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "omega",
+   "cs": "Mlhovina Omega",
+   "ozn": "M 17 · NGC 6618 · Labuť",
+   "druh": "mlhovina",
+   "typ": "zářící mlhovina, hvězdná porodnice",
+   "souhv": "Střelec",
+   "ra": 275.1963,
+   "de": -16.1715,
+   "maj": 12.6,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.2,
+   "vel": true,
+   "vid": 1,
+   "prio": 221,
+   "ly": 5500,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Jasná hvězdná porodnice ve Střelci, které se říká také Labuť.",
+   "txt": [
+    "Mlhovina Omega je rozsáhlá oblast plynu, prachu a horkých mladých hvězd vzdálená asi 5 500 světelných let. Její nejjasnější část měří na obloze třetinu průměru Měsíce v úplňku, což odpovídá asi 15 světelným rokům."
+   ],
+   "foto": "Snímek dalekohledu VST zachycuje celou mlhovinu i se slabými okraji, snímek z dalekohledu NTT její jasný střed.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "omega_1.webp",
+     "t": "omega_1t.webp",
+     "w": 1280,
+     "h": 1280,
+     "cap": "Celá mlhovina (dalekohled VST)",
+     "autor": "ESO/INAF-VST/OmegaCAM. Acknowledgement: OmegaCen/Astro-WISE/Kapteyn Institute",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1119a/"
+    },
+    {
+     "f": "omega_2.webp",
+     "t": "omega_2t.webp",
+     "w": 1280,
+     "h": 1280,
+     "cap": "Jasný střed mlhoviny (dalekohled NTT)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso0925a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: VST image of the star-forming region Messier 17 (eso1119a)",
+     "u": "https://www.eso.org/public/images/eso1119a/"
+    },
+    {
+     "t": "ESO: The Omega Nebula (eso0925a)",
+     "u": "https://www.eso.org/public/images/eso0925a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "plamen",
+   "cs": "Mlhovina Plamen",
+   "ozn": "NGC 2024",
+   "druh": "mlhovina",
+   "typ": "zářící mlhovina s ukrytou hvězdokupou",
+   "souhv": "Orion",
+   "ra": 85.4274,
+   "de": -1.8563,
+   "maj": 30.0,
+   "min": 30.0,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.25,
+   "vel": true,
+   "vid": 2,
+   "prio": 22,
+   "ly": 1500,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Mlhovina hned u jedné z hvězd Orionova pásu, sousedka Koňské hlavy.",
+   "txt": [
+    "Mlhovina Plamen je hvězdná porodnice vzdálená asi 1 500 světelných let. Ve viditelném světle je její střed úplně schovaný za prachem; infračervený dalekohled VISTA prachem prohlédl a ukázal hvězdokupu mladých hvězd uvnitř."
+   ],
+   "foto": "První snímek je vůbec první zveřejněný snímek dalekohledu VISTA: vpravo dole je na něm vidět i obrys Koňské hlavy. Druhý ukazuje okolí mlhoviny v rádiových vlnách (APEX).",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "plamen_1.webp",
+     "t": "plamen_1t.webp",
+     "w": 1046,
+     "h": 1280,
+     "cap": "V infračerveném světle (dalekohled VISTA)",
+     "autor": "ESO/J. Emerson/VISTA. Acknowledgment: Cambridge Astronomical Survey Unit",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso0949a/"
+    },
+    {
+     "f": "plamen_2.webp",
+     "t": "plamen_2t.webp",
+     "w": 1280,
+     "h": 882,
+     "cap": "Okolí v rádiových vlnách (APEX a VISTA)",
+     "autor": "ESO/Th. Stanke & ESO/J. Emerson/VISTA. Acknowledgment: Cambridge Astronomical Survey Unit",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso2201a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: The hidden fires of the Flame Nebula (eso0949a)",
+     "u": "https://www.eso.org/public/images/eso0949a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "kure",
+   "cs": "Mlhovina Běžící kuře",
+   "ozn": "IC 2944",
+   "druh": "mlhovina",
+   "typ": "zářící mlhovina s mladou hvězdokupou",
+   "souhv": "Kentaur",
+   "ra": 173.9455,
+   "de": -63.0198,
+   "maj": 7.2,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.6,
+   "vel": true,
+   "vid": 2,
+   "prio": 23,
+   "ly": 6500,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Růžová mlhovina v jižní Mléčné dráze, jejíž tvar někomu připomíná běžící kuře.",
+   "txt": [
+    "Mlhovinu tvoří několik oblaků plynu a prachu vzdálených asi 6 500 světelných let. Rozsvěcují je mladé horké hvězdy uvnitř. V mlhovině plují malé tmavé chuchvalce prachu, takzvané Thackerayovy globule."
+   ],
+   "foto": "Snímek dalekohledu VST má 1,5 miliardy bodů a zabírá na obloze plochu asi 25 úplňků. Hubble ukazuje Thackerayovy globule zblízka.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "kure_1.webp",
+     "t": "kure_1t.webp",
+     "w": 1280,
+     "h": 1126,
+     "cap": "Celá mlhovina (dalekohled VST)",
+     "autor": "ESO/VPHAS+ team. Acknowledgement: CASU",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso2320a/"
+    },
+    {
+     "f": "kure_2.webp",
+     "t": "kure_2t.webp",
+     "w": 1264,
+     "h": 1280,
+     "cap": "Thackerayovy globule (Hubble)",
+     "autor": "NASA/ESA and The Hubble Heritage Team (STScI/AURA)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/opo0201a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: The Running Chicken Nebula (eso2320a)",
+     "u": "https://www.eso.org/public/images/eso2320a/"
+    },
+    {
+     "t": "ESA/Hubble: Thackeray's globules in IC 2944 (opo0201a)",
+     "u": "https://esahubble.org/images/opo0201a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "tlapa",
+   "cs": "Mlhovina Kočičí tlapka",
+   "ozn": "NGC 6334",
+   "druh": "mlhovina",
+   "typ": "zářící mlhovina, hvězdná porodnice",
+   "souhv": "Štír",
+   "ra": 260.2071,
+   "de": -36.1027,
+   "maj": 8.4,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": true,
+   "vid": 1,
+   "prio": 224,
+   "ly": 5500,
+   "lyz": null,
+   "lytxt": "asi 5 500 sv. l. (ESO); Webb uvádí 4 000",
+   "lysrc": 0,
+   "lead": "Hvězdná porodnice ve Štíru, která vypadá jako otisk kočičí tlapky.",
+   "txt": [
+    "Kočičí tlapka je rozsáhlá oblast zrodu hvězd. Může v ní být několik desítek tisíc hvězd, mnohé z nich zatím ukryté hluboko v prachu. Červená je proto, že modré a zelené světlo cestou k nám pohltí a rozptýlí prach."
+   ],
+   "foto": "Snímek ESO ukazuje celou „tlapku“, Webb detail jednoho z jejích „polštářků“ v infračerveném světle.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "tlapa_1.webp",
+     "t": "tlapa_1t.webp",
+     "w": 1232,
+     "h": 1280,
+     "cap": "Celá mlhovina (ESO, La Silla)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1003a/"
+    },
+    {
+     "f": "tlapa_2.webp",
+     "t": "tlapa_2t.webp",
+     "w": 1166,
+     "h": 1280,
+     "cap": "Detail v infračerveném světle (Webb)",
+     "autor": "NASA, ESA, CSA, STScI",
+     "arch": "ESA/Webb",
+     "lic": "CC BY 4.0",
+     "url": "https://esawebb.org/images/weic2513a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: The Cat's Paw Nebula (eso1003a)",
+     "u": "https://www.eso.org/public/images/eso1003a/"
+    },
+    {
+     "t": "ESA/Webb: Cat’s Paw Nebula (NIRCam) (weic2513a)",
+     "u": "https://esawebb.org/images/weic2513a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "humr",
+   "cs": "Mlhovina Humr",
+   "ozn": "NGC 6357",
+   "druh": "mlhovina",
+   "typ": "zářící mlhovina, hvězdná porodnice",
+   "souhv": "Štír",
+   "ra": 261.1815,
+   "de": -34.2013,
+   "maj": 3.9,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": true,
+   "vid": 1,
+   "prio": 225,
+   "ly": 8000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Sousedka Kočičí tlapky: oblaka zářícího plynu kolem horkých mladých hvězd.",
+   "txt": [
+    "Mlhovina Humr je hvězdná porodnice vzdálená asi 8 000 světelných let. Dalekohled VISTA ji vyfotil při přehlídce, která mapuje stavbu naší Galaxie."
+   ],
+   "foto": "Infračervený snímek VISTA ukazuje zářící plyn a vlákna prachu. Druhý snímek zachycuje Humra i Kočičí tlapku najednou; patří k největším, jaké ESO kdy zveřejnila.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "humr_1.webp",
+     "t": "humr_1t.webp",
+     "w": 1280,
+     "h": 1280,
+     "cap": "V infračerveném světle (dalekohled VISTA)",
+     "autor": "ESO/VVV Survey/D. Minniti. Acknowledgement: Ignacio Toledo",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1309a/"
+    },
+    {
+     "f": "humr_2.webp",
+     "t": "humr_2t.webp",
+     "w": 1280,
+     "h": 1011,
+     "cap": "Kočičí tlapka a Humr na jednom snímku (dalekohled VST)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1705a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: The Lobster Nebula seen with ESO’s VISTA telescope (eso1309a)",
+     "u": "https://www.eso.org/public/images/eso1309a/"
+    },
+    {
+     "t": "ESO: The Cat’s Paw and Lobster Nebulae (eso1705a)",
+     "u": "https://www.eso.org/public/images/eso1705a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "kreveta",
+   "cs": "Mlhovina Kreveta",
+   "ozn": "IC 4628 · Gum 56",
+   "druh": "mlhovina",
+   "typ": "zářící mlhovina, hvězdná porodnice",
+   "souhv": "Štír",
+   "ra": 254.2435,
+   "de": -40.451,
+   "maj": 89.13,
+   "min": 58.88,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.6,
+   "vel": true,
+   "vid": 1,
+   "prio": 226,
+   "ly": 6000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Velká hvězdná porodnice v ocasu Štíra.",
+   "txt": [
+    "Mlhovina Kreveta je spleť zářících oblaků plynu asi 6 000 světelných let daleko. Mezi oblaky jsou vidět shluky horkých, právě zrozených hvězd."
+   ],
+   "foto": "Oba snímky pocházejí z dalekohledů ESO v Chile: první ukazuje celou mlhovinu, druhý její část zblízka.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "kreveta_1.webp",
+     "t": "kreveta_1t.webp",
+     "w": 1280,
+     "h": 925,
+     "cap": "Celá mlhovina (dalekohled VST)",
+     "autor": "ESO. Acknowledgement: Martin Pugh",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1340a/"
+    },
+    {
+     "f": "kreveta_2.webp",
+     "t": "kreveta_2t.webp",
+     "w": 1280,
+     "h": 1280,
+     "cap": "Část mlhoviny zblízka (ESO, La Silla)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1535a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: Detailed view of the Prawn Nebula from ESO's VST (eso1340a)",
+     "u": "https://www.eso.org/public/images/eso1340a/"
+    },
+    {
+     "t": "ESO: The Prawn Nebula in close-up (eso1535a)",
+     "u": "https://www.eso.org/public/images/eso1535a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "kuzel",
+   "cs": "Mlhovina Kužel a Vánoční stromeček",
+   "ozn": "NGC 2264",
+   "druh": "mlhovina",
+   "typ": "zářící mlhovina s hvězdokupou",
+   "souhv": "Jednorožec",
+   "ra": 100.2427,
+   "de": 9.8955,
+   "maj": 11.4,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.3,
+   "vel": true,
+   "vid": 0,
+   "prio": 427,
+   "ly": 2500,
+   "lyz": null,
+   "lytxt": "asi 2 500 sv. l. (ESO 2022); starší údaj ESO 3 000",
+   "lysrc": 0,
+   "lead": "Tmavý sloup prachu a nad ním hvězdokupa, jejíž hvězdy připomínají ozdoby na vánočním stromku.",
+   "txt": [
+    "NGC 2264 je oblast zrodu hvězd vzdálená asi 2 500 světelných let. Mlhovina Kužel je sloup studeného plynu a prachu; takové sloupy vznikají v obřích mračnech, ze kterých se rodí nové hvězdy."
+   ],
+   "foto": "Širší snímek ukazuje celou oblast i s modrými hvězdami Vánočního stromečku, druhý samotný Kužel, jak ho dalekohled VLT vyfotil k 60. výročí ESO.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "kuzel_1.webp",
+     "t": "kuzel_1t.webp",
+     "w": 1118,
+     "h": 1280,
+     "cap": "Celá oblast s hvězdokupou (ESO, La Silla)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso0848a/"
+    },
+    {
+     "f": "kuzel_2.webp",
+     "t": "kuzel_2t.webp",
+     "w": 1247,
+     "h": 1280,
+     "cap": "Mlhovina Kužel (dalekohled VLT)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso2215a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: ESO’s 60th anniversary image: the Cone Nebula as seen by the VLT (eso2215a)",
+     "u": "https://www.eso.org/public/images/eso2215a/"
+    },
+    {
+     "t": "ESO: NGC 2264 and the Christmas Tree cluster (eso0848a)",
+     "u": "https://www.eso.org/public/images/eso0848a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "racek",
+   "cs": "Mlhovina Racek",
+   "ozn": "IC 2177 · Sharpless 2-296",
+   "druh": "mlhovina",
+   "typ": "zářící mlhovina, hvězdná porodnice",
+   "souhv": "Jednorožec",
+   "ra": 106.1538,
+   "de": -10.4711,
+   "maj": 20.0,
+   "min": 20.0,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.5,
+   "vel": true,
+   "vid": 0,
+   "prio": 428,
+   "ly": 3500,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Mlhovina, která vypadá jako racek v letu.",
+   "txt": [
+    "Racek je horké a bouřlivé místo zrodu nových hvězd, asi 3 500 světelných let daleko. „Křídla“ tvoří oblak označovaný Sharpless 2-296; mezi zářícím plynem se táhnou tmavé pruhy prachu."
+   ],
+   "foto": "Snímek dalekohledu VST ukazuje křídla i hlavu racka.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "racek_1.webp",
+     "t": "racek_1t.webp",
+     "w": 1280,
+     "h": 852,
+     "cap": "Celá mlhovina (dalekohled VST)",
+     "autor": "ESO/VPHAS+ team/N.J. Wright (Keele University)",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1913a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: The Rosy Glow of a Cosmic Seagull (eso1913a)",
+     "u": "https://www.eso.org/public/images/eso1913a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "bublina",
+   "cs": "Mlhovina Bublina",
+   "ozn": "NGC 7635",
+   "druh": "mlhovina",
+   "typ": "zářící mlhovina",
+   "souhv": "Kasiopeja",
+   "ra": 350.19,
+   "de": 61.2124,
+   "maj": 15.0,
+   "min": 8.0,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.12,
+   "vel": true,
+   "vid": 0,
+   "prio": 429,
+   "ly": 8000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Mlhovina ve tvaru velké bubliny.",
+   "txt": [
+    "Mlhovina Bublina je zářící mlhovina vzdálená 8 000 světelných let. Hubbleův dalekohled ji vyfotil k 26. výročí svého pobytu ve vesmíru."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "bublina_1.webp",
+     "t": "bublina_1t.webp",
+     "w": 1280,
+     "h": 1216,
+     "cap": "Bublina, snímek k 26. výročí Hubblu",
+     "autor": "NASA, ESA, Hubble Heritage Team",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic1608a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: The Bubble Nebula (heic1608a)",
+     "u": "https://esahubble.org/images/heic1608a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "thor",
+   "cs": "Thorova přilba",
+   "ozn": "NGC 2359",
+   "druh": "mlhovina",
+   "typ": "bublina plynu kolem hmotné hvězdy",
+   "souhv": "Velký pes",
+   "ra": 109.6291,
+   "de": -13.2272,
+   "maj": 10.0,
+   "min": 5.0,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.08,
+   "vel": true,
+   "vid": 0,
+   "prio": 430,
+   "ly": 15000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Mlhovina ve tvaru přilby s křídly.",
+   "txt": [
+    "Thorova přilba leží asi 15 000 světelných let daleko a měří přes 30 světelných let. Je to bublina, kterou do okolního plynu vyfoukal vítr z hmotné hvězdy uprostřed."
+   ],
+   "foto": "Snímek pořídil dalekohled VLT 5. října 2012, v den 50. výročí ESO.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "thor_1.webp",
+     "t": "thor_1t.webp",
+     "w": 1275,
+     "h": 1280,
+     "cap": "Snímek k 50. výročí ESO (dalekohled VLT)",
+     "autor": "ESO/B. Bailleul",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1238a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: Thor’s Helmet Nebula imaged on the occasion of ESO’s 50th anniversary (eso1238a)",
+     "u": "https://www.eso.org/public/images/eso1238a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "dymka",
+   "cs": "Mlhovina Dýmka",
+   "ozn": "Barnard 59 (náustek Dýmky)",
+   "druh": "temna",
+   "typ": "temná mlhovina",
+   "souhv": "Hadonoš",
+   "ra": 257.8201,
+   "de": -27.3701,
+   "maj": null,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 1.2,
+   "vel": false,
+   "vid": 2,
+   "prio": 31,
+   "ly": 600,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Dlouhý tmavý oblak prachu, který se rýsuje proti nejjasnější části Mléčné dráhy.",
+   "txt": [
+    "Dýmka je rozsáhlé temné mračno mezihvězdného prachu vzdálené asi 600 světelných let. Kroužek označuje její „náustek“, mlhovinu Barnard 59. Prach zakrývá světlo hvězd za sebou, proto vypadá jako díra v Mléčné dráze."
+   ],
+   "foto": "Podrobný snímek náustku pořídil dalekohled ESO na observatoři La Silla.",
+   "nase": "Na naší fotce je vidět jako tmavý pruh před jasným středem Mléčné dráhy.",
+   "imgs": [
+    {
+     "f": "dymka_1.webp",
+     "t": "dymka_1t.webp",
+     "w": 1280,
+     "h": 1197,
+     "cap": "Náustek Dýmky, Barnard 59 (ESO, La Silla)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1233a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: The mouthpiece of the Pipe Nebula (eso1233a)",
+     "u": "https://www.eso.org/public/images/eso1233a/"
+    },
+    {
+     "t": "Poloha: ESO: poloha středu snímku eso1233a (Barnard 59)",
+     "u": "https://www.eso.org/public/images/eso1233a/"
+    }
+   ]
+  },
+  {
+   "id": "krab",
+   "cs": "Krabí mlhovina",
+   "ozn": "M 1 · NGC 1952",
+   "druh": "zanik",
+   "typ": "pozůstatek výbuchu supernovy",
+   "souhv": "Býk",
+   "ra": 83.6332,
+   "de": 22.0145,
+   "maj": 8.0,
+   "min": 4.0,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.07,
+   "vel": true,
+   "vid": 0,
+   "prio": 432,
+   "ly": 6500,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Rozpínající se trosky hvězdy, která vybuchla jako supernova. Uprostřed zůstal pulzar.",
+   "txt": [
+    "Krabí mlhovina leží asi 6 500 světelných let daleko a patří k nejlépe prozkoumaným objektům na obloze. Uprostřed je pulzar: rychle rotující neutronová hvězda, jejíž magnetické pole tvaruje jemná modravá vlákna."
+   ],
+   "foto": "Hubbleova mozaika z 24 snímků je nejpodrobnější pohled na celou mlhovinu. Webb ji ukazuje v infračerveném světle.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "krab_1.webp",
+     "t": "krab_1t.webp",
+     "w": 1280,
+     "h": 1280,
+     "cap": "Celá mlhovina, nejpodrobnější snímek (Hubble)",
+     "autor": "NASA, ESA and Allison Loll/Jeff Hester (Arizona State University). Acknowledgement: Davide De Martin (ESA/Hubble)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic0515a/"
+    },
+    {
+     "f": "krab_2.webp",
+     "t": "krab_2t.webp",
+     "w": 1280,
+     "h": 1112,
+     "cap": "V infračerveném světle (Webb)",
+     "autor": "NASA, ESA, CSA, STScI, T. Temim (Princeton University)",
+     "arch": "ESA/Webb",
+     "lic": "CC BY 4.0",
+     "url": "https://esawebb.org/images/weic2417a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Most detailed image of the Crab Nebula (heic0515a)",
+     "u": "https://esahubble.org/images/heic0515a/"
+    },
+    {
+     "t": "ESA/Webb: Crab Nebula (MIRI and NIRCam image) (weic2417a)",
+     "u": "https://esawebb.org/images/weic2417a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "rasy",
+   "cs": "Řasová mlhovina",
+   "ozn": "NGC 6960 · Čarodějnické koště",
+   "druh": "zanik",
+   "typ": "pozůstatek výbuchu supernovy",
+   "souhv": "Labuť",
+   "ra": 311.4924,
+   "de": 30.5951,
+   "maj": 210.0,
+   "min": 160.0,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.6,
+   "vel": true,
+   "vid": 0,
+   "prio": 433,
+   "ly": 2100,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Jemné závoje plynu: vnější slupka dávno vybuchlé hvězdy.",
+   "txt": [
+    "Řasová mlhovina je známý pozůstatek supernovy vzdálený asi 2 100 světelných let. Kroužek označuje její západní část, které se říká Čarodějnické koště."
+   ],
+   "foto": "Hubble vyfotil jen malý úsek vnější slupky.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "rasy_1.webp",
+     "t": "rasy_1t.webp",
+     "w": 1280,
+     "h": 853,
+     "cap": "Malý úsek mlhoviny (Hubble)",
+     "autor": "NASA, ESA, Hubble Heritage Team",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic1520a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Revisiting the Veil Nebula (heic1520a)",
+     "u": "https://esahubble.org/images/heic1520a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "prstenec",
+   "cs": "Prstencová mlhovina",
+   "ozn": "M 57 · NGC 6720",
+   "druh": "zanik",
+   "typ": "planetární mlhovina",
+   "souhv": "Lyra",
+   "ra": 283.3959,
+   "de": 33.0286,
+   "maj": 1.27,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.01,
+   "vel": true,
+   "vid": 0,
+   "prio": 434,
+   "ly": 2500,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Kroužek plynu, který kolem sebe odhodila umírající hvězda.",
+   "txt": [
+    "Prstencová mlhovina leží asi 2 500 světelných let daleko. Ze Země vypadá jako jednoduchý ovál, ale podle Hubbleových měření má tvar pokřivené koblihy, jejíž střed vyplňuje řidší plyn."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "prstenec_1.webp",
+     "t": "prstenec_1t.webp",
+     "w": 1280,
+     "h": 1280,
+     "cap": "Prstencová mlhovina (Hubble)",
+     "autor": "NASA, ESA, and C. Robert O’Dell (Vanderbilt University).",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic1310a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Hubble image of the Ring Nebula (Messier 57) (heic1310a)",
+     "u": "https://esahubble.org/images/heic1310a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "cinka",
+   "cs": "Mlhovina Činka",
+   "ozn": "M 27 · NGC 6853",
+   "druh": "zanik",
+   "typ": "planetární mlhovina",
+   "souhv": "Lištička",
+   "ra": 299.9016,
+   "de": 22.721,
+   "maj": 6.7,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.06,
+   "vel": true,
+   "vid": 0,
+   "prio": 435,
+   "ly": 1200,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "První planetární mlhovina, která kdy byla objevena.",
+   "txt": [
+    "Činka je blízká planetární mlhovina, přes 1 200 světelných let daleko. Vznikla, když stará hvězda odhodila své vnější vrstvy; ty teď barevně září."
+   ],
+   "foto": "Snímek dalekohledu VLT ukazuje celou mlhovinu, Hubble zářící uzlíky plynu uvnitř.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "cinka_1.webp",
+     "t": "cinka_1t.webp",
+     "w": 1280,
+     "h": 1279,
+     "cap": "Celá mlhovina (dalekohled VLT)",
+     "autor": "ESO/I. Appenzeller, W. Seifert, O. Stahl, M. Zamani",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso9846a/"
+    },
+    {
+     "f": "cinka_2.webp",
+     "t": "cinka_2t.webp",
+     "w": 1280,
+     "h": 761,
+     "cap": "Uzlíky plynu zblízka (Hubble)",
+     "autor": "NASA/ESA and the Hubble Heritage Team (STScI/AURA)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/opo0306a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Close-up of M27, the Dumbbell Nebula (opo0306a)",
+     "u": "https://esahubble.org/images/opo0306a/"
+    },
+    {
+     "t": "ESO: The Dumbbell Nebula (eso9846a)",
+     "u": "https://www.eso.org/public/images/eso9846a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "helix",
+   "cs": "Mlhovina Helix",
+   "ozn": "NGC 7293",
+   "druh": "zanik",
+   "typ": "planetární mlhovina",
+   "souhv": "Vodnář",
+   "ra": 337.4107,
+   "de": -20.8373,
+   "maj": 16.33,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.14,
+   "vel": true,
+   "vid": 0,
+   "prio": 436,
+   "ly": 700,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Planetární mlhovina vzdálená jen asi 700 světelných let; vypadá jako obří oko.",
+   "txt": [
+    "Helix je asi 700 světelných let daleko. Modrozelená záře uprostřed pochází z kyslíku, který rozsvěcuje ultrafialové záření ústřední hvězdy horké 120 000 °C. Řídkým plynem mlhoviny prosvítají i vzdálené galaxie."
+   ],
+   "foto": "Snímek ESO ukazuje celou mlhovinu, Webb detail jejího okraje v infračerveném světle.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "helix_1.webp",
+     "t": "helix_1t.webp",
+     "w": 1280,
+     "h": 1185,
+     "cap": "Celá mlhovina (ESO, La Silla)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso0907a/"
+    },
+    {
+     "f": "helix_2.webp",
+     "t": "helix_2t.webp",
+     "w": 1280,
+     "h": 928,
+     "cap": "Detail okraje v infračerveném světle (Webb)",
+     "autor": "NASA, ESA, CSA, STScI, A. Pagan (STScI)",
+     "arch": "ESA/Webb",
+     "lic": "CC BY 4.0",
+     "url": "https://esawebb.org/images/weic2601a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: The Helix Nebula (eso0907a)",
+     "u": "https://www.eso.org/public/images/eso0907a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "kocici",
+   "cs": "Mlhovina Kočičí oko",
+   "ozn": "NGC 6543",
+   "druh": "zanik",
+   "typ": "planetární mlhovina",
+   "souhv": "Drak",
+   "ra": 269.6391,
+   "de": 66.6332,
+   "maj": 0.9,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.01,
+   "vel": true,
+   "vid": 0,
+   "prio": 437,
+   "ly": 3000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Jedna z nejsložitějších planetárních mlhovin, jaké známe.",
+   "txt": [
+    "Kočičí oko leží asi 3 000 světelných let daleko. Patří k prvním objeveným planetárním mlhovinám a zároveň k nejsložitějším. Planetární mlhovina vzniká, když hvězda podobná Slunci na konci života odhodí své vnější vrstvy."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "kocici_1.webp",
+     "t": "kocici_1t.webp",
+     "w": 1280,
+     "h": 1280,
+     "cap": "Kočičí oko (Hubble)",
+     "autor": "ESA, NASA, HEIC and The Hubble Heritage Team (STScI/AURA)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic0414a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Dying star creates fantasy-like sculpture of gas and dust (heic0414a)",
+     "u": "https://esahubble.org/images/heic0414a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "motyl",
+   "cs": "Motýlí mlhovina",
+   "ozn": "NGC 6302",
+   "druh": "zanik",
+   "typ": "planetární mlhovina",
+   "souhv": "Štír",
+   "ra": 258.436,
+   "de": -37.1031,
+   "maj": 0.74,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.01,
+   "vel": true,
+   "vid": 0,
+   "prio": 438,
+   "ly": 4000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Dvě „křídla“ rozžhaveného plynu kolem umírající hvězdy.",
+   "txt": [
+    "Motýlí mlhovina je asi 4 000 světelných let daleko. Křídla jsou plyn horký téměř 20 000 °C, který se řítí prostorem rychlostí přes 950 000 km/h. Odhodila ho hvězda, která měla původně asi pětkrát větší hmotnost než Slunce."
+   ],
+   "foto": "Hubbleův snímek je z roku 2009. Druhý obrázek srovnává pohled Hubblu s pohledem Webbu a radioteleskopu ALMA.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "motyl_1.webp",
+     "t": "motyl_1t.webp",
+     "w": 1098,
+     "h": 1280,
+     "cap": "Motýlí mlhovina (Hubble)",
+     "autor": "NASA, ESA and the Hubble SM4 ERO Team",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic0910h/"
+    },
+    {
+     "f": "motyl_2.webp",
+     "t": "motyl_2t.webp",
+     "w": 1280,
+     "h": 417,
+     "cap": "Hubble, Webb a ALMA vedle sebe",
+     "autor": "ESA/Webb, NASA & CSA, M. Matsuura, J. Kastner, K. Noll, ALMA (ESO/NAOJ/NRAO), N. Hirano, M. Zamani (ESA/Webb)",
+     "arch": "ESA/Webb",
+     "lic": "CC BY 4.0",
+     "url": "https://esawebb.org/images/weic2517a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Butterfly emerges from stellar demise in planetary nebula NGC 6302 (heic0910h)",
+     "u": "https://esahubble.org/images/heic0910h/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "m33",
+   "cs": "Galaxie v Trojúhelníku",
+   "ozn": "M 33 · NGC 598",
+   "druh": "galaxie",
+   "typ": "spirální galaxie",
+   "souhv": "Trojúhelník",
+   "ra": 23.462,
+   "de": 30.6602,
+   "maj": 62.09,
+   "min": 36.73,
+   "mag": 5.79,
+   "pole": 18.0,
+   "kr": 0.52,
+   "vel": true,
+   "vid": 1,
+   "prio": 239,
+   "ly": 3000000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Druhá nejbližší velká galaxie po galaxii v Andromedě.",
+   "txt": [
+    "Galaxie v Trojúhelníku je blízká spirální galaxie vzdálená asi 3 miliony světelných let, plná jasných hvězdokup a oblaků plynu a prachu."
+   ],
+   "foto": "Hubbleova mozaika z 54 záběrů je druhý největší snímek, jaký Hubble kdy zveřejnil: ukazuje střed galaxie a miliony jednotlivých hvězd. Snímek dalekohledu VST zachycuje celou galaxii.",
+   "nase": "Na naší fotce je vidět jen jako velmi slabá skvrnka.",
+   "imgs": [
+    {
+     "f": "m33_1.webp",
+     "t": "m33_1t.webp",
+     "w": 1280,
+     "h": 1074,
+     "cap": "Celá galaxie (dalekohled VST)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1424a/"
+    },
+    {
+     "f": "m33_2.webp",
+     "t": "m33_2t.webp",
+     "w": 1280,
+     "h": 720,
+     "cap": "Střed a vnitřní ramena (Hubble)",
+     "autor": "NASA, ESA, and M. Durbin, J. Dalcanton, and B. F. Williams (University of Washington)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic1901a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: VST snaps a very detailed view of the Triangulum Galaxy (eso1424a)",
+     "u": "https://www.eso.org/public/images/eso1424a/"
+    },
+    {
+     "t": "ESA/Hubble: The sharpest view ever of the Triangulum Galaxy (heic1901a)",
+     "u": "https://esahubble.org/images/heic1901a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "m81",
+   "cs": "Bodeho galaxie",
+   "ozn": "M 81 · NGC 3031",
+   "druh": "galaxie",
+   "typ": "spirální galaxie",
+   "souhv": "Velká medvědice",
+   "ra": 148.8882,
+   "de": 69.0653,
+   "maj": 21.63,
+   "min": 11.25,
+   "mag": 6.92,
+   "pole": 18.0,
+   "kr": 0.18,
+   "vel": true,
+   "vid": 0,
+   "prio": 440,
+   "ly": 11600000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Učebnicová spirální galaxie ve Velké medvědici.",
+   "txt": [
+    "M 81 je velká spirální galaxie vzdálená 11,6 milionu světelných let. Její ramena z hvězd, prachu a plynu se vinou až do samého jádra. Hubble v ní i na tu dálku rozliší jednotlivé hvězdy a hvězdokupy."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m81_1.webp",
+     "t": "m81_1t.webp",
+     "w": 1280,
+     "h": 860,
+     "cap": "Nejostřejší snímek galaxie M 81 (Hubble)",
+     "autor": "NASA, ESA and the Hubble Heritage Team (STScI/AURA). Acknowledgment: A. Zezas and J. Huchra (Harvard-Smithsonian Center for Astrophysics)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic0710a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Hubble photographs grand design spiral galaxy M81 (heic0710a)",
+     "u": "https://esahubble.org/images/heic0710a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "m82",
+   "cs": "Galaxie Doutník",
+   "ozn": "M 82 · NGC 3034",
+   "druh": "galaxie",
+   "typ": "galaxie s bouřlivým zrodem hvězd",
+   "souhv": "Velká medvědice",
+   "ra": 148.9697,
+   "de": 69.6794,
+   "maj": 10.99,
+   "min": 5.11,
+   "mag": 8.3,
+   "pole": 18.0,
+   "kr": 0.09,
+   "vel": true,
+   "vid": 0,
+   "prio": 441,
+   "ly": 13000000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Galaxie, ve které se hvězdy rodí desetkrát rychleji než v Mléčné dráze.",
+   "txt": [
+    "M 82 leží asi 13 milionů světelných let daleko, hned vedle galaxie M 81. Z jejího středu, kde vznikají nové hvězdy, vyrážejí ven chocholy zářícího vodíku."
+   ],
+   "foto": "Hubbleova mozaika je nejostřejší širokoúhlý pohled na tuto galaxii. Druhý obrázek srovnává snímky Webbu a Hubblu.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m82_1.webp",
+     "t": "m82_1t.webp",
+     "w": 1280,
+     "h": 997,
+     "cap": "Celá galaxie s výtrysky vodíku (Hubble)",
+     "autor": "NASA, ESA and the Hubble Heritage Team (STScI/AURA). Acknowledgment: J. Gallagher (University of Wisconsin), M. Mountain (STScI) and P. Puxley (NSF).",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic0604a/"
+    },
+    {
+     "f": "m82_2.webp",
+     "t": "m82_2t.webp",
+     "w": 1280,
+     "h": 808,
+     "cap": "Střed galaxie: Webb a Hubble",
+     "autor": "NASA, ESA, CSA, STScI, A. Bolatto (UMD)",
+     "arch": "ESA/Webb",
+     "lic": "CC BY 4.0",
+     "url": "https://esawebb.org/images/weic2410a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: The magnificent starburst galaxy Messier 82 (heic0604a)",
+     "u": "https://esahubble.org/images/heic0604a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "m51",
+   "cs": "Vírová galaxie",
+   "ozn": "M 51 · NGC 5194",
+   "druh": "galaxie",
+   "typ": "spirální galaxie s průvodcem",
+   "souhv": "Honicí psi",
+   "ra": 202.4696,
+   "de": 47.1952,
+   "maj": 13.71,
+   "min": 11.67,
+   "mag": 8.36,
+   "pole": 18.0,
+   "kr": 0.11,
+   "vel": true,
+   "vid": 0,
+   "prio": 442,
+   "ly": 25000000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Spirální galaxie viděná přesně shora, i se svou menší průvodkyní.",
+   "txt": [
+    "Vírová galaxie leží asi 25 milionů světelných let daleko v souhvězdí Honicích psů. Protože se na ni díváme přímo shora a je poměrně blízko, slouží astronomům jako vzor spirální galaxie: v jejích ramenech se rodí hvězdy a jasné modré hvězdokupy."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m51_1.webp",
+     "t": "m51_1t.webp",
+     "w": 1280,
+     "h": 888,
+     "cap": "Vírová galaxie a její průvodkyně (Hubble)",
+     "autor": "NASA, ESA, S. Beckwith (STScI), and The Hubble Heritage Team (STScI/AURA)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic0506a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Out of this whirl: The Whirlpool Galaxy (M51) and companion galaxy (heic0506a)",
+     "u": "https://esahubble.org/images/heic0506a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "m104",
+   "cs": "Galaxie Sombrero",
+   "ozn": "M 104 · NGC 4594",
+   "druh": "galaxie",
+   "typ": "spirální galaxie viděná skoro z boku",
+   "souhv": "Panna",
+   "ra": 189.9976,
+   "de": -11.6231,
+   "maj": 8.45,
+   "min": 4.91,
+   "mag": 8.59,
+   "pole": 18.0,
+   "kr": 0.07,
+   "vel": true,
+   "vid": 0,
+   "prio": 443,
+   "ly": 30000000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Galaxie, která vypadá jako mexický klobouk.",
+   "txt": [
+    "Sombrero je 30 milionů světelných let daleko a měří 50 000 světelných let. Díváme se na něj jen šest stupňů nad rovinou jeho disku, proto vyniká jasná střední výduť obtočená tmavým pruhem prachu. Jeho hmotnost odpovídá 800 miliardám Sluncí."
+   ],
+   "foto": "Hubble ukazuje galaxii ve viditelném světle, Webb v infračerveném, kde svítí hlavně prach.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m104_1.webp",
+     "t": "m104_1t.webp",
+     "w": 1280,
+     "h": 717,
+     "cap": "Ve viditelném světle (Hubble)",
+     "autor": "NASA/ESA and The Hubble Heritage Team (STScI/AURA)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/opo0328a/"
+    },
+    {
+     "f": "m104_2.webp",
+     "t": "m104_2t.webp",
+     "w": 1280,
+     "h": 428,
+     "cap": "V infračerveném světle (Webb)",
+     "autor": "NASA, ESA, CSA, STScI",
+     "arch": "ESA/Webb",
+     "lic": "CC BY 4.0",
+     "url": "https://esawebb.org/images/weic2427a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Hubble mosaic of the majestic Sombrero Galaxy (opo0328a)",
+     "u": "https://esahubble.org/images/opo0328a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "m87",
+   "cs": "Galaxie M 87",
+   "ozn": "Messier 87 · NGC 4486",
+   "druh": "galaxie",
+   "typ": "obří eliptická galaxie s černou dírou",
+   "souhv": "Panna",
+   "ra": 187.7059,
+   "de": 12.3911,
+   "maj": 7.11,
+   "min": 6.67,
+   "mag": 9.0,
+   "pole": 18.0,
+   "kr": 0.06,
+   "vel": true,
+   "vid": 0,
+   "prio": 444,
+   "ly": 55000000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Galaxie, v jejímž středu lidé poprvé vyfotili stín černé díry.",
+   "txt": [
+    "M 87 je obrovská eliptická galaxie vzdálená asi 55 milionů světelných let. V dubnu 2019 zveřejnila spolupráce Event Horizon Telescope první přímý obraz stínu obří černé díry v jejím středu; horizont událostí té černé díry měří necelých 40 miliard kilometrů."
+   ],
+   "foto": "První snímek je slavný obraz stínu černé díry složený z měření osmi radioteleskopů po celé Zemi. Druhý ukazuje celou galaxii.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m87_1.webp",
+     "t": "m87_1t.webp",
+     "w": 1280,
+     "h": 746,
+     "cap": "Stín černé díry ve středu M 87 (EHT, 2019)",
+     "autor": "EHT Collaboration",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1907a/"
+    },
+    {
+     "f": "m87_2.webp",
+     "t": "m87_2t.webp",
+     "w": 1264,
+     "h": 1280,
+     "cap": "Celá galaxie (dalekohled VLT)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1907b/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: Messier 87 Captured by ESO’s Very Large Telescope (eso1907b)",
+     "u": "https://www.eso.org/public/images/eso1907b/"
+    },
+    {
+     "t": "ESO: First Image of a Black Hole (eso1907a)",
+     "u": "https://www.eso.org/public/images/eso1907a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "cena",
+   "cs": "Centaurus A",
+   "ozn": "NGC 5128",
+   "druh": "galaxie",
+   "typ": "zvláštní galaxie s pruhem prachu",
+   "souhv": "Kentaur",
+   "ra": 201.3651,
+   "de": -43.0191,
+   "maj": 25.88,
+   "min": 19.77,
+   "mag": 7.22,
+   "pole": 18.0,
+   "kr": 0.22,
+   "vel": true,
+   "vid": 0,
+   "prio": 445,
+   "ly": 12000000,
+   "lyz": null,
+   "lytxt": "asi 12 mil. sv. l. (ESO); Hubble uvádí 11",
+   "lysrc": 0,
+   "lead": "Zvláštní galaxie přepásaná tmavým pruhem prachu.",
+   "txt": [
+    "Centaurus A je asi 12 milionů světelných let daleko. Je známá dramatickými tmavými pruhy prachu, které protínají její jasné těleso."
+   ],
+   "foto": "Snímek ESO vznikal přes 50 hodin a je nejspíš nejhlubším pohledem na tuto galaxii. Hubble ukazuje detail prachového pruhu.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "cena_1.webp",
+     "t": "cena_1t.webp",
+     "w": 1280,
+     "h": 1252,
+     "cap": "Celá galaxie, expozice přes 50 hodin (ESO, La Silla)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1221a/"
+    },
+    {
+     "f": "cena_2.webp",
+     "t": "cena_2t.webp",
+     "w": 1235,
+     "h": 1280,
+     "cap": "Detail prachového pruhu (Hubble)",
+     "autor": "NASA, ESA, and the Hubble Heritage (STScI/AURA)-ESA/Hubble Collaboration. Acknowledgment: R. O’Connell (University of Virginia) and the WFC3 Scientific Oversight Committee",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic1110a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: A deep look at the strange galaxy Centaurus A (eso1221a)",
+     "u": "https://www.eso.org/public/images/eso1221a/"
+    },
+    {
+     "t": "ESA/Hubble: Spectacular Hubble view of Centaurus A (heic1110a)",
+     "u": "https://esahubble.org/images/heic1110a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "m83",
+   "cs": "Jižní větrník",
+   "ozn": "M 83 · NGC 5236",
+   "druh": "galaxie",
+   "typ": "spirální galaxie s příčkou",
+   "souhv": "Hydra",
+   "ra": 204.254,
+   "de": -29.8654,
+   "maj": 13.61,
+   "min": 13.21,
+   "mag": 7.21,
+   "pole": 18.0,
+   "kr": 0.11,
+   "vel": true,
+   "vid": 0,
+   "prio": 446,
+   "ly": 15000000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Jedna z největších a nejbližších spirálních galaxií s příčkou.",
+   "txt": [
+    "M 83 leží asi 15 milionů světelných let daleko. Podobá se Mléčné dráze: obě mají v jádru příčku z hvězd. M 83 je ale zhruba 2,5krát menší. Vybuchlo v ní už velké množství supernov."
+   ],
+   "foto": "Hubble ukazuje jasné hvězdy a hustý prach v ramenech, snímek ESO celou galaxii.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m83_1.webp",
+     "t": "m83_1t.webp",
+     "w": 1280,
+     "h": 1280,
+     "cap": "Celá galaxie (ESO, La Silla)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso0825a/"
+    },
+    {
+     "f": "m83_2.webp",
+     "t": "m83_2t.webp",
+     "w": 1280,
+     "h": 833,
+     "cap": "Ramena plná hvězd a prachu (Hubble)",
+     "autor": "NASA, ESA, and the Hubble Heritage Team (STScI/AURA)Acknowledgement: William Blair (Johns Hopkins University)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic1403a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Hubble view of barred spiral galaxy Messier 83 (heic1403a)",
+     "u": "https://esahubble.org/images/heic1403a/"
+    },
+    {
+     "t": "ESO: Spiral galaxy Messier 83 (eso0825a)",
+     "u": "https://www.eso.org/public/images/eso0825a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "n253",
+   "cs": "Galaxie v Sochaři",
+   "ozn": "NGC 253",
+   "druh": "galaxie",
+   "typ": "spirální galaxie s bouřlivým zrodem hvězd",
+   "souhv": "Sochař",
+   "ra": 11.888,
+   "de": -25.2882,
+   "maj": 26.79,
+   "min": 4.58,
+   "mag": 11.11,
+   "pole": 18.0,
+   "kr": 0.22,
+   "vel": true,
+   "vid": 0,
+   "prio": 447,
+   "ly": 13000000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Jasná spirální galaxie jižní oblohy, jedna z nejbližších.",
+   "txt": [
+    "NGC 253 leží asi 13 milionů světelných let daleko v souhvězdí Sochaře. Je známá tím, že v ní bouřlivě vznikají nové hvězdy."
+   ],
+   "foto": "V infračerveném světle dalekohledu VISTA prach ve spirálních ramenech skoro zprůhlední a objeví se chladné červené hvězdy.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "n253_1.webp",
+     "t": "n253_1t.webp",
+     "w": 1280,
+     "h": 852,
+     "cap": "V infračerveném světle (dalekohled VISTA)",
+     "autor": "ESO/J. Emerson/VISTA. Acknowledgment: Cambridge Astronomical Survey Unit",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1025a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: VISTA’s infrared view of the Sculptor Galaxy (NGC 253) (eso1025a)",
+     "u": "https://www.eso.org/public/images/eso1025a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "tykadla",
+   "cs": "Galaxie Tykadla",
+   "ozn": "NGC 4038 a NGC 4039",
+   "druh": "galaxie",
+   "typ": "dvě srážející se galaxie",
+   "souhv": "Havran",
+   "ra": 180.4709,
+   "de": -18.8676,
+   "maj": 5.42,
+   "min": 3.78,
+   "mag": 10.2,
+   "pole": 18.0,
+   "kr": 0.05,
+   "vel": true,
+   "vid": 0,
+   "prio": 448,
+   "ly": 65000000,
+   "lyz": null,
+   "lytxt": "asi 65 mil. sv. l. (Hubble); ESO uvádí 75",
+   "lysrc": 0,
+   "lead": "Dvě galaxie uprostřed srážky.",
+   "txt": [
+    "Tykadla jsou dvojice galaxií vzdálená asi 65 milionů světelných let. Při srážce v nich vzniká mimořádné množství nových hvězd. Nakonec jejich jádra splynou a zůstane jedna velká eliptická galaxie."
+   ],
+   "foto": "Hubbleův snímek ukazuje růžové oblasti zrodu hvězd. Druhý obrázek přidává měření radioteleskopu ALMA.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "tykadla_1.webp",
+     "t": "tykadla_1t.webp",
+     "w": 1280,
+     "h": 1271,
+     "cap": "Srážka galaxií (Hubble)",
+     "autor": "ESA/Hubble & NASA",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/potw1345a/"
+    },
+    {
+     "f": "tykadla_2.webp",
+     "t": "tykadla_2t.webp",
+     "w": 1280,
+     "h": 1275,
+     "cap": "Hubble a radioteleskop ALMA dohromady",
+     "autor": "ALMA (ESO/NAOJ/NRAO). Visible light image: the NASA/ESA Hubble Space Telescope",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1137a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Antennae Galaxies reloaded (potw1345a)",
+     "u": "https://esahubble.org/images/potw1345a/"
+    },
+    {
+     "t": "ESO: Antennae Galaxies composite of ALMA and Hubble observations (eso1137a)",
+     "u": "https://www.eso.org/public/images/eso1137a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "quintet",
+   "cs": "Stephanův kvintet",
+   "ozn": "NGC 7317–7320",
+   "druh": "galaxie",
+   "typ": "skupina pěti galaxií",
+   "souhv": "Pegas",
+   "ra": 338.9934,
+   "de": 33.9659,
+   "maj": 2.37,
+   "min": 1.32,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.05,
+   "vel": false,
+   "vid": 0,
+   "prio": 449,
+   "ly": 290000000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Pět galaxií těsně u sebe; čtyři z nich se navzájem přetahují gravitací.",
+   "txt": [
+    "Čtyři galaxie kvintetu leží asi 290 milionů světelných let daleko. Pátá, NGC 7320, je ve skutečnosti v popředí: jen 40 milionů světelných let od nás."
+   ],
+   "foto": "Webbova mozaika má přes 150 milionů bodů a vznikla z téměř tisíce snímků. Hubble ukazuje stejnou skupinu ve viditelném světle.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "quintet_1.webp",
+     "t": "quintet_1t.webp",
+     "w": 1280,
+     "h": 1227,
+     "cap": "Kvintet v infračerveném světle (Webb)",
+     "autor": "NASA, ESA, CSA, and STScI",
+     "arch": "ESA/Webb",
+     "lic": "CC BY 4.0",
+     "url": "https://esawebb.org/images/weic2208a/"
+    },
+    {
+     "f": "quintet_2.webp",
+     "t": "quintet_2t.webp",
+     "w": 1148,
+     "h": 1280,
+     "cap": "Ve viditelném světle (Hubble)",
+     "autor": "NASA, ESA and the Hubble SM4 ERO Team",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic0910i/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Webb: Stephan’s Quintet (NIRCam + MIRI Imaging) (weic2208a)",
+     "u": "https://esawebb.org/images/weic2208a/"
+    },
+    {
+     "t": "ESA/Hubble: Galactic wreckage in Stephan's Quintet (heic0910i)",
+     "u": "https://esahubble.org/images/heic0910i/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "m13",
+   "cs": "Kulová hvězdokupa v Herkulovi",
+   "ozn": "M 13 · NGC 6205",
+   "druh": "kulova",
+   "typ": "kulová hvězdokupa",
+   "souhv": "Herkules",
+   "ra": 250.4235,
+   "de": 36.4613,
+   "maj": 16.5,
+   "min": null,
+   "mag": 5.8,
+   "pole": 18.0,
+   "kr": 0.14,
+   "vel": true,
+   "vid": 0,
+   "prio": 450,
+   "ly": 25000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Jedna z nejjasnějších a nejznámějších kulových hvězdokup.",
+   "txt": [
+    "M 13 je koule stovek tisíc hvězd vzdálená 25 000 světelných let, široká asi 145 světelných let."
+   ],
+   "foto": "Hubble se dívá přímo do přeplněného středu hvězdokupy.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m13_1.webp",
+     "t": "m13_1t.webp",
+     "w": 1280,
+     "h": 1280,
+     "cap": "Střed hvězdokupy (Hubble)",
+     "autor": "ESA/Hubble and NASA",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/potw1011a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: The crowded heart of the Hercules globular cluster (potw1011a)",
+     "u": "https://esahubble.org/images/potw1011a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "m22",
+   "cs": "Kulová hvězdokupa M 22",
+   "ozn": "Messier 22 · NGC 6656",
+   "druh": "kulova",
+   "typ": "kulová hvězdokupa",
+   "souhv": "Střelec",
+   "ra": 279.1008,
+   "de": -23.9034,
+   "maj": 12.6,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.1,
+   "vel": true,
+   "vid": 1,
+   "prio": 251,
+   "ly": 10000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Blízká kulová hvězdokupa ve Střelci.",
+   "txt": [
+    "M 22 je hustě nahloučená skupina velmi starých hvězd asi 10 000 světelných let daleko. Kulové hvězdokupy jsou pozůstatky z raných dob vesmíru, staré obvykle 12 až 13 miliard let. V M 22 astronomové našli i šest těles velikosti planet, která neobíhají žádnou hvězdu."
+   ],
+   "foto": "Hubble ukazuje střed hvězdokupy, dalekohled VISTA celou hvězdokupu v infračerveném světle.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m22_1.webp",
+     "t": "m22_1t.webp",
+     "w": 1254,
+     "h": 1280,
+     "cap": "Střed hvězdokupy (Hubble)",
+     "autor": "ESA/Hubble & NASA",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/potw1514a/"
+    },
+    {
+     "f": "m22_2.webp",
+     "t": "m22_2t.webp",
+     "w": 1280,
+     "h": 1280,
+     "cap": "V infračerveném světle (dalekohled VISTA)",
+     "autor": "ESO/VVVX survey",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso2413d/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: The crammed centre of Messier 22 (potw1514a)",
+     "u": "https://esahubble.org/images/potw1514a/"
+    },
+    {
+     "t": "ESO: An infrared view of the Messier 22 globular cluster (eso2413d)",
+     "u": "https://www.eso.org/public/images/eso2413d/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "m4",
+   "cs": "Kulová hvězdokupa M 4",
+   "ozn": "Messier 4 · NGC 6121",
+   "druh": "kulova",
+   "typ": "kulová hvězdokupa",
+   "souhv": "Štír",
+   "ra": 245.8975,
+   "de": -26.5255,
+   "maj": 28.2,
+   "min": null,
+   "mag": 5.4,
+   "pole": 18.0,
+   "kr": 0.23,
+   "vel": true,
+   "vid": 1,
+   "prio": 252,
+   "ly": 7000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Jedna z nejbližších kulových hvězdokup, hned vedle hvězdy Antares.",
+   "txt": [
+    "M 4 je hustý shluk několika set tisíc hvězd asi 7 000 světelných let daleko. Astronomové mají podezření, že se v jejím středu skrývá černá díra střední hmotnosti, až 800krát těžší než Slunce."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m4_1.webp",
+     "t": "m4_1t.webp",
+     "w": 1280,
+     "h": 1270,
+     "cap": "Hvězdokupa M 4 (Hubble)",
+     "autor": "ESA/Hubble & NASA",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/potw1236a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Globular Star Cluster M4 (potw1236a)",
+     "u": "https://esahubble.org/images/potw1236a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "m15",
+   "cs": "Kulová hvězdokupa M 15",
+   "ozn": "Messier 15 · NGC 7078",
+   "druh": "kulova",
+   "typ": "kulová hvězdokupa",
+   "souhv": "Pegas",
+   "ra": 322.4932,
+   "de": 12.1668,
+   "maj": 11.1,
+   "min": null,
+   "mag": 6.3,
+   "pole": 18.0,
+   "kr": 0.09,
+   "vel": true,
+   "vid": 0,
+   "prio": 453,
+   "ly": 35000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Jedna z nejstarších a nejhustších kulových hvězdokup.",
+   "txt": [
+    "M 15 leží asi 35 000 světelných let daleko v souhvězdí Pegasa a je stará kolem 12 miliard let. Většina její hmoty je soustředěná ve středu. Byla první hvězdokupou, ve které se našla planetární mlhovina."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m15_1.webp",
+     "t": "m15_1t.webp",
+     "w": 1192,
+     "h": 1280,
+     "cap": "Hvězdokupa M 15 (Hubble)",
+     "autor": "NASA, ESA",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic1321a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: New Hubble image of star cluster Messier 15 (heic1321a)",
+     "u": "https://esahubble.org/images/heic1321a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "n6752",
+   "cs": "Kulová hvězdokupa NGC 6752",
+   "ozn": "NGC 6752",
+   "druh": "kulova",
+   "typ": "kulová hvězdokupa",
+   "souhv": "Páv",
+   "ra": 287.7158,
+   "de": -59.9819,
+   "maj": 13.2,
+   "min": null,
+   "mag": 6.28,
+   "pole": 18.0,
+   "kr": 0.11,
+   "vel": true,
+   "vid": 1,
+   "prio": 254,
+   "ly": 14000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Jasná kulová hvězdokupa jižní oblohy v souhvězdí Páva.",
+   "txt": [
+    "NGC 6752 leží asi 14 000 světelných let daleko. Pozorování dalekohledem VLT v ní překvapivě ukázala, že mnohé hvězdy na konci života neztrácejí hmotu tak, jak se čekalo."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "n6752_1.webp",
+     "t": "n6752_1t.webp",
+     "w": 1280,
+     "h": 1249,
+     "cap": "Hvězdokupa NGC 6752 (ESO, La Silla)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1323a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: The globular star cluster NGC 6752 (eso1323a)",
+     "u": "https://www.eso.org/public/images/eso1323a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "n6397",
+   "cs": "Kulová hvězdokupa NGC 6397",
+   "ozn": "NGC 6397",
+   "druh": "kulova",
+   "typ": "kulová hvězdokupa",
+   "souhv": "Oltář",
+   "ra": 265.1723,
+   "de": -53.6737,
+   "maj": 15.3,
+   "min": null,
+   "mag": 5.17,
+   "pole": 18.0,
+   "kr": 0.13,
+   "vel": true,
+   "vid": 1,
+   "prio": 255,
+   "ly": 8000,
+   "lyz": null,
+   "lytxt": "asi 7 000 sv. l. (ESO) až 9 000 sv. l. (Hubble)",
+   "lysrc": 0,
+   "lead": "Jedna z nejbližších kulových hvězdokup, v souhvězdí Oltáře.",
+   "txt": [
+    "NGC 6397 je od nás jen 7 000 až 9 000 světelných let. Je domovem neobvyklé dvojice: rychle rotujícího pulzaru a nafouknuté červené hvězdy."
+   ],
+   "foto": "Snímek ESO ukazuje celou hvězdokupu, Hubble její střed.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "n6397_1.webp",
+     "t": "n6397_1t.webp",
+     "w": 1280,
+     "h": 1277,
+     "cap": "Celá hvězdokupa (ESO, La Silla)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso0425a/"
+    },
+    {
+     "f": "n6397_2.webp",
+     "t": "n6397_2t.webp",
+     "w": 948,
+     "h": 1280,
+     "cap": "Střed hvězdokupy (Hubble)",
+     "autor": "NASA, ESA and H. Richer (University of British Columbia)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic0608b/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: Globular cluster NGC 6397 (eso0425a)",
+     "u": "https://www.eso.org/public/images/eso0425a/"
+    },
+    {
+     "t": "ESA/Hubble: Globular cluster NGC 6397 (heic0608b)",
+     "u": "https://esahubble.org/images/heic0608b/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "hyady",
+   "cs": "Hyády",
+   "ozn": "Melotte 25 · Caldwell 41",
+   "druh": "otevrena",
+   "typ": "otevřená hvězdokupa",
+   "souhv": "Býk",
+   "ra": 66.725,
+   "de": 15.8667,
+   "maj": 329.0,
+   "min": null,
+   "mag": null,
+   "pole": 21.9,
+   "kr": 2.7,
+   "vel": true,
+   "vid": 0,
+   "prio": 456,
+   "ly": 150,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Nejbližší hvězdokupa vůbec: tvoří „hlavu“ souhvězdí Býka.",
+   "txt": [
+    "Hyády jsou od nás jen asi 150 světelných let. V atmosférách dvou jejich vyhaslých hvězd, bílých trpaslíků, našli astronomové stopy kamenných úlomků – známku, že kolem nich mohly obíhat planety podobné Zemi."
+   ],
+   "foto": null,
+   "nase": "Na naší fotce nejsou jednotlivé hvězdy Hyád rozeznat; kroužek ukazuje, kde hvězdokupa leží.",
+   "imgs": [
+    {
+     "f": "hyady_1.webp",
+     "t": "hyady_1t.webp",
+     "w": 1280,
+     "h": 998,
+     "cap": "Hyády ze Země (pozemní snímek)",
+     "autor": "NASA, ESA, and STScI.",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic1309c/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Overview of the Hyades star cluster (ground-based image) (heic1309c)",
+     "u": "https://esahubble.org/images/heic1309c/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "m35",
+   "cs": "Hvězdokupa M 35",
+   "ozn": "Messier 35 · NGC 2168",
+   "druh": "otevrena",
+   "typ": "otevřená hvězdokupa",
+   "souhv": "Blíženci",
+   "ra": 92.2711,
+   "de": 24.3386,
+   "maj": 24.0,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.2,
+   "vel": true,
+   "vid": 1,
+   "prio": 257,
+   "ly": 2700,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Hvězdokupa v Blížencích, na obloze velká asi jako Měsíc v úplňku.",
+   "txt": [
+    "M 35 leží asi 2 700 světelných let daleko a je rozptýlená v oblasti široké 24 světelných let. Převládají v ní mladé horké modré hvězdy. Hned vedle ní je na obloze mnohem hustší a starší hvězdokupa NGC 2158."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "m35_1.webp",
+     "t": "m35_1t.webp",
+     "w": 1240,
+     "h": 1280,
+     "cap": "M 35 a vedle ní NGC 2158 (ESO)",
+     "autor": "ESO/S. Brunier",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/b10/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: Messier 35 – A cluster of stars (b10)",
+     "u": "https://www.eso.org/public/images/b10/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "klenotnice",
+   "cs": "Klenotnice",
+   "ozn": "NGC 4755 · κ Crucis",
+   "druh": "otevrena",
+   "typ": "otevřená hvězdokupa",
+   "souhv": "Jižní kříž",
+   "ra": 193.4045,
+   "de": -60.3563,
+   "maj": 7.8,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.07,
+   "vel": true,
+   "vid": 0,
+   "prio": 458,
+   "ly": 6500,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Barevná hvězdokupa hned u Jižního kříže a Uhelného pytle.",
+   "txt": [
+    "Klenotnice leží asi 6 500 světelných let daleko. Její hvězdy se velmi liší jasností: ty nejjasnější mají 15 až 20krát větší hmotnost než Slunce, ty nejslabší méně než polovinu."
+   ],
+   "foto": "Dalekohledu VLT stačily na tento snímek expozice kolem dvou sekund. Hubble ukazuje střed hvězdokupy.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "klenotnice_1.webp",
+     "t": "klenotnice_1t.webp",
+     "w": 1277,
+     "h": 1280,
+     "cap": "Klenotnice (dalekohled VLT)",
+     "autor": "ESO/Y. Beletsky",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso0940a/"
+    },
+    {
+     "f": "klenotnice_2.webp",
+     "t": "klenotnice_2t.webp",
+     "w": 1280,
+     "h": 631,
+     "cap": "Střed hvězdokupy (Hubble)",
+     "autor": "NASA/ESA and Jesús Maíz Apellániz (Instituto de Astrofísica de Andalucía, Spain)",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic0913a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: A snapshot of the Jewel Box cluster with the ESO VLT (eso0940a)",
+     "u": "https://www.eso.org/public/images/eso0940a/"
+    },
+    {
+     "t": "ESA/Hubble: A Hubble gem: the Jewel Box (heic0913a)",
+     "u": "https://esahubble.org/images/heic0913a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "n3532",
+   "cs": "Hvězdokupa NGC 3532",
+   "ozn": "NGC 3532",
+   "druh": "otevrena",
+   "typ": "otevřená hvězdokupa",
+   "souhv": "Lodní kýl",
+   "ra": 166.4493,
+   "de": -58.7705,
+   "maj": 12.0,
+   "min": null,
+   "mag": 3.0,
+   "pole": 18.0,
+   "kr": 0.4,
+   "vel": true,
+   "vid": 2,
+   "prio": 59,
+   "ly": 1300,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Jasná a barevná hvězdokupa jižní Mléčné dráhy.",
+   "txt": [
+    "NGC 3532 leží asi 1 300 světelných let daleko. Některé její hvězdy ještě září horkou namodralou barvou, ale mnohé z těch hmotnějších už se staly červenými obry a svítí sytě oranžově."
+   ],
+   "foto": null,
+   "nase": null,
+   "imgs": [
+    {
+     "f": "n3532_1.webp",
+     "t": "n3532_1t.webp",
+     "w": 1280,
+     "h": 1237,
+     "cap": "Hvězdokupa NGC 3532 (ESO, La Silla)",
+     "autor": "ESO/G. Beccari",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1439a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESO: The colourful star cluster NGC 3532 (eso1439a)",
+     "u": "https://www.eso.org/public/images/eso1439a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "n3603",
+   "cs": "Hvězdokupa NGC 3603",
+   "ozn": "NGC 3603",
+   "druh": "otevrena",
+   "typ": "mladá hmotná hvězdokupa v mlhovině",
+   "souhv": "Lodní kýl",
+   "ra": 168.7775,
+   "de": -61.2612,
+   "maj": 3.3,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.25,
+   "vel": true,
+   "vid": 1,
+   "prio": 260,
+   "ly": 20000,
+   "lyz": null,
+   "lytxt": "asi 20 000 sv. l. (Hubble); ESO uvádí 22 000",
+   "lysrc": 0,
+   "lead": "Jedna z nejhmotnějších mladých hvězdokup v naší Galaxii.",
+   "txt": [
+    "Hvězdokupa NGC 3603 vznikla při prudké vlně zrodu hvězd asi před milionem let. Horké modré hvězdy v jejím středu vyhloubily do okolního plynu obrovskou dutinu."
+   ],
+   "foto": "Hubble ukazuje hvězdokupu a dutinu kolem ní, snímek ESO širší okolí.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "n3603_1.webp",
+     "t": "n3603_1t.webp",
+     "w": 1274,
+     "h": 1280,
+     "cap": "Hvězdokupa a okolní plyn (Hubble)",
+     "autor": "NASA, ESA and the Hubble Heritage (STScI/AURA)-ESA/Hubble Collaboration",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic0715a/"
+    },
+    {
+     "f": "n3603_2.webp",
+     "t": "n3603_2t.webp",
+     "w": 1269,
+     "h": 1280,
+     "cap": "Širší okolí (dalekohled VLT)",
+     "autor": "ESO",
+     "arch": "ESO",
+     "lic": "CC BY 4.0",
+     "url": "https://www.eso.org/public/images/eso1005a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Extreme star cluster bursts into life in new Hubble image (heic0715a)",
+     "u": "https://esahubble.org/images/heic0715a/"
+    },
+    {
+     "t": "ESO: Stellar nursery NGC 3603 (eso1005a)",
+     "u": "https://www.eso.org/public/images/eso1005a/"
+    },
+    {
+     "t": "Katalog OpenNGC (poloha, úhlová velikost, jasnost)",
+     "u": "https://github.com/mattiaverga/OpenNGC"
+    }
+   ]
+  },
+  {
+   "id": "wd2",
+   "cs": "Hvězdokupa Westerlund 2",
+   "ozn": "Westerlund 2 · Gum 29",
+   "druh": "otevrena",
+   "typ": "mladá hmotná hvězdokupa v mlhovině",
+   "souhv": "Lodní kýl",
+   "ra": 156.0271,
+   "de": -57.7634,
+   "maj": null,
+   "min": null,
+   "mag": null,
+   "pole": 18.0,
+   "kr": 0.25,
+   "vel": false,
+   "vid": 1,
+   "prio": 261,
+   "ly": 20000,
+   "lyz": null,
+   "lytxt": null,
+   "lysrc": 0,
+   "lead": "Mladá hvězdokupa, kterou si Hubble vybral pro snímek ke svým 25. narozeninám.",
+   "txt": [
+    "Westerlund 2 leží asi 20 000 světelných let daleko v souhvězdí Lodního kýlu, uprostřed mlhoviny, ze které vznikla."
+   ],
+   "foto": "Výroční snímek skládá viditelné a infračervené světlo: hvězdokupa je uprostřed, kolem ní sloupy a stěny plynu.",
+   "nase": null,
+   "imgs": [
+    {
+     "f": "wd2_1.webp",
+     "t": "wd2_1t.webp",
+     "w": 1280,
+     "h": 959,
+     "cap": "Snímek k 25. výročí Hubblu",
+     "autor": "NASA, ESA, the Hubble Heritage Team (STScI/AURA), A. Nota (ESA/STScI), and the Westerlund 2 Science Team The original observations of Westerlund 2 were obtained by the science team: Antonella Nota (ESA/STScI), Elena Sabbi (STScI), Eva Grebel and Peter Zeidler (Astronomisches Rechen-Institut Heidelberg), Monica Tosi (INAF, Osservatorio Astronomico di Bologna), Alceste Bonanos (National Observatory of Athens, Astronomical Institute), Carol Christian (STScI/AURA) and Selma de Mink (University of Amsterdam). Follow-up observations were made by the Hubble Heritage team: Zoltan Levay (STScI), Max Mutchler, Jennifer Mack, Lisa Frattare, Shelly Meyett, Mario Livio, Carol Christian (STScI/AURA), and Keith Noll (NASA/GSFC).",
+     "arch": "ESA/Hubble",
+     "lic": "CC BY 4.0",
+     "url": "https://esahubble.org/images/heic1509a/"
+    }
+   ],
+   "src": [
+    {
+     "t": "ESA/Hubble: Westerlund 2 — Hubble’s 25th anniversary image (heic1509a)",
+     "u": "https://esahubble.org/images/heic1509a/"
+    },
+    {
+     "t": "Poloha: ESA/Hubble: poloha středu snímku heic1509a",
+     "u": "https://esahubble.org/images/heic1509a/"
     }
    ]
   }

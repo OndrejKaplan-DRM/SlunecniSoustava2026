@@ -6,7 +6,7 @@ Interaktivní 3D model Sluneční soustavy v prohlížeči: 201 těles ve skute�
 dospělé a dětské rozhraní, minutová ukázka ovládání, čtyři pohledy na Slunce, zvuky, hudba a hra pro mladého astronoma.
 
 - **Spustit:** https://ondrejkaplan-drm.github.io/SlunecniSoustava2026/
-- **Verze:** 1.2 (13. 11. 2026); rozpracovaná 1.10 na větvi `iterace-22` (přehled změn: `docs/ZMENY.md`) · zdarma, bez reklam, bez registrace a bez sběru dat
+- **Verze:** 1.2 (13. 11. 2026); kandidát k vydání 2.0 na větvi `iterace-23` (sloučené 1.8b/1.8c, 1.8m, 1.9, 1.10) (přehled změn: `docs/ZMENY.md`) · zdarma, bez reklam, bez registrace a bez sběru dat
 - **Bez internetu:** `npm run offline:hi` vyrobí jeden soubor HTML, který se otevře dvojklikem (na flashku, do školy)
 - **Autor:** Ing. Ondřej Kaplan, Ph.D. (ondrej.kaplan@gmail.com) – námět, zadání, odborná kontrola a testování. Kód napsal podle jeho zadání model Claude Fable 5.2 (Anthropic).
 - **Licence:** kód MIT (`LICENSE`); mapy, písmo, zvuky a hudba mají vlastní licence – přehled v `CREDITS.md`

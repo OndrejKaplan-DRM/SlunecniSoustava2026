@@ -2079,7 +2079,8 @@ export function createEngine(canvas, overlay) {
   }
 
   // ---------- značky a popisky (2D) ----------
-  const rects = [];
+  const rects = (S.labRects =
+    []); /* obdélníky jmen těles v aktuálním snímku: čtou je moduly 2D vrstvy, aby jména nepřekryly */
   function drawOverlay(big) {
     const tk = S.txtK || 1; /* měřítko písma ve 2D vrstvě (režim velké obrazovky) */
     ctx.clearRect(0, 0, W, H);
@@ -2154,7 +2155,7 @@ export function createEngine(canvas, overlay) {
           }
           return true;
         };
-        const placed = [],
+        const placed = (S.skyRects = []) /* jména souhvězdí a hvězd: totéž */,
           free = (x0, y0, x1, y1) => {
             for (const q of placed) if (x0 < q[2] && x1 > q[0] && y0 < q[3] && y1 > q[1]) return false;
             for (let i = 0; i < sg.length; i += 4)

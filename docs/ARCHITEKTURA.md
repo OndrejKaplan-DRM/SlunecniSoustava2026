@@ -30,12 +30,14 @@ a volají jeho funkce (`flyTo`, `jump`, `setSunMode`…); zpět dostávají udá
   hluboko uvnitř prstence. Tečky nejsou v katalogu, nejdou vybrat a nemají jména – je to ilustrace.
 - Okna: seznam `POPS` v `ui/ui.js` (okna se navzájem zavírají) a od 1.8a „úklid“ `SWEEP`: událost `fly` na sběrnici (každý přelet)
   a tah do vesmíru zavřou okna, která zakrývají pohled. Karta úkazu se při přeletu a na Esc sbalí do proužku.
-- `ui/obloha.js` (1.8b) – objekty vzdáleného vesmíru na fotce oblohy: jména a kroužky ve 2D vrstvě (`S.overlays`), seznam `#ds`,
-  malá karta `#dsc`, velká karta `#dsk`, zvětšená fotografie `#dsz`. Modul je záměrně soběstačný – styly (`<style>`), okna, položku
-  nabídky ☰ i odstavec nápovědy vkládá do stránky sám a do `POPS` a `act` se zapisuje přes `ui.pops` a `ui.actions`; `dist/index.html`
-  o něm neví. Směr objektu ve scéně dává `S.eq2s(α, δ)`. „Ukázat na obloze“ nemění těleso ani výšku: nastaví otočení kolem tělesa
-  (`cam.yaw`, `cam.pitch`) a odklon pohledu (`cam.lp`) tak, aby objekt přišel na zvolené místo obrazovky a těleso zůstalo stranou.
-  Fotografie se načítají až při otevření karty (`AS('sky/…')`), ve verzi v jednom souboru jsou vložené jako ostatní podklady.
+- `ui/obloha.js` (1.8c) – objekty vzdáleného vesmíru na fotce oblohy. Modul je záměrně soběstačný: styly (`<style>`), prvky stránky,
+  položku nabídky ☰ i odstavec nápovědy vkládá sám a do `POPS` a `act` se zapisuje přes `ui.pops` a `ui.actions`; `dist/index.html`
+  o něm neví. Části: (1) polohy objektů se počítají každý snímek ve funkci zapsané do `S.overlays` (směr dává `S.eq2s(α, δ)`); tamtéž
+  se kreslí nenápadné kroužky, když jsou zapnutá souhvězdí nebo režim „Stále vidět“; (2) zvýrazněný kroužek `#dsr` a bublina `#dsb`
+  jsou prvky stránky, ne `.panel`, aby fungovaly i v kině, kde je 2D vrstva skrytá; (3) scéna objektu `#dss` je režim, ne okno: třída
+  `ds-stage` na `<body>` zprůhlední hlavní rozhraní, „čočka“ `.ss-lens` se animuje (Web Animations) z kroužku do místa fotografie a zpět,
+  obsah kreslí `fill()` a `tab()`; (4) natočení pohledu `aim()` nemění těleso ani výšku, jen otočení kolem tělesa a odklon pohledu,
+  a `back()` vrací pohled uložený před natočením. Zkoušky mají `S200.obloha.fast(true)` (bez animací).
 - `ui/povrch.js` (1.10) – pohled z povrchu tělesa. Stav drží engine v `S.surf` (místo, směr, zorné pole, sledované těleso);
   `surfCamera` v `render/engine.js` staví kameru na povrch (zenit, východ, sever z `basis`), mění zorné pole a těleso pod nohama
   nekreslí. Modul kreslí lištu `#surf`, zem s obzorem jako první vrstvu `S.overlays` a denní oblohu `#skyair`; sílu oblohy
