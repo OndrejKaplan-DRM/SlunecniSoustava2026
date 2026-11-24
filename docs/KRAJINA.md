@@ -72,14 +72,14 @@ Polární mřížka kolem pozorovatele (384 × 170 bodů, na telefonu a při nej
 | led | světlé měsíce, Pluto, Triton | ledová pláň s krátery (Pluto: vyšší hory) |
 | Europa | Europa, Enceladus | dvojité hřebeny |
 | Io | Io | sirné pláně skoro bez kráterů |
-| oblaka | Jupiter, Saturn, Uran, Neptun | oblačná vrstva (2.2b): mírné zvlnění do ~600 m na desítky km (sklon do ~8°) a drobné kupky; ojedinělé konvektivní věže (Jupiter 15–45 km vysoké a asi stejně široké, bílé vršky, vrhají stín – Juno PIA21647; Saturn řidší a nižší, Uran a Neptun skoro hladké – odhad); barva podle pásu na mapě planety; pozorovatel 1,5 km nad vrstvou; pevný povrch tu není |
+| oblaka | Jupiter, Saturn, Uran, Neptun | oblačná vrstva (2.2b): mírné zvlnění do ~600 m na desítky km (sklon do ~8°) a drobné kupky; ojedinělé konvektivní věže (Jupiter 12–40 km vysoké a asi stejně široké, z několika kup, bílé vršky, vrhají stín – Juno PIA21647; Saturn řidší a nižší, Uran a Neptun skoro hladké – odhad); barva podle pásu na mapě planety; pozorovatel 1,5 km nad vrstvou; pevný povrch tu není |
 | malé těleso, kometa | planetky, komety | silně zakřivené (obzor desítky až stovky metrů), velké balvany |
 
 Barva půdy: mapa tělesa v místě každého bodu (podrobná mapa, kde je, mimo telefon), přepočtená tak, aby průměr odpovídal albedu
 tělesa z katalogu (mapy jsou kvůli vzhledu zesvětlené). Stejné místo dá vždy stejnou krajinu (semínko ze souřadnic).
 
 ## 4. Zkoušky
-- `node tools/test/t_krajina.mjs` – 49 kontrol (2.2b: navíc stavy tlačítka přistání v kartě, v ☰ a na liště, kolečko dovnitř a ven,
+- `node tools/test/t_krajina.mjs` – 50 kontrol (2.2b: navíc stavy tlačítka přistání v kartě, v ☰ a na liště včetně sestupu, kolečko dovnitř a ven,
   přisvětlení a jeho vrácení po vzletu, Grónsko v prosinci v noci – sníh a obzor vidět, přisvětlení zjasní, Pluto tmavší než poledne);
   dříve 34 kontrol: režim oblohy a typ krajiny pro 8 těles, stavba terénu (do 0,6 s, výšky konečné),
   Venuše nad oblaky, výškové mapy (Hadley Delta asi 2,9 km nad místem přistání Apolla 15, skutečně asi 3,5 km; Mount Sharp 4,7 km nad
@@ -109,7 +109,7 @@ Ondřej: „povrch mraků možná nepatrně méně vertikálně členitý – po
   „asi 50 km široké a 50 km vysoké“, které vrhají stín na oblaka pod sebou; Juno je nazývá „pop-up clouds“ (PIA22687, PIA24303).
   Voyager 2 viděl na Neptunu stíny malých vyvýšených oblaků na hlubší vrstvě (68° j. š., PIA02220).
 - Proto 2.2b: vrstva plošší (zvlnění stovky metrů, sklon do ~8°) a ojedinělé věže na obzoru. Hustota věží (asi jedna na
-  5 000 km² na Jupiteru) je odhad; na snímku PIA21647 jich bylo neobvykle mnoho.
+  40 000 km² na Jupiteru, tedy na dohled 150 km obvykle 1–3) je odhad; na snímku PIA21647 jich bylo neobvykle mnoho.
 
 ## 6. Srovnání se snímky sond
 `docs/ref/krajina_srovnani.jpg` (vytváří `tools/test/krajina_srovnani.py`): snímek sondy vlevo, aplikace 2.2 vpravo – Hadley Delta

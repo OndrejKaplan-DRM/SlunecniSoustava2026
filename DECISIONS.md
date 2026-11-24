@@ -63,7 +63,7 @@ Kdo rozhodl: **O** = Ondřej, **K** = Kristína (AI) s Ondřejovým souhlasem ne
   zjasněním; led jen zčásti, Země, Venuše, Titan a oblaka podle Lamberta. Důvod: Měsíc na fotkách z Apolla netmavne k okraji ani při
   nízkém Slunci. Stíny terénu na terénu se počítají pochodem paprsku ke Slunci (hory a hrany kráterů vrhají stín, do 70 km).
 - **24. 11. 2026 (O → K)** – Oblačná vrstva obrů: zvlnění výrazně plošší (sklon do ~8° místo přes 60°), ale s ojedinělými konvektivními
-  věžemi až 45 km vysokými. Důvod: Ondřej se ptal, jestli vertikální členění existuje – existuje, ale v jiném měřítku: Juno vidí
+  věžemi až 40 km vysokými. Důvod: Ondřej se ptal, jestli vertikální členění existuje – existuje, ale v jiném měřítku: Juno vidí
   mezi pásy hladkou vrstvu a v ní věže asi 50 km široké a 50 km vysoké, které vrhají stín (PIA21647); výšková škála atmosféry Jupiteru je
   27 km (Země 8,5 km, NSSDCA). Saturn (59,5 km, víc oparu), Uran a Neptun hladší – odhad. Pozorovatel 1,5 km nad vrstvou.
 - **24. 11. 2026 (O → K)** – Pohled z povrchu 2.2: realistická krajina a obloha místo 2D výplně. Obloha se **počítá** (jednonásobný

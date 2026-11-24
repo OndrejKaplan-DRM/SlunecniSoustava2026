@@ -24,10 +24,20 @@ Připomínky Ondřeje k 2.2 (22:36): „docela dobré, jen doladit technické de
       Lommela a Seeligera (Měsíc vypadá jako na fotkách z Apolla: světlý i při nízkém Slunci, bez tmavnutí k okraji).
 - [x] 3 – tlačítko „🛬 Přistát na povrchu“ hned pod popisem v kartě přes celou šířku (zlaté), na liště nahoře vedle Hledat,
       v ☰; míření zeleně pulzuje; na povrchu modré „🚀 Vzlétnout“. Sestup s ukazatelem výšky a zvukem brzdění, vzlet se zvukem startu.
-- [x] 4 – oblačná vrstva obrů výrazně plošší (sklon do ~8° místo přes 60°), ale ne plochá: ojedinělé konvektivní věže až 45 km
+- [x] 4 – oblačná vrstva obrů výrazně plošší (sklon do ~8° místo přes 60°), ale ne plochá: ojedinělé konvektivní věže až 40 km
       vysoké a široké s bílými vršky a stínem (Juno PIA21647: věže asi 50 × 50 km vrhají stín). Pohled z 1,5 km nad vrstvou.
-- [x] 5 – zkouška `t_krajina` 49 kontrol (stavy tlačítek, kolečko dovnitř a ven, přisvětlení a jeho vrácení, Grónsko v noci,
+- [x] 5 – zkouška `t_krajina` 50 kontrol (stavy tlačítek včetně sestupu, kolečko dovnitř a ven, přisvětlení a jeho vrácení, Grónsko v noci,
       Pluto), `pristani_snimky.mjs` (5 snímků toku přistání), `krajina_snimky.mjs` (+ Grónsko v noci, s přisvětlením, Měsíc ráno, věže na Jupiteru).
+
+- [x] Mezistavy tlačítka: během letu nad těleso „🎯 Letím…“, během sestupu „🛬 Přistávám…“ (neaktivní; klik na liště nic nepřeruší).
+- [x] Hádanka nahoře se nepřekrývá s kartou ani při úzkém okně (šířka nejvýš okno − 760 px; `t_okna` našel u televize 4K se
+      zvětšením 300 % překryv 26 px při dlouhé hádce – hádanka se vybírá náhodně, chyba byla skrytá i dřív).
+
+### Regrese 2.2b (24.–25. 11. 2026, po jednom)
+- [x] `tut`, `test:fakta`, `test:model`, `test:vernost`, `test:sceny`, `t_krajina` (50/50), `t_povrch` (203/203), `t_preload`, `t_karty`,
+      `t_pasy`, `t_obloha`, `t_scena` (287), `t_l2` (12), `t_hi` (11/11) bez chyb; `t_okna` po opravě hádanky 0 nálezů
+      (tv4k300, nb1280, nb1366, okno900 znovu).
+- [ ] `t_displej` – dál jen dřívější `tv_400: podrobná mapa mercury se nenačetla` (stejně jako v `main`).
 
 ### Neuděláno / zbývá
 - [ ] Zvuk startu a brzdění v sandboxu neslyším – ověřit na zařízení.

@@ -38,10 +38,11 @@ Stejná větev `iterace-26`. Připomínky Ondřeje k 2.2 (22:36):
 3. **Stíny terénu**: hory a hrany kráterů vrhají stín na krajinu, kameny ve stínu jsou tmavé. Regolit bez vzduchu (Měsíc, Merkur,
    planetky) stínovaný podle Lommela a Seeligera s opozičním zjasněním – Měsíc vypadá jako na fotkách z Apolla.
 4. **Přistání výrazněji**: zlaté tlačítko přes celou šířku karty hned pod popisem, 🛬 na horní liště vedle Hledat, v ☰; míření
-   zeleně pulzuje, na povrchu modré 🚀 Vzlétnout. Sestup s ukazatelem výšky, zvuk brzdění; vzlet se zvukem startu.
-5. **Oblačná vrstva obrů** výrazně plošší (sklon do ~8° místo přes 60°), s ojedinělými konvektivními věžemi až 45 km vysokými
+   zeleně pulzuje, na povrchu modré 🚀 Vzlétnout. Během letu nad těleso „🎯 Letím…“, při sestupu „🛬 Přistávám…“ (neaktivní). Sestup s ukazatelem výšky, zvuk brzdění; vzlet se zvukem startu.
+5. **Oblačná vrstva obrů** výrazně plošší (sklon do ~8° místo přes 60°), s ojedinělými konvektivními věžemi až 40 km vysokými
    s bílými vršky a stínem (Juno: věže asi 50 × 50 km, PIA21647); pozorovatel 1,5 km nad vrstvou. Saturn, Uran a Neptun hladší (odhad).
-6. Zkoušky: `t_krajina` 49 kontrol (stavy tlačítek, kolečko, přisvětlení a jeho vrácení, Grónsko v noci, Pluto), `pristani_snimky.mjs`.
+6. Hádanka nahoře se při úzkém okně nepřekrývá s kartou (nejvýš okno − 760 px).
+7. Zkoušky: `t_krajina` 50 kontrol (stavy tlačítek včetně „Přistávám…“ při sestupu, kolečko, přisvětlení a jeho vrácení, Grónsko v noci, Pluto), `pristani_snimky.mjs`.
 
 ## 2.2 – zkušební: krajina a obloha z povrchu, přistání zaměřovacím křížkem (24. 11. 2026)
 Větev `iterace-26` z `iterace-25`. Do `main` ani na stránku nic. Připomínky Ondřeje k 2.1 („pohledy z těles jsou nemastné-neslané“):

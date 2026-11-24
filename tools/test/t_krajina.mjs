@@ -247,6 +247,7 @@ const btn = () =>
       card: b ? b.textContent.trim() : null,
       cls: b ? b.className : '',
       menu: m ? m.textContent.trim() : null,
+      bar: (document.querySelector('#b-surf') || {}).textContent || '',
       surf: !!window.S200.S.surf,
       pick: window.S200.povrch.pickState(),
     };
@@ -260,8 +261,36 @@ await page.evaluate(() => document.querySelector('#card [data-a="surf"]').click(
 await page.waitForFunction(() => (window.S200.povrch.pickState() || {}).phase === 'vyber', null, { timeout: 30000 });
 await page.waitForTimeout(400);
 b = await btn();
-ok(/Přistát sem/.test(b.card) && /aim/.test(b.cls) && /křížkem/.test(b.menu), `míření: „${b.card}“, v ☰ „${b.menu}“`);
-await page.evaluate(() => document.querySelector('#card [data-a="surf"]').click());
+ok(
+  /Přistát sem/.test(b.card) && /aim/.test(b.cls) && /křížkem/.test(b.menu) && /Přistát sem/.test(b.bar),
+  `míření: „${b.card}“, v ☰ „${b.menu}“, na liště „${b.bar.trim()}“`
+);
+/* sestup: tlačítka ukazují „Přistávám…“, karta je neaktivní a další klik (karta i lišta) nic nezmění */
+const bd = await page.evaluate(() => {
+  document.querySelector('#card [data-a="surf"]').click();
+  const b = document.querySelector('#card [data-a="surf"]'),
+    t = document.querySelector('#b-surf'),
+    m = document.querySelector('#more [data-a="surf"]'),
+    r = {
+      card: b ? b.textContent.trim() : null,
+      dis: b ? b.disabled : null,
+      bar: t ? t.textContent.trim() : null,
+      menu: m ? m.textContent.trim() : null,
+      ph: (window.S200.povrch.pickState() || {}).phase,
+    };
+  if (t) t.click();
+  r.ph2 = (window.S200.povrch.pickState() || {}).phase;
+  return r;
+});
+ok(
+  bd.ph === 'sestup' &&
+    /Přistávám/.test(bd.card) &&
+    bd.dis &&
+    /Přistávám/.test(bd.bar) &&
+    /Přistávám/.test(bd.menu) &&
+    bd.ph2 === 'sestup',
+  `sestup: karta „${bd.card}“ (neaktivní), lišta „${bd.bar}“, ☰ „${bd.menu}“; klik na liště sestup nepřeruší`
+);
 await page.waitForFunction(() => !!window.S200.S.surf, null, { timeout: 30000 });
 await page.waitForTimeout(600);
 b = await btn();
@@ -269,7 +298,10 @@ const g1 = await page.evaluate(() => {
   window.S200.S.setGamma(0.8);
   return window.S200.S.gamma;
 });
-ok(b.surf && /Vzlétnout/.test(b.menu), `po přistání: v ☰ „${b.menu}“ (karta je schovaná)`);
+ok(
+  b.surf && /Vzlétnout/.test(b.menu) && /Vzlétnout/.test(b.bar),
+  `po přistání: v ☰ „${b.menu}“, na liště „${b.bar.trim()}“ (karta je schovaná)`
+);
 /* vzlet kolečkem ven při nejširším poli */
 await page.evaluate(() => {
   const S = window.S200.S;

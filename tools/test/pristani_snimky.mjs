@@ -56,9 +56,24 @@ await page.evaluate(() => {
 });
 await page.waitForTimeout(2500);
 await shot('2_mireni');
-await page.evaluate(() => window.S200.povrch.land());
-await page.waitForTimeout(700);
+/* sestup trvá 1,9 s – při softwarovém kreslení skončí dřív, než se snímek pořídí; čas stránky se proto na chvíli zpomalí 20× */
+await page.evaluate(() => {
+  const pn = performance.now.bind(performance),
+    t0 = pn();
+  window.__pn = pn;
+  window.__raf = window.requestAnimationFrame;
+  performance.now = () => t0 + (pn() - t0) * 0.05;
+  window.requestAnimationFrame = (cb) => window.__raf((ts) => cb(t0 + (ts - t0) * 0.05));
+  window.S200.povrch.land();
+});
+await page.waitForTimeout(2500);
 await shot('3_sestup');
+await page.evaluate(() => {
+  const pn = window.__pn,
+    k = performance.now() - pn();
+  performance.now = () => pn() + k;
+  window.requestAnimationFrame = (cb) => window.__raf((ts) => cb(ts + k));
+});
 await page.waitForFunction(() => !!window.S200.S.surf, null, { timeout: 30000 });
 await page.evaluate(() => {
   const q = window.S200.S.surf;

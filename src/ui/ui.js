@@ -712,17 +712,22 @@ export function createUI(S, A) {
     const pk = api.povrch && api.povrch.pickState(),
       on = S.surf && S.surf.i === i,
       aim = pk && pk.i === i && pk.phase === 'vyber',
+      busy = pk && pk.i === i && (pk.phase === 'let' || pk.phase === 'sestup'),
       gas = /^(jupiter|saturn|uranus|neptune)$/.test(B[i].id);
     const [ic, t, ti] = on
       ? ['🚀', 'Vzlétnout', 'Vzlétnout zpátky do vesmíru (Esc)']
-      : aim
-        ? ['✅', K() ? 'Přistát tady' : 'Přistát sem', 'Přistát na místě pod zaměřovacím křížkem (Enter, dvojklik)']
-        : [
-            gas ? '☁' : '🛬',
-            gas ? (K() ? 'Na mraky' : 'Přistát na mracích') : K() ? 'Přistát' : 'Přistát na povrchu',
-            'Přistát a rozhlédnout se: krajina, obloha, Slunce a hvězdy odtud. Místo vybereš zaměřovacím křížkem (nebo kolečkem blíž a blíž).',
-          ];
-    return `<button data-a="surf" class="landb${aim ? ' aim' : ''}${on ? ' up' : ''}" title="${ti}">${ic} ${t}</button>`;
+      : busy
+        ? pk.phase === 'sestup'
+          ? ['🛬', K() ? 'Přistáváme…' : 'Přistávám…', 'Sestup na vybrané místo']
+          : ['🎯', K() ? 'Letíme…' : 'Letím nad těleso…', 'Let nad těleso, potom vybereš místo zaměřovacím křížkem']
+        : aim
+          ? ['✅', K() ? 'Přistát tady' : 'Přistát sem', 'Přistát na místě pod zaměřovacím křížkem (Enter, dvojklik)']
+          : [
+              gas ? '☁' : '🛬',
+              gas ? (K() ? 'Na mraky' : 'Přistát na mracích') : K() ? 'Přistát' : 'Přistát na povrchu',
+              'Přistát a rozhlédnout se: krajina, obloha, Slunce a hvězdy odtud. Místo vybereš zaměřovacím křížkem (nebo kolečkem blíž a blíž).',
+            ];
+    return `<button data-a="surf" class="landb${aim || busy ? ' aim' : ''}${on ? ' up' : ''}" title="${ti}"${busy ? ' disabled' : ''}>${ic} ${t}</button>`;
   }
   $('#card').addEventListener('click', (e) => {
     const chip = e.target.closest('.chip');
@@ -1034,6 +1039,7 @@ export function createUI(S, A) {
       if (S.surf) return api.povrch.exit();
       const pk = api.povrch.pickState();
       if (pk && pk.phase === 'vyber') return api.povrch.land();
+      if (pk && (pk.phase === 'let' || pk.phase === 'sestup')) return; /* právě se letí nebo přistává */
       api.povrch.pick(S.sel !== SUN ? S.sel : S.focus !== SUN ? S.focus : EARTH);
     },
     orbfade() {
@@ -1854,13 +1860,16 @@ export function createUI(S, A) {
     const b = $('#more [data-a="surf"]'),
       t = $('#b-surf');
     if (!b) return;
-    const pk = api.povrch && api.povrch.pickState();
+    const pk = api.povrch && api.povrch.pickState(),
+      busy = pk && (pk.phase === 'let' || pk.phase === 'sestup');
     if (t) {
       const [ic, tx, cl] = S.surf
         ? ['🚀', 'Vzlétnout', 'up']
         : pk && pk.phase === 'vyber'
           ? ['✅', 'Přistát sem', 'aim']
-          : ['🛬', 'Přistát', ''];
+          : busy
+            ? [pk.phase === 'sestup' ? '🛬' : '🎯', pk.phase === 'sestup' ? 'Přistávám…' : 'Letím…', 'aim']
+            : ['🛬', 'Přistát', ''];
       t.innerHTML = `${ic} <span>${tx}</span>`;
       t.className = cl;
       t.title = S.surf
@@ -1873,7 +1882,11 @@ export function createUI(S, A) {
       ? '🚀 Vzlétnout z povrchu'
       : pk && pk.phase === 'vyber'
         ? '✅ Přistát pod křížkem'
-        : '🛬 Přistát na povrchu';
+        : busy
+          ? pk.phase === 'sestup'
+            ? '🛬 Přistávám…'
+            : '🎯 Letím nad těleso…'
+          : '🛬 Přistát na povrchu';
   };
   const surfSync = () => {
     if (S.sel >= 0) drawCardRaw(S.sel);
