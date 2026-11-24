@@ -322,7 +322,14 @@ export class Ephem {
       }
       return out;
     }
-    if (o.kind === 'kep') return conicPos(o.q, o.e, o.i, o.O, o.w, o.Tp, jd, out);
+    if (o.kind === 'kep') {
+      /* verze 2.1: planetky a TNO s fitem na JPL Horizons mají stáčení uzlu a perihelu (Od, wd ve °/den od J2000) */
+      if (o.Od !== undefined) {
+        const t = jd - J2000;
+        return conicPos(o.q, o.e, o.i, o.O + o.Od * t, o.w + o.wd * t, o.Tp, jd, out);
+      }
+      return conicPos(o.q, o.e, o.i, o.O, o.w, o.Tp, jd, out);
+    }
     if (o.kind === 'sun' || o.kind === 'game') {
       out[0] = out[1] = out[2] = 0;
       return out;

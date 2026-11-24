@@ -285,7 +285,7 @@ export function createPovrch(S, A, ui) {
     if (q.i === EARTH) dim = Math.pow(1 - Math.min(1, cover(MOON)), 0.4);
     day = sst(-9, 4, se) * dim;
     const opq = !!(a && a.opaque && q.air);
-    const sky = opq ? 1 : a && q.air ? sst(-13, 1, se) * dim * a.k : 0;
+    const sky = opq ? 1 : a && q.air ? sst(a.tw0 || -13, 1, se) * dim * a.k : 0;
     S.skyDim = sky;
     if (opq && yh > 0) {
       /* pod oblaky Venuše a v oparu Titanu: rovnoměrná zatažená obloha zakryje všechno nad obzorem */

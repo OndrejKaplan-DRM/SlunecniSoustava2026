@@ -77,6 +77,8 @@ def main():
             continue
         if only and b['id'] not in only:
             continue
+        if b['id'] in res and 'kand' in res[b['id']] and not only:
+            continue  # navázání po přerušení
         try:
             tgt, R = vectors(NUM[b['id']], b['name'])
         except Exception as ex:
@@ -86,20 +88,34 @@ def main():
         a0 = o['q'] / (1 - o['e'])
         p0 = [a0, o['e'], o['i'], o['O'], 0.0, o['w'], 0.0, o['Tp'] - J2000]
         old = angerr(pos(p0, t), P)
-        fit, test = (np.arange(len(t)) % 3) != 0, (np.arange(len(t)) % 3) == 0
+        test = (np.arange(len(t)) % 3) == 0
+        ted = (t > 0) & (t < 50 * 365.25)  # roky 2000–2050: tady se nesmí nic zhoršit
         sc = np.array([1, 1, 1, 1, 1e-4, 1, 1e-4, 10])
-
-        def f(x):
-            return (pos(x * sc, t[fit]) - P[fit]).ravel()
-        x0 = np.array(p0) / sc
         lo = np.array([0.1, 0, -180, -720, -1, -720, -1, -1e9]) / sc
         hi = np.array([1e4, 0.99, 180, 720, 1, 720, 1, 1e9]) / sc
-        s = least_squares(f, x0, x_scale='jac', bounds=(lo, hi), max_nfev=400)
-        p = s.x * sc
+
+        def solve(sel, rates):
+            m = sel & ~test
+            if rates:
+                f = lambda x: (pos(x * sc, t[m]) - P[m]).ravel()
+                return least_squares(f, np.array(p0) / sc, x_scale='jac', bounds=(lo, hi), max_nfev=400).x * sc
+            k = [0, 1, 2, 3, 5, 7]  # bez stáčení (blízkozemní planetky: jen kratší okno)
+            def f(x):
+                q = np.array(p0, float); q[k] = x; return (pos(q, t[m]) - P[m]).ravel()
+            x = least_squares(f, np.array(p0)[k], x_scale='jac', max_nfev=400).x
+            q = np.array(p0, float); q[k] = x
+            return q
+        Y = (t / 365.25)
+        kand = {'1900–2100': solve(np.ones_like(t, bool), True), '1980–2060': solve((Y > -20) & (Y < 60), True),
+                '2010–2040': solve((Y > 10) & (Y < 40), False)}
+        ev = {k: (float(np.sqrt((angerr(pos(v, t), P) ** 2).mean())), float(np.sqrt((angerr(pos(v, t[ted]), P[ted]) ** 2).mean())))
+              for k, v in kand.items()}
+        p = kand['1900–2100']
         e_all, e_test = angerr(pos(p, t), P), angerr(pos(p, t[test]), P[test])
         r = {'cil': tgt, 'p': [float(v) for v in p], 'old_rms': float(np.sqrt((old ** 2).mean())), 'old_max': float(old.max()),
+             'q': float(p[0] * (1 - p[1])), 'old_ted': float(np.sqrt((old[ted] ** 2).mean())), 'ted': float(np.sqrt((e_all[ted] ** 2).mean())),
              'rms': float(np.sqrt((e_all ** 2).mean())), 'rms_test': float(np.sqrt((e_test ** 2).mean())), 'max': float(e_all.max()),
-             'n': int(len(t))}
+             'n': int(len(t)), 'kand': {k: {'p': [float(x) for x in kand[k]], 'rms': ev[k][0], 'ted': ev[k][1]} for k in kand}}
         res[b['id']] = r
         json.dump(res, open(outp + '.tmp', 'w'), indent=0)
         os.replace(outp + '.tmp', outp)
