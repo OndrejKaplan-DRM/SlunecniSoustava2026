@@ -13,7 +13,7 @@ const LIM = {
   uranus: 80,
   neptune: 40,
   pluto: 30,
-  moon: 250,
+  moon: 130, // 2.1: s doplňkovými členy (src/data/mesic.json) největší 62″, dřív 130″; před r. 800 se liší i DE422 a DE441 (až 61″)
 }; // úhlové vteřiny
 const E = idx.get('earth'),
   ie = REF.ids.indexOf('earth');

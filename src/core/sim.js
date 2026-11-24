@@ -4,6 +4,7 @@ import { Ephem, DEG, J2000, conicPos, longWeight } from './ephem.js';
 import { shapeParams } from './shape.js';
 import CAT from '../data/cat.json';
 import ROT from '../data/rot.json';
+import MC from '../data/mesic.json'; /* doplňkové členy Měsíce fitované na JPL DE441 (tools/model/vernost/fit_mesic.py) */
 
 export const AU = 149597870.7;
 export const B = CAT.bodies,
@@ -135,9 +136,25 @@ function moonGeo(jd, out) {
     175 * Math.sin(A1 + F) +
     127 * Math.sin(Lp - Mp) -
     115 * Math.sin(Lp + Mp);
-  const lon = Lp + sl * 1e-6 * DEG,
-    lat = sb * 1e-6 * DEG,
-    r = 385000.56 + sr * 1e-3,
+  /* doplňkové členy: zkrácená řada sama má proti DE441 rozptyl asi 26″ v délce a 20″ v šířce, s nimi asi 2″ a 1″ */
+  let kl = 0,
+    cb = 0,
+    cr = 0;
+  for (const t of MC.l) {
+    const a = t[0] * D + t[1] * M + t[2] * Mp + t[3] * F;
+    kl += t[4] * Math.sin(a) + t[5] * Math.cos(a);
+  }
+  for (const t of MC.b) {
+    const a = t[0] * D + t[1] * M + t[2] * Mp + t[3] * F;
+    cb += t[4] * Math.sin(a) + t[5] * Math.cos(a);
+  }
+  for (const t of MC.r) {
+    const a = t[0] * D + t[1] * M + t[2] * Mp + t[3] * F;
+    cr += t[4] * Math.sin(a) + t[5] * Math.cos(a);
+  }
+  const lon = Lp + sl * 1e-6 * DEG + (kl / 3600) * DEG,
+    lat = sb * 1e-6 * DEG + (cb / 3600) * DEG,
+    r = 385000.56 + sr * 1e-3 + cr,
     cl = Math.cos(lat);
   return ed2j(r * cl * Math.cos(lon), r * cl * Math.sin(lon), r * Math.sin(lat), T, out);
 }
