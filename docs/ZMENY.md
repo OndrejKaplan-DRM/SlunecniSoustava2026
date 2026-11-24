@@ -1,6 +1,6 @@
 # Přehled změn podle verzí
 
-**Stav 24. 11. 2026:** rozpracovaná verze 2.1 je na větvi `iterace-25` (níže). **Stav 20. 11. 2026 večer:** větev `main` = `iterace-23b` – verze 2.0 (kandidát k vydání) **se 157 objekty na obloze**. Stránka
+**Stav 24. 11. 2026 večer:** rozpracovaná verze 2.2 je na větvi `iterace-26` (z `iterace-25`, níže); 2.1 na `iterace-25`. **Stav 20. 11. 2026 večer:** větev `main` = `iterace-23b` – verze 2.0 (kandidát k vydání) **se 157 objekty na obloze**. Stránka
 (`gh-pages` `2df88a7`) zůstává na stavu `iterace-24` (`89bb59b`, 2.0 kandidát se 62 objekty); zveřejnění nového stavu na stránce čeká
 na Ondřejovo „ano“. Bod návratu k předchozí veřejné verzi 1.2 je větev `verze-1.2` (`1f96e61`), bod návratu před rozšířením objektů
 je `iterace-24`. Soubor na vyzkoušení: `node tools/build/build_offline.mjs <výstup.html> --hi` (bez podrobných map navíc `--bez-l2`).
@@ -20,9 +20,32 @@ je `iterace-24`. Soubor na vyzkoušení: `node tools/build/build_offline.mjs <v�
 | 2.0 | 20. 11. 2026 | `iterace-23` (`829047a`), zveřejněno z `iterace-24` | `iterace-22` (1.10) + sloučené `iterace-19b` (1.8c) |
 | 2.0 + objekty 157 | 20. 11. 2026 | `iterace-23b` = `main` (sloučeno 20. 11. večer) | `iterace-24` (hvězdy a další objekty na obloze; na stránce zatím není) |
 | 2.1 (zkušební) | 24. 11. 2026 | `iterace-25` | `main` (2.0 se 157 objekty) |
+| 2.2 (zkušební) | 24. 11. 2026 | `iterace-26` | `iterace-25` (2.1) |
 
 Do verze 1.8a na sebe větve navazují v řadě. Verze 1.8b, 1.8m a 1.9 vznikly souběžně ve třech sešnách z `iterace-19`;
 `iterace-22` je slučuje a přidává pohled z povrchu, takže obsahuje vše předchozí.
+
+## 2.2 – zkušební: krajina a obloha z povrchu, přistání zaměřovacím křížkem (24. 11. 2026)
+Větev `iterace-26` z `iterace-25`. Do `main` ani na stránku nic. Připomínky Ondřeje k 2.1 („pohledy z těles jsou nemastné-neslané“):
+
+1. **Mřížka na povrchu tělesa** se už nepamatuje a nenaběhne zapnutá; zapne se jen během výběru místa přistání.
+2. **Tlačítko „🔭 Z povrchu“ v kartě funguje** (chyběla obsluha). Nově: kamera vyletí nad těleso, uprostřed je zaměřovací křížek
+   s údaji (šířka, délka, den / noc, nejbližší známé místo), vybírá se tahem nebo ze seznamu známých míst, tlačítko „☀ Den“ otočí
+   těleso k místu, kde je den; přistání ✅, Enter nebo dvojklik, zrušení ✕ nebo Esc. Po přistání se skryje karta tělesa a minimapa.
+   Zpátky do vesmíru: ⬆ Vzlétnout, Esc, nebo kolečkem ven při nejširším poli (třetí krok do 1,5 s).
+3. **Krajina a obloha** (`render/krajina.js`, `render/teren.js`, `render/atmo.js`, `data/krajiny.js`; podrobně `docs/KRAJINA.md`):
+   obloha spočítaná z rozptylu světla v atmosféře každého tělesa (den, západ a soumrak se stínem planety, noc, lom světla u obzoru,
+   zčervenalé Slunce, mizení hvězd), 3D krajina podle typu povrchu (regolit s krátery, marťanská prachová pláň, louky a lesy
+   / poušť / led na Zemi podle mapy, čedičové desky pod oblaky Venuše, oblázky nebo duny na Titanu, ledové pláně, oblačné moře
+   obřích planet), výškové mapy Měsíce (LOLA) a Marsu (MOLA) – Hadley Delta u Apolla 15 a Mount Sharp u Curiosity jsou na obzoru;
+   osvětlení Sluncem, oblohou i planetou nad hlavou (popelavý svit Země na Měsíci, Jupiter nad Io), stíny kamenů, vzdušná perspektiva,
+   expozice jako oko. Přistání v moři se posune na nejbližší pevninu. Venuše a Titan začínají pod oblaky („☁ Nad oblaka“ přepne).
+4. Panel „Obloha odsud“ popisuje, co krajina ukazuje a odkud jsou data (výšková mapa nebo ilustrace) a jaké je světlo.
+5. Snímky povrchů ze sond ke srovnání v `zdroje/povrchy/` (10 snímků NASA, 2,2 MB, aplikace je nenačítá).
+6. Zkoušky: `tools/test/t_krajina.mjs` (34 kontrol), `tools/test/krajina_snimky.mjs` (19 pohledů); `t_povrch` upravený na nový tok
+   přistání a vzlet kolečkem. Polohy těles beze změny (`test:vernost`, `test:sceny`, `test:model`).
+
+Velikost: +2,6 MB výškových map (`dist/maps/dem`), kód +49 kB (`dist/app.js` 1 994 613 B).
 
 ## 2.1 – zkušební: atmosféry a složení, srovnání ve dvojici, pásy, pohled z povrchu, kalibrace poloh (24. 11. 2026)
 Větev `iterace-25` z `main` (2.0 se 157 objekty). Do `main` ani na stránku zatím nic. Zadání Ondřeje ze 24. 11. (čtyři úkoly):

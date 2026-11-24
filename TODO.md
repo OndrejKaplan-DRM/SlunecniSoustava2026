@@ -16,6 +16,23 @@ nemastné-neslané“. Zadání:
    a měsíce, Slunce), polohy těles (Slunce osvětluje horizont / horní vrstvy atmosféry, hvězdy, měsíce). „Skutečně dotažené
    a plně realistické.“ Info uložit do repa, provést testy poloh.
 
+### Hotovo (commitnuté na `iterace-26`)
+- [x] 1 – mřížka se nepamatuje, zapne se jen při výběru místa (`ui/povrch_info.js`).
+- [x] 2 – tlačítko v kartě, zaměřovací křížek a přistání (`ui/pristani.js`), úklid oken po přistání, vzlet kolečkem ven.
+- [x] 3 – krajina a obloha (`render/krajina.js`, `render/teren.js`, `render/atmo.js`, `data/krajiny.js`), výškové mapy Měsíce
+      a Marsu (`tools/data/dem_build.py`, `dist/maps/dem`, 2,7 MB), Země podle mapy (moře → pevnina), Venuše a Titan pod oblaky.
+- [x] Snímky sond `zdroje/povrchy/` (10, 2,2 MB), dokument `docs/KRAJINA.md`, CREDITS, DECISIONS, ARCHITECTURE, ZMENY, verze 2.2.
+- [x] Zkoušky `t_krajina` (34 kontrol), `krajina_snimky` (19 pohledů), `t_povrch` upravený na nový tok přistání.
+
+### Zbývá / nápady
+- [ ] Textury půdy z fotek sond (zatím procedurální zrnitost); detailní textura pro Zemi (tráva) a Mars (štěrk).
+- [ ] Stíny terénu na terénu ve větší vzdálenosti (teď stíny jen kamenů do 110 m; svahy odvrácené od Slunce jsou tmavé, ale
+      hora nevrhá dlouhý stín přes pláň) – na terminátoru Měsíce by to bylo vidět.
+- [ ] Mars při západu: modrá záře je, ale obloha dál od Slunce vychází světlejší a žlutější než na PIA19400.
+- [ ] Země bez výškové mapy (hory jsou vymyšlené); případně ETOPO po výřezech kolem známých míst.
+- [ ] Oblačné moře obřích planet vypadá spíš jako sněhové duny – víc tvarů kup a stínů.
+- [ ] Výkon na slabém telefonu ověřit na zařízení (krajina: řidší mřížka, bez stínů na `mob`).
+
 Plán (Kristína): (a) chyby 1–2 a tok přistání; (b) obloha jako výpočet rozptylu světla v atmosféře (Rayleigh + Mie, stín tělesa
 v soumraku, extinkce Slunce a hvězd) s parametry každého tělesa; (c) krajina jako 3D terén kolem pozorovatele osvětlený skutečným
 Sluncem: skutečný reliéf z DEM, kde je k dispozici (Měsíc LOLA, Mars MOLA, příp. Země), jinde procedurální podle typu povrchu;

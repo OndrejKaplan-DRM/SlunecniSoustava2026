@@ -16,7 +16,13 @@ Kde co hledat: tato mapa modulů → podrobnosti oddílů níže → `docs/VEROH
 | `ui/ui.js` | karta tělesa (řádky Atmosféra, Složení; tlačítko 🌐 Mřížka), lišty, hra, `act`, porovnání (`drawCmp`, čipy dvojic) |
 | `ui/porovnani.js` (2.1) | `pairView`: dvě tělesa ve skutečném poměru, posuvník přiblížení, měřítko v km |
 | `ui/superkarta.js` | Superkarta (pětiklik): od 2.1 oddíly Atmosféra (graf CO₂ u Země) a Složení a nitro |
-| `ui/povrch.js` | pohled z povrchu: lišta `#surf`, zem a obzor, denní obloha, hledání těles; `enter(i, lat, lon, {az, el, fov, track, air, lt})` |
+| `ui/povrch.js` | pohled z povrchu: lišta `#surf`, světové strany na obzoru (2D zem a obloha jen v ukázkách zatmění), hledání těles; `enter(i, lat, lon, {az, el, fov, track, air, lt})`, `pick(i)` (2.2: zaměřovací křížek), `land()`, `setAdjust` |
+| `ui/pristani.js` (2.2) | výběr místa přistání: panel `#surfpick`, křížek uprostřed, mřížka na tělese jen během výběru, známá místa, sestup |
+| `render/krajina.js` (2.2) | krajina a obloha z povrchu: `pre(v)` (stavba terénu, světlo, expozice, `S.skyDim`), `render(scene, camera)` (scéna do pomocného obrazu → shader oblohy `SKY_FS` → složení `COMP_FS` s lomem a mizením hvězd → terén), `adjust` (Země: z moře na pevninu), `prep(i)` (mapa a výšková mapa), `state()`, `yAt(x, z)`; v engine `S.krajina` |
+| `render/teren.js` (2.2) | terén v metrech (x východ, y nahoru, z jih): polární mřížka do 150 km, koule + reliéf (výšková mapa nebo šum, krátery, duny, hřebeny, oblačné moře), barva z mapy, kameny (`buildRocks`), stromy jen na Zemi (`buildTrees`) |
+| `render/atmo.js` (2.2) | rozptyl světla v JS (stejný jako shader): `skyDir`, `sunAt`, `hemi`, `groundExt`, `ssa` – pro osvětlení, expozici a zkoušky |
+| `data/krajiny.js` (2.2) | atmosféry (`ATM`, `ATM_NAD`, `OVERCAST`), typy krajiny (`KR`, `krajinaOf`, `krajinaMista`) |
+| `data/dem.json` + `dist/maps/dem/` (2.2) | výškové mapy Měsíce (LOLA) a Marsu (MOLA): celé těleso 4 b/° + výřezy 16 b/° kolem míst (`tools/data/dem_build.py`) |
 | `ui/povrch_info.js` (2.1) | panel `#surfp` „Obloha odsud“ (místo, čas, tělesa, hvězdy, osa, barva oblohy, pohled, vodítka) a vrstvy vodítek: obzorníková a rovníková mřížka, ekliptika, rovník, poledník, zaměřovač, mřížka na povrchu tělesa |
 | `ui/udalosti.js`, `obloha.js`, `extras.js`, `orient.js`, `mobile.js`, `tutorial.js`, `zvuky.js` | úkazy; objekty na obloze; útvary, sondy, pravítko, minimapa; šipky; rozložení podle zařízení; ukázka; zkušebna zvuků |
 | `data/` | `cat.json` (201 těles), `rot.json` (2.1, IAU 2015), `mesic.json` (2.1, doplňkové členy Měsíce), `slozeni.js` (2.1, atmosféry a nitra, CO₂), `mista.js` (2.1, pojmenovaná místa a barvy oblohy), `facts.js`, `stardata.js`, `connames.js`, `obloha.json`, `hi.json`, `l2.json`, `udalosti.json`, `zvuky.json` |

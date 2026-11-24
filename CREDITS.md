@@ -1,11 +1,21 @@
 # Sluneční soustava 200 – autoři, zdroje a licence
 
-Stav k 24. 11. 2026, verze 2.1 (zkušební; dřívější stav popisu 1.2 doplněn o oddíly pro 1.8b–2.1).
+Stav k 24. 11. 2026, verze 2.2 (zkušební; dřívější stav popisu 1.2 doplněn o oddíly pro 1.8b–2.2).
 
 ## Autorství
 - Námět, zadání, odborná kontrola a testování: **Ing. Ondřej Kaplan, Ph.D.** (ondrej.kaplan@gmail.com).
 - Kód napsaly podle jeho zadání modely **Claude Fable 5.2** a od verze 2.1 též **Claude Opus 5.5** (Anthropic). Vývoj probíhal po iteracích ve větvích `iterace-N`; každou verzi hlídají automatické testy (`npm test`, `npm run test:fakta`).
 - Aplikace je zdarma, bez reklam a bez registrace. Neodesílá žádné údaje; nastavení a postup hry ukládá jen do úložiště prohlížeče.
+
+## Verze 2.2: krajina a obloha z povrchu
+| Co | Zdroj | Licence / podmínky |
+|---|---|---|
+| Výšková mapa Měsíce (`dist/maps/dem/moon*.webp`: celé těleso 4 body na stupeň, výřezy 16 bodů na stupeň kolem míst přistání) | NASA LRO LOLA, „CGI Moon Kit“ NASA Scientific Visualization Studio (E. Wright), soubor `ldem_16.tif`, https://svs.gsfc.nasa.gov/4720; převod `tools/data/dem_build.py` | volné dílo NASA |
+| Výšková mapa Marsu (`dist/maps/dem/mars*.webp`) | NASA MGS MOLA MEGDR, PDS Geosciences Node, `megt90n000eb.img` (16 bodů na stupeň), https://pds-geosciences.wustl.edu/mgs/mgs-m-mola-5-megdr-l3-v1/ | volné dílo NASA |
+| Model rozptylu světla v atmosféře (Rayleigh, Mie, ozon) a hodnoty pro Zemi | E. Bruneton, F. Neyret (2008): *Precomputed Atmospheric Scattering*, Computer Graphics Forum 27(4); fázová funkce Cornette & Shanks (1992); jas oblohy pro kalibraci: A. J. Preetham a kol. (1999) | vzorce a čísla z publikací; vlastní kód |
+| Lom světla u obzoru | G. G. Bennett (1982), *Journal of Navigation* 35, 255 | vzorec |
+| Hodnoty pro Mars, Titan, Venuši, obří planety a Pluto (tlak, teplota, prach, opar, podíl světla u povrchu) | tlak a teplota: NASA NSSDCA Fact Sheets; ostatní odhady z publikací uvedených v `docs/KRAJINA.md` (Huygens DISR, Veněry 13 a 14, vozítka na Marsu, New Horizons) – citace jsou **z paměti, neověřené**, čísla kalibrovaná proti snímkům v `zdroje/povrchy` | odhad |
+| Snímky povrchů ke srovnání (jen `zdroje/povrchy`, aplikace je nenačítá) | NASA Image and Video Library: AS15-87-11748, AS15-90-12187, AS17-137-20979 (NASA/JSC), PIA19912 a PIA19400 (NASA/JPL-Caltech/MSSS, PIA19400 též Texas A&M), PIA07232 (ESA/NASA/JPL/University of Arizona), PIA19947 (NASA/JHUAPL/SwRI), PIA21842 (NASA/JPL-Caltech/York University), PIA22074 (NASA/JPL-Caltech/Cornell/ASU), PIA26077 (NASA/JPL-Caltech/SwRI/MSSS) – seznam `zdroje/povrchy/README.md` | snímky NASA volně užitelné s uvedením autorů; snímek Huygens ESA s uvedením autorů |
 
 ## Verze 2.1: atmosféry a složení, pohled z povrchu, kalibrace poloh
 | Co | Zdroj | Licence / podmínky |
@@ -131,4 +141,4 @@ Další obrazové podklady:
 - **Suno**: autor má placený tarif Premier, který podle ceníku zahrnuje práva ke komerčnímu užití (snímek účtu z 13. 11. 2026). Plné znění podmínek služby jsem nečetla.
 
 ## Jak citovat
-Kaplan, O. (2026). *Sluneční soustava 200* (verze 2.1) [software]. https://github.com/OndrejKaplan-DRM/SlunecniSoustava2026
+Kaplan, O. (2026). *Sluneční soustava 200* (verze 2.2) [software]. https://github.com/OndrejKaplan-DRM/SlunecniSoustava2026

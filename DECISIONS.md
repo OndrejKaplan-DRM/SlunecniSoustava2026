@@ -45,6 +45,32 @@ Kdo rozhodl: **O** = Ondřej, **K** = Kristína (AI) s Ondřejovým souhlasem ne
 - **13. 11. 2026 (K)** – Aplikace ukazuje světový čas (UT), dráhy běží v čase efemerid (ΔT podle Espenaka a Meeuse).
 
 ## Rozhraní a zobrazení
+- **24. 11. 2026 (O → K)** – Pohled z povrchu 2.2: realistická krajina a obloha místo 2D výplně. Obloha se **počítá** (jednonásobný
+  Rayleighův a Mieův rozptyl, ozon, stín planety při soumraku, lom světla), ne kreslí podle barev ze snímků; krajina je 3D terén kolem
+  pozorovatele (`render/krajina.js`, `render/teren.js`, `render/atmo.js`, předvolby `data/krajiny.js`). Důvod (O): „nemastné-neslané“,
+  chce „skutečně dotažené a plně realistické“. Postup a meze: `docs/KRAJINA.md`.
+- **24. 11. 2026 (K)** – Velké tvary krajiny z výškových map jen tam, kde jsou volně a v rozumné velikosti: Měsíc (LOLA) a Mars (MOLA),
+  celé těleso 4 body na stupeň + výřezy 16 bodů na stupeň kolem známých míst (2,7 MB). Země bez výškové mapy (jen druh povrchu z mapy).
+  Důvod: rozpočet asi 15 MB; globální mapy 16 bodů na stupeň by měly desítky MB.
+- **24. 11. 2026 (K)** – Venuše a Titan: výchozí je skutečný povrch pod oblaky (zatažená oranžová obloha), tlačítko „☁ Nad oblaka“ ukáže
+  pohled nad oblačností. Dřív to bylo naopak (nad oblaky, „ať je co vidět“). Důvod (O): na Venuši z povrchu „je vidět skoro prd“.
+- **24. 11. 2026 (K)** – Ozon v kanálu R zvýšen z 0,65 na 1,2·10⁻³ km⁻¹ (Bruneton počítá R na 680 nm). Důvod: s 680 nm vycházel nadhlavník
+  za soumraku růžový, s citlivostí oka a fotoaparátu kolem 600 nm (Chappuisův pás) modrofialový jako na fotkách.
+- **24. 11. 2026 (K)** – Pozemská obloha zesílená 2,4× (`gain`): jednonásobný rozptyl v čistém vzduchu dává asi třetinu skutečného jasu
+  (Preetham 1999). Ostatní atmosféry bez zesílení nebo 1,5× (obři, odhad).
+- **24. 11. 2026 (K)** – Expozice jako oko: jas krajiny ~ logaritmus osvětlení, při jasné obloze v záběru (západ Slunce) se sníží
+  (78 % cesty k expozici podle oblohy); pod úplňkem se dál nepřizpůsobuje. Hvězdy mizí podle jasu nadhlavníku a v každém bodě podle
+  jasu oblohy kolem (práh kontrastu). Na tělesech bez vzduchu ztlumí hvězdy osvětlená krajina v záběru (proto nejsou na fotkách
+  z Apolla); kdo na Zemi vypne vzduch, chce hvězdy ve dne – oslnění se tam neuplatní.
+- **24. 11. 2026 (K)** – Prach na Marsu: modrou rozptyluje úzce dopředu (g = 0,88), červenou široce (0,6) – modrá záře kolem
+  zapadajícího Slunce (PIA19400) vychází z výpočtu. Mnohonásobný rozptyl přibližně (rovnoměrná záře 1,6× světla oblohy).
+- **24. 11. 2026 (K)** – Země: druh krajiny podle podrobné mapy (moře, louky a lesy, poušť, led); přistání v moři se posune na nejbližší
+  pevninu s hláškou. Stromy jen na Zemi (Ondřej: „ať nelemuje horizont Marsu silueta lesa“). Albedo půdy ostatních těles podle katalogu.
+- **24. 11. 2026 (K)** – Ukázky zatmění „Z místa“ (`quiet`) zůstávají u dřívější 2D země a obzoru: kreslí se v malém okně vedle karty
+  úkazu a krajina by tam jen zdržovala.
+- **24. 11. 2026 (O → K)** – Mřížka na povrchu tělesa se nepamatuje (nesmí naběhnout zapnutá); zapne se jen během výběru místa přistání.
+  Tlačítko „🔭 Z povrchu“ v kartě ukáže zaměřovací křížek, přistání se potvrdí (✅, Enter, dvojklik); kolečkem ven při nejširším poli
+  (3 kroky do 1,5 s) je vzlet.
 - **24. 11. 2026 (O → K)** – Srovnání velikostí: zachovat řadu těles a přidat dvojici ve skutečném poměru (Slunce × Země, Jupiter × …)
   s posuvníkem přiblížení. Důvod (O): řada stlačí asymetrii velikostí, ale je přehledná – chce obojí.
 - **24. 11. 2026 (K, na podnět O)** – Pásy planetek výchozí „nenápadně“ (tři stupně: vypnuto / nenápadně / výrazně). Měření: tečky byly
@@ -60,7 +86,7 @@ Kdo rozhodl: **O** = Ondřej, **K** = Kristína (AI) s Ondřejovým souhlasem ne
 - **24. 11. 2026 (K)** – Dětský panel „Obloha odsud“: jen záložky Tělesa, Hvězdy, Barva, Vodítka; tabulka „kde“ (světová strana)
   a „jak vysoko“, bez souřadnic a magnitud.
 - **24. 11. 2026 (K)** – Panel „Obloha odsud“ stojí vlevo, lišta pohledu z povrchu vedle něj (dřív se překrývaly), karta tělesa vpravo.
-  Vodítka (mřížky, ekliptika, zaměřovač) se pamatují v prohlížeči (`s200surf`).
+  Vodítka (mřížky, ekliptika, zaměřovač) se pamatují v prohlížeči (`s200surf`). **Zrušeno 24. 11. ve 2.2** (mřížka naběhla zapnutá).
 - **20. 11. 2026 (K)** – Id vložených souborů v jednosouborové verzi s předponou `_a` (kolize s prvkem stránky `alt` → nenačtená dlaždice).
 - **19. 11. 2026 (K, po reklamaci O)** – Telefonní rozložení jen pro skutečný telefon (hrubý ukazatel a mobilní prohlížeč nebo malý displej).
   Důvod: televize 4096 px přes HDMI se zvětšením systému dostala telefonní rozložení.
