@@ -31,8 +31,15 @@ Kdo rozhodl: **O** = Ondřej, **K** = Kristína (AI) s Ondřejovým souhlasem ne
 - **24. 11. 2026 (K)** – V pohledu z povrchu se ukazují **zdánlivé** polohy (doba letu světla + aberace, `applyLightTime`), v pohledu
   z vesmíru **okamžité** (geometrické). Důvod: z povrchu se srovnává s tím, co člověk vidí a co ukazují tabulky; 3D scéna musí být
   vnitřně konzistentní (stíny, dráhy). Lom světla v atmosféře se jen vypisuje (nestaví obzor), obzor je matematický.
-- **24. 11. 2026 (K)** – Ceres, Vesta a další planetky s dvoutělesovou dráhou: dnes do 35′, v jiných stoletích až 15° (měřeno). Zatím
-  ponecháno – rozhodnout, zda fitovat jako měsíce, nebo mez jen popsat (viz `TODO.md`).
+- **24. 11. 2026 (K)** – Planetky a TNO (71 ze 81): střední elementy s lineárním stáčením uzlu a perihelu (`Od`, `wd` v katalogu),
+  fit na Horizons. Ze tří oken (1900–2100, 1980–2060, 2010–2040) vyhrává nejmenší skóre = chyba 1900–2100 + 2 × chyba 2000–2050
+  (dnešek má dvojnásobnou váhu) a zapisuje se, jen když se roky 2000–2050 nezhorší. **Blízkozemní planetky (q < 1,3 AU) jen při
+  jasném zlepšení** – průlety kolem Země mění dráhu skokem a stará oskulační dráha je přesná kolem svého data (Apophis 2029).
+  Komety beze změny (negravitační síly, elementy pro konkrétní návrat). Ze Země: Ceres a Vesta medián 54′ → 5,8′.
+- **24. 11. 2026 (K)** – Phobos: kvadratický člen délky je skutečné slapové zrychlení (fit 1,26·10⁻³ °/rok², literatura 1,27·10⁻³)
+  → pokračuje i za oknem fitu (`corr.sek`). U ostatních měsíců by kvadratický člen byl jen kus dlouhoperiodického kmitu (Mimas–Tethys).
+- **24. 11. 2026 (K)** – Pozorovatel na Ceres a Vestě: rozdíl proti Horizons roste lineárně s časem (natočení, ne polohy). Ponechána
+  oficiální rotace IAU 2015; rozdíl popsán jako známá mez (hypotéza: Horizons má jiný model rotace).
 - **13. 11. 2026 (K)** – Planety a Pluto: 1900–2050 fit na DE421 (`jplCorrPos`), jinde vlastní dlouhodobá teorie fitovaná na DE422
   pro −1000 až 3000 (`longPos`), plynulý přechod. Mimo −1000 až 3000 se počítá dál, ale neověřeně (aplikace jednou upozorní).
 - **13. 11. 2026 (K)** – Aplikace ukazuje světový čas (UT), dráhy běží v čase efemerid (ΔT podle Espenaka a Meeuse).
@@ -45,6 +52,13 @@ Kdo rozhodl: **O** = Ondřej, **K** = Kristína (AI) s Ondřejovým souhlasem ne
   mez oka 6 mag; ze Země jen Vesta ~5,2 mag). Pásy zůstávají ilustrací rozložení drah.
 - **24. 11. 2026 (O → K)** – Informace o atmosféře a složení ve třech hloubkách: dětské rozhraní málo, dospělé víc, Superkarta nejvíc
   (plyny v %, tlak, teplota, kůra, plášť, jádro, zdroje). Zdroje NASA NSSDCA fact sheets, CO₂ NOAA GML (Mauna Loa).
+- **24. 11. 2026 (K)** – Soumrak na Marsu slábne až do výšky Slunce −24° (Země −13°). Důvod: snímky Spirit (hodinu před východem)
+  a Curiosity (80 min po západu) ukazují ještě světlou oblohu – prach vysoko v atmosféře. Odhad, ne výpočet rozptylu.
+- **24. 11. 2026 (K)** – Referenční scény = skutečné úkazy, které vyfotily sondy (přechody Phobosu a Deimosu přes Slunce, zákryt
+  Deimosu Phobosem, Země z Marsu) + zatmění a konjunkce ze Země. Model musí úkaz najít sám; přesný okamžik dává Horizons, protože
+  popisy fotek NASA mají jen den nebo přibližný čas. Fotky jen zmenšené v `docs/ref/foto`, aplikace je nenačítá.
+- **24. 11. 2026 (K)** – Dětský panel „Obloha odsud“: jen záložky Tělesa, Hvězdy, Barva, Vodítka; tabulka „kde“ (světová strana)
+  a „jak vysoko“, bez souřadnic a magnitud.
 - **24. 11. 2026 (K)** – Panel „Obloha odsud“ stojí vlevo, lišta pohledu z povrchu vedle něj (dřív se překrývaly), karta tělesa vpravo.
   Vodítka (mřížky, ekliptika, zaměřovač) se pamatují v prohlížeči (`s200surf`).
 - **20. 11. 2026 (K)** – Id vložených souborů v jednosouborové verzi s předponou `_a` (kolize s prvkem stránky `alt` → nenačtená dlaždice).

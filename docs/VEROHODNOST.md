@@ -1,5 +1,64 @@
 # Věrohodnost modelu
 
+## Stav 24. 11. 2026 – verze 2.1 (větev `iterace-25`): pohled z povrchu a kalibrace proti JPL Horizons
+
+**Reference.** JPL Horizons API (DE441, modely satelitů JPL, malá tělesa JPL) – nezávislá efemerida NASA/JPL. Porovnávají se
+zdánlivé směry (doba letu světla + aberace) z místa na povrchu, bez lomu světla; testy používají stejné ΔT jako Horizons.
+Rozdíl ΔT se měří zvlášť: v letech 1700–2030 medián 2,8 s (nejvýš 8,3 s); mimo ně je to odhad budoucí/minulé rotace Země
+(Horizons po roce 2027 drží 69 s, aplikace extrapoluje parabolou) – tam rozhoduje o poloze pozorovatele na Zemi, ne o drahách.
+
+**Co se změnilo (24. 11. 2026):**
+| Část | Dřív | Teď | Jak |
+|---|---|---|---|
+| Natočení těles | konstanty a lineární členy, čas UT; pól Marsu o 1,6°, Tritonu o desítky °, Idy o 84° vedle | IAU WGCCRE 2015 včetně periodických členů, čas TT; Země s nutací | `src/data/rot.json` z NAIF `pck00011.tpc` |
+| Měsíc (geocentricky, 1900–2100) | medián 24″, nejhůř 2′ | medián 1,4″, nejhůř 7,5″ (1000–3000: medián 1,8″, nejhůř 18″) | 208 doplňkových členů, `src/data/mesic.json` |
+| Dráhy 74 měsíců planet (úhel v soustavě planety, 1900–2100) | medián ~96° (malé měsíce prakticky náhodně), Io 6,3°, Phobos 17° | medián 0,034°; Io 0,01°, Phobos 0,03°, Triton 0,01° | fit na Horizons, `tools/model/vernost/fit_mesice.py` |
+| 71 planetek a TNO (heliocentricky) | medián 2,9° (Ceres 4,9°) | medián ~0,2° u hlavního pásu, ~0,005° u TNO (Ceres 0,2°) | stáčení uzlu a perihelu, `fit_planetky.py` |
+| Úkazy ze snímků sond na Marsu | Phobos 15°, Deimos 9° vedle; úkazy by nenastaly | přechod Phobosu −5 s, Deimosu −10 s, zákryt Deimosu Phobosem 0 s | `tools/test/t_ref_sceny.mjs` |
+| Zatmění 8. 4. 2024, Dallas | maximum o 125 s dřív | o 10 s dřív | zlepšený Měsíc |
+
+**996 náhodných případů** (těleso, místo, okamžik 1800–2200, u Země −1000 až 3000; `npm run test:vernost`), zdánlivé směry:
+
+| Skupina (pozorovatel → cíl) | Případů | Medián | 95 % | Nejhůř |
+|---|---|---|---|---|
+| Země → Slunce | 71 | 3,6″ | 13,2″ | 15,8″ |
+| Země → planeta | 43 | 2,5″ | 16,8″ | 41,4″ |
+| Země → Měsíc | 93 | 2,1″ | 1,18′ | 1,70′ (rok −982: rozdíl DE422 × DE441) |
+| Země → cizí měsíc | 37 | 2,4″ | 12,1″ | 1,42′ |
+| Země → Pluto | 3 | 2,7″ | 7,1″ | 7,1″ |
+| Země → Ceres, Vesta | 12 | 5,2′ | 16,4′ | 46,8′ |
+| planeta → Slunce | 56 | 4,2″ | 17,2″ | 30,8″ |
+| planeta → planeta | 68 | 2,4″ | 29,1″ | 49,2″ |
+| planeta → vlastní měsíc | 103 | 1,59′ | 7,19′ | 34,2′ |
+| měsíc → Slunce | 104 | 3,0″ | 37,3″ | 2,35′ |
+| měsíc → planeta | 96 | 4,5″ | 22,4″ | 2,83′ |
+| měsíc → mateřské těleso | 94 | 26,3″ | 7,04′ | 23,2′ |
+| měsíc → sousední měsíc | 109 | 2,43′ | 19,8′ | 1,23° |
+| Pluto → cokoli | 27 | 0,1–7,6″ | do 17,8″ | 17,8″ |
+| Ceres, Vesta (pozorovatel) → cokoli | 48 | 2,2° | 4,5–6,3° | 6,33° |
+| **celkem** | **996** | **7,0″** | **17,5′** | **6,33°** |
+
+Do 1′ je 725 případů, do 0,1° 906, do 1° 959. Velké chyby u měsíců jsou z povrchu planety zvětšené blízkostí (chyba 0,03°
+na dráze Phobosu je z povrchu Marsu asi 5′).
+
+**Známé meze 2.1:**
+- **Pozorovatel na Ceres a Vestě:** chyba roste lineárně od roku ~2012 (Ceres ~0,02°/rok, Vesta ~0,06°/rok). Polohy těles jsou
+  v pořádku; liší se natočení místa – aplikace používá rotaci IAU 2015 (pck00011), Horizons zřejmě jiný (novější?) model.
+  Moje hypotéza, neověřeno (Horizons udává jen zaokrouhlenou periodu 5,342128 h a 9,07417 h).
+- **Nepravidelné vzdálené měsíce** (Neso 11°, Pasiphae 5,7°, Psamathe 4,4°, Themisto 2,8°) a chaotický **Hyperion** (1,4°):
+  silné poruchy od Slunce, jednoduchý model dráhy s opravami je nepostihne. Všechny jsou slabší než 15 mag.
+- **Blízkozemní planetky** (Apophis, Ryugu, Itokawa, Duende, Cruithne, Icarus) a **komety**: dráhy se mění při průletech
+  a negravitačními silami; zůstává oskulační dráha k jednomu datu (přesná kolem něj, průlet Apophisu 2029 na 0,7 min).
+  Davida a Themis také beze změny (nový fit by zhoršil roky 2000–2050).
+- **Mimo okno fitu 1900–2100** pokračují opravy drah měsíců po tečně (bez kvadratického členu); Phobos svým skutečným slapovým
+  zrychlením (1,26·10⁻³ °/rok²). Nejhorší Phobos: rok 1805 asi 34′.
+- **Lom světla** se jen vypisuje (u výšky nad obzorem na Zemi), obzor je matematický; obloha a soumrak jsou ilustrace
+  (na Marsu podle snímků Spirit a Curiosity slábne až do výšky Slunce −24°).
+
+Porovnání se skutečnými snímky: `docs/REFERENCNI_SNIMKY.md`.
+
+---
+
 Stav 13. 11. 2026 (větev `iterace-14`, příprava verze 1.3). Odpovídá na otázku: **odkud kam se dá modelu věřit a jak přesně.**
 
 ## Závěr

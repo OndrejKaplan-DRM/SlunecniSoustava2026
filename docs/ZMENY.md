@@ -1,6 +1,6 @@
 # Přehled změn podle verzí
 
-**Stav 20. 11. 2026 večer:** větev `main` = `iterace-23b` – verze 2.0 (kandidát k vydání) **se 157 objekty na obloze**. Stránka
+**Stav 24. 11. 2026:** rozpracovaná verze 2.1 je na větvi `iterace-25` (níže). **Stav 20. 11. 2026 večer:** větev `main` = `iterace-23b` – verze 2.0 (kandidát k vydání) **se 157 objekty na obloze**. Stránka
 (`gh-pages` `2df88a7`) zůstává na stavu `iterace-24` (`89bb59b`, 2.0 kandidát se 62 objekty); zveřejnění nového stavu na stránce čeká
 na Ondřejovo „ano“. Bod návratu k předchozí veřejné verzi 1.2 je větev `verze-1.2` (`1f96e61`), bod návratu před rozšířením objektů
 je `iterace-24`. Soubor na vyzkoušení: `node tools/build/build_offline.mjs <výstup.html> --hi` (bez podrobných map navíc `--bez-l2`).
@@ -19,9 +19,41 @@ je `iterace-24`. Soubor na vyzkoušení: `node tools/build/build_offline.mjs <v�
 | 1.10 | 19.–20. 11. 2026 | `iterace-22` (`6b680c7`) | `iterace-20` + sloučené `iterace-19b` (1.8b) a `iterace-21` |
 | 2.0 | 20. 11. 2026 | `iterace-23` (`829047a`), zveřejněno z `iterace-24` | `iterace-22` (1.10) + sloučené `iterace-19b` (1.8c) |
 | 2.0 + objekty 157 | 20. 11. 2026 | `iterace-23b` = `main` (sloučeno 20. 11. večer) | `iterace-24` (hvězdy a další objekty na obloze; na stránce zatím není) |
+| 2.1 (zkušební) | 24. 11. 2026 | `iterace-25` | `main` (2.0 se 157 objekty) |
 
 Do verze 1.8a na sebe větve navazují v řadě. Verze 1.8b, 1.8m a 1.9 vznikly souběžně ve třech sešnách z `iterace-19`;
 `iterace-22` je slučuje a přidává pohled z povrchu, takže obsahuje vše předchozí.
+
+## 2.1 – zkušební: atmosféry a složení, srovnání ve dvojici, pásy, pohled z povrchu, kalibrace poloh (24. 11. 2026)
+Větev `iterace-25` z `main` (2.0 se 157 objekty). Do `main` ani na stránku zatím nic. Zadání Ondřeje ze 24. 11. (čtyři úkoly):
+
+1. **Atmosféry a složení** (`src/data/slozeni.js`): u všech těles s vlastním záznamem (32) a obecně u ostatních. Dětská karta
+   jednou větou (🌬️, 🪨), dospělá karta řádky Atmosféra a Složení, Superkarta oddíly Atmosféra (plyny v %, tlak, teplota,
+   poznámky) a Složení a nitro (kůra, plášť, jádro po vrstvách). Země: N₂ 78,08 %, O₂ 20,95 %, **vzácné plyny 0,94 %** (argon 0,934 %),
+   CO₂ 429 ppm (2026) a graf ročních průměrů Mauna Loa 1959–2025 (NOAA) s předindustriální úrovní 280 ppm.
+2. **Srovnání velikostí:** původní řada zůstala; nově čipy „vedle Slunce / Jupiteru / Země / Měsíce“ a dvojice ve skutečném
+   poměru s posuvníkem přiblížení a měřítkem v km (`src/ui/porovnani.js`) – vidět je obojí.
+3. **Pásy planetek:** změřeno, že tečky byly stejně výrazné jako katalogové planetky, ačkoli ve skutečnosti by z takové
+   vzdálenosti nebylo vidět nic (Ceres ze 7 AU nad Sluncem asi 11–12 mag, mez oka 6 mag). Tři stupně (vypnuto / nenápadně / výrazně),
+   výchozí nenápadně (`src/render/belts.js`).
+4. **Pohled z povrchu libovolného tělesa** – panel „📋 Obloha odsud“ (`src/ui/povrch_info.js`, `src/data/mista.js`):
+   a) hvězdy nad obzorem a viditelné okem (mez podle jasu oblohy), 12 nejjasnějších pojmenovaných s polohou;
+   b) osa, sklon, otočka a sluneční den, nebeský pól a „polárka“, místo (pojmenovaná místa přistání, šířka a délka);
+   c) Slunce, planety a měsíce: azimut, výška, průměr, osvětlená část, jasnost, východ a západ;
+   d) obzor (matematický; na Zemi výška s lomem světla), co je nad ním a co je přezářené oblohou;
+   e) libovolný okamžik (UT, posuny po 10 min až dnech, místní sluneční čas);
+   f) barva oblohy ve dne, u obzoru a za soumraku (ilustrace podle snímků sond);
+   g) směr pohledu (azimut a výška, RA a Dec), zorné pole na šířku i na výšku, nastavení číslem;
+   h) vodítka: obzorníková mřížka (stupně, minuty), rovníková mřížka J2000, ekliptika, nebeský rovník, poledník, zaměřovač se
+   stupnicí a souřadnicemi pod ukazatelem, mřížka zeměpisných souřadnic na povrchu tělesa v pohledu z oběžné dráhy (🌐 v kartě).
+   Dětské rozhraní: jednodušší panel (kde a jak vysoko). Panel stojí vedle lišty pohledu z povrchu a karty.
+5. **Kalibrace poloh proti JPL Horizons** (podrobně `docs/VEROHODNOST.md`): rotace podle IAU 2015, zdánlivé polohy v pohledu
+   z povrchu, Měsíc 26″ → 1,8″, dráhy 74 měsíců (medián 0,034°), 71 planetek a TNO; 996 náhodných případů (`npm run test:vernost`)
+   a referenční scény z úkazů vyfocených sondami (`npm run test:sceny`, `docs/REFERENCNI_SNIMKY.md`). Dráhy hlavních planet beze změny
+   (`npm run test:model` −1000 až 3000 prochází, Měsíc v něm 130″ → 62″).
+6. **Paměť projektu v repu:** `CLAUDE.md`, `ARCHITECTURE.md` (dřív `docs/ARCHITEKTURA.md`), `DECISIONS.md`, `TODO.md`.
+
+Opravy mimo zadání: jádro Merkuru 83 % (MESSENGER) i v zajímavostech; text „směr osy není změřen“ se už neukazuje u Země.
 
 ## Boční větev `iterace-23b`: objekty na obloze 62 → 157, hvězdy, jména bez překryvů (20. 11. 2026)
 Vychází z `iterace-23` a má v sobě i zveřejněný stav `iterace-24` (`89bb59b`). V plánu dokončení bylo původně zapsáno „62 objektů je

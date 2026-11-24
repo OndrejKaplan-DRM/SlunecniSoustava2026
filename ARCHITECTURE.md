@@ -29,6 +29,8 @@ Kde co hledat: tato mapa modulů → podrobnosti oddílů níže → `docs/VEROH
   `t_ref_sceny.mjs` – model musí úkaz najít sám ve správný čas.
 - `mesice_ref.py` (vektory měsíců z Horizons) → `fit_mesice.py` → `tools/out/mesice_fit.json` → `zapis_mesice.mjs` (do `cat.json`).
 - `mesic_rezidua.mjs` → `fit_mesic.py` → `src/data/mesic.json` (Měsíc).
+- `fit_planetky.py` → `tools/out/planetky_fit.json` → `zapis_planetky.mjs` (planetky a TNO: `kind: 'kep'` s `Od`, `wd`; `ephem.js` stáčí uzel a perihel).
+- `ref_snimky.mjs` (snímky scén z modelu) → `ref_slozit.py` (listy s fotkami NASA) → `docs/ref/`, `docs/REFERENCNI_SNIMKY.md`.
 - `tools/data/rot_build.py` – `pck00011.tpc` → `src/data/rot.json`.
 
 
