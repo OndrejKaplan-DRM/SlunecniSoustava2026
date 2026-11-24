@@ -723,6 +723,8 @@ export function createUI(S, A) {
       return;
     }
     if (a === 'cmp') return act.cmp();
+    /* 2.2: tlačítko v kartě dřív nic nedělalo (chyběla obsluha); teď spustí výběr místa přistání se zaměřovacím křížkem */
+    if (a === 'surf') return S.surf ? api.povrch.exit() : api.povrch.pick(i);
     if (a === 'gridb') {
       const on = api.povrch.info.bodyGrid();
       A.play('a_tick');
@@ -1009,7 +1011,7 @@ export function createUI(S, A) {
       /* 1.10: pohled z povrchu vybraného tělesa (u Slunce z tělesa, u kterého právě jsme; jinak ze Země) */
       if (!api.povrch) return;
       if (S.surf) return api.povrch.exit();
-      api.povrch.enter(S.sel !== SUN ? S.sel : S.focus !== SUN ? S.focus : EARTH);
+      api.povrch.pick(S.sel !== SUN ? S.sel : S.focus !== SUN ? S.focus : EARTH);
     },
     orbfade() {
       S.orbFade = !S.orbFade;

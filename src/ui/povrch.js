@@ -5,6 +5,7 @@
 // denní obloha je ilustrace (barva podle výšky Slunce), u těles bez pevného povrchu stojíme na horní vrstvě oblak.
 import { B, idx, par, kids, P, SUN, EARTH, MOON, AU } from '../core/sim.js';
 import { createPovrchInfo } from './povrch_info.js';
+import { createPristani } from './pristani.js';
 import { AIR } from '../data/mista.js';
 const DEG = Math.PI / 180,
   RS = 696000;
@@ -26,7 +27,8 @@ export function createPovrch(S, A, ui) {
     air = $('#skyair'),
     kid = () => document.body.classList.contains('kid'),
     num = (v, d = 0) => v.toLocaleString('cs-CZ', { maximumFractionDigits: d, minimumFractionDigits: d });
-  let info = null,
+  let adjust = null /* krajina: posun místa přistání (z oceánu na pevninu) */,
+    info = null,
     txtT = 0,
     lastAir = '',
     day = 0; /* jak moc je den (0–1), pro barvu země */
@@ -190,13 +192,15 @@ export function createPovrch(S, A, ui) {
     if (opt.el !== undefined) q.el = opt.el * DEG;
     A.play('panel_open');
     draw();
+    /* 2.2: po dosednutí uklidit okna (karta tělesa a minimapa se v pohledu z povrchu skryjí stylem body.surfon) */
+    if (!opt.quiet) S.bus.emit('fly', i);
     if (!opt.quiet) {
       const b = B[i];
       ui.toast(
         (NOTE[b.id] ? NOTE[b.id] + ' ' : '') +
           (kid()
             ? `Stojíš na tělese ${b.cs}! Tahej a rozhlížej se. ${touch() ? 'Dvěma prsty' : 'Kolečkem'} si oblohu přiblížíš jako dalekohledem.`
-            : `Stojíš na povrchu (${b.cs}, ${place(q)}). Tahem se rozhlížíš, ${touch() ? 'dvěma prsty' : 'kolečkem'} měníš zorné pole jako dalekohledem. Zrychli čas a obloha se dá do pohybu.`),
+            : `Stojíš na povrchu (${b.cs}, ${place(q)}). Tahem se rozhlížíš, ${touch() ? 'dvěma prsty' : 'kolečkem'} měníš zorné pole jako dalekohledem. Zpátky do vesmíru: ⬆ Vzlétnout, Esc nebo ${touch() ? 'roztažením prstů' : 'kolečkem'} ven.`),
         7000
       );
     }
@@ -368,10 +372,30 @@ export function createPovrch(S, A, ui) {
     }
   });
   info = createPovrchInfo(S, A, ui, { targets, place, wind, kid, draw: () => draw(), enter, exit, cover });
+  const pick = createPristani(S, A, ui, {
+    enter,
+    exit,
+    info,
+    adjust: (i, la, lo) => (adjust ? adjust(i, la, lo) : null),
+  });
+  /* 2.2: kolečkem ven při nejširším zorném poli = vzlet (uživatel chce zpátky do vesmíru) */
+  S.bus.on('surfOut', () =>
+    ui.toast(
+      kid()
+        ? '🚀 Odlétáme zpátky do vesmíru!'
+        : '⬆ Vzlet – kolečkem ven při nejširším zorném poli se vracíš do vesmíru.',
+      3500
+    )
+  );
   return {
     enter,
     exit,
-    toggle: (i = S.sel) => (S.surf ? exit() : enter(i)),
+    pick: (i = S.sel) => pick.start(i),
+    pickState: () => pick.state(),
+    land: () => pick.land(),
+    aimAt: (i, la, lo) => pick.aimAt(i, la, lo),
+    setAdjust: (f) => (adjust = f),
+    toggle: (i = S.sel) => (S.surf ? exit() : pick.start(i)),
     on: () => !!S.surf,
     state: () =>
       S.surf

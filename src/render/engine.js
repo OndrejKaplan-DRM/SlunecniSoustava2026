@@ -1279,8 +1279,20 @@ export function createEngine(canvas, overlay) {
   };
   S.zoom = (k) => {
     if (S.surf) {
-      /* na povrchu kolečko nemění výšku, ale zorné pole (dalekohled) */
-      S.surf.fov = Math.min(SURF_FOV[1], Math.max(SURF_FOV[0], S.surf.fov * k));
+      /* na povrchu kolečko nemění výšku, ale zorné pole (dalekohled); 2.2: kdo při nejširším poli točí dál ven, chce zpátky
+         do vesmíru – třetí takový krok během 1,5 s je vzlet */
+      const q = S.surf,
+        now = performance.now();
+      if (k > 1 && q.fov >= SURF_FOV[1] - 0.5) {
+        q.outN = now - (q.outT || 0) < 1500 ? (q.outN || 0) + 1 : 1;
+        q.outT = now;
+        if (q.outN >= 3) {
+          S.setSurf(null);
+          S.bus.emit('surfOut');
+          return wake();
+        }
+      } else q.outN = 0;
+      q.fov = Math.min(SURF_FOV[1], Math.max(SURF_FOV[0], q.fov * k));
       return wake();
     }
     cam.altT = Math.min(3e11, Math.max(minAlt(S.focus), cam.altT * k));

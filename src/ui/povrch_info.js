@@ -90,21 +90,15 @@ export function createPovrchInfo(S, A, ui, P0) {
   pan.className = 'panel';
   pan.setAttribute('aria-label', 'Obloha odsud');
   document.body.appendChild(pan);
-  /* stav vodítek; pamatuje se mezi spuštěními */
+  /* stav vodítek jen pro toto spuštění: 2.2 – po startu je vše vypnuté (2.1 si stav pamatovala a mřížka na tělese pak naběhla
+     zapnutá, což Ondřej vnímal jako rušivé); starý záznam se smaže */
   const G = { open: false, az: false, eq: false, lines: false, ret: false, body: false, tab: 'tel' };
   try {
-    Object.assign(G, JSON.parse(localStorage.getItem('s200surf') || '{}'));
-    G.open = false;
+    localStorage.removeItem('s200surf');
   } catch (e) {
-    /* bez úložiště (soukromé okno, file://): vodítka se jen nepamatují */
+    /* bez úložiště (soukromé okno) */
   }
-  const save = () => {
-    try {
-      localStorage.setItem('s200surf', JSON.stringify(G));
-    } catch (e) {
-      /* viz výše */
-    }
-  };
+  const save = () => {};
   // ---------- hvězdy (Yale BSC, 7 008 hvězd do 6,3 mag) ----------
   let ST = null;
   function stars() {
