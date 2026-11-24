@@ -2,6 +2,26 @@
 
 Aktualizuje se na konci každého kroku a před koncem sešny. Starší historie verzí: `docs/ZMENY.md`. Důvody rozhodnutí: `DECISIONS.md`.
 
+## Iterace 26 → verze 2.2 (větev `iterace-26` z `iterace-25`, od 24. 11. 2026 večer)
+Připomínky Ondřeje k 2.1 (24. 11. 19:26, se snímky Merkuru z `file://`): „docela dobré, ale ne dokonalé; pohledy z těles jsou
+nemastné-neslané“. Zadání:
+1. **Mřížka na povrchu tělesa se nesmí zapínat sama** (naběhla zapnutá – stav se pamatoval v prohlížeči). V ukázce ji klidně ukázat.
+2. **Tlačítko „🔭 Z povrchu“ v kartě nic nedělá** (funguje jen z ☰). Po kliknutí: na kouli zaměřovací křížek, uživatel vybere místo,
+   při tom zapnout mřížku. Poznat, kdy chce uživatel zpátky do vesmíru (nezdržovat, nenechat hledat, jak vzlétnout).
+   Po dosednutí uklidit okna, ať je jasné, že už není v kosmu.
+3. **Umělý horizont z povrchu – realistický**, ne „slepý povrch koule“: pro každé těleso předpřipravený povrch, který dává smysl
+   (ne uprostřed oceánu, ne skály všude, na Venuši skoro nic vidět, žádný les na Marsu, v plynném obrovi žádná kamenná krajina),
+   využít mapy těles z repa, smí se stáhnout až ~15 MB další grafiky (snímky povrchu ze sond uložit do repa se zdroji),
+   předpřipravená atmosféra (je/není, jak tlustá, jak rozptyluje), obloha (barva, den/noc, soumrak, lom, jak prosvítají hvězdy
+   a měsíce, Slunce), polohy těles (Slunce osvětluje horizont / horní vrstvy atmosféry, hvězdy, měsíce). „Skutečně dotažené
+   a plně realistické.“ Info uložit do repa, provést testy poloh.
+
+Plán (Kristína): (a) chyby 1–2 a tok přistání; (b) obloha jako výpočet rozptylu světla v atmosféře (Rayleigh + Mie, stín tělesa
+v soumraku, extinkce Slunce a hvězd) s parametry každého tělesa; (c) krajina jako 3D terén kolem pozorovatele osvětlený skutečným
+Sluncem: skutečný reliéf z DEM, kde je k dispozici (Měsíc LOLA, Mars MOLA, příp. Země), jinde procedurální podle typu povrchu;
+kameny, mlha, oblačné moře u obrů, zatažená Venuše a Titan; (d) detailní textury z fotek sond (NASA, volná díla) se zdroji;
+(e) testy poloh, regrese, snímky proti fotkám z povrchu, dokumentace.
+
 ## Iterace 25 → verze 2.1 (větev `iterace-25`, od 24. 11. 2026)
 Zadání Ondřeje (24. 11.): 1) atmosféry a složení, 2) srovnání velikostí i Slunce × Země, 3) pásy planetek příliš výrazné?,
 4) pohled z povrchu libovolného tělesa (body a–h) + zkouška na 500–1000 náhodných případech + kalibrace + referenční snímky.
