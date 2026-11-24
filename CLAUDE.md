@@ -9,8 +9,8 @@ Nejnovější předávka sešny je v projektových dokumentech claude.ai (`claud
 
 ## Stav větví (aktualizuj při každé změně)
 - `main` = `7a0831c` – verze 2.0, kandidát k vydání (157 objektů na obloze). Na webu (`gh-pages`) je starší stav `iterace-24` (62 objektů).
-- `iterace-25` – rozpracovaná verze 2.1 (atmosféry a složení, srovnání ve dvojici, pásy, pohled z povrchu s panelem a vodítky,
-  kalibrace poloh proti JPL Horizons). Do `main` zatím nic.
+- `iterace-25` – verze 2.1 (zkušební, 24. 11. 2026): atmosféry a složení, srovnání ve dvojici, pásy, pohled z povrchu s panelem
+  a vodítky, kalibrace poloh proti JPL Horizons, referenční snímky. Regrese prošla (viz `TODO.md`). Do `main` jen s Ondřejovým „ano“.
 - Body návratu: `iterace-24`, `verze-1.2`, `verze-1.1-stabilni`.
 
 ## Spuštění

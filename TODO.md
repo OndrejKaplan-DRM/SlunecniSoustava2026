@@ -32,8 +32,8 @@ Zadání Ondřeje (24. 11.): 1) atmosféry a složení, 2) srovnání velikostí
 - [ ] `t_displej` – `tv_400: podrobná mapa mercury se nenačetla` – **stejně padá i `main`** (`7a0831c`); emulace televize se 4× hustotou
       v sandboxu, ne změna 2.1. Ověřit na skutečné televizi.
 
-### Rozpracováno
-- [ ] Soubor na flashku, mřížka snímků, zpráva Ondřejovi.
+- [x] Soubor na flashku `SlunecniSoustava200_v2_1_iterace25.html` (`--hi`): 370 768 588 B = 353,6 MiB, 2 917 souborů; z `file://`
+      bez cizích požadavků a bez chyb (24. 11. 2026). Mřížka snímků a zpráva Ondřejovi odeslány.
 
 ### Zbývá / nápady na další iteraci
 - [ ] Pozorovatel na Ceres a Vestě: rozdíl rotace proti Horizons (~0,02–0,06°/rok) – zjistit, který model Horizons používá.
