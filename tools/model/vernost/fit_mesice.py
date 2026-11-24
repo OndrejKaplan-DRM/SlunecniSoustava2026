@@ -328,9 +328,12 @@ def main():
     by = {b['id']: b for b in cat['bodies']}
     outp = 'tools/out/mesice_fit.json'
     res = json.load(open(outp)) if os.path.exists(outp) else {}
+    znovu = '--znovu' in sys.argv
     for b in cat['bodies']:
         if b['orbit']['kind'] != 'sat' or (only and b['id'] not in only):
             continue
+        if b['id'] in res and not znovu and not only:
+            continue  # navázání po přerušení: hotové měsíce se nepočítají znovu
         fs, fd = os.path.join(d, b['id'] + '.json'), os.path.join(d, b['id'] + '_d.json')
         if not (os.path.exists(fs) and os.path.exists(fd)):
             continue
@@ -357,6 +360,9 @@ def main():
             continue
         r['old_rms'], r['old_max'] = float(np.sqrt((old ** 2).mean())), float(old.max())
         res[b['id']] = r
+        # zápis po každém měsíci (kontejner se umí restartovat uprostřed běhu)
+        json.dump(res, open(outp + '.tmp', 'w'), indent=0)
+        os.replace(outp + '.tmp', outp)
         print(f"{b['id']:12s} {'blízký' if r['near'] else 'vzdál.'}  dřív rms {r['old_rms']:8.3f}° max {r['old_max']:8.3f}°  →  elipsa {r['rms_base']:7.3f}°  s opravami {r['rms']:7.3f}° (kontrola {r['rms_test']:7.3f}°, 95 % {r['p95']:6.3f}°, max {r['max']:7.3f}°)  členů {len(r['corr']['terms'])}  {r['span']}", flush=True)
     json.dump(res, open(outp, 'w'), indent=0)
     print('uloženo:', outp, '(zápis do katalogu: node tools/model/vernost/zapis_mesice.mjs)')

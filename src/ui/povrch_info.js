@@ -19,6 +19,7 @@ import {
   obliquity,
   subPoint,
   rootOf,
+  eyeH,
 } from '../core/misto.js';
 import { STAR_N, STAR_POS, STAR_MAG, STAR_NAMES } from '../data/stardata.js';
 import { STAR_CZ } from '../data/connames.js';
@@ -55,10 +56,11 @@ const dur = (d) => {
     const m = Math.round(a * 1440);
     return `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, '0')} min`;
   }
-  if (a < 800) return nf(a, a < 20 ? 1 : 0) + ' d';
+  if (a < 800) return nf(a, a < 100 ? 1 : 0) + ' d';
   return nf(a / 365.25, 1) + ' roku';
 };
-const ang = (deg) => (deg >= 1 ? nf(deg, 2) + '°' : deg >= 1 / 60 ? nf(deg * 60, 1) + '′' : nf(deg * 3600, deg * 3600 < 10 ? 1 : 0) + '″');
+const ang = (deg) =>
+  deg >= 1 ? nf(deg, 2) + '°' : deg >= 1 / 60 ? nf(deg * 60, 1) + '′' : nf(deg * 3600, deg * 3600 < 10 ? 1 : 0) + '″';
 const WIND = ['S', 'SV', 'V', 'JV', 'J', 'JZ', 'Z', 'SZ'];
 const b64 = (s, T) => {
   const bin = atob(s),
@@ -132,7 +134,16 @@ export function createPovrchInfo(S, A, ui, P0) {
   function limMag(sunEl, k) {
     if (!k) return 6.5;
     const e = sunEl,
-      base = e > 0 ? -4 : e > -6 ? -4 + (-e / 6) * 5 : e > -12 ? 1 + ((-e - 6) / 6) * 3.5 : e > -18 ? 4.5 + ((-e - 12) / 6) * 2 : 6.5;
+      base =
+        e > 0
+          ? -4
+          : e > -6
+            ? -4 + (-e / 6) * 5
+            : e > -12
+              ? 1 + ((-e - 6) / 6) * 3.5
+              : e > -18
+                ? 4.5 + ((-e - 12) / 6) * 2
+                : 6.5;
     return 6.5 - (6.5 - base) * Math.min(1, k);
   }
   // ---------- východy a západy: jedno těleso za tik ----------
@@ -178,7 +189,12 @@ export function createPovrchInfo(S, A, ui, P0) {
       locked = par[i] >= 0 && par[i] !== SUN && !own.some((p) => p[1] === 0 && p[2] === 0);
     return [
       ...own,
-      ...(locked ? [[`${B[par[i]].cs} v nadhlavníku (střed přivrácené strany)`, 0, 0], ['Střed odvrácené strany', 0, 180]] : []),
+      ...(locked
+        ? [
+            [`${B[par[i]].cs} v nadhlavníku (střed přivrácené strany)`, 0, 0],
+            ['Střed odvrácené strany', 0, 180],
+          ]
+        : []),
       ...PLACES_ALL.filter((p) => !own.some((o) => o[1] === p[1] && o[2] === p[2]) && !(locked && p[1] === 0)),
     ];
   }
@@ -198,8 +214,8 @@ export function createPovrchInfo(S, A, ui, P0) {
       `<div class="sp-tabs">${[
         ['tel', '☀ Tělesa'],
         ['hve', '✨ Hvězdy'],
-        ['osa', '🌐 Osa a místo'],
-        ['obl', '🎨 Obloha'],
+        ['osa', '🌐 Osa'],
+        ['obl', '🎨 Barva'],
         ['poh', '🔭 Pohled'],
         ['vod', '⌗ Vodítka'],
       ]
@@ -232,7 +248,7 @@ export function createPovrchInfo(S, A, ui, P0) {
     if (sd === null) t = 'Otáčení tělesa není známé.';
     else if (!isFinite(sd)) t = 'Slunce tu stojí na obloze stále na stejném místě.';
     else {
-      const f = ((((q.lon - ss[1]) / 360) * Math.sign(sd) + 0.5) % 1 + 1) % 1,
+      const f = (((((q.lon - ss[1]) / 360) * Math.sign(sd) + 0.5) % 1) + 1) % 1,
         m = Math.round(f * 1440) % 1440;
       t = `Místní sluneční čas <b>${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}</b> <small>(zdejší den má 24 „hodin“ a trvá ${dur(Math.abs(sd))}${sd < 0 ? '; Slunce jde od západu k východu' : ''})</small>`;
     }
@@ -266,7 +282,7 @@ export function createPovrchInfo(S, A, ui, P0) {
         lit = litFrac(j, C[0], C[1], C[2]),
         m = vmag(j, C),
         el = d.el / DEG,
-        az = ((d.az / DEG) % 360 + 360) % 360,
+        az = (((d.az / DEG) % 360) + 360) % 360,
         rs = riseOf(q, j);
       let st;
       if (el < -diam / 2) st = rs && rs.rise ? `vyjde za ${dur(rs.rise - S.jd)}` : 'pod obzorem';
@@ -325,7 +341,7 @@ export function createPovrchInfo(S, A, ui, P0) {
           .map((i) => {
             azEl(f, s.d[i * 3], s.d[i * 3 + 1], s.d[i * 3 + 2], ae);
             raDec(s.d[i * 3], s.d[i * 3 + 1], s.d[i * 3 + 2], rd);
-            const az = ((ae[0] / DEG) % 360 + 360) % 360;
+            const az = (((ae[0] / DEG) % 360) + 360) % 360;
             return `<tr class="${s.m[i] <= lim && !op ? 'up' : 'dim'}" data-s="${i}" title="Klik: natočit pohled"><td>${s.name.get(i)}</td><td>${nf(s.m[i], 1).replace('-', '−')}</td><td>${nf(az, 1)}° ${WIND[Math.round(az / 45) % 8]}</td><td>+${nf(ae[1] / DEG, 1)}°</td><td><small>${hm(rd[0])} / ${dms(rd[1] / DEG)}</small></td></tr>`;
           })
           .join('') +
@@ -361,24 +377,56 @@ export function createPovrchInfo(S, A, ui, P0) {
         noon = 90 - Math.abs(q.lat - ss[0]);
       return (
         `<table class="sp-kv">` +
-        row('Místo', `${P0.place(q)}<br><small>východní délka ${nf(lonE, 2)}° = západní ${nf((360 - lonE) % 360, 2)}°; výška očí ${nf((0.002 + b.R * 1e-5) * 1000, 0)} m</small>`) +
+        row(
+          'Místo',
+          `${P0.place(q)}<br><small>východní délka ${nf(lonE, 2)}° = západní ${nf((360 - lonE) % 360, 2)}°; oko modelu je ${nf(eyeH(i) * 1000, 0)} m nad terénem, obzor proto klesne o ${ang(Math.acos(b.R / (b.R + eyeH(i))) / DEG)}</small>`
+        ) +
         row(
           'Osa otáčení',
           ob === null
             ? null
-            : `skloněná o <b>${nf(ob > 90 ? 180 - ob : ob, 1)}°</b> ke kolmici na dráhu${ob > 90 ? ' a těleso se točí pozpátku' : ''}${r !== i ? ` <small>(dráha planety ${B[r].cs} kolem Slunce)</small>` : ''}${ro ? '' : ' <small>– směr osy není změřen, v modelu je zvolený</small>'}`
+            : `skloněná o <b>${nf(ob > 90 ? 180 - ob : ob, 1)}°</b> ke kolmici na dráhu${ob > 90 ? ' a těleso se točí pozpátku' : ''}${r !== i ? ` <small>(dráha planety ${B[r].cs} kolem Slunce)</small>` : ''}${ro || i === EARTH ? '' : ' <small>– směr osy není změřen, v modelu je zvolený</small>'}`
         ) +
         row('Otočka vůči hvězdám', b.rot ? dur(Math.abs(b.rot) / 24) + (b.rot < 0 ? ' (pozpátku)' : '') : 'neznámá') +
-        row('Sluneční den', sd === null ? null : !isFinite(sd) ? 'nekonečný – Slunce se po obloze nehýbe' : dur(Math.abs(sd)) + (sd < 0 ? ' (Slunce vychází na západě)' : '')) +
+        row(
+          'Sluneční den',
+          sd === null
+            ? null
+            : !isFinite(sd)
+              ? 'nekonečný – Slunce se po obloze nehýbe'
+              : dur(Math.abs(sd)) + (sd < 0 ? ' (Slunce vychází na západě)' : '')
+        ) +
         row(
           'Nebeský pól',
           `${north ? 'severní' : 'jižní'} je ${nf(Math.abs(q.lat), 1)}° nad ${north ? 'severním' : 'jižním'} obzorem (tolik, kolik je zeměpisná šířka)` +
-            (best >= 0 ? `<br><small>nejbližší jasná hvězda: ${s.name.get(best) || 'bez jména'} (${nf(s.m[best], 1)} mag), ${nf(pd, 1)}° od pólu${pd < 3 ? ' – zdejší „Polárka“' : ''}</small>` : '')
+            (best >= 0
+              ? `<br><small>nejbližší jasná hvězda: ${s.name.get(best) || 'bez jména'} (${nf(s.m[best], 1)} mag), ${nf(pd, 1)}° od pólu${pd < 3 ? ' – zdejší „Polárka“' : ''}</small>`
+              : '')
         ) +
-        row('Slunce v nadhlavníku', `${nf(Math.abs(ss[0]), 1)}° ${ss[0] >= 0 ? 's.' : 'j.'} š., ${nf(ss[1], 1)}° v. d.<br><small>v poledne tu vystoupí ${noon > 0 ? nf(Math.min(90, noon), 1) + '° nad obzor' : 'jen pod obzor – polární noc'}${Math.abs(q.lat) > 90 - Math.abs(ss[0]) && q.lat * ss[0] > 0 ? '; je polární den' : ''}</small>`) +
-        (se ? row('Země v nadhlavníku', `${nf(Math.abs(se[0]), 1)}° ${se[0] >= 0 ? 's.' : 'j.'} š., ${nf(se[1], 1)}° v. d.`) : '') +
-        row('Poloměr a zploštění', `${nf(b.R, b.R < 100 ? 1 : 0)} km${b.flat ? `, pól je o ${nf(b.R * b.flat, 0)} km blíž středu` : ''}`) +
-        row('Model otáčení', ro ? 'IAU WGCCRE 2015 (stejný jako JPL Horizons)' : i === EARTH ? 'precese, nutace a hvězdný čas ze světového času' : par[i] !== SUN ? 'vázaná rotace: stále stejnou stranou k planetě' : 'odhad (perioda z katalogu, osa zvolená)') +
+        row(
+          'Slunce v nadhlavníku',
+          `${nf(Math.abs(ss[0]), 1)}° ${ss[0] >= 0 ? 's.' : 'j.'} š., ${nf(ss[1], 1)}° v. d.<br><small>v poledne tu vystoupí ${noon > 0 ? nf(Math.min(90, noon), 1) + '° nad obzor' : 'jen pod obzor – polární noc'}${Math.abs(q.lat) > 90 - Math.abs(ss[0]) && q.lat * ss[0] > 0 ? '; je polární den' : ''}</small>`
+        ) +
+        (se
+          ? row(
+              'Země v nadhlavníku',
+              `${nf(Math.abs(se[0]), 1)}° ${se[0] >= 0 ? 's.' : 'j.'} š., ${nf(se[1], 1)}° v. d.`
+            )
+          : '') +
+        row(
+          'Poloměr a zploštění',
+          `${nf(b.R, b.R < 100 ? 1 : 0)} km${b.flat ? `, pól je o ${nf(b.R * b.flat, 0)} km blíž středu` : ''}`
+        ) +
+        row(
+          'Model otáčení',
+          ro
+            ? 'IAU WGCCRE 2015 (stejný jako JPL Horizons)'
+            : i === EARTH
+              ? 'precese, nutace a hvězdný čas ze světového času'
+              : par[i] !== SUN
+                ? 'vázaná rotace: stále stejnou stranou k planetě'
+                : 'odhad (perioda z katalogu, osa zvolená)'
+        ) +
         `</table>`
       );
     },
@@ -394,7 +442,9 @@ export function createPovrchInfo(S, A, ui, P0) {
           : `<p class="sp-cols">${sw([0, 0, 0])} černá ve dne i v noci</p>`) +
         `<table class="sp-kv"><tr><th>Teď</th><td>${st}; Slunce ${se >= 0 ? nf(se, 1) + '° nad obzorem' : nf(-se, 1) + '° pod obzorem'}</td></tr>` +
         `<tr><th>Slunce odsud</th><td>${ang((2 * Math.asin(RS / Math.hypot(P[SUN * 3] - S.camPos[0], P[SUN * 3 + 1] - S.camPos[1], P[SUN * 3 + 2] - S.camPos[2]))) / DEG)} <small>(ze Země 0,53°)</small>, světlo letí ${dur(S.ltSun || 0)}</td></tr>` +
-        (a ? `<tr><th>Zobrazení</th><td>${a.opaque ? (q.air ? 'pod oblaky (skutečný povrch)' : 'nad oblačností') : q.air ? 'se vzduchem' : 'bez vzduchu (hvězdy i ve dne)'} <small>– přepíná tlačítko 🌫 v liště</small></td></tr>` : '') +
+        (a
+          ? `<tr><th>Zobrazení</th><td>${a.opaque ? (q.air ? 'pod oblaky (skutečný povrch)' : 'nad oblačností') : q.air ? 'se vzduchem' : 'bez vzduchu (hvězdy i ve dne)'} <small>– přepíná tlačítko 🌫 v liště</small></td></tr>`
+          : '') +
         `</table><p class="sp-note">Barvy oblohy jsou ilustrace podle snímků sond, ne výpočet rozptylu světla.</p>`
       );
     },
@@ -407,7 +457,9 @@ export function createPovrchInfo(S, A, ui, P0) {
       const sek = f < 2;
       return (
         `<table class="sp-kv"><tr><th>Směr pohledu</th><td>azimut <b>${dms(az, sek)}</b> (${WIND[Math.round(az / 45) % 8]}; 0° = sever, 90° = východ)<br>výška <b>${dms(q.el / DEG, sek)}</b> nad obzorem</td></tr>` +
-        (e ? `<tr><th>Na obloze</th><td>RA ${hm(rd[0])}, Dec ${dms(rd[1] / DEG)} <small>(rovník J2000)</small></td></tr>` : '') +
+        (e
+          ? `<tr><th>Na obloze</th><td>RA ${hm(rd[0])}, Dec ${dms(rd[1] / DEG)} <small>(rovník J2000)</small></td></tr>`
+          : '') +
         `<tr><th>Zorné pole</th><td><b>${ang(e ? (2 * Math.atan(e.W / 2 / e.F)) / DEG : f)}</b> na šířku × <b>${ang(f)}</b> na výšku<br><small>1 bod obrazu = ${ang(f / (e ? e.H : 800))}; lidské oko ostře vidí asi 2°, triedr 6°, dalekohled pod 1°</small></td></tr>` +
         `<tr><th>Sledování</th><td>${q.track >= 0 ? B[q.track].cs + ' (pohled drží těleso)' : 'vypnuté – pohled stojí vůči obzoru a obloha se otáčí'}</td></tr>` +
         `</table><p class="sp-row"><button data-p="aim" data-az="0" data-el="20">S</button><button data-p="aim" data-az="90" data-el="20">V</button><button data-p="aim" data-az="180" data-el="20">J</button><button data-p="aim" data-az="270" data-el="20">Z</button><button data-p="aim" data-az="${nf(az, 0)}" data-el="89.9">Zenit</button><button data-p="aimpole">Nebeský pól</button></p>` +
@@ -416,13 +468,22 @@ export function createPovrchInfo(S, A, ui, P0) {
       );
     },
     vod() {
-      const ck = (k, t, n) => `<label class="sp-ck"><input type="checkbox" data-p="g" data-k="${k}"${G[k] ? ' checked' : ''}> <span>${t}<small>${n}</small></span></label>`;
+      const ck = (k, t, n) =>
+        `<label class="sp-ck"><input type="checkbox" data-p="g" data-k="${k}"${G[k] ? ' checked' : ''}> <span>${t}<small>${n}</small></span></label>`;
       return (
         ck('az', 'Obzorníková mřížka', 'azimut a výška ve stupních; při přiblížení přejde na úhlové minuty') +
         ck('eq', 'Rovníková mřížka', 'rektascenze a deklinace J2000 – souřadnice z hvězdných map a katalogů') +
-        ck('lines', 'Ekliptika, nebeský rovník a poledník', 'rovina drah planet, rovník a póly zdejší oblohy, čára sever–zenit–jih') +
+        ck(
+          'lines',
+          'Ekliptika, nebeský rovník a poledník',
+          'rovina drah planet, rovník a póly zdejší oblohy, čára sever–zenit–jih'
+        ) +
         ck('ret', 'Zaměřovač se stupnicí', 'kříž uprostřed s dílky a souřadnice pod ukazatelem myši') +
-        ck('body', 'Mřížka na povrchu tělesa', 'v pohledu z vesmíru: rovnoběžky, poledníky, póly, místo pozorovatele a bod, kde je Slunce v nadhlavníku') +
+        ck(
+          'body',
+          'Mřížka na povrchu tělesa',
+          'v pohledu z vesmíru: rovnoběžky, poledníky, póly, místo pozorovatele a bod, kde je Slunce v nadhlavníku'
+        ) +
         `<p class="sp-note">Žlutá = obzorník, modrá = rovník J2000, zelená = poledník, tečkovaně žlutá = ekliptika, tyrkysová = nebeský rovník tělesa.</p>`
       );
     },
@@ -625,7 +686,14 @@ export function createPovrchInfo(S, A, ui, P0) {
       for (let el = eMin; el <= eMax + 1e-9; el += step) {
         if (el <= 0 || el >= 90) continue;
         const span = Math.min(180, (half / Math.max(0.02, Math.cos(el * DEG))) * 1.15),
-          b = curve(ctx, e, (t, o) => dir(t, el, o), az0 - span, az0 + span, Math.max(24, Math.min(160, Math.round(span / 2))));
+          b = curve(
+            ctx,
+            e,
+            (t, o) => dir(t, el, o),
+            az0 - span,
+            az0 + span,
+            Math.max(24, Math.min(160, Math.round(span / 2)))
+          );
         if (b) text(ctx, stepTxt2(el, step), b[0] + 4, b[1] - 7 * tk, 'rgba(255, 231, 173, 0.9)');
       }
       /* poledníky azimutu: u zenitu se sbíhají, proto řidší krok */
@@ -643,11 +711,29 @@ export function createPovrchInfo(S, A, ui, P0) {
         ra0 = rd[0] / DEG,
         dc = Math.min(89.5, Math.max(Math.abs(de0 - half), Math.abs(de0 + half)));
       ctx.strokeStyle = 'rgba(120, 190, 255, 0.3)';
-      for (let de = Math.max(-90, Math.floor((de0 - half) / step) * step); de <= Math.min(90, de0 + half) + 1e-9; de += step) {
+      for (
+        let de = Math.max(-90, Math.floor((de0 - half) / step) * step);
+        de <= Math.min(90, de0 + half) + 1e-9;
+        de += step
+      ) {
         if (Math.abs(de) >= 90) continue;
         const span = Math.min(180, (half / Math.max(0.02, Math.cos(de * DEG))) * 1.15),
-          b = curve(ctx, e, (t, o) => dirOfRaDec(t * DEG, de * DEG, o), ra0 - span, ra0 + span, Math.max(24, Math.min(160, Math.round(span / 2))));
-        if (b) text(ctx, (de > 0 ? '+' : de < 0 ? '−' : '') + stepTxt2(Math.abs(de), step), b[0] + 4, b[1] - 7 * tk, 'rgba(170, 215, 255, 0.92)');
+          b = curve(
+            ctx,
+            e,
+            (t, o) => dirOfRaDec(t * DEG, de * DEG, o),
+            ra0 - span,
+            ra0 + span,
+            Math.max(24, Math.min(160, Math.round(span / 2)))
+          );
+        if (b)
+          text(
+            ctx,
+            (de > 0 ? '+' : de < 0 ? '−' : '') + stepTxt2(Math.abs(de), step),
+            b[0] + 4,
+            b[1] - 7 * tk,
+            'rgba(170, 215, 255, 0.92)'
+          );
       }
       /* hodinové kružnice: krok v minutách rektascenze (15° = 1 h) */
       const RAS = [30, 15, 7.5, 5, 2.5, 1.25, 0.5, 0.25, 0.125, 1 / 24, 1 / 60],
@@ -655,12 +741,21 @@ export function createPovrchInfo(S, A, ui, P0) {
         sr = RAS.find((s) => s <= Math.max(want, 1 / 60)) || RAS[RAS.length - 1],
         spanR = Math.min(180, (half / Math.max(0.02, Math.cos(dc * DEG))) * 1.15);
       for (let ra = Math.floor((ra0 - spanR) / sr) * sr; ra <= ra0 + spanR + 1e-9; ra += sr) {
-        const b = curve(ctx, e, (t, o) => dirOfRaDec(ra * DEG, t * DEG, o), Math.max(-90, de0 - half), Math.min(90, de0 + half), 40),
+        const b = curve(
+            ctx,
+            e,
+            (t, o) => dirOfRaDec(ra * DEG, t * DEG, o),
+            Math.max(-90, de0 - half),
+            Math.min(90, de0 + half),
+            40
+          ),
           mins = Math.round((((ra % 360) + 360) % 360) * 4 * 60) / 60;
         if (b)
           text(
             ctx,
-            sr >= 15 ? `${Math.round(mins / 60) % 24} h` : `${Math.floor(mins / 60)} h ${nf(mins % 60, sr < 0.25 ? 1 : 0)} m`,
+            sr >= 15
+              ? `${Math.round(mins / 60) % 24} h`
+              : `${Math.floor(mins / 60)} h ${nf(mins % 60, sr < 0.25 ? 1 : 0)} m`,
             b[0] + 4,
             b[1] + 8 * tk,
             'rgba(170, 215, 255, 0.92)'
@@ -678,15 +773,29 @@ export function createPovrchInfo(S, A, ui, P0) {
         u = [p[1] * f.e[2] - p[2] * f.e[1], p[2] * f.e[0] - p[0] * f.e[2], p[0] * f.e[1] - p[1] * f.e[0]];
       ctx.setLineDash([7, 5]);
       ctx.strokeStyle = 'rgba(90, 220, 210, 0.55)';
-      b = curve(ctx, e, (t, o) => {
-        for (let k = 0; k < 3; k++) o[k] = Math.cos(t) * f.e[k] + Math.sin(t) * u[k];
-      }, 0, TAU, 180);
+      b = curve(
+        ctx,
+        e,
+        (t, o) => {
+          for (let k = 0; k < 3; k++) o[k] = Math.cos(t) * f.e[k] + Math.sin(t) * u[k];
+        },
+        0,
+        TAU,
+        180
+      );
       if (b) text(ctx, 'nebeský rovník', b[0] + 6, b[1] + 9 * tk, 'rgba(120, 235, 225, 0.95)');
       /* místní poledník */
       ctx.strokeStyle = 'rgba(120, 230, 140, 0.5)';
-      b = curve(ctx, e, (t, o) => {
-        for (let k = 0; k < 3; k++) o[k] = Math.cos(t) * f.no[k] + Math.sin(t) * f.n[k];
-      }, 0, Math.PI, 90);
+      b = curve(
+        ctx,
+        e,
+        (t, o) => {
+          for (let k = 0; k < 3; k++) o[k] = Math.cos(t) * f.no[k] + Math.sin(t) * f.n[k];
+        },
+        0,
+        Math.PI,
+        90
+      );
       if (b) text(ctx, 'poledník', b[0] + 6, b[1], 'rgba(150, 240, 165, 0.95)');
       ctx.setLineDash([]);
       /* zenit a nebeské póly */
@@ -745,7 +854,13 @@ export function createPovrchInfo(S, A, ui, P0) {
     ctx.textBaseline = 'middle';
     text(ctx, stepTxt(t), cx + px, cy + 14 * tk, 'rgba(255,255,255,0.9)', 'center');
     const az = (((q.az / DEG) % 360) + 360) % 360;
-    text(ctx, `azimut ${dms(az, fov < 2)} · výška ${dms(q.el / DEG, fov < 2)}`, cx + 12, cy - px * 3 - 10 * tk, 'rgba(255,255,255,0.92)');
+    text(
+      ctx,
+      `azimut ${dms(az, fov < 2)} · výška ${dms(q.el / DEG, fov < 2)}`,
+      cx + 12,
+      cy - px * 3 - 10 * tk,
+      'rgba(255,255,255,0.92)'
+    );
     /* ukazatel myši: souřadnice a nejbližší hvězda nebo těleso */
     if (mx >= 0 && !document.body.classList.contains('touch')) {
       const dx = e.fwd.x + (e.right.x * (mx - cx)) / e.F + (e.up.x * (cy - my)) / e.F,
@@ -882,16 +997,35 @@ export function createPovrchInfo(S, A, ui, P0) {
     ctx.textBaseline = 'middle';
     const sub = S.subPoint(i);
     for (let la = -90 + step; la < 90; la += step)
-      line((t, o) => P2(la, t * 360, o), 120, la === 0 ? 'rgba(255, 214, 102, 0.7)' : 'rgba(255,255,255,0.26)', la === 0 ? 1.5 : 1);
+      line(
+        (t, o) => P2(la, t * 360, o),
+        120,
+        la === 0 ? 'rgba(255, 214, 102, 0.7)' : 'rgba(255,255,255,0.26)',
+        la === 0 ? 1.5 : 1
+      );
     for (let lo = 0; lo < 360; lo += step)
-      line((t, o) => P2(-90 + t * 180, lo, o), 60, lo === 0 ? 'rgba(120, 190, 255, 0.8)' : 'rgba(255,255,255,0.26)', lo === 0 ? 1.5 : 1);
+      line(
+        (t, o) => P2(-90 + t * 180, lo, o),
+        60,
+        lo === 0 ? 'rgba(120, 190, 255, 0.8)' : 'rgba(255,255,255,0.26)',
+        lo === 0 ? 1.5 : 1
+      );
     /* popisky: rovnoběžky na poledníku pod kamerou, poledníky na rovníku (nebo na rovnoběžce pod kamerou) */
     const lc = Math.round(sub[1] / step) * step,
       ec = Math.abs(sub[0]) < 55 ? 0 : Math.round(sub[0] / step) * step * 0.5;
     for (let la = -90 + step; la < 90; la += step)
-      if (P2(la, lc + step / 2, pt)) text(ctx, la === 0 ? 'rovník' : `${Math.abs(la)}° ${la > 0 ? 's. š.' : 'j. š.'}`, pt[0], pt[1] - 7 * tk, 'rgba(255, 240, 200, 0.95)', 'center');
+      if (P2(la, lc + step / 2, pt))
+        text(
+          ctx,
+          la === 0 ? 'rovník' : `${Math.abs(la)}° ${la > 0 ? 's. š.' : 'j. š.'}`,
+          pt[0],
+          pt[1] - 7 * tk,
+          'rgba(255, 240, 200, 0.95)',
+          'center'
+        );
     for (let lo = 0; lo < 360; lo += step)
-      if (P2(ec + step / 2, lo, pt)) text(ctx, `${lo}°${lo === 0 ? ' (nultý poledník)' : ''}`, pt[0] + 4, pt[1], 'rgba(190, 220, 255, 0.95)');
+      if (P2(ec + step / 2, lo, pt))
+        text(ctx, `${lo}°${lo === 0 ? ' (nultý poledník)' : ''}`, pt[0] + 4, pt[1], 'rgba(190, 220, 255, 0.95)');
     /* osa a póly */
     const pole = (sg, t) => {
       const a = [0, 0],
@@ -926,7 +1060,8 @@ export function createPovrchInfo(S, A, ui, P0) {
     };
     const ss = subPoint(i, SUN, S.jd);
     dot(ss[0], ss[1], '☀ Slunce v nadhlavníku', '#ffd666');
-    if (lastSite && lastSite.i === i) dot(lastSite.lat, lastSite.lon, '📍 ' + (lastSite.name || 'místo pozorovatele'), '#7de3ff');
+    if (lastSite && lastSite.i === i)
+      dot(lastSite.lat, lastSite.lon, '📍 ' + (lastSite.name || 'místo pozorovatele'), '#7de3ff');
     /* střed pohledu */
     text(
       ctx,
