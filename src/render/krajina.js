@@ -12,6 +12,7 @@ import { ATM, ATM_NAD, OVERCAST, OBRI, krajinaMista, KR } from '../data/krajiny.
 import { skyDir, sunAt, hemi, groundExt, ssa } from './atmo.js';
 import { buildTeren, buildRocks, buildTrees, seedOf, biome } from './teren.js';
 import HI_IDS from '../data/hi.json';
+import DEM from '../data/dem.json';
 const DEG = Math.PI / 180,
   RS = 696000;
 const VS = `in vec3 position; out vec2 vUv; void main(){ vUv = position.xy * 0.5 + 0.5; gl_Position = vec4(position.xy, 0.0, 1.0); }`;
@@ -274,6 +275,82 @@ export function createKrajina(S, renderer) {
     mapCache.set(id, pr);
     return pr;
   }
+  /* výškové mapy (Měsíc LOLA, Mars MOLA): celé těleso 4 body na stupeň + výřezy 16 bodů na stupeň kolem známých míst */
+  const demCache = new Map();
+  const readPx = (src) =>
+    new Promise((res) => {
+      fetch(AS(src))
+        .then((r) => r.blob())
+        .then((b) => createImageBitmap(b, { colorSpaceConversion: 'none', premultiplyAlpha: 'none' }))
+        .then((bm) => {
+          const c = document.createElement('canvas');
+          c.width = bm.width;
+          c.height = bm.height;
+          const g = c.getContext('2d', { willReadFrequently: true });
+          g.drawImage(bm, 0, 0);
+          const d = g.getImageData(0, 0, c.width, c.height).data,
+            h = new Float32Array(c.width * c.height);
+          for (let k = 0; k < h.length; k++) h[k] = d[k * 4] * 256 + d[k * 4 + 1];
+          res({ w: c.width, h: c.height, v: h });
+        })
+        .catch(() => res(null));
+    });
+  function loadDem(id) {
+    if (!DEM[id]) return Promise.resolve(null);
+    if (demCache.has(id)) return demCache.get(id);
+    const I = DEM[id],
+      pr = Promise.all([readPx('maps/dem/' + id + '.webp'), readPx('maps/dem/' + id + '_mista.webp')]).then(([g, t]) => {
+        if (!g) return null;
+        const bil = (img, ox, oy, fx, fy, wrapW) => {
+          const x0 = Math.floor(fx),
+            y0 = Math.floor(fy),
+            tx = fx - x0,
+            ty = fy - y0,
+            X = (x) => (wrapW ? ((x % wrapW) + wrapW) % wrapW : Math.max(0, Math.min(img.w - 1, x))),
+            Y = (y) => Math.max(0, Math.min(img.h - 1, y)),
+            v = (x, y) => img.v[(oy + Y(y)) * img.w + ox + X(x)];
+          return (v(x0, y0) * (1 - tx) + v(x0 + 1, y0) * tx) * (1 - ty) + (v(x0, y0 + 1) * (1 - tx) + v(x0 + 1, y0 + 1) * tx) * ty;
+        };
+        const glob = { w: g.w, h: g.h, v: g.v };
+        const m = {
+          /* výška (m) v šířce a délce (radiány) */
+          at(la, lo) {
+            const laD = la / DEG,
+              loD = ((((lo / DEG) % 360) + 360) % 360);
+            let hg = bil(glob, 0, 0, loD * I.ppd - 0.5, (90 - laD) * I.ppd - 0.5, g.w);
+            if (t)
+              for (const tl of I.tiles) {
+                const fy = (90 - laD) * I.mppd - 0.5 - tl.r0,
+                  fx = ((((loD * I.mppd - 0.5 - tl.c0) % 5760) + 5760) % 5760) % 5760;
+                if (fx < 0 || fy < 0 || fx > I.T - 1.001 || fy > I.T - 1.001) continue;
+                const e = Math.min(fx, fy, I.T - 1 - fx, I.T - 1 - fy),
+                  w = Math.min(1, e / 10);
+                const ht = (() => {
+                  const x0 = Math.floor(fx),
+                    y0 = Math.floor(fy),
+                    tx = fx - x0,
+                    ty = fy - y0,
+                    v = (x, y) => t.v[(tl.y + y) * t.w + tl.x + x];
+                  return (v(x0, y0) * (1 - tx) + v(x0 + 1, y0) * tx) * (1 - ty) + (v(x0, y0 + 1) * (1 - tx) + v(x0 + 1, y0 + 1) * tx) * ty;
+                })();
+                hg = hg * (1 - w) + ht * w;
+                m.fine = Math.max(m.fine || 0, w);
+                break;
+              }
+            return hg + I.h0;
+          },
+          res: 0,
+        };
+        pr.dem = m;
+        return m;
+      });
+    demCache.set(id, pr);
+    return pr;
+  }
+  const demNow = (id) => {
+    const p = demCache.get(id);
+    return p && p.dem ? p.dem : null;
+  };
   const mapNow = (id) => {
     const p = mapCache.get(id);
     return p && p.map ? p.map : null;
@@ -344,7 +421,7 @@ export function createKrajina(S, renderer) {
   function build(q) {
     const b = B[q.i],
       md = modeOf(b, q),
-      k = `${q.i}|${q.lat.toFixed(5)}|${q.lon.toFixed(5)}|${md === 'nad' ? 'nad' : 'pod'}|${mapNow(b.id) ? 1 : 0}`;
+      k = `${q.i}|${q.lat.toFixed(5)}|${q.lon.toFixed(5)}|${md === 'nad' ? 'nad' : 'pod'}|${mapNow(b.id) ? 1 : 0}|${demNow(b.id) ? 1 : 0}`;
     if (k === key && terScene) return;
     key = k;
     dispose();
@@ -358,7 +435,14 @@ export function createKrajina(S, renderer) {
       b.id === 'earth' ? 1.15 : md === 'nad' || OBRI.has(b.id) || !map ? 1 : Math.max(0.25, Math.min(3, (b.albedo || 0.15) / map.mean));
     const gcol =
       md === 'nad' ? null : b.id === 'venus' ? [0.085, 0.07, 0.06] : b.id === 'titan' ? [0.17, 0.13, 0.085] : null;
-    const o = { T, R: b.R, seed, map, lat: q.lat, lon: q.lon, col, id: b.id, alb, ground: gcol };
+    const dem = md === 'nad' ? null : demNow(b.id);
+    if (dem) {
+      /* rozlišení výškové mapy v místě: výřez kolem známého místa, jinak celé těleso */
+      dem.fine = 0;
+      dem.at(q.lat * DEG, q.lon * DEG);
+      dem.res = (((Math.PI * b.R * 1000) / 180) * 1) / (dem.fine > 0.5 ? DEM[b.id].mppd : DEM[b.id].ppd);
+    }
+    const o = { T, R: b.R, seed, map, lat: q.lat, lon: q.lon, col, id: b.id, alb, ground: gcol, dem };
     const t0 = performance.now();
     ter = buildTeren(o);
     const mat = patch(new THREE.MeshLambertMaterial({ vertexColors: true }), true);
@@ -370,7 +454,9 @@ export function createKrajina(S, renderer) {
     terScene.add(ground, sunL, sunL.target, psL, psL.target, hemL);
     /* kameny: barva podle půdy v místě (tmavší, méně prachu); stromy jen na Zemi */
     const c0 = [ter.geo.attributes.color.getX(0), ter.geo.attributes.color.getY(0), ter.geo.attributes.color.getZ(0)];
-    o.rockCol = T.typ === 'venuse' ? [0.06, 0.05, 0.045] : c0.map((v) => v * 0.8);
+    /* kameny: na Marsu tmavý čedič s prachem, jinde podle půdy */
+    o.rockCol =
+      T.typ === 'venuse' ? [0.06, 0.05, 0.045] : T.typ === 'mars' ? [c0[0] * 0.55, c0[1] * 0.55, c0[2] * 0.62] : c0.map((v) => v * 0.8);
     const rocks = buildRocks(o, ter),
       trees = buildTrees(o, ter);
     for (const m of [...rocks, ...trees]) {
@@ -394,8 +480,13 @@ export function createKrajina(S, renderer) {
       map: !!map,
       rMax: ter.rMax,
     };
+    stat.dem = dem ? Math.round(dem.res) : 0;
     if (!map && md !== 'nad')
       loadMap(b.id).then((m) => {
+        if (m && S.surf && S.surf.i === q.i) S.wake();
+      });
+    if (!dem && DEM[b.id] && md !== 'nad')
+      loadDem(b.id).then((m) => {
         if (m && S.surf && S.surf.i === q.i) S.wake();
       });
   }
@@ -766,7 +857,7 @@ export function createKrajina(S, renderer) {
     renderer.autoClear = ac;
   }
   function prep(i) {
-    if (i >= 0 && B[i]) return loadMap(B[i].id);
+    if (i >= 0 && B[i]) return Promise.all([loadMap(B[i].id), loadDem(B[i].id)]);
     return Promise.resolve(null);
   }
   return {

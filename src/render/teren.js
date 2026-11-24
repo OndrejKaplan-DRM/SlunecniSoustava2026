@@ -65,10 +65,10 @@ export const seedOf = (id, lat, lon) => {
   return (h >>> 0) % 100000;
 };
 /* ---------- krátery: nasycená populace, oktávy po dvojnásobcích průměru ---------- */
-function craterField(p, seed) {
+function craterField(p, seed, dMax) {
   const oct = [];
   if (!p.krat) return null;
-  for (let D = p.maly ? 400 : 4000, k = 0; D >= 1.2; D /= 2, k++) {
+  for (let D = Math.min(dMax || 1e9, p.maly ? 400 : 4000), k = 0; D >= 1.2; D /= 2, k++) {
     /* hustota kráterů nad průměrem D ~ D⁻²: na buňku o hraně c připadá stálý počet; mladé povrchy mají míň */
     oct.push({ D, c: D * 2.6, p: Math.min(0.9, 0.55 * p.krat), s: seed + k * 101, dep: D < 300 ? 0.19 : 0.12 });
   }
@@ -122,7 +122,9 @@ export function buildTeren(o) {
     deck = T.typ === 'mraky',
     lat0 = (o.lat * Math.PI) / 180,
     lon0 = (o.lon * Math.PI) / 180,
-    craters = craterField(T, seed),
+    dem = o.dem || null,
+    /* s výškovou mapou dělá velké tvary mapa; šum a krátery jen pod její rozlišení */
+    craters = craterField(T, seed, dem ? Math.min(800, dem.res * 0.45) : 0),
     /* dosah: do 150 km, na malých tělesech kus koule (horizont je blízko) */
     rMax = Math.min(150000, Rm * (T.maly ? 0.9 : 0.6)),
     rMin = 0.35,
@@ -177,7 +179,7 @@ export function buildTeren(o) {
   };
   /* reliéf (m) v bodě (x východ, y sever); minD = nejmenší kráter, který má smysl při hustotě mřížky */
   const ej = [0];
-  const relief = (x, y, minD) => {
+  const relief = (x, y, minD, la, lo) => {
     if (deck) {
       /* oblačná pokrývka obra: kupy a věže, vzdálené pásy */
       const b = fbm(x / 22000, y / 22000, seed, 4),
@@ -186,7 +188,8 @@ export function buildTeren(o) {
       return 1400 * b + 2600 * c * c + 260 * Math.abs(fbm(x / 900, y / 900, seed + 9, 4)) + 40 * fbm(x / 120, y / 120, seed + 10, 3);
     }
     let h = 0;
-    if (T.far) h += T.far * (0.65 * ridged(x / 26000, y / 26000, seed, 5) + 0.35 * fbm(x / 9000, y / 9000, seed + 3, 4));
+    if (dem && la !== undefined) h += dem.at(la, lo);
+    else if (T.far) h += T.far * (0.65 * ridged(x / 26000, y / 26000, seed, 5) + 0.35 * fbm(x / 9000, y / 9000, seed + 3, 4));
     if (T.mid) h += T.mid * fbm(x / 600, y / 600, seed + 5, 5);
     if (T.near) h += T.near * fbm(x / 7, y / 7, seed + 11, 4);
     if (T.duny) {
@@ -217,14 +220,14 @@ export function buildTeren(o) {
     kinds = earth ? new Uint8Array(nV) : null;
   for (let k = 0; k < NR; k++) rr[k] = k === 0 ? rMin : rMin * Math.pow(q, k);
   /* výška pozorovatele (střed) */
-  const h0 = relief(0, 0, 0.5);
+  const h0 = relief(0, 0, 0.5, lat0, lon0);
   let water0 = 0;
   const KIND = { more: 1, les: 2, poust: 3, led: 4 };
   const setV = (v, x, y, r) => {
     const minD = Math.max(1.2, r * 0.09);
-    let h = relief(x, y, minD);
-    const drop = Rm - Math.sqrt(Math.max(0, Rm * Rm - r * r)) /* zakřivení: přesně koule */;
     toLL(r, Math.atan2(x, y), ll);
+    let h = relief(x, y, minD, ll[0], ll[1]);
+    const drop = Rm - Math.sqrt(Math.max(0, Rm * Rm - r * r)) /* zakřivení: přesně koule */;
     sample(ll[0], ll[1], sm);
     let c0 = lin(sm[0]) * alb,
       c1 = lin(sm[1]) * alb,
@@ -321,7 +324,8 @@ export function buildTeren(o) {
     const y = -z,
       r = Math.hypot(x, y),
       drop = Rm - Math.sqrt(Math.max(0, Rm * Rm - r * r));
-    return relief(x, y, Math.max(1.2, r * 0.09)) - h0 - drop;
+    toLL(r, Math.atan2(x, y), ll);
+    return relief(x, y, Math.max(1.2, r * 0.09), ll[0], ll[1]) - h0 - drop;
   };
   /* druh krajiny Země v bodě (podle nejbližšího vrcholu mřížky) */
   const kindAt = (x, z) => {
@@ -338,7 +342,9 @@ export function buildTeren(o) {
 /* ---------- kameny, oblázky, stromy ---------- */
 function rockGeo(seed, kind) {
   /* sloučit vrcholy, jinak má každá stěna vlastní normálu a kámen je hranatý jako krystal */
-  const g = mergeVertices(new THREE.IcosahedronGeometry(1, 2).deleteAttribute('normal').deleteAttribute('uv')),
+  const g = mergeVertices(
+      new THREE.IcosahedronGeometry(1, kind === 'oblazek' ? 2 : 1).deleteAttribute('normal').deleteAttribute('uv')
+    ),
     p = g.attributes.position;
   for (let k = 0; k < p.count; k++) {
     let x = p.getX(k),
@@ -348,7 +354,12 @@ function rockGeo(seed, kind) {
       gnoise(x * 1.3 + seed, y * 1.3 + z * 0.7, seed) * 0.5 +
       gnoise(x * 2.9 + z, z * 2.9 + seed, seed + 3) * 0.25 +
       gnoise(y * 6.1 + x, z * 6.1, seed + 5) * 0.08;
-    let s = kind === 'oblazek' ? 1 + 0.08 * n : 1 + 0.38 * n;
+    let s = kind === 'oblazek' ? 1 + 0.08 * n : 1 + 0.45 * n;
+    /* hranatost: rovné odštěpené plochy */
+    if (kind !== 'oblazek') {
+      const a = hash2(Math.round(x * 3), Math.round(z * 3), seed);
+      if (a > 0.6) s *= 0.85;
+    }
     if (kind === 'deska') y *= 0.22;
     else if (kind !== 'oblazek') y *= 0.72;
     else y *= 0.6;
@@ -367,8 +378,8 @@ export function buildRocks(o, ter) {
   const kind = T.typ === 'venuse' ? 'deska' : T.typ === 'titan' ? 'oblazek' : 'kamen',
     mat = new THREE.MeshLambertMaterial({ vertexColors: false, color: 0xffffff }),
     sets = [
-      { n: Math.round(700 * T.kam), r0: 3, r1: 260, s0: 0.1 * T.kamMax, s1: T.kamMax, shadow: true, p: 3.2 },
-      { n: Math.round(2400 * Math.min(1.5, T.kam)), r0: 0.6, r1: 25, s0: 0.015, s1: 0.12 * T.kamMax + 0.03, shadow: true, p: 2.2 },
+      { n: Math.round(700 * T.kam), r0: 4, r1: 260, s0: 0.06 * T.kamMax, s1: T.kamMax, shadow: true, p: 4 },
+      { n: Math.round(2400 * Math.min(1.5, T.kam)), r0: 0.7, r1: 25, s0: 0.012, s1: 0.1 * T.kamMax + 0.03, shadow: true, p: 2.6 },
     ],
     m4 = new THREE.Matrix4(),
     qt = new THREE.Quaternion(),

@@ -158,10 +158,10 @@ export const OBRI = new Set(['jupiter', 'saturn', 'uranus', 'neptune']);
    tón (násobí barvu mapy), mlha (dohlednost km, 0 = bez vzduchu) */
 const T = {
   /* Měsíc: na snímcích z Apolla jsou kameny hlavně drobné, balvany jen ojediněle (u čerstvých kráterů) */
-  regolit: { typ: 'regolit', far: 900, mid: 40, near: 0.6, krat: 1, kam: 0.22, kamMax: 0.9, mlha: 0 },
+  regolit: { typ: 'regolit', far: 900, mid: 14, near: 0.5, krat: 1, kam: 0.22, kamMax: 0.8, mlha: 0 },
   merkur: { typ: 'regolit', far: 1100, mid: 50, near: 0.7, krat: 1, kam: 0.3, kamMax: 1.1, mlha: 0 },
   /* Mars: barevné mapy jsou kvůli vzhledu přesycené, na snímcích vozítek je půda hnědožlutá (sat) */
-  mars: { typ: 'mars', far: 700, mid: 25, near: 0.35, krat: 0.35, kam: 0.9, kamMax: 0.8, mlha: 45, sat: 0.62 },
+  mars: { typ: 'mars', far: 700, mid: 12, near: 0.3, krat: 0.35, kam: 0.8, kamMax: 0.55, mlha: 45, sat: 0.62 },
   zeme: { typ: 'zeme', far: 180, mid: 18, near: 0.15, krat: 0, kam: 0.03, kamMax: 0.6, mlha: 60, stromy: 1 },
   venuse: { typ: 'venuse', far: 300, mid: 8, near: 0.25, krat: 0.05, kam: 0.4, kamMax: 0.5, mlha: 8 },
   titan: { typ: 'titan', far: 150, mid: 12, near: 0.12, krat: 0, kam: 0.7, kamMax: 0.25, mlha: 6 },

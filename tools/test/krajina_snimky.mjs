@@ -33,6 +33,8 @@ export const CASES = [
   ['mars_den', 'mars', -4.59, 137.442, 45, 'sun+150', 8, 70],
   ['mars_zapad', 'mars', -4.59, 137.442, 2, 'sun', 6, 60, true],
   ['mesic_den', 'moon', 0.674, 23.473, 20, 'sun+120', 6, 70],
+  ['mesic_hadley', 'moon', 26.132, 3.634, 25, 170, 4, 70],
+  ['mars_gale', 'mars', -4.59, 137.442, 35, 140, 4, 70],
   ['mesic_zeme', 'moon', 0.674, 23.473, -20, 'par', 8, 70],
   ['venuse', 'venus', -7.5, 303.0, 40, 'sun+90', 8, 70],
   ['titan', 'titan', -10.3, 192.3, 30, 'sun+90', 8, 70],
@@ -102,6 +104,7 @@ for (const c of CASES) {
       S.jd = jd;
       sim.updateAll(jd);
       await S.krajina.prep(i);
+      await new Promise((r) => setTimeout(r, 300));
       povrch.enter(i, lat, lon, { fov, el, quiet: false });
       const q = S.surf;
       if (typeof az === 'string') {
@@ -146,6 +149,8 @@ for (const c of CASES) {
     st.trees,
     'mapa',
     st.map,
+    'dem',
+    st.dem,
     'pohled',
     st.el.toFixed(1),
     st.fov.toFixed(0)

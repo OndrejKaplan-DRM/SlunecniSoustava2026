@@ -7,6 +7,9 @@ const out = (process.argv[2] && !process.argv[2].startsWith('--') ? process.argv
   A = {};
 const uri = (f) => `data:${MIME[path.extname(f)]};base64,${fs.readFileSync('dist/' + f).toString('base64')}`;
 for (const f of fs.readdirSync('dist/maps')) if (f.endsWith('.webp')) A['maps/' + f] = uri('maps/' + f);
+/* 2.2: výškové mapy Měsíce a Marsu pro krajinu z povrchu (2,7 MB, vždy) */
+if (fs.existsSync('dist/maps/dem'))
+  for (const f of fs.readdirSync('dist/maps/dem')) if (f.endsWith('.webp')) A['maps/dem/' + f] = uri('maps/dem/' + f);
 if (process.argv.includes('--hi')) {
   for (const f of fs.readdirSync('dist/maps/hi')) if (f.endsWith('.webp')) A['maps/hi/' + f] = uri('maps/hi/' + f); // volitelně i velké mapy
   /* 1.8m: úroveň 2 (dlaždice 16k/8k) – jen s --hi a bez --bez-l2 */
