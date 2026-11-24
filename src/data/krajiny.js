@@ -36,12 +36,13 @@ export const ATM = {
     bR: [0.12e-3, 0.28e-3, 0.68e-3],
     hR: 11.1,
     bM: [0.043, 0.036, 0.025],
-    aM: [0.002, 0.011, 0.024],
+    aM: [0.002, 0.009, 0.02],
     hM: 11,
-    g: [0.62, 0.7, 0.8],
+    /* modrou rozptyluje prach úzce dopředu (modrá záře kolem zapadajícího Slunce, PIA19400), červenou široce (Ehlmann a kol. 2015) */
+    g: [0.6, 0.72, 0.88],
     refr: 0.02,
     /* prach s τ ≈ 0,5 a albedem 0,9 rozptyluje světlo mnohokrát: obloha je jasnější a rovnoměrnější, než dá jednonásobný rozptyl */
-    ms: 3,
+    ms: 2.2,
   },
   /* Titan: N₂ 1,5 baru při 94 K (4,5× hustota vzduchu), výšková škála 20 km; oranžový opar τ ≈ 4 (červená) až 10 (modrá) */
   titan: {
@@ -164,7 +165,8 @@ const T = {
   mars: { typ: 'mars', far: 700, mid: 12, near: 0.3, krat: 0.35, kam: 0.8, kamMax: 0.55, mlha: 45, sat: 0.62 },
   zeme: { typ: 'zeme', far: 180, mid: 18, near: 0.15, krat: 0, kam: 0.03, kamMax: 0.6, mlha: 60, stromy: 1 },
   venuse: { typ: 'venuse', far: 300, mid: 8, near: 0.25, krat: 0.05, kam: 0.4, kamMax: 0.5, mlha: 8 },
-  titan: { typ: 'titan', far: 150, mid: 12, near: 0.12, krat: 0, kam: 0.7, kamMax: 0.25, mlha: 6 },
+  /* Titan u Huygensu: rovina s oblázky z vodního ledu 1–15 cm (Tomasko a kol. 2005) */
+  titan: { typ: 'titan', far: 150, mid: 6, near: 0.08, krat: 0, kam: 1.4, kamMax: 0.2, mlha: 6 },
   duny: { typ: 'duny', far: 150, mid: 6, near: 0.1, krat: 0, kam: 0.05, kamMax: 0.2, mlha: 6, duny: 1 },
   led: { typ: 'led', far: 500, mid: 20, near: 0.3, krat: 0.5, kam: 0.2, kamMax: 0.8, mlha: 0, hrebeny: 0 },
   europa: { typ: 'led', far: 250, mid: 30, near: 0.4, krat: 0.08, kam: 0.4, kamMax: 1.0, mlha: 0, hrebeny: 1 },
@@ -205,8 +207,9 @@ export function krajinaOf(b) {
   return T.regolit;
 }
 /* Titan: v rovníkovém pásu (±30°) písečné duny (Belet, Shangri-La), jinde oblázková pláň jako u Huygensu */
-export function krajinaMista(b, lat) {
+export function krajinaMista(b, lat, mapLum) {
   const k = krajinaOf(b);
-  if (b.id === 'titan' && Math.abs(lat) < 30) return T.duny;
+  /* duny jsou na mapách Cassini tmavé (Shangri-La, Belet); světlé oblasti jsou pláně jako u Huygensu */
+  if (b.id === 'titan' && Math.abs(lat) < 30 && mapLum !== undefined && mapLum < 0.35) return T.duny;
   return k;
 }

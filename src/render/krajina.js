@@ -425,7 +425,16 @@ export function createKrajina(S, renderer) {
     if (k === key && terScene) return;
     key = k;
     dispose();
-    const T = md === 'nad' ? KR.mraky : krajinaMista(b, q.lat),
+    /* jas mapy v místě (Titan: tmavé = duny) */
+    let ml;
+    const mp = mapNow(b.id);
+    if (mp) {
+      const x = Math.floor(((((q.lon / 360 + 0.5) % 1) + 1) % 1) * mp.w),
+        y = Math.max(0, Math.min(mp.h - 1, Math.floor((0.5 - q.lat / 180) * mp.h))),
+        k = (y * mp.w + x) * 4;
+      ml = (0.2126 * mp.d[k] + 0.7152 * mp.d[k + 1] + 0.0722 * mp.d[k + 2]) / 255;
+    }
+    const T = md === 'nad' ? KR.mraky : krajinaMista(b, q.lat, ml),
       seed = seedOf(b.id, q.lat, q.lon),
       map = md === 'nad' ? null : mapNow(b.id);
     const col = md === 'nad' ? (b.id === 'venus' ? [0.95, 0.88, 0.7] : [0.75, 0.5, 0.25]) : b.col;
@@ -434,7 +443,7 @@ export function createKrajina(S, renderer) {
     const alb =
       b.id === 'earth' ? 1.15 : md === 'nad' || OBRI.has(b.id) || !map ? 1 : Math.max(0.25, Math.min(3, (b.albedo || 0.15) / map.mean));
     const gcol =
-      md === 'nad' ? null : b.id === 'venus' ? [0.085, 0.07, 0.06] : b.id === 'titan' ? [0.17, 0.13, 0.085] : null;
+      md === 'nad' ? null : b.id === 'venus' ? [0.085, 0.07, 0.06] : b.id === 'titan' ? [0.26, 0.2, 0.13] : null;
     const dem = md === 'nad' ? null : demNow(b.id);
     if (dem) {
       /* rozlišení výškové mapy v místě: výřez kolem známého místa, jinak celé těleso */
@@ -456,7 +465,13 @@ export function createKrajina(S, renderer) {
     const c0 = [ter.geo.attributes.color.getX(0), ter.geo.attributes.color.getY(0), ter.geo.attributes.color.getZ(0)];
     /* kameny: na Marsu tmavý čedič s prachem, jinde podle půdy */
     o.rockCol =
-      T.typ === 'venuse' ? [0.06, 0.05, 0.045] : T.typ === 'mars' ? [c0[0] * 0.55, c0[1] * 0.55, c0[2] * 0.62] : c0.map((v) => v * 0.8);
+      T.typ === 'venuse'
+        ? [0.06, 0.05, 0.045]
+        : T.typ === 'mars'
+          ? [c0[0] * 0.55, c0[1] * 0.55, c0[2] * 0.62]
+          : T.typ === 'titan'
+            ? [0.5, 0.45, 0.4] /* ledové oblázky jsou světlejší než půda */
+            : c0.map((v) => v * 0.8);
     const rocks = buildRocks(o, ter),
       trees = buildTrees(o, ter);
     for (const m of [...rocks, ...trees]) {
@@ -678,12 +693,13 @@ export function createKrajina(S, renderer) {
       const h = Math.hypot(tmp[0], tmp[1]) || 1,
         el = Math.max(0.035, Math.min(1.5, Math.asin(Math.max(-1, Math.min(1, tmp[2]))))),
         hz = [tmp[0] / h, tmp[1] / h, 0],
-        a1 = skyDir(atm, b.R, h0, [hz[0] * Math.cos(el), hz[1] * Math.cos(el), Math.sin(el)], sE).L,
-        l1 = lum(a1),
-        l2 = lum(skyDir(atm, b.R, h0, [hz[0], hz[1], 0.035], sE).L),
+        /* nejjasnější barevná složka (modrá záře kolem Slunce na Marsu má malý jas, ale přepálila by se) */
+        mx = (c) => Math.max(0.6 * lum(c), 0.45 * Math.max(c[0], c[1], c[2])),
+        l1 = mx(skyDir(atm, b.R, h0, [hz[0] * Math.cos(el), hz[1] * Math.cos(el), Math.sin(el)], sE).L),
+        l2 = mx(skyDir(atm, b.R, h0, [hz[0], hz[1], 0.035], sE).L),
         Lv = Math.max(l1, l2) * toa * (atm.gain || 1),
-        Xs = 0.85 / (Math.PI * Math.max(1e-14, Lv));
-      X = Xg * Math.pow(Math.min(1, Xs / Xg), 0.62);
+        Xs = 0.5 / (Math.PI * Math.max(1e-14, Lv));
+      X = Xg * Math.pow(Math.min(1, Xs / Xg), 0.78);
       stat.Lv = Lv;
     }
     /* krajina: světla (intenzita × π, Lambert dělí π) */
