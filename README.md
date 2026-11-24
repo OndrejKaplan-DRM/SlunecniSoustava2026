@@ -91,7 +91,11 @@ tools/                nástroje (spouštět z kořene repa)
   zvuky/              výběr a převod zvuků CC0
   archiv/             zastaralé skripty, nepoužívat
 zdroje/               původ dat: MAPY.md (zpracování map), ZVUKY.md; licence všech podkladů shrnuje CREDITS.md
-docs/                 poznámky k architektuře
+docs/                 historie verzí (ZMENY.md), věrohodnost, vydání
+CLAUDE.md             instrukce pro AI: spuštění, pravidla, konvence, pasti
+ARCHITECTURE.md       moduly a tok dat
+DECISIONS.md          laboratorní deník rozhodnutí (co a proč)
+TODO.md               co se právě dělá, co je hotové a co čeká
 ```
 
 ## Rozpracované funkce a přepínač `?dev`

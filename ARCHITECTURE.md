@@ -1,4 +1,36 @@
-# Architektura (stav 13. 11. 2026)
+# Architektura
+
+Stav 24. 11. 2026 (větev `iterace-25`, verze 2.1 rozpracovaná). Dřív `docs/ARCHITEKTURA.md` (stav 13. 11.), níže doplněno.
+Kde co hledat: tato mapa modulů → podrobnosti oddílů níže → `docs/VEROHODNOST.md` (přesnost) → `DECISIONS.md` (proč).
+
+## Mapa modulů (`src/`)
+| Soubor | Co dělá |
+|---|---|
+| `main.js` | vstupní bod: sestaví engine, zvuk, rozhraní, spustí smyčku; `window.S200` = háčky pro zkoušky |
+| `core/sim.js` | katalog (`B`, `idx`, `par`, `kids`), polohy `P` (km, heliocentricky, scéna = ekliptika x, z, −y), `updateAll(jd UT)`, čas (`deltaT`, `ttOf`, `setDeltaT`), Měsíc (`moonGeo` + `data/mesic.json`), natočení (`basis`: IAU z `data/rot.json`, Země `earthBasis` s precesí a nutací), tvary |
+| `core/ephem.js` | efemeridy: planety (fit 1900–2050 + dlouhodobá teorie), malá tělesa (kuželosečky), měsíce (`satPos`: precesující elipsa + opravy `corr`, `bary` u malých měsíců Pluta) |
+| `core/misto.js` (2.1) | místo na tělese: `siteFrame` (zenit, východ, sever na elipsoidu), `azEl`, `raDec`, `applyLightTime` (zdánlivé polohy), `riseSet`, `solarDay`, `obliquity`, `subPoint`, `refraction`, `eyeH` |
+| `core/shape.js`, `asset.js`, `flags.js`, `device.js`, `preload.js` | tvary malých těles; adresy souborů (i vložené); registr funkcí; třída zařízení; přednačtení |
+| `render/engine.js` | `createEngine` → `S`: kamera, lety, `pick`, mapy, souhvězdí, 2D vrstva (`S.overlays`), kroky (`S.ticks`), sběrnice `S.bus`; pohled z povrchu `S.surf`, `S.setSurf`, `surfCamera`; za snímek `applyLightTime` v pohledu z povrchu |
+| `render/shaders.js`, `ball.js`, `l2.js`, `belts.js` | GLSL; kotouče na 2D plátně; podrobné mapy úrovně 2; pásy planetek (2.1: tři stupně výraznosti, `uPow`) |
+| `ui/ui.js` | karta tělesa (řádky Atmosféra, Složení; tlačítko 🌐 Mřížka), lišty, hra, `act`, porovnání (`drawCmp`, čipy dvojic) |
+| `ui/porovnani.js` (2.1) | `pairView`: dvě tělesa ve skutečném poměru, posuvník přiblížení, měřítko v km |
+| `ui/superkarta.js` | Superkarta (pětiklik): od 2.1 oddíly Atmosféra (graf CO₂ u Země) a Složení a nitro |
+| `ui/povrch.js` | pohled z povrchu: lišta `#surf`, zem a obzor, denní obloha, hledání těles; `enter(i, lat, lon, {az, el, fov, track, air, lt})` |
+| `ui/povrch_info.js` (2.1) | panel `#surfp` „Obloha odsud“ (místo, čas, tělesa, hvězdy, osa, barva oblohy, pohled, vodítka) a vrstvy vodítek: obzorníková a rovníková mřížka, ekliptika, rovník, poledník, zaměřovač, mřížka na povrchu tělesa |
+| `ui/udalosti.js`, `obloha.js`, `extras.js`, `orient.js`, `mobile.js`, `tutorial.js`, `zvuky.js` | úkazy; objekty na obloze; útvary, sondy, pravítko, minimapa; šipky; rozložení podle zařízení; ukázka; zkušebna zvuků |
+| `data/` | `cat.json` (201 těles), `rot.json` (2.1, IAU 2015), `mesic.json` (2.1, doplňkové členy Měsíce), `slozeni.js` (2.1, atmosféry a nitra, CO₂), `mista.js` (2.1, pojmenovaná místa a barvy oblohy), `facts.js`, `stardata.js`, `connames.js`, `obloha.json`, `hi.json`, `l2.json`, `udalosti.json`, `zvuky.json` |
+| `audio/audio.js` | syntéza, nahrávky, prostředí těles, hudba |
+
+## Ověřování přesnosti (2.1, `tools/model/vernost/`, `tools/test/`)
+- `hz.py` – dotazy na JPL Horizons s mezipamětí; `pripady.py` → `ref_povrch.json` (996 náhodných případů: těleso, místo, čas, cíl);
+  `dt_zeme.py` doplní ΔT z Horizons; `t_vernost.mjs` porovná model (stejný kód jako aplikace) s Horizons.
+- `ref_sceny.py` → `ref_sceny.json` (skutečné úkazy: přechody Phobosu a Deimosu přes Slunce ze snímků roverů, zatmění, konjunkce);
+  `t_ref_sceny.mjs` – model musí úkaz najít sám ve správný čas.
+- `mesice_ref.py` (vektory měsíců z Horizons) → `fit_mesice.py` → `tools/out/mesice_fit.json` → `zapis_mesice.mjs` (do `cat.json`).
+- `mesic_rezidua.mjs` → `fit_mesic.py` → `src/data/mesic.json` (Měsíc).
+- `tools/data/rot_build.py` – `pck00011.tpc` → `src/data/rot.json`.
+
 
 ## Tok dat
 `data/cat.json` → `core/sim.js` (polohy `P` v km, heliocentricky, 64 bitů) → `render/engine.js` (plovoucí počátek: kamera je vždy v nule,

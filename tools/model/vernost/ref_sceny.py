@@ -42,7 +42,7 @@ SCENY = [
          cile=['venus', 'mercury', 'moon', 'sun', 'jupiter', 'mars'], fov=70,
          popis='Ranní obloha nad Prahou 21. 11. 2026 v 6:30 SEČ (otcovo pozorování: jasné těleso na JV = Venuše)'),
     dict(id='velka_konjunkce_praha_2020', druh='usek', c='earth', lat=50.0755, lon=14.4378, okno=('2020-12-21 12:00', '2020-12-22 06:00'),
-         par=('jupiter', 'saturn'), cile=['jupiter', 'saturn', 'sun', 'moon'], fov=2,
+         par=('jupiter', 'saturn'), cile=['jupiter', 'saturn', 'sun', 'moon'], fov=2, obzor=False, snimek='2020-12-21 16:15',
          popis='Velká konjunkce Jupiteru a Saturnu, pozorovatel v Praze (nejtěsnější od roku 1623)'),
     dict(id='zatmeni_dallas_2024', druh='usek', c='earth', lat=32.7767, lon=-96.7970, okno=('2024-04-08 17:00', '2024-04-08 20:00'),
          par=('moon', 'sun'), cile=['sun', 'moon', 'venus', 'jupiter'], fov=8,
@@ -114,7 +114,7 @@ def main():
             A = table(sc['c'], sc['lat'], sc['lon'], a, sc['okno'][0], sc['okno'][1], '2m')
             Bt = table(sc['c'], sc['lat'], sc['lon'], b, sc['okno'][0], sc['okno'][1], '2m')
             d = [sep(x[1], x[2], y[1], y[2]) for x, y in zip(A, Bt)]
-            k = min(range(len(d)), key=lambda k: d[k] if A[k][2] > -5 else 1e9)
+            k = min(range(len(d)), key=lambda k: d[k] if A[k][2] > -5 or not sc.get('obzor', True) else 1e9)
             jd0 = A[k][0]
             A2 = table(sc['c'], sc['lat'], sc['lon'], a, f'JD{jd0 - 4 / 1440:.6f}', f'JD{jd0 + 4 / 1440:.6f}', '96')
             B2 = table(sc['c'], sc['lat'], sc['lon'], b, f'JD{jd0 - 4 / 1440:.6f}', f'JD{jd0 + 4 / 1440:.6f}', '96')
@@ -153,6 +153,12 @@ def main():
             jdn = dd + (153 * m2 + 2) // 5 + 365 * yy + yy // 4 - yy // 100 + yy // 400 - 32045
             s['jd'] = jdn - 0.5 + (hh + mm / 60) / 24
             s['ut'] = jd2cal(s['jd'])
+        if sc.get('snimek'):
+            y, mo, dd = map(int, sc['snimek'][:10].split('-'))
+            hh, mm = map(int, sc['snimek'][11:16].split(':'))
+            a = (14 - mo) // 12; yy = y + 4800 - a; m2 = mo + 12 * a - 3
+            s['jd_snimek'] = dd + (153 * m2 + 2) // 5 + 365 * yy + yy // 4 - yy // 100 + yy // 400 - 32045 - 0.5 + (hh + mm / 60) / 24
+            s['hz_snimek'] = poloha(sc, s['jd_snimek'])
         s['hz'] = poloha(sc, s['jd'])
         out.append(s)
         extra = f"  nejmenší vzdálenost {s['min_sep'] * 60:.2f}′" if 'min_sep' in s else ''

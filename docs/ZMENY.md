@@ -60,7 +60,7 @@ artefaktu nešla. Pomocné skripty výběru objektů jsou v `tools/archiv/obloha
 ## 2.0 – kandidát k vydání: všechny souběžné větve v jednom stromu (20. 11. 2026)
 Sloučeno: `iterace-22` (1.10 = 1.9 + 1.8b + 1.8m se všemi třemi koly map + pohled z povrchu) a `iterace-19b` po 1.8c (`1f29f68`:
 objekty na obloze podruhé – 62 objektů, nenápadné kroužky, bublina, scéna objektu). Konflikty jen v textech: číslo verze
-v `dist/index.html`, tabulka v tomto souboru, popis `ui/obloha.js` v `docs/ARCHITEKTURA.md`; `dist/app.js` sestaven znovu.
+v `dist/index.html`, tabulka v tomto souboru, popis `ui/obloha.js` v `ARCHITECTURE.md` (dřív `docs/ARCHITEKTURA.md`); `dist/app.js` sestaven znovu.
 Zdrojáky (`src/render/engine.js`, `src/ui/obloha.js`) se sloučily samy; hlídka 1.10 „objekt pod obzorem při pohledu z povrchu“
 v `obloha.js` přežila přestavbu 1.8c (ověřeno v kódu). Nové funkce v 2.0 nejsou – jen sloučení, číslo verze a regrese.
 - **Regrese na sloučeném stromu** (`aed264d`, sandbox Chromium + swiftshader, po jednom): ukázka 3 běhy, `test:fakta` 201 těles,
