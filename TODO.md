@@ -24,13 +24,21 @@ nemastné-neslané“. Zadání:
 - [x] Snímky sond `zdroje/povrchy/` (10, 2,2 MB), dokument `docs/KRAJINA.md`, CREDITS, DECISIONS, ARCHITECTURE, ZMENY, verze 2.2.
 - [x] Zkoušky `t_krajina` (34 kontrol), `krajina_snimky` (19 pohledů), `t_povrch` upravený na nový tok přistání.
 
+### Regrese 24. 11. 2026 večer (po jednom, větev `iterace-26`)
+- [x] `tut` (bez chyb), `test:fakta`, `test:model`, `test:vernost` (996 případů), `test:sceny`, `t_krajina` (34/34), `t_povrch` (203/203),
+      `t_preload`, `t_karty`, `t_pasy`, `t_obloha`, `t_scena` (287), `t_l2` (12), `t_okna` (0 nálezů), `t_hi` (11/11) – bez chyb.
+- [ ] `t_displej` – jen `tv_400: podrobná mapa mercury se nenačetla`, stejně jako v `main` a 2.1 (emulace televize 4×).
+- [x] Soubor na flashku `SlunecniSoustava200_v2_2_iterace26.html` (`--hi`): 374 433 150 B = 357,1 MiB, 2 921 souborů; z `file://`
+      bez cizích požadavků a chyb, výšková mapa Marsu i posun z moře fungují.
+
 ### Zbývá / nápady
+- [ ] Oblačné moře obřích planet vypadá spíš jako sněhové kopce (Jupiter: velká kupa před pozorovatelem) – víc tvarů, stínů a barev pásů.
+- [ ] Při nízké kvalitě vykreslování (pomalé zařízení) se krajina staví řidší (méně kamenů a stromů) – stejně jako na telefonu.
 - [ ] Textury půdy z fotek sond (zatím procedurální zrnitost); detailní textura pro Zemi (tráva) a Mars (štěrk).
 - [ ] Stíny terénu na terénu ve větší vzdálenosti (teď stíny jen kamenů do 110 m; svahy odvrácené od Slunce jsou tmavé, ale
       hora nevrhá dlouhý stín přes pláň) – na terminátoru Měsíce by to bylo vidět.
 - [ ] Mars při západu: modrá záře je, ale obloha dál od Slunce vychází světlejší a žlutější než na PIA19400.
 - [ ] Země bez výškové mapy (hory jsou vymyšlené); případně ETOPO po výřezech kolem známých míst.
-- [ ] Oblačné moře obřích planet vypadá spíš jako sněhové duny – víc tvarů kup a stínů.
 - [ ] Výkon na slabém telefonu ověřit na zařízení (krajina: řidší mřížka, bez stínů na `mob`).
 
 Plán (Kristína): (a) chyby 1–2 a tok přistání; (b) obloha jako výpočet rozptylu světla v atmosféře (Rayleigh + Mie, stín tělesa

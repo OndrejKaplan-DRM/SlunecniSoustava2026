@@ -50,7 +50,7 @@ obři asi 0,7×). Ukazuje se v obraze; tabulka poloh v panelu „Obloha odsud“
 v závorce výšku s lomem.
 
 ## 3. Krajina (`src/render/teren.js`)
-Polární mřížka kolem pozorovatele (384 × 170 bodů, na telefonu 256 × 130): jemná u nohou (35 cm), řídká u obzoru, do 150 km
+Polární mřížka kolem pozorovatele (384 × 170 bodů, na telefonu a při nejnižší kvalitě vykreslování 256 × 130): jemná u nohou (35 cm), řídká u obzoru, do 150 km
 (malá tělesa kus koule). Výšky = přesná koule (obzor je tam, kde má být) + reliéf:
 
 | Typ | Kde | Reliéf a povrch |
@@ -86,3 +86,8 @@ tělesa z katalogu (mapy jsou kvůli vzhledu zesvětlené). Stejné místo dá v
 - **Z měření**: velké tvary krajiny na Měsíci a Marsu (LOLA, MOLA), barva půdy (mapy těles), polohy všech těles.
 - **Ilustrace**: drobný reliéf, krátery pod rozlišení map, kameny, stromy, duny, oblačné moře obřích planet, krajina na tělesech
   bez výškové mapy (včetně Země – ta má jen druh povrchu z mapy, ne skutečné hory).
+
+## 6. Srovnání se snímky sond
+`docs/ref/krajina_srovnani.jpg` (vytváří `tools/test/krajina_srovnani.py`): snímek sondy vlevo, aplikace 2.2 vpravo – Hadley Delta
+(Apollo 15), Mount Sharp (Curiosity), modrý západ Slunce na Marsu, Titan (Huygens), regolit (Apollo 17), Mars (Opportunity).
+Mřížka 12 pohledů: `docs/ref/krajina_snimky.jpg`.

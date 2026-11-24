@@ -797,7 +797,10 @@ export function createKrajina(S, renderer) {
     su.uPre.value = expS;
     cu.uExp.value = 1;
     cu.uOpq.value = oc ? 1 : 0;
-    cu.uSunR.value = Math.max(0.0012, Math.atan(RS / dS)); /* úhlový poloměr Slunce (min. ~0,07°, ať je vidět i z Pluta) */
+    cu.uSunR.value = Math.max(
+      0.0012,
+      Math.atan(RS / dS)
+    ); /* úhlový poloměr Slunce (min. ~0,07°, ať je vidět i z Pluta) */
     cu.uSat.value = atm ? atm.sat || 1 : 1;
     /* mnohonásobný rozptyl přibližně: okolní záře úměrná světlu oblohy a odrazu od země */
     if (atm) {
