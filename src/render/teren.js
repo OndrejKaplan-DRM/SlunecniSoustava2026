@@ -4,6 +4,7 @@
 // hřebeny ledu. Barva = mapa tělesa v místě každého vrcholu (sharp: vzorek obrázku), na Zemi i druh krajiny podle mapy (moře,
 // les, poušť, led). Kameny, oblázky a stromy jako InstancedMesh. Vše je ze semínka místa: stejné místo = stejná krajina.
 import * as THREE from 'three';
+import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 const TAU = Math.PI * 2;
 /* ---------- šum ---------- */
 function hash2(ix, iy, s) {
@@ -103,8 +104,9 @@ function craterField(p, seed) {
 /* Země: druh krajiny podle barvy mapy (sRGB 0–255) */
 export function biome(r, g, b) {
   if (Math.min(r, g, b) > 175) return 'led';
-  if (b > r + 14 && b >= g - 10) return 'more';
-  if (g > r && g >= b) return 'les';
+  if (b > 1.5 * r && b > 1.15 * g) return 'more';
+  /* zeleň (les, louky) a tmavá pole mírného pásu; světlé a načervenalé = poušť, step, skály */
+  if ((g >= 0.95 * r && g > 1.15 * b) || (0.2126 * r + 0.7152 * g + 0.0722 * b < 105 && r < 1.45 * b)) return 'les';
   return 'poust';
 }
 const lin = (v) => Math.pow(v / 255, 2.2);
@@ -128,13 +130,14 @@ export function buildTeren(o) {
     NR = 170,
     q = Math.pow(rMax / rMin, 1 / (NR - 1)),
     map = o.map,
-    base = o.col || [0.5, 0.5, 0.5];
+    alb = o.alb || 1,
+    base = (o.col || [0.5, 0.5, 0.5]).map((v) => Math.pow(v, 2.2) * (o.alb || 1));
   /* vzorek mapy v (šířka, délka) v radiánech → lineární barva, druh krajiny */
   const sample = (la, lo, out) => {
     if (!map) {
-      out[0] = Math.pow(base[0], 2.2);
-      out[1] = Math.pow(base[1], 2.2);
-      out[2] = Math.pow(base[2], 2.2);
+      out[0] = base[0];
+      out[1] = base[1];
+      out[2] = base[2];
       out[3] = 0;
       return out;
     }
@@ -179,7 +182,8 @@ export function buildTeren(o) {
       /* oblačná pokrývka obra: kupy a věže, vzdálené pásy */
       const b = fbm(x / 22000, y / 22000, seed, 4),
         c = Math.max(0, fbm(x / 6000, y / 6000, seed + 7, 4));
-      return 1400 * b + 2600 * c * c + 120 * fbm(x / 700, y / 700, seed + 9, 3);
+      /* kupy (asi 1–3 km) s „květákem“ navrchu */
+      return 1400 * b + 2600 * c * c + 260 * Math.abs(fbm(x / 900, y / 900, seed + 9, 4)) + 40 * fbm(x / 120, y / 120, seed + 10, 3);
     }
     let h = 0;
     if (T.far) h += T.far * (0.65 * ridged(x / 26000, y / 26000, seed, 5) + 0.35 * fbm(x / 9000, y / 9000, seed + 3, 4));
@@ -222,13 +226,35 @@ export function buildTeren(o) {
     const drop = Rm - Math.sqrt(Math.max(0, Rm * Rm - r * r)) /* zakřivení: přesně koule */;
     toLL(r, Math.atan2(x, y), ll);
     sample(ll[0], ll[1], sm);
-    let c0 = lin(sm[0]),
-      c1 = lin(sm[1]),
-      c2 = lin(sm[2]);
+    let c0 = lin(sm[0]) * alb,
+      c1 = lin(sm[1]) * alb,
+      c2 = lin(sm[2]) * alb;
     if (!sm[3]) {
       c0 = sm[0];
       c1 = sm[1];
       c2 = sm[2];
+    }
+    if (o.ground) {
+      /* půda, kterou mapa neukazuje (Venuše a Titan pod oblaky): barva z barevných snímků sond */
+      const v = 0.85 + 0.3 * fbm(x / 3000, y / 3000, seed + 31, 3);
+      c0 = o.ground[0] * v;
+      c1 = o.ground[1] * v;
+      c2 = o.ground[2] * v;
+    }
+    if (T.sat !== undefined) {
+      const l = 0.2126 * c0 + 0.7152 * c1 + 0.0722 * c2;
+      c0 = l + (c0 - l) * T.sat;
+      c1 = l + (c1 - l) * T.sat;
+      c2 = l + (c2 - l) * T.sat;
+    }
+    if (deck) {
+      /* oblačná pokrývka: vršky kup světlé, mezery tmavší (Jupiter a Saturn do hněda – hlubší oblaka) */
+      const t = Math.max(0, Math.min(1, (h - h0) / 3200 + 0.55)),
+        kk = 0.5 + 0.62 * t,
+        br = o.id === 'jupiter' || o.id === 'saturn' ? 1 : 0;
+      c0 *= kk;
+      c1 *= kk * (1 - br * 0.14 * (1 - t));
+      c2 *= kk * (1 - br * 0.28 * (1 - t));
     }
     const nn = 0.82 + 0.36 * (0.5 + 0.5 * fbm(x / 35, y / 35, seed + 21, 3)) * (T.typ === 'led' ? 0.8 : 1);
     let k = nn * (T.ton || 1) * (1 + 0.5 * ej[0]);
@@ -243,10 +269,11 @@ export function buildTeren(o) {
         c2 = 0.055;
         k = 1;
       } else if (bk === 'les') {
-        /* tráva a les: zelená z mapy, trochu světlejší (mapa je tmavá kvůli lesům) */
-        c0 *= 1.25;
-        c1 *= 1.35;
-        c2 *= 1.1;
+        /* louka: mapa ukazuje směs lesů a polí, zblízka je pod nohama tráva */
+        const g = 0.55 + 0.25 * fbm(x / 400, y / 400, seed + 41, 3);
+        c0 = c0 * (1 - g) + 0.045 * g;
+        c1 = c1 * (1 - g) + 0.085 * g;
+        c2 = c2 * (1 - g) + 0.02 * g;
       } else if (bk === 'led') {
         c0 = c1 = 0.75;
         c2 = 0.8;
@@ -310,14 +337,18 @@ export function buildTeren(o) {
 }
 /* ---------- kameny, oblázky, stromy ---------- */
 function rockGeo(seed, kind) {
-  const g = new THREE.IcosahedronGeometry(1, kind === 'oblazek' ? 2 : 1),
+  /* sloučit vrcholy, jinak má každá stěna vlastní normálu a kámen je hranatý jako krystal */
+  const g = mergeVertices(new THREE.IcosahedronGeometry(1, 2).deleteAttribute('normal').deleteAttribute('uv')),
     p = g.attributes.position;
   for (let k = 0; k < p.count; k++) {
     let x = p.getX(k),
       y = p.getY(k),
       z = p.getZ(k);
-    const n = gnoise(x * 1.7 + seed, y * 1.7, seed) * 0.5 + gnoise(x * 3.3, z * 3.3 + seed, seed + 3) * 0.25;
-    let s = kind === 'oblazek' ? 1 + 0.08 * n : 1 + 0.32 * n;
+    const n =
+      gnoise(x * 1.3 + seed, y * 1.3 + z * 0.7, seed) * 0.5 +
+      gnoise(x * 2.9 + z, z * 2.9 + seed, seed + 3) * 0.25 +
+      gnoise(y * 6.1 + x, z * 6.1, seed + 5) * 0.08;
+    let s = kind === 'oblazek' ? 1 + 0.08 * n : 1 + 0.38 * n;
     if (kind === 'deska') y *= 0.22;
     else if (kind !== 'oblazek') y *= 0.72;
     else y *= 0.6;
@@ -336,8 +367,8 @@ export function buildRocks(o, ter) {
   const kind = T.typ === 'venuse' ? 'deska' : T.typ === 'titan' ? 'oblazek' : 'kamen',
     mat = new THREE.MeshLambertMaterial({ vertexColors: false, color: 0xffffff }),
     sets = [
-      { n: Math.round(900 * T.kam), r0: 2, r1: 260, s0: 0.12 * T.kamMax, s1: T.kamMax, shadow: true },
-      { n: Math.round(2200 * Math.min(1.5, T.kam)), r0: 0.6, r1: 22, s0: 0.02, s1: 0.18 * T.kamMax + 0.04, shadow: true },
+      { n: Math.round(700 * T.kam), r0: 3, r1: 260, s0: 0.1 * T.kamMax, s1: T.kamMax, shadow: true, p: 3.2 },
+      { n: Math.round(2400 * Math.min(1.5, T.kam)), r0: 0.6, r1: 25, s0: 0.015, s1: 0.12 * T.kamMax + 0.03, shadow: true, p: 2.2 },
     ],
     m4 = new THREE.Matrix4(),
     qt = new THREE.Quaternion(),
@@ -361,7 +392,7 @@ export function buildRocks(o, ter) {
       /* shluky: kameny u kráterů a v pásech */
       if (fbm(x / 40, z / 40, seed + 57, 2) < -0.25 + 0.2 * hash2(k, 3, seed)) continue;
       if (ter.kindAt(x, z) === 1) continue; /* ne v moři */
-      const s = st.s0 * Math.pow(st.s1 / st.s0, Math.pow(hash2(k, si, seed + 58), 2.2)),
+      const s = st.s0 * Math.pow(st.s1 / st.s0, Math.pow(hash2(k, si, seed + 58), st.p)),
         y = ter.yAt(x, z);
       eu.set(hash2(k, 4, seed) * 0.5 - 0.25, hash2(k, 5, seed) * TAU, hash2(k, 6, seed) * 0.5 - 0.25);
       qt.setFromEuler(eu);
@@ -390,8 +421,23 @@ export function buildRocks(o, ter) {
 export function buildTrees(o, ter) {
   if (o.id !== 'earth') return [];
   const seed = o.seed,
-    cone = new THREE.ConeGeometry(1, 1, 7, 1),
-    ball = new THREE.IcosahedronGeometry(1, 1);
+    cone = mergeVertices(new THREE.ConeGeometry(1, 1, 9, 3).deleteAttribute('normal').deleteAttribute('uv')),
+    ball = mergeVertices(new THREE.IcosahedronGeometry(1, 2).deleteAttribute('normal').deleteAttribute('uv'));
+  /* koruny nepravidelné: zvlněný povrch, smrk s patry větví */
+  for (const [g, k] of [
+    [cone, 0.12],
+    [ball, 0.22],
+  ]) {
+    const p = g.attributes.position;
+    for (let j = 0; j < p.count; j++) {
+      const x = p.getX(j),
+        y = p.getY(j),
+        z = p.getZ(j),
+        n = 1 + k * gnoise(x * 2.3 + y, z * 2.3, 91) + (g === cone ? 0.1 * Math.sin(y * 18) : 0);
+      p.setXYZ(j, x * n, y, z * n);
+    }
+    g.computeVertexNormals();
+  }
   cone.translate(0, 0.5, 0);
   ball.translate(0, 0.5, 0);
   const mat = new THREE.MeshLambertMaterial({ color: 0xffffff }),
@@ -406,7 +452,7 @@ export function buildTrees(o, ter) {
     nl = 0;
   for (let k = 0; k < 40000 && (nj < 5000 || nl < 3000); k++) {
     const u = hash2(k, 1, seed + 77),
-      r = 25 * Math.pow(5000 / 25, u),
+      r = 70 * Math.pow(5000 / 70, u),
       th = hash2(k, 2, seed + 77) * TAU,
       x = r * Math.sin(th),
       z = -r * Math.cos(th);
@@ -415,7 +461,7 @@ export function buildTrees(o, ter) {
     const f = fbm(x / 900, z / 900, seed + 78, 4);
     if (f < 0.12) continue;
     const y = ter.yAt(x, z),
-      hgt = 12 + 18 * hash2(k, 3, seed + 77),
+      hgt = 9 + 16 * hash2(k, 3, seed + 77),
       con = hash2(k, 4, seed + 77) < 0.55;
     qt.identity();
     if (con && nj < 5000) {
@@ -424,15 +470,15 @@ export function buildTrees(o, ter) {
       m4.compose(ps, qt, sc);
       jeh.setMatrixAt(nj, m4);
       const v = 0.75 + 0.5 * hash2(k, 5, seed);
-      cc.setRGB(0.018 * v, 0.04 * v, 0.016 * v);
+      cc.setRGB(0.012 * v, 0.028 * v, 0.012 * v);
       jeh.setColorAt(nj++, cc);
     } else if (!con && nl < 3000) {
-      sc.set(hgt * 0.4, hgt * 0.85, hgt * 0.4);
-      ps.set(x, y + hgt * 0.12, z);
+      sc.set(hgt * 0.33, hgt * 0.8, hgt * 0.33);
+      ps.set(x, y + hgt * 0.15, z);
       m4.compose(ps, qt, sc);
       lis.setMatrixAt(nl, m4);
       const v = 0.75 + 0.5 * hash2(k, 6, seed);
-      cc.setRGB(0.03 * v, 0.06 * v, 0.02 * v);
+      cc.setRGB(0.022 * v, 0.045 * v, 0.016 * v);
       lis.setColorAt(nl++, cc);
     }
   }

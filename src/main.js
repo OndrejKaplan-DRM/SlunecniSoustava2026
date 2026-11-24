@@ -1,3 +1,4 @@
+import * as misto from './core/misto.js';
 import { createEngine } from './render/engine.js';
 import { createUI } from './ui/ui.js';
 import { createAudio } from './audio/audio.js';
@@ -61,4 +62,4 @@ S.bus.on('belt', (b) => {
 F.setKid(document.body.classList.contains('kid'));
 S.bus.on('mode', (k) => F.setKid(k));
 S.start();
-window.S200 = { S, ui, sim, A, mob, zv, orient, uk, sk, F, obloha, povrch };
+window.S200 = { S, ui, sim, A, mob, zv, orient, uk, sk, F, obloha, povrch, misto };

@@ -16,12 +16,15 @@ const ZEME = {
   aM: [0.444e-3, 0.444e-3, 0.444e-3],
   hM: 1.2,
   g: [0.8, 0.8, 0.8],
-  oz: [0.65e-3, 1.881e-3, 0.085e-3],
+  /* ozon: kanál R počítá Bruneton na 680 nm; pro barvu, jak ji vidí oko a fotoaparát (citlivost kolem 600 nm, kde Chappuisův
+     pás pohlcuje nejvíc), je pohlcování v červené větší – jinak by soumrak v nadhlavníku vyšel růžový místo modrofialový */
+  oz: [1.2e-3, 1.881e-3, 0.085e-3],
   /* gain: jen Rayleigh a čistý vzduch bez mnohonásobného rozptylu dávají oblohu asi 3× tmavší, než je skutečná (Preetham 1999:
      nadhlavník při Slunci 60° vysoko ~8 000 cd/m², náš výpočet ~1 300 cd/m²) – vyrovnání; refr: lom světla (Země = 1) */
-  gain: 3,
-  sat: 1.2,
+  gain: 2.4,
+  sat: 1.1,
   refr: 1,
+  ms: 0.4,
 };
 
 export const ATM = {
@@ -33,10 +36,12 @@ export const ATM = {
     bR: [0.12e-3, 0.28e-3, 0.68e-3],
     hR: 11.1,
     bM: [0.043, 0.036, 0.025],
-    aM: [0.002, 0.009, 0.02],
+    aM: [0.002, 0.011, 0.024],
     hM: 11,
     g: [0.62, 0.7, 0.8],
     refr: 0.02,
+    /* prach s τ ≈ 0,5 a albedem 0,9 rozptyluje světlo mnohokrát: obloha je jasnější a rovnoměrnější, než dá jednonásobný rozptyl */
+    ms: 3,
   },
   /* Titan: N₂ 1,5 baru při 94 K (4,5× hustota vzduchu), výšková škála 20 km; oranžový opar τ ≈ 4 (červená) až 10 (modrá) */
   titan: {
@@ -152,17 +157,20 @@ export const OBRI = new Set(['jupiter', 'saturn', 'uranus', 'neptune']);
 /* krajina: typ, reliéf (m) – far: vzdálené kopce, mid: zvlnění, near: drobný; krátery (hustota 0–1), kameny (hustota, max. velikost m),
    tón (násobí barvu mapy), mlha (dohlednost km, 0 = bez vzduchu) */
 const T = {
-  regolit: { typ: 'regolit', far: 900, mid: 40, near: 0.6, krat: 1, kam: 0.5, kamMax: 1.4, mlha: 0 },
-  merkur: { typ: 'regolit', far: 1100, mid: 50, near: 0.7, krat: 1, kam: 0.6, kamMax: 1.6, mlha: 0 },
-  mars: { typ: 'mars', far: 700, mid: 25, near: 0.35, krat: 0.35, kam: 0.9, kamMax: 1.1, mlha: 45 },
+  /* Měsíc: na snímcích z Apolla jsou kameny hlavně drobné, balvany jen ojediněle (u čerstvých kráterů) */
+  regolit: { typ: 'regolit', far: 900, mid: 40, near: 0.6, krat: 1, kam: 0.22, kamMax: 0.9, mlha: 0 },
+  merkur: { typ: 'regolit', far: 1100, mid: 50, near: 0.7, krat: 1, kam: 0.3, kamMax: 1.1, mlha: 0 },
+  /* Mars: barevné mapy jsou kvůli vzhledu přesycené, na snímcích vozítek je půda hnědožlutá (sat) */
+  mars: { typ: 'mars', far: 700, mid: 25, near: 0.35, krat: 0.35, kam: 0.9, kamMax: 0.8, mlha: 45, sat: 0.62 },
   zeme: { typ: 'zeme', far: 180, mid: 18, near: 0.15, krat: 0, kam: 0.03, kamMax: 0.6, mlha: 60, stromy: 1 },
   venuse: { typ: 'venuse', far: 300, mid: 8, near: 0.25, krat: 0.05, kam: 0.4, kamMax: 0.5, mlha: 8 },
   titan: { typ: 'titan', far: 150, mid: 12, near: 0.12, krat: 0, kam: 0.7, kamMax: 0.25, mlha: 6 },
   duny: { typ: 'duny', far: 150, mid: 6, near: 0.1, krat: 0, kam: 0.05, kamMax: 0.2, mlha: 6, duny: 1 },
-  led: { typ: 'led', far: 500, mid: 20, near: 0.3, krat: 0.5, kam: 0.3, kamMax: 1.2, mlha: 0, hrebeny: 0 },
+  led: { typ: 'led', far: 500, mid: 20, near: 0.3, krat: 0.5, kam: 0.2, kamMax: 0.8, mlha: 0, hrebeny: 0 },
   europa: { typ: 'led', far: 250, mid: 30, near: 0.4, krat: 0.08, kam: 0.4, kamMax: 1.0, mlha: 0, hrebeny: 1 },
   io: { typ: 'sira', far: 600, mid: 15, near: 0.2, krat: 0.02, kam: 0.3, kamMax: 0.8, mlha: 0, oblak: 1 },
-  pluto: { typ: 'led', far: 1200, mid: 25, near: 0.3, krat: 0.2, kam: 0.4, kamMax: 1.5, mlha: 0 },
+  /* Pluto: dusíkové pláně (Sputnik Planitia) a hory z vodního ledu vysoké až 3–5 km (New Horizons) */
+  pluto: { typ: 'led', far: 2200, mid: 25, near: 0.3, krat: 0.15, kam: 0.2, kamMax: 0.9, mlha: 0 },
   maly: { typ: 'regolit', far: 0, mid: 0, near: 0.5, krat: 1, kam: 1.6, kamMax: 3, mlha: 0, maly: 1 },
   kometa: { typ: 'kometa', far: 0, mid: 0, near: 1, krat: 0.3, kam: 1.2, kamMax: 4, mlha: 0, maly: 1 },
   mraky: { typ: 'mraky', mlha: 120 },
@@ -193,7 +201,7 @@ export function krajinaOf(b) {
   if (BY[b.id]) return BY[b.id];
   if (b.type === 'comet') return T.kometa;
   if (b.R < 300) return T.maly;
-  if (b.type === 'tno' || b.type === 'dwarf' || (b.type === 'moon' && (b.albedo || 0.2) > 0.3)) return T.led;
+  if ((b.type === 'tno' || b.type === 'dwarf' || b.type === 'moon') && (b.albedo || 0.2) > 0.3) return T.led;
   return T.regolit;
 }
 /* Titan: v rovníkovém pásu (±30°) písečné duny (Belet, Shangri-La), jinde oblázková pláň jako u Huygensu */

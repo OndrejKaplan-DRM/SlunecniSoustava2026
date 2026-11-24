@@ -11,6 +11,7 @@ import { AS } from '../core/asset.js';
 import { ATM, ATM_NAD, OVERCAST, OBRI, krajinaMista, KR } from '../data/krajiny.js';
 import { skyDir, sunAt, hemi, groundExt, ssa } from './atmo.js';
 import { buildTeren, buildRocks, buildTrees, seedOf, biome } from './teren.js';
+import HI_IDS from '../data/hi.json';
 const DEG = Math.PI / 180,
   RS = 696000;
 const VS = `in vec3 position; out vec2 vUv; void main(){ vUv = position.xy * 0.5 + 0.5; gl_Position = vec4(position.xy, 0.0, 1.0); }`;
@@ -60,7 +61,9 @@ void main(){
   oT = vec4(exp(-od), 1.0);
 }`;
 /* tónová křivka: do 0,7 lineární, nad tím měkké rameno (jasné Slunce a led se nepřepálí do plochy) */
-const TONE = `vec3 kTone(vec3 x){ vec3 s = 0.7 + 0.3 * (1.0 - exp(-(x - 0.7) / 0.3)); return mix(x, s, step(0.7, x)); }`;
+const TONE = `vec3 kTone(vec3 c){ float m = max(max(c.r, c.g), c.b); if (m <= 0.7) return c;
+  float t = 0.7 + 0.3 * (1.0 - exp(-(m - 0.7) / 0.3)); /* zachová odstín (oranžový západ nezbělá), jen velmi jasné místo kolem Slunce bledne do bílé */
+  return mix(c * (t / m), vec3(t), smoothstep(1.5, 12.0, m) * 0.9); }`;
 const COMP_FS = `precision highp float;
 in vec2 vUv;
 out vec4 oC;
@@ -246,7 +249,16 @@ export function createKrajina(S, renderer) {
           const g = c.getContext('2d', { willReadFrequently: true });
           g.drawImage(im, 0, 0);
           const d = g.getImageData(0, 0, c.width, c.height).data;
-          const m = { w: c.width, h: c.height, d };
+          /* průměrná lineární jasnost mapy (kvůli převodu na skutečné albedo půdy) */
+          let sm = 0,
+            n = 0;
+          for (let y = 0; y < c.height; y += Math.max(1, c.height >> 6))
+            for (let x = 0; x < c.width; x += Math.max(1, c.width >> 7)) {
+              const k = (y * c.width + x) * 4;
+              sm += 0.2126 * lin(d[k] / 255) + 0.7152 * lin(d[k + 1] / 255) + 0.0722 * lin(d[k + 2] / 255);
+              n++;
+            }
+          const m = { w: c.width, h: c.height, d, mean: sm / n };
           pr.map = m;
           res(m);
         } catch (e) {
@@ -255,7 +267,9 @@ export function createKrajina(S, renderer) {
         }
       };
       im.onerror = () => res(null);
-      im.src = AS('maps/' + id + '.webp');
+      /* podrobnější mapa (maps/hi), kde je a kde to paměť unese (ne telefon) */
+      const hi = (HI_IDS.includes ? HI_IDS.includes(id) : HI_IDS[id]) && !document.body.classList.contains('mob');
+      im.src = AS((hi ? 'maps/hi/' : 'maps/') + id + '.webp');
     });
     mapCache.set(id, pr);
     return pr;
@@ -338,7 +352,13 @@ export function createKrajina(S, renderer) {
       seed = seedOf(b.id, q.lat, q.lon),
       map = md === 'nad' ? null : mapNow(b.id);
     const col = md === 'nad' ? (b.id === 'venus' ? [0.95, 0.88, 0.7] : [0.75, 0.5, 0.25]) : b.col;
-    const o = { T, R: b.R, seed, map, lat: q.lat, lon: q.lon, col, id: b.id };
+    /* albedo půdy: barvy mapy přepočtené tak, aby průměr odpovídal albedu tělesa z katalogu (mapy jsou kvůli vzhledu
+       zesvětlené); Země vlastní (albedo planety zahrnuje oblaka), obři a oblaka beze změny */
+    const alb =
+      b.id === 'earth' ? 1.15 : md === 'nad' || OBRI.has(b.id) || !map ? 1 : Math.max(0.25, Math.min(3, (b.albedo || 0.15) / map.mean));
+    const gcol =
+      md === 'nad' ? null : b.id === 'venus' ? [0.085, 0.07, 0.06] : b.id === 'titan' ? [0.17, 0.13, 0.085] : null;
+    const o = { T, R: b.R, seed, map, lat: q.lat, lon: q.lon, col, id: b.id, alb, ground: gcol };
     const t0 = performance.now();
     ter = buildTeren(o);
     const mat = patch(new THREE.MeshLambertMaterial({ vertexColors: true }), true);
@@ -555,10 +575,26 @@ export function createKrajina(S, renderer) {
       const k = toa * oc.podil * Math.max(0, Math.min(1, (sz + 0.12) / 0.5)) ** 1.3;
       Eoc = oc.col.map((c) => c * k);
     }
-    const Edir = Tsun.map((t) => t * toa),
+    const Edir = Tsun.map((t) => (oc ? 0 : t * toa)),
       Eh = [0, 1, 2].map((k) => Edir[k] * Math.max(0, sz) + Esky[k] * toa + Epl[k] * plUp + Eoc[k]),
       E = lum(Eh),
-      X = brightOf(E) / (0.2 * Math.max(E, 1e-14));
+      Xg = brightOf(E) / (0.2 * Math.max(E, 3e-6)); /* pod úplňkem se oko už dál nepřizpůsobí (jinak by noc zhnědla) */
+    /* oko i fotoaparát se přizpůsobí i jasné obloze v záběru (západ Slunce): když by se obloha přepálila, expozice se
+       sníží – krajina potmavne, obloha zůstane barevná (napůl mezi „podle země“ a „podle oblohy“) */
+    let X = Xg;
+    if (atm) {
+      enu([v.fwd.x, v.fwd.y, v.fwd.z], f, tmp);
+      const h = Math.hypot(tmp[0], tmp[1]) || 1,
+        el = Math.max(0.035, Math.min(1.5, Math.asin(Math.max(-1, Math.min(1, tmp[2]))))),
+        hz = [tmp[0] / h, tmp[1] / h, 0],
+        a1 = skyDir(atm, b.R, h0, [hz[0] * Math.cos(el), hz[1] * Math.cos(el), Math.sin(el)], sE).L,
+        l1 = lum(a1),
+        l2 = lum(skyDir(atm, b.R, h0, [hz[0], hz[1], 0.035], sE).L),
+        Lv = Math.max(l1, l2) * toa * (atm.gain || 1),
+        Xs = 0.85 / (Math.PI * Math.max(1e-14, Lv));
+      X = Xg * Math.pow(Math.min(1, Xs / Xg), 0.62);
+      stat.Lv = Lv;
+    }
     /* krajina: světla (intenzita × π, Lambert dělí π) */
     const K = Math.PI * X;
     const sunUp = sz > -0.02 && !oc;
@@ -615,7 +651,8 @@ export function createKrajina(S, renderer) {
     cu.uSat.value = atm ? atm.sat || 1 : 1;
     /* mnohonásobný rozptyl přibližně: okolní záře úměrná světlu oblohy a odrazu od země */
     if (atm) {
-      const w = ssa(atm);
+      /* za soumraku mnohonásobný rozptyl slábne rychleji (osvětlená je jen horní řídká vrstva) */
+      const w = ssa(atm).map((x) => x * Math.max(0, Math.min(1, (sz + 0.1) / 0.2)));
       cu.uMs.value.set(
         ((Esky[0] + 0.15 * Edir[0] * Math.max(0, sz)) / (4 * Math.PI)) * w[0] * (atm.ms || 1),
         ((Esky[1] + 0.15 * Edir[1] * Math.max(0, sz)) / (4 * Math.PI)) * w[1] * (atm.ms || 1),
@@ -632,10 +669,10 @@ export function createKrajina(S, renderer) {
     U.uExt.value.set(ex[0], ex[1], ex[2]);
     /* hvězdy: přes den je přesvítí obloha; bez vzduchu je přezáří osvětlená krajina (oko je oslněné) */
     const Lzd = lum(Lz) * expS,
-      yh = 0.5 - 0.5 * (v.fwd.dot(v.n) / Math.max(1e-3, v.up.dot(v.n))) / ty,
+      yh = 0.5 + 0.5 * (v.fwd.dot(v.n) / Math.max(1e-3, v.up.dot(v.n))) / ty,
       ground = Math.max(0, Math.min(1, 1 - yh)),
       glare = Math.max(0, Math.min(1, (Math.log10(Math.max(1e-12, E)) + 3.2) / 2.4));
-    S.skyDim = oc ? 1 : Math.max(Math.min(1, Lzd / 0.12), glare * ground * 0.9);
+    S.skyDim = oc ? 1 : Math.max(Math.min(1, Lzd / 0.12), glare * Math.min(1, ground * 2.5) * 0.95);
     stat.mode = md;
     stat.E = E;
     stat.X = X;
