@@ -72,11 +72,12 @@ out vec4 oC;
 uniform sampler2D tScene, tL, tT;
 uniform vec3 uRt, uUp, uFw, uMs;
 uniform vec2 uTan;
-uniform float uExp, uRefK, uMask, uOpq, uSat;
+uniform float uExp, uRefK, uMask, uOpq, uSat, uSunR;
+uniform vec3 uS;
 ${TONE}
 void main(){
   vec2 nd = vUv * 2.0 - 1.0;
-  vec3 d = normalize(uFw + nd.x * uTan.x * uRt + nd.y * uTan.y * uUp);
+  vec3 d = normalize(uFw + nd.x * uTan.x * uRt + nd.y * uTan.y * uUp), dTrue = d;
   vec2 uv = vUv;
   if (uRefK > 0.0) {
     /* lom světla (Bennett 1982): těleso vidíme výš, než skutečně je; z obrazu bereme bod o lom níž */
@@ -88,6 +89,7 @@ void main(){
       vec3 dt = vec3(hz * cos(et), sin(et));
       float z = dot(dt, uFw);
       if (z > 1e-3) uv = vec2(dot(dt, uRt) / z / uTan.x, dot(dt, uUp) / z / uTan.y) * 0.5 + 0.5;
+      dTrue = dt;
     }
   }
   vec3 s = pow(texture(tScene, uv).rgb, vec3(2.2));
@@ -96,10 +98,13 @@ void main(){
   vec3 L = kTone(Lr * uExp);
   float lb = dot(L, vec3(0.2126, 0.7152, 0.0722));
   L = max(vec3(0.0), mix(vec3(lb), L, uSat));
-  vec3 st = s * Tt * (1.0 - uOpq);
+  /* kotouč Slunce: v obraze scény má jas nejvýš 1, ve skutečnosti je mnohem jasnější než obloha – zesílit, ať po zeslabení
+     v atmosféře zůstane jasně oranžový a nezmizí v záři kolem sebe */
+  float sm = 1.0 - smoothstep(uSunR * 0.85, uSunR * 1.25, acos(clamp(dot(dTrue, uS), -1.0, 1.0)));
+  vec3 st = s * Tt * (1.0 - uOpq) * (1.0 + 80.0 * sm);
   float c = dot(st, vec3(0.2126, 0.7152, 0.0722));
-  /* hvězda zmizí, když je slabší než jas oblohy kolem (práh kontrastu oka) */
-  float m = clamp(1.0 - uMask * lb / max(c, 1e-5), 0.0, 1.0);
+  /* hvězda zmizí, když je slabší než jas oblohy kolem (práh kontrastu oka); Slunce ne */
+  float m = mix(clamp(1.0 - uMask * lb / max(c, 1e-5), 0.0, 1.0), 1.0, sm);
   oC = vec4(pow(st * m + L, vec3(1.0 / 2.2)), 1.0);
 }`;
 const lin = (v) => Math.pow(v, 2.2);
@@ -218,6 +223,8 @@ export function createKrajina(S, renderer) {
       uMask: { value: 1 },
       uOpq: { value: 0 },
       uSat: { value: 1 },
+      uSunR: { value: 0.0047 },
+      uS: skyMat.uniforms.uS,
     },
     depthTest: false,
     depthWrite: false,
@@ -790,6 +797,7 @@ export function createKrajina(S, renderer) {
     su.uPre.value = expS;
     cu.uExp.value = 1;
     cu.uOpq.value = oc ? 1 : 0;
+    cu.uSunR.value = Math.max(0.0012, Math.atan(RS / dS)); /* úhlový poloměr Slunce (min. ~0,07°, ať je vidět i z Pluta) */
     cu.uSat.value = atm ? atm.sat || 1 : 1;
     /* mnohonásobný rozptyl přibližně: okolní záře úměrná světlu oblohy a odrazu od země */
     if (atm) {

@@ -30,6 +30,7 @@ export const CASES = [
   ['zeme_soumrak', 'earth', 50.09, 14.42, -5, 'sun', 10, 70, true],
   ['zeme_noc', 'earth', 50.09, 14.42, -14, 180, 25, 70],
   ['zeme_poust', 'earth', 25.69, 32.64, 30, 'sun+120', 8, 70],
+  ['zeme_lom', 'earth', 25.69, 32.64, -0.25, 'sun', 0.2, 3, true],
   ['mars_den', 'mars', -4.59, 137.442, 45, 'sun+150', 8, 70],
   ['mars_zapad', 'mars', -4.59, 137.442, 2, 'sun', 6, 60, true],
   ['mesic_den', 'moon', 0.674, 23.473, 20, 'sun+120', 6, 70],
