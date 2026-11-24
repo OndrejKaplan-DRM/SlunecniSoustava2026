@@ -44,7 +44,7 @@ button.pri { background: rgba(255, 200, 87, 0.18); border-color: rgba(255, 200, 
 #b-con { position: relative; } #b-con::after { content: ""; position: absolute; left: 7px; bottom: 2px; height: 2px; border-radius: 1px; width: calc((100% - 14px) * var(--lv, 0) / 3); background: var(--ac); transition: width .25s; }
 #tools label { display: flex; align-items: center; gap: 5px; color: var(--mu); font-size: 12.5px; padding: 0 2px; } #gam { width: 62px; accent-color: var(--ac); } #vol { width: 120px; accent-color: var(--ac); vertical-align: middle; }
 #score { color: #ffe7ad; font-weight: 600; }
-#mission { top: 62px; left: 50%; transform: translateX(-50%); padding: 7px 8px 7px 14px; max-width: min(640px, 60vw); display: flex; gap: 8px; align-items: center; border-color: rgba(255, 200, 87, 0.4); }
+#mission { top: 62px; left: 50%; transform: translateX(-50%); padding: 7px 8px 7px 14px; max-width: max(320px, min(640px, 60vw, calc(100vw / var(--bk, 1) - 760px))); display: flex; gap: 8px; align-items: center; border-color: rgba(255, 200, 87, 0.4); }
 #mission button { padding: 1px 8px; } #mission i { color: var(--ac); }
 #card { top: 62px; right: 10px; width: 318px; max-height: calc(var(--vh) - var(--dk, 120px) - 80px); overflow: auto; padding: 12px 14px; -webkit-user-select: text; user-select: text; }
 #card .hd { display: flex; gap: 11px; align-items: center; } #card h2 { margin: 0; font-size: 19px; line-height: 1.2; } .sub { color: var(--mu); font-size: 12.5px; }

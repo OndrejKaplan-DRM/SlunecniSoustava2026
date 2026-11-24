@@ -182,13 +182,14 @@ export function buildTeren(o) {
      Jupiter: věže asi 50 km široké i vysoké (Juno, PIA21647); Saturn hlouběji pod oparem (výšková škála 59,5 km), Uran a Neptun
      skoro hladké (Neptun: jednotlivá vyvýšená oblaka nad hlubší vrstvou, Voyager 2) – Saturn, Uran a Neptun jsou odhad */
   const DK = {
-      jupiter: { p: 0.2, H: [15000, 45000], k: 1 },
-      saturn: { p: 0.06, H: [8000, 25000], k: 0.6 },
+      jupiter: { p: 0.13, H: [12000, 40000], k: 1 },
+      saturn: { p: 0.05, H: [8000, 22000], k: 0.6 },
       uranus: { p: 0.03, H: [3000, 8000], k: 0.4 },
       neptune: { p: 0.08, H: [4000, 12000], k: 0.4 },
     },
     dk = deck ? DK[o.id] || DK.jupiter : null,
     CELL = 70000;
+  /* věž = několik kup (laloků) různé velikosti, jako květák kupovité oblačnosti; obrys a vršky zvlněné šumem */
   const tower = (x, y) => {
     const cx = Math.floor(x / CELL),
       cy = Math.floor(y / CELL);
@@ -198,18 +199,25 @@ export function buildTeren(o) {
         const gx = cx + i,
           gy = cy + j;
         if (hash2(gx, gy, seed + 41) > dk.p) continue;
-        const px = (gx + 0.15 + 0.7 * hash2(gx, gy, seed + 42)) * CELL,
-          py = (gy + 0.15 + 0.7 * hash2(gx, gy, seed + 43)) * CELL;
+        const px = (gx + 0.2 + 0.6 * hash2(gx, gy, seed + 42)) * CELL,
+          py = (gy + 0.2 + 0.6 * hash2(gx, gy, seed + 43)) * CELL;
         /* ne nad pozorovatelem ani těsně u něj (zakryla by výhled) */
-        if (Math.hypot(px, py) < 32000) continue;
+        if (Math.hypot(px, py) < 34000) continue;
         const H = dk.H[0] + (dk.H[1] - dk.H[0]) * hash2(gx, gy, seed + 44),
-          rr = 0.5 * H * (0.8 + 0.5 * hash2(gx, gy, seed + 45)),
-          d = Math.hypot(x - px, y - py) / (rr * (1 + 0.22 * fbm(x / 9000, y / 9000, seed + 46, 3)));
-        if (d >= 1) continue;
-        /* kupa se strmými boky a „květákem“ navrchu */
-        h = Math.max(h, H * Math.sqrt(1 - d * d) * (0.86 + 0.14 * Math.abs(fbm(x / 2600, y / 2600, seed + 47, 3))));
+          rr = 0.55 * H * (0.8 + 0.5 * hash2(gx, gy, seed + 45));
+        if (Math.abs(x - px) > 1.6 * rr || Math.abs(y - py) > 1.6 * rr) continue;
+        const wob = 1 + 0.18 * fbm(x / 5000, y / 5000, seed + 46, 3);
+        for (let l = 0; l < 5; l++) {
+          const a = hash2(gx * 7 + l, gy, seed + 50) * TAU,
+            o = l ? rr * (0.25 + 0.4 * hash2(gx, gy * 7 + l, seed + 51)) : 0,
+            r = rr * (l ? 0.38 + 0.3 * hash2(gx + l, gy, seed + 52) : 0.62),
+            hl = H * (l ? 0.45 + 0.4 * hash2(gx, gy + l, seed + 53) : 1),
+            d = Math.hypot(x - px - o * Math.cos(a), y - py - o * Math.sin(a)) / (r * wob);
+          if (d < 1) h = Math.max(h, hl * Math.pow(1 - d * d, 0.42));
+        }
       }
-    return h;
+    /* „květák“ na povrchu věže */
+    return h > 0 ? h * (0.84 + 0.16 * Math.abs(fbm(x / 3200, y / 3200, seed + 47, 3))) : 0;
   };
   /* reliéf (m) v bodě (x východ, y sever); minD = nejmenší kráter, který má smysl při hustotě mřížky */
   const ej = [0];
