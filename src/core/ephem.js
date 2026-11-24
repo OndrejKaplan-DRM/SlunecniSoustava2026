@@ -240,8 +240,10 @@ export function satPos(o, F, jd, out, corr = null) {
     // kvadratický člen v délce a periodické členy podél dráhy (0), kolmo k ní (1), průvodič (2).
     // Verze 2.1 (fit na JPL Horizons 1900–2100): mimo okno fitu pokračuje délka po tečně (se sklonem na okraji okna) –
     // dřív se polynom na okraji zastavil a střední pohyb se tím skokem změnil.
+    // Výjimka `sek`: kvadratický člen je skutečné slapové zrychlení (Phobos 1,26·10⁻³ °/rok², shodně s Jacobsonem a Laineym 2014),
+    // ten pokračuje i mimo okno.
     const p = corr.poly,
-      tc = corr.win ? Math.min(corr.win[1], Math.max(corr.win[0], t)) : t;
+      tc = corr.win && !corr.sek ? Math.min(corr.win[1], Math.max(corr.win[0], t)) : t;
     L += p[0] + p[1] * tc + p[2] * tc * tc + (tc !== t ? (p[1] + 2 * p[2] * tc) * (t - tc) : 0);
     for (const c of corr.terms) {
       const v = c[2] * Math.cos(c[1] * t) + c[3] * Math.sin(c[1] * t);

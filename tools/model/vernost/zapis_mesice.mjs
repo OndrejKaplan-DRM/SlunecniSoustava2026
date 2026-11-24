@@ -7,6 +7,8 @@ const cat = JSON.parse(fs.readFileSync('src/data/cat.json', 'utf8')),
   g = (v, n = 12) => +v.toPrecision(n),
   TAU = 2 * Math.PI;
 let n = 0;
+/* měsíce, u nichž je kvadratický člen délky fyzikální (slapové zrychlení), a smí proto pokračovat i za oknem fitu */
+const SEK = new Set(['phobos']);
 for (const b of cat.bodies) {
   const r = fit[b.id];
   if (!r || b.orbit.kind !== 'sat') continue;
@@ -23,6 +25,7 @@ for (const b of cat.bodies) {
     poly: r.corr.poly.map((x) => g(x, 9)),
     win: r.corr.win.map((x) => Math.round(x * 100) / 100),
     terms: r.corr.terms.map((t) => [t[0], ...t.slice(1).map((x) => g(x, 9))]),
+    ...(SEK.has(b.id) ? { sek: 1 } : {}),
     rms0_deg: g(r.rms_base, 4),
     rms_deg: g(r.rms, 4),
   };
