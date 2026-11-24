@@ -62,6 +62,16 @@ const dur = (d) => {
 const ang = (deg) =>
   deg >= 1 ? nf(deg, 2) + '°' : deg >= 1 / 60 ? nf(deg * 60, 1) + '′' : nf(deg * 3600, deg * 3600 < 10 ? 1 : 0) + '″';
 const WIND = ['S', 'SV', 'V', 'JV', 'J', 'JZ', 'Z', 'SZ'];
+const KIDW = [
+  'na severu',
+  'na severovýchodě',
+  'na východě',
+  'na jihovýchodě',
+  'na jihu',
+  'na jihozápadě',
+  'na západě',
+  'na severozápadě',
+];
 const b64 = (s, T) => {
   const bin = atob(s),
     u = new Uint8Array(bin.length);
@@ -172,7 +182,16 @@ export function createPovrchInfo(S, A, ui, P0) {
     RSC.set(j, r);
   }
   // ---------- panel ----------
-  const kid = P0.kid;
+  const kid = P0.kid,
+    TABS = [
+      ['tel', '☀ Tělesa'],
+      ['hve', '✨ Hvězdy'],
+      ['osa', '🌐 Osa'],
+      ['obl', '🎨 Barva'],
+      ['poh', '🔭 Pohled'],
+      ['vod', '⌗ Vodítka'],
+    ],
+    KID_TABS = ['tel', 'hve', 'obl', 'vod'];
   let tT = 0,
     lastKey = '';
   const sunEl = () => {
@@ -207,21 +226,17 @@ export function createPovrchInfo(S, A, ui, P0) {
     pan.innerHTML =
       `<button class="x" data-p="close" title="Zavřít panel">×</button><h3>📋 Obloha odsud: ${b.cs}</h3>` +
       `<div class="sp-sec"><label>📍 Místo <select data-p="place"><option value="">vybrat místo…</option>${pl.map((p, k) => `<option value="${k}">${p[0]}</option>`).join('')}<option value="sun">☀ Slunce v nadhlavníku (teď)</option><option value="term">🌅 Východ Slunce (teď)</option></select></label>` +
-      `<div class="sp-row"><label>šířka <input data-p="lat" type="number" min="-90" max="90" step="0.01" inputmode="decimal"></label><label>vých. délka <input data-p="lon" type="number" min="-360" max="360" step="0.01" inputmode="decimal"></label><button data-p="go" title="Přesunout se na zadané souřadnice">Jít</button></div>` +
+      (kid()
+        ? ''
+        : `<div class="sp-row"><label>šířka <input data-p="lat" type="number" min="-90" max="90" step="0.01" inputmode="decimal"></label><label>vých. délka <input data-p="lon" type="number" min="-360" max="360" step="0.01" inputmode="decimal"></label><button data-p="go" title="Přesunout se na zadané souřadnice">Jít</button></div>`) +
       `<div class="sp-row"><label>🕐 UT <input data-p="time" type="datetime-local" step="60"></label><button data-p="now" title="Skutečný čas">Teď</button></div>` +
       `<div class="sp-row sp-step"><button data-p="t" data-d="-1">−1 den</button><button data-p="t" data-d="-0.0416667">−1 h</button><button data-p="t" data-d="-0.0069444">−10 min</button><button data-p="t" data-d="0.0069444">+10 min</button><button data-p="t" data-d="0.0416667">+1 h</button><button data-p="t" data-d="1">+1 den</button></div>` +
       `<p class="sp-lst"></p></div>` +
-      `<div class="sp-tabs">${[
-        ['tel', '☀ Tělesa'],
-        ['hve', '✨ Hvězdy'],
-        ['osa', '🌐 Osa'],
-        ['obl', '🎨 Barva'],
-        ['poh', '🔭 Pohled'],
-        ['vod', '⌗ Vodítka'],
-      ]
+      `<div class="sp-tabs">${TABS.filter((t) => !kid() || KID_TABS.includes(t[0]))
         .map((t) => `<button data-p="tab" data-t="${t[0]}" class="${G.tab === t[0] ? 'sel' : ''}">${t[1]}</button>`)
         .join('')}</div><div class="sp-body"></div>` +
-      `<p class="sp-foot">Polohy jsou zdánlivé (s dobou letu světla), obzor matematický, bez lomu světla. Model je ověřený proti JPL Horizons – viz nápověda.</p>`;
+      `<p class="sp-foot">${kid() ? 'Tělesa jsou tam, kde by je viděl astronaut stojící na tomhle místě. Ověřeno podle NASA.' : 'Polohy jsou zdánlivé (s dobou letu světla), obzor matematický, bez lomu světla. Model je ověřený proti JPL Horizons – viz nápověda.'}</p>`;
+    if (kid() && !KID_TABS.includes(G.tab)) G.tab = 'tel';
     fill(true);
   }
   function fill(force) {
@@ -296,6 +311,17 @@ export function createPovrchInfo(S, A, ui, P0) {
     tel(q, b) {
       const r = rowsOf(q),
         earth = q.i === EARTH;
+      if (kid())
+        return (
+          `<table class="sp-t"><tr><th>těleso</th><th>kde</th><th>jak vysoko</th><th></th></tr>` +
+          r
+            .map(
+              (x) =>
+                `<tr class="${x.up ? (x.vis ? 'up' : 'dim') : 'dn'}${q.track === x.j ? ' tr' : ''}" data-j="${x.j}" title="Klikni a podívej se na něj"><td>${B[x.j].cs}</td><td>${KIDW[Math.round(x.az / 45) % 8]}</td><td>${x.el >= 0 ? nf(x.el, 0) + '° nad obzorem' : 'pod obzorem'}</td><td><small>${x.st}</small></td></tr>`
+            )
+            .join('') +
+          `</table><p class="sp-note">Klikni na řádek a pohled se k tělesu otočí. 90° nad obzorem = přímo nad hlavou.</p>`
+        );
       return (
         `<table class="sp-t"><tr><th>těleso</th><th>azimut</th><th>výška</th><th>průměr</th><th>jasnost</th><th></th></tr>` +
         r

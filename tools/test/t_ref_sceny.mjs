@@ -31,6 +31,8 @@ function look(i, lat, lon, j, jd, out) {
 }
 const fmt = (d) => (d < 1 / 60 ? (d * 3600).toFixed(1) + '″' : d < 1 ? (d * 60).toFixed(2) + '′' : d.toFixed(2) + '°');
 const R = { sun: 695700 };
+/* přesnost polohy na obloze (″), ze které se odvozují meze: ze Země změřeno do 24″, z Marsu a odjinud podle přesnosti drah měsíců */
+const TOL = { earth: 25, mars: Number(process.env.SCENY_TOL_MARS || 360), moon: 25, jine: 1800 };
 const radius = (j) => R[B[j].id] || B[j].R;
 let bad = 0;
 const vysl = [];
@@ -69,16 +71,22 @@ for (const s of ref.sceny) {
     }
     const dt = (best[1] - s.jd) * 86400,
       dsep = (best[0] - s.min_sep) * 60;
+    /* rychlost vzájemného pohybu v okolí minima: sep(t) = √(d0² + v²·Δt²) → v v ″/s; tolerance času = 2 × přesnost polohy / v
+       (u pomalých úkazů, jako je konjunkce Jupiteru se Saturnem, je minimum ploché a čas sám nic neříká – hlídá se vzdálenost) */
+    look(i, s.lat, s.lon, a, best[1] + 60 / 86400, pa);
+    look(i, s.lat, s.lon, b, best[1] + 60 / 86400, pb);
+    const s60 = sep(pa[0], pa[1], pb[0], pb[1]) / DEG,
+      vrel = (Math.sqrt(Math.max(0, s60 * s60 - best[0] * best[0])) * 3600) / 60;
     /* přechod / zákryt nastane, když je vzdálenost středů menší než součet poloměrů */
-    const kont = (best[0] < (best[2] + best[3]) / 2) === (s.min_sep < ((s.r_a || 0) + (s.r_b || 0)) / 7200);
-    r.ukaz = { dt, sep_model: best[0] * 60, sep_hz: s.min_sep * 60, souhlas: kont };
-    line += `  úkaz: čas ${dt >= 0 ? '+' : ''}${dt.toFixed(0)} s, vzdálenost ${(best[0] * 60).toFixed(2)}′ (Horizons ${(s.min_sep * 60).toFixed(2)}′)${kont ? '' : '  ✗ úkaz nenastane'}`;
-    /* meze: Phobos se pohybuje po obloze asi 0,3°/min – 30 s je 0,15°; zatmění a konjunkce ze Země přesněji */
-    const limT = s.c === 'earth' ? 20 : 60;
-    if (!kont || Math.abs(dt) > limT) bad++, (line += '  ✗');
+    const kont = best[0] < (best[2] + best[3]) / 2 === s.min_sep < ((s.r_a || 0) + (s.r_b || 0)) / 7200;
+    const tol = TOL[s.c] || TOL.jine,
+      limT = Math.max(5, (2 * tol) / vrel);
+    r.ukaz = { dt, sep_model: best[0] * 60, sep_hz: s.min_sep * 60, souhlas: kont, v: vrel, limT };
+    line += `  úkaz: čas ${dt >= 0 ? '+' : ''}${dt.toFixed(0)} s (mez ${limT.toFixed(0)} s při ${vrel.toFixed(vrel < 1 ? 3 : 1)}″/s), vzdálenost ${(best[0] * 60).toFixed(2)}′ (Horizons ${(s.min_sep * 60).toFixed(2)}′)${kont ? '' : '  ✗ úkaz nenastane'}`;
+    if (!kont || Math.abs(dt) > limT || Math.abs(dsep * 60) > 2 * tol) (bad++, (line += '  ✗'));
   }
-  const limP = s.c === 'earth' ? 1 / 60 : s.c === 'mars' ? 0.2 : 1;
-  if (worst > limP) bad++, (line += `  ✗ (mez ${fmt(limP)})`);
+  const limP = (2 * (TOL[s.c] || TOL.jine)) / 3600;
+  if (worst > limP) (bad++, (line += `  ✗ (mez ${fmt(limP)})`));
   vysl.push(r);
   console.log(line);
 }

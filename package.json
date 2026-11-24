@@ -18,6 +18,8 @@
     "offline:hi": "node tools/build/build_offline.mjs SlunecniSoustava200.html --hi",
     "format": "prettier --write \"src/**/*.js\" \"tools/**/*.mjs\"",
     "test:fakta": "esbuild tools/test/t_fakta.mjs --bundle --platform=node --format=esm --outfile=/tmp/t_fakta.mjs --log-level=error && node /tmp/t_fakta.mjs",
-    "test:model": "esbuild tools/test/t_model.mjs --bundle --platform=node --format=esm --outfile=/tmp/t_model.mjs --log-level=error && node /tmp/t_model.mjs"
+    "test:model": "esbuild tools/test/t_model.mjs --bundle --platform=node --format=esm --outfile=/tmp/t_model.mjs --log-level=error && node /tmp/t_model.mjs",
+    "test:vernost": "esbuild tools/test/t_vernost.mjs --bundle --platform=node --format=esm --outfile=/tmp/t_vernost.mjs --log-level=error && node /tmp/t_vernost.mjs",
+    "test:sceny": "esbuild tools/test/t_ref_sceny.mjs --bundle --platform=node --format=esm --outfile=/tmp/t_ref_sceny.mjs --log-level=error && node /tmp/t_ref_sceny.mjs"
   }
 }
