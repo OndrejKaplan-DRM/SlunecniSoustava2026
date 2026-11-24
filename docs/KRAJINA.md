@@ -114,4 +114,5 @@ Ondřej: „povrch mraků možná nepatrně méně vertikálně členitý – po
 ## 6. Srovnání se snímky sond
 `docs/ref/krajina_srovnani.jpg` (vytváří `tools/test/krajina_srovnani.py`): snímek sondy vlevo, aplikace 2.2 vpravo – Hadley Delta
 (Apollo 15), Mount Sharp (Curiosity), modrý západ Slunce na Marsu, Titan (Huygens), regolit (Apollo 17), Mars (Opportunity).
-Mřížka 12 pohledů: `docs/ref/krajina_snimky.jpg`.
+Mřížka 12 pohledů: `docs/ref/krajina_snimky.jpg`. Verze 2.2b: `docs/ref/krajina_snimky_2_2b.jpg` (noc v Grónsku, Pluto, Měsíc ráno, oblaka obrů) a tok přistání
+`docs/ref/pristani_2_2b.jpg` (karta, míření, sestup, povrch, vzlet kolečkem).
