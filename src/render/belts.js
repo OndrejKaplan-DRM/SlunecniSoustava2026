@@ -12,7 +12,7 @@ const VS = /* glsl */ `
 #include <common>
 #include <logdepthbuf_pars_vertex>
 attribute vec4 aEl; attribute vec3 aPh;
-uniform float uT; uniform vec3 uOff; uniform float uPx; uniform float uA; uniform float uSize;
+uniform float uT; uniform vec3 uOff; uniform float uPx; uniform float uA; uniform float uSize; uniform float uPow;
 varying float vA;
 void main(){
   float a = aEl.x, e = aEl.y;
@@ -24,7 +24,7 @@ void main(){
   vec3 p = vec3(ecl.x, ecl.z, -ecl.y) * 149597870.7 + uOff;
   gl_Position = projectionMatrix * viewMatrix * vec4(p, 1.0);
   #include <logdepthbuf_vertex>
-  vA = uA * aPh.z;
+  vA = uA * pow(aPh.z, uPow);
   gl_PointSize = uSize * uPx * (0.7 + 0.6 * aPh.z);
 }`;
 const FS = /* glsl */ `
@@ -146,6 +146,7 @@ export function createBelts(scene, S, sstep) {
         uPx: { value: 1 },
         uA: { value: 0 },
         uSize: { value: size },
+        uPow: { value: 1 },
         uCol: { value: new THREE.Color(col[0], col[1], col[2]) },
       },
       vertexShader: VS,
@@ -194,7 +195,28 @@ export function createBelts(scene, S, sstep) {
       col: '170, 198, 240',
     },
   ];
-  const X = { on: true, seen: {}, belts };
+  /* Verze 2.1 – výraznost teček. Skutečnost: z přehledu soustavy by nebyla vidět žádná planetka (Ceres by z 7 AU nad Sluncem měla
+     asi 11–12 mag, oko končí u 6 mag; ze Země je na hranici viditelnosti jen Vesta, nejvýš 5,2 mag). Tečky jsou tedy ilustrace
+     a nemají přebíjet skutečná tělesa: stupeň 1 „nenápadné“ (výchozí) je kreslí menší a slabší než značky těles z katalogu
+     a většinu z nich hodně slabě (málo velkých, mnoho malých); stupeň 2 „výrazné“ je vzhled z verze 1.8a; 0 = vypnuto. */
+  const LV = [
+    { k: 0, sz: 1, pw: 1 },
+    { k: 0.5, sz: 0.8, pw: 2.2 },
+    { k: 1, sz: 1, pw: 1 },
+  ];
+  const X = {
+    lvl: 1,
+    seen: {},
+    belts,
+    get on() {
+      return X.lvl > 0;
+    },
+    set on(v) {
+      X.lvl = v ? X.lvl || 1 : 0;
+    },
+    /* k čemu se průhlednost a velikost teček násobí (pro zkoušky a nápovědu) */
+    level: () => LV[X.lvl],
+  };
   /* jednou za snímek: průhlednost podle výšky kamery a zdánlivé velikosti pásu, poloha Slunce vůči kameře, čas */
   X.update = (C, F, alt, PR, dt) => {
     const sx = P[SUN * 3] - C[0],
@@ -221,8 +243,9 @@ export function createBelts(scene, S, sstep) {
       b.pts.visible = b.a > 0.004;
       if (!b.pts.visible) continue;
       b.apx = apx;
-      u.uA.value = b.a * dens;
-      u.uSize.value = b.size * Math.max(0.6, Math.min(1, apx / 220));
+      u.uA.value = b.a * dens * (X.lvl ? LV[X.lvl].k : 1);
+      u.uPow.value = LV[X.lvl || 1].pw;
+      u.uSize.value = b.size * Math.max(0.6, Math.min(1, apx / 220)) * LV[X.lvl || 1].sz;
       u.uOff.value.set(sx, sy, sz);
       u.uT.value = S.jd - epoch;
       u.uPx.value = Math.max(1, PR) * (S.txtK > 1 ? Math.min(1.5, S.txtK) : 1) * (S.kid ? 1.15 : 1);

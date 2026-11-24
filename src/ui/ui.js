@@ -1,7 +1,9 @@
 // Soustava 200 – ovládání, panely, deník astronoma (hra).
 import { B, N, P, idx, par, kids, root, SUN, EARTH, AU, period, semi, shape } from '../core/sim.js';
 import { factsOf } from '../data/facts.js';
+import { slozeniOf } from '../data/slozeni.js';
 import { drawBall, ballSize, loadMap } from '../render/ball.js';
+import { pairView } from './porovnani.js';
 import { RATE_LABEL } from '../render/engine.js';
 import { createTutorial } from './tutorial.js';
 import CAT from '../data/cat.json';
@@ -601,7 +603,11 @@ export function createUI(S, A) {
           : `<b>${m}</b> ${m === 1 ? 'známý' : m < 5 ? 'známé' : 'známých'}${m > 4 ? ' <small>(stav k dubnu 2026)</small>' : ''}${inm && inm < m ? ` <small>· v modelu ${inm}</small>` : ''}`,
       ]);
     }
-    if (b.atm && b.atm.comp) rows.push(['Atmosféra', b.atm.comp]);
+    /* 2.1: atmosféra a složení (data/slozeni.js); podrobně v Superkartě */
+    const slz = slozeniOf(b);
+    if (!slz.atm.zadna) rows.push(['Atmosféra', slz.atm.adult]);
+    else if (b.type === 'planet' || b.type === 'moon' || b.type === 'dwarf') rows.push(['Atmosféra', 'žádná']);
+    if (slz.nitro && slz.nitro.adult) rows.push(['Složení', slz.nitro.adult]);
     if (b.disc) rows.push(['Objev', `${b.disc[0]}${b.disc[1] ? ', ' + b.disc[1] : ''}`]);
     if (b.missions) rows.push(['Sondy', b.missions]);
     const seen = G.seen[b.id],
@@ -656,6 +662,8 @@ export function createUI(S, A) {
           ]
         );
       tiles.push(['📏', `Průměr <b>${fmtDist(D).replace(/ \(.*/, '')}</b>${i === EARTH ? '' : ' – ' + sizeLike(D)}.`]);
+      if (!slz.atm.zadna && slz.atm.kid) tiles.push([i === SUN ? '🔥' : '🌬️', slz.atm.kid]);
+      if (slz.nitro && slz.nitro.kid && slz.vlastni) tiles.push(['🪨', slz.nitro.kid]);
       if (b.rot)
         tiles.push([
           '🌗',
@@ -693,7 +701,7 @@ export function createUI(S, A) {
       nx = S.focus === i ? nextUp(i) : [],
       e = el('div', 'more');
     e.innerHTML =
-      `<div class="row"><button data-a="cmp" title="Porovnat velikost">⚖ ${K() ? 'Jak je to velké?' : 'Porovnat'}</button><button data-a="pin" title="Měřit vzdálenost odsud (Shift+D)">📏 ${api.X && api.X.ruler === i ? 'Zrušit měření' : 'Měřit odsud'}</button>${i === SUN ? '' : `<button data-a="surf" title="Postavit se na povrch a dívat se na oblohu (místo uprostřed obrazu)">🔭 ${S.surf && S.surf.i === i ? 'Vzlétnout' : K() ? 'Stoupnout si sem' : 'Z povrchu'}</button>`}</div>` +
+      `<div class="row"><button data-a="cmp" title="Porovnat velikost">⚖ ${K() ? 'Jak je to velké?' : 'Porovnat'}</button><button data-a="pin" title="Měřit vzdálenost odsud (Shift+D)">📏 ${api.X && api.X.ruler === i ? 'Zrušit měření' : 'Měřit odsud'}</button>${i === SUN ? '' : `<button data-a="surf" title="Postavit se na povrch a dívat se na oblohu (místo uprostřed obrazu)">🔭 ${S.surf && S.surf.i === i ? 'Vzlétnout' : K() ? 'Stoupnout si sem' : 'Z povrchu'}</button>`}${i === SUN || S.focus !== i ? '' : `<button data-a="gridb" class="${api.povrch && api.povrch.info.guides().body ? 'sel' : ''}" title="Mřížka zeměpisných šířek a délek na povrchu: rovník, nultý poledník, póly, místo, kde je Slunce v nadhlavníku">🌐 Mřížka</button>`}</div>` +
       (nx.length
         ? `<div class="next"><span>${K() ? '🧭 Kam poletíme dál?' : 'Kam dál:'}</span>${nx.map((j) => `<button class="it chip" data-i="${j}"><b>${ico(j, 30)}</b><span>${B[j].cs}</span></button>`).join('')}</div>`
         : '');
@@ -715,6 +723,16 @@ export function createUI(S, A) {
       return;
     }
     if (a === 'cmp') return act.cmp();
+    if (a === 'gridb') {
+      const on = api.povrch.info.bodyGrid();
+      A.play('a_tick');
+      toast(
+        on
+          ? 'Mřížka na povrchu: žlutě rovník, modře nultý poledník, tyrkysově osa otáčení. ☀ je místo, kde je Slunce právě v nadhlavníku.'
+          : 'Mřížka na povrchu vypnutá.'
+      );
+      return drawCard(i);
+    }
     if (a === 'pin') {
       api.X.ruler = api.X.ruler === i ? -1 : i;
       A.play('ruler');
@@ -1009,13 +1027,17 @@ export function createUI(S, A) {
       );
     },
     belts() {
-      S.belts.on = !S.belts.on;
+      /* 2.1: nenápadné (výchozí) → výrazné → vypnuté */
+      S.belts.lvl = S.belts.lvl === 1 ? 2 : S.belts.lvl === 2 ? 0 : 1;
       ui2(S.belts.on);
       toast(
-        S.belts.on
-          ? 'Pásy planetek zapnuté: hlavní pás mezi Marsem a Jupiterem a Kuiperův pás za Neptunem (ilustrace, vidět jsou z přehledu soustavy).'
-          : 'Pásy planetek vypnuté.'
+        S.belts.lvl === 1
+          ? 'Pásy planetek: nenápadné. Tečky jsou ilustrace – ve skutečnosti bys z přehledu soustavy neviděl žádnou planetku (Ceres by odsud měla asi 11 mag, oko končí u 6 mag).'
+          : S.belts.lvl === 2
+            ? 'Pásy planetek: výrazné (ilustrace, ať je dobře vidět tvar pásu a Kirkwoodovy mezery).'
+            : 'Pásy planetek vypnuté.'
       );
+      S.wake();
     },
     lab() {
       S.labMode = (S.labMode + 1) % (K() ? 2 : 3);
@@ -1650,7 +1672,30 @@ export function createUI(S, A) {
     toast('🕰 ' + ev[0]);
   });
   // porovnání velikostí: kotouče se kreslí ze skutečných map (ball.js), ne zvětšením malé ikony. Řazeno od nejmenšího, měřítko se přizpůsobí šířce okna.
+  /* 2.1: vedle „sousedů“ (tělesa podobné velikosti) jde vybrat jedno těleso k porovnání ve skutečném poměru s plynulým
+     měřítkem (ui/porovnani.js) – třeba Slunce vedle Země, kde je Země u celého Slunce jen tečka. */
+  let cmpWith = -1,
+    cmpPV = null;
+  const CMPW = ['sun', 'jupiter', 'earth', 'moon'];
   function drawCmp(i) {
+    if (cmpPV) {
+      cmpPV.stop();
+      cmpPV = null;
+    }
+    const wj = cmpWith >= 0 && cmpWith !== i ? cmpWith : -1,
+      chips =
+        `<div class="cmp-with"><span>${K() ? 'Postav vedle:' : 'Vedle sebe:'}</span><button data-w="-1" class="${wj < 0 ? 'sel' : ''}">${K() ? 'podobně velká' : 'sousedé'}</button>` +
+        CMPW.map((n) => idx.get(n))
+          .filter((j) => j !== i)
+          .map((j) => `<button data-w="${j}" class="${wj === j ? 'sel' : ''}">${ico(j, 20)} ${B[j].cs}</button>`)
+          .join('') +
+        `</div>`;
+    if (wj >= 0) {
+      $('#cmp-in').innerHTML =
+        `<h3>⚖ ${B[i].cs} a ${B[wj].cs}: ${K() ? 'jak jsou velké?' : 'porovnání ve skutečném poměru'}</h3>${chips}<div class="pv"></div>`;
+      cmpPV = pairView($('#cmp-in .pv'), i, wj, { kid: K() });
+      return;
+    }
     const b = B[i],
       lad = [
         'duende',
@@ -1684,7 +1729,7 @@ export function createUI(S, A) {
       D *= Math.max(0.4, (avail / tot) * 0.97);
     }
     $('#cmp-in').innerHTML =
-      `<h3>⚖ ${b.cs}: ${K() ? 'jak je to velké?' : 'porovnání velikosti'}</h3><div class="cmp" style="gap:${gap}px">` +
+      `<h3>⚖ ${b.cs}: ${K() ? 'jak je to velké?' : 'porovnání velikosti'}</h3>${chips}<div class="cmp" style="gap:${gap}px">` +
       set
         .map((j) => {
           const dia = (D * B[j].R) / mx;
@@ -1703,6 +1748,13 @@ export function createUI(S, A) {
         });
       });
   }
+  $('#cmp-in').addEventListener('click', (e) => {
+    const w = e.target.closest('button[data-w]');
+    if (!w) return;
+    cmpWith = +w.dataset.w;
+    A.play('a_tick');
+    drawCmp(cmpFor);
+  });
   function drawDev() {
     $('#dev-in').innerHTML =
       `<h3>🛠 Tajné menu</h3><p>${nf(S.fps)} snímků/s · kvalita ${S.quality}/2 · zvuků ${A.count}</p><div class="row"><button data-d="q-">Kvalita −</button><button data-d="q+">Kvalita +</button><button data-d="disco">🪩 Disko</button><button data-d="real">🔦 Reálný jas</button><button data-d="all">Odemknout všechna razítka</button><button data-d="ufo">🛸 Zavolat talíř</button></div><p>Skok na datum: <input id="dev-date" type="date" min="1600-01-01" max="2200-12-31"> <button data-d="go">Skoč</button></p><h4>Vývojářský režim</h4><p><button data-d="dev" class="${S.F.dev ? 'pri' : ''}">${S.F.dev ? '✓ Zapnutý – vypnout' : 'Zapnout'}</button> <button data-d="sk">🃏 Superkarta vybraného tělesa</button></p><table class="flags">${S.F.list()
@@ -1864,6 +1916,7 @@ export function createUI(S, A) {
   });
   // ---------- start ----------
   const api = {
+    cmp: { with: (j) => ((cmpWith = j), drawCmp(cmpFor)), view: () => cmpPV },
     toast,
     toggle,
     refresh: () => setBtn(),

@@ -27,6 +27,7 @@ import {
   RING,
 } from '../core/sim.js';
 import * as SH from './shaders.js';
+import { siteFrame, applyLightTime, clearLightTime } from '../core/misto.js';
 import { createBelts } from './belts.js';
 import { createL2 } from './l2.js';
 import { STAR_N, STAR_POS, STAR_MAG, STAR_TK, CON_LINES, CON_IDS, STAR_NAMES } from '../data/stardata.js';
@@ -1338,29 +1339,18 @@ export function createEngine(canvas, overlay) {
     sE = new THREE.Vector3(),
     sNo = new THREE.Vector3(),
     sD = new THREE.Vector3();
+  /* 2.1: místní soustavu počítá core/misto.js (zploštělý elipsoid, planetografická šířka) – stejný kód měří zkouška proti Horizons */
+  const sF = {};
   function surfFrame(q) {
-    const i = q.i,
-      la = q.lat * DEG,
-      lo = q.lon * DEG,
-      cl = Math.cos(la),
-      v0 = cl * Math.cos(lo),
-      v1 = cl * Math.sin(lo),
-      v2 = Math.sin(la);
-    basis(i, S.jd, m9);
-    sN.set(
-      v0 * m9[0] + v1 * m9[3] + v2 * m9[6],
-      v0 * m9[1] + v1 * m9[4] + v2 * m9[7],
-      v0 * m9[2] + v1 * m9[5] + v2 * m9[8]
-    );
-    sE.set(m9[6], m9[7], m9[8]).cross(sN); /* východ = pól × zenit */
-    if (sE.lengthSq() < 1e-8) sE.set(m9[0], m9[1], m9[2]);
-    sE.normalize();
-    sNo.crossVectors(sN, sE);
-    const C = S.camPos,
-      rad = B[i].R * 1.00001 + 0.002;
-    C[0] = P[i * 3] + sN.x * rad;
-    C[1] = P[i * 3 + 1] + sN.y * rad;
-    C[2] = P[i * 3 + 2] + sN.z * rad;
+    const i = q.i;
+    siteFrame(i, q.lat, q.lon, S.jd, sF);
+    sN.set(sF.n[0], sF.n[1], sF.n[2]);
+    sE.set(sF.e[0], sF.e[1], sF.e[2]);
+    sNo.set(sF.no[0], sF.no[1], sF.no[2]);
+    const C = S.camPos;
+    C[0] = P[i * 3] + sF.p[0];
+    C[1] = P[i * 3 + 1] + sF.p[1];
+    C[2] = P[i * 3 + 2] + sF.p[2];
   }
   /* směr k tělesu j z místa pozorovatele: [azimut, výška nad obzorem] v radiánech (po surfFrame) */
   function surfDir(j, out) {
@@ -1462,6 +1452,7 @@ export function createEngine(canvas, overlay) {
       oy: o.oy || 0,
       air: o.air !== false,
       quiet: !!o.quiet,
+      lt: o.lt !== false,
     };
     surfFrame(S.surf);
     S.on.focus(o.i);
@@ -1486,6 +1477,7 @@ export function createEngine(canvas, overlay) {
     return { az: o[0], el: o[1] };
   };
   S.surfBasis = () => ({ n: sN, e: sE, no: sNo });
+  S.surfSite = () => sF;
   S.fov = () => fovNow;
   function updateCamera(dt) {
     if (S.surf) return surfCamera(dt);
@@ -1649,6 +1641,11 @@ export function createEngine(canvas, overlay) {
     S.dJd = (rate * dt) / 86400;
     S.jd += S.dJd;
     updateAll(S.jd);
+    /* 2.1: z povrchu se ukazují zdánlivé polohy – tam, kde tělesa byla, když z nich vyšlo světlo (planety až o 1,5′ jinde,
+       měsíce Jupiteru vůči planetě až o půl jejího poloměru). Ukázky zatmění (quiet) zůstávají u okamžitých poloh. */
+    S.ltOn = !!(S.surf && S.surf.lt !== false && !S.surf.quiet);
+    if (S.ltOn) S.ltSun = applyLightTime(S.surf.i, S.jd);
+    else clearLightTime();
     updateCamera(dt);
     if (belts.update(S.camPos, F, cam.alt, PR, dt)) wake();
     const C = S.camPos,

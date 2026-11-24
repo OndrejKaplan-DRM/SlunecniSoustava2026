@@ -1,6 +1,7 @@
 // Superkarta tělesa (verze 1.4): skrytá podrobná karta – pětkrát rychle klikni na název tělesa v kartě.
 // Roletky s čísly, obrázek tělesa, porovnání velikostí a náčrt dráhy. Vše se počítá z katalogu a z okamžité polohy v modelu.
-import { B, P, idx, par, kids, SUN, EARTH, MOON, AU, period, semi } from '../core/sim.js';
+import { B, P, idx, par, kids, SUN, EARTH, MOON, AU, period, semi, rotOf } from '../core/sim.js';
+import { slozeniOf, SLOZENI_ZDROJ, CO2 } from '../data/slozeni.js';
 import { factsOf } from '../data/facts.js';
 import { drawBall, ballSize, loadMap } from '../render/ball.js';
 import HI from '../data/hi.json';
@@ -81,6 +82,28 @@ function elems(i) {
   const q = o.kind === 'kep' ? o.q * AU : e !== null && a ? a * (1 - e) : null,
     Q = e !== null && e < 1 && a ? (o.kind === 'kep' ? (o.q * AU * (1 + e)) / (1 - e) : a * (1 + e)) : null;
   return { e, inc, q, Q, a, kind: o.kind };
+}
+
+/* vývoj CO₂ v zemském ovzduší: roční průměry z Mauna Loa (NOAA) a hodnoty z ledovcových jader */
+function co2Box() {
+  const r = CO2.rada,
+    W = 300,
+    H = 96,
+    x = (y) => 34 + ((y - 1955) / (2030 - 1955)) * (W - 44),
+    yy = (v) => H - 18 - ((v - 270) / (440 - 270)) * (H - 28),
+    pts = [...r, [2026, CO2.ted]].map((p) => `${x(p[0]).toFixed(1)},${yy(p[1]).toFixed(1)}`).join(' ');
+  return (
+    `<div class="sk-co2"><b>Oxid uhličitý v ovzduší</b>` +
+    `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Graf: CO₂ v ovzduší 1959 až 2026">` +
+    `<line x1="34" y1="${yy(280)}" x2="${W - 10}" y2="${yy(280)}" class="pre"/><text x="${W - 12}" y="${yy(280) - 3}" text-anchor="end" class="mu">280 ppm před průmyslovou revolucí</text>` +
+    [300, 350, 400].map((v) => `<line x1="34" y1="${yy(v)}" x2="${W - 10}" y2="${yy(v)}" class="gr"/><text x="30" y="${yy(v) + 3}" text-anchor="end">${v}</text>`).join('') +
+    [1960, 1980, 2000, 2020].map((y) => `<text x="${x(y)}" y="${H - 5}" text-anchor="middle">${y}</text>`).join('') +
+    `<polyline points="${pts}" class="ln"/><circle cx="${x(2026)}" cy="${yy(CO2.ted)}" r="3" class="dot"/>` +
+    `</svg><p>${nf(r[0][1], 0)} ppm v roce ${r[0][0]} → ${nf(r[r.length - 1][1], 0)} ppm v roce ${r[r.length - 1][0]} → asi <b>${CO2.ted} ppm</b> (0,043 %) v roce 2026. ` +
+    `To je o polovinu víc než ${CO2.pred} ppm před průmyslovou revolucí; v dobách ledových bylo jen asi ${CO2.doba_ledova} ppm. Teď přibývá 2–3 ppm ročně, hlavně spalováním uhlí, ropy a plynu. ` +
+    `CO₂ je skleníkový plyn: bez skleníkových plynů by Země měla průměrně −18 °C místo +15 °C.</p>` +
+    `<small>Měření: observatoř Mauna Loa (NOAA GML), roční průměry; starší hodnoty z bublin vzduchu v ledu Antarktidy. 1 ppm = jedna molekula z milionu.</small></div>`
+  );
 }
 
 export function createSuperkarta(S, A, ui) {
@@ -175,7 +198,11 @@ export function createSuperkarta(S, A, ui) {
     const s3 = [
       row('Otočka (vůči hvězdám)', b.rot ? dur(Math.abs(b.rot)) : null, b.rot < 0 ? 'otáčí se pozpátku' : ''),
       b.rot ? row('Rychlost na rovníku', sig((2 * Math.PI * b.R) / Math.abs(b.rot)) + ' km/h') : '',
-      b.pole ? row('Severní pól míří', `RA ${nf(b.pole[0], 1)}°, Dec ${nf(b.pole[1], 1)}°`) : '',
+      rotOf(i)
+        ? row('Severní pól míří', `RA ${nf(rotOf(i).ra[0], 1)}°, Dec ${nf(rotOf(i).de[0], 1)}°`, 'podle IAU; nultý poledník a otáčení z téhož modelu')
+        : b.pole
+          ? row('Severní pól míří', `RA ${nf(b.pole[0], 1)}°, Dec ${nf(b.pole[1], 1)}°`)
+          : row('Osa', 'směr osy není změřen', 'v modelu zvolená náhodně'),
     ];
     const s4 = [
       i !== SUN ? row('Od Slunce', dist(rs), 'světlo letí ' + light(rs)) : '',
@@ -226,8 +253,33 @@ export function createSuperkarta(S, A, ui) {
           )
         : '',
       b.rings ? row('Prstence', 'ano') : '',
-      b.atm ? row('Atmosféra', 'ano') : '',
     ];
+    /* 2.1: atmosféra (tlak, teplota, plyny s podíly) a složení nitra po vrstvách – data/slozeni.js */
+    const slz = slozeniOf(b),
+      at = slz.atm,
+      sA = at.zadna
+        ? b.type === 'planet' || b.type === 'moon' || b.type === 'dwarf' || b.type === 'asteroid'
+          ? [row('Atmosféra', 'žádná', 'povrch je vystaven vakuu, záření a dopadům mikrometeoritů')]
+          : []
+        : [
+            row('Druh', at.druh),
+            row('Tlak', at.tlak),
+            row('Teplota', at.teplota),
+            ...(at.plyny || []).map((g) => row(g[0], g[1])),
+            ...(at.pozn || []).map((t) => `<tr><td colspan="2" class="sk-note">${t}</td></tr>`),
+            at.co2 ? `<tr><td colspan="2">${co2Box()}</td></tr>` : '',
+          ],
+      ni = slz.nitro,
+      sN = ni
+        ? [
+            ...(ni.vrstvy || []).map((v) =>
+              row(v[0] + (v[1] ? ` <small>${v[1]}</small>` : ''), v[2], v[3])
+            ),
+            row('Celkem', ni.celek),
+            row('Povrch', ni.povrch),
+            row('Prstence', slz.prstence),
+          ]
+        : [];
     const fx = factsOf(b, { moons: undefined, sunAU: au, isSun: i === SUN });
     const s8 = [
       row(
@@ -249,6 +301,7 @@ export function createSuperkarta(S, A, ui) {
         }[el.kind] || el.kind
       ),
       row('Označení', b.name !== b.cs ? b.name.replace('`', 'ʻ') : null),
+      row('Atmosféry a složení', SLOZENI_ZDROJ),
       row('Stav k', document.querySelector('#date') ? document.querySelector('#date').textContent : ''),
     ];
     const sz = ballSize(b, 132);
@@ -265,6 +318,8 @@ export function createSuperkarta(S, A, ui) {
       sec('📐', 'Rozměry a hmota', s1, true) +
       sec('🛰', 'Dráha', s2, true) +
       sec('📍', 'Právě teď', s4, false) +
+      sec('🌬', i === SUN ? 'Vnější vrstvy (atmosféra)' : 'Atmosféra', sA, i === EARTH) +
+      sec('🪨', 'Složení a nitro', sN, false) +
       sec('🔄', 'Rotace', s3, false) +
       sec('🧍', 'Jak by ti tam bylo', s5, false) +
       sec('🔭', 'Objev, sondy, měsíce', s6, false) +

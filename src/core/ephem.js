@@ -237,10 +237,12 @@ export function satPos(o, F, jd, out, corr = null) {
     rs = 1,
     be = 0;
   if (corr) {
-    // iterace 2–3: kvadratický člen (čas sevřený do okna fitu) a periodické členy podél dráhy (0), kolmo k ní (1), průvodič (2)
+    // kvadratický člen v délce a periodické členy podél dráhy (0), kolmo k ní (1), průvodič (2).
+    // Verze 2.1 (fit na JPL Horizons 1900–2100): mimo okno fitu pokračuje délka po tečně (se sklonem na okraji okna) –
+    // dřív se polynom na okraji zastavil a střední pohyb se tím skokem změnil.
     const p = corr.poly,
       tc = corr.win ? Math.min(corr.win[1], Math.max(corr.win[0], t)) : t;
-    L += p[0] + p[1] * tc + p[2] * tc * tc;
+    L += p[0] + p[1] * tc + p[2] * tc * tc + (tc !== t ? (p[1] + 2 * p[2] * tc) * (t - tc) : 0);
     for (const c of corr.terms) {
       const v = c[2] * Math.cos(c[1] * t) + c[3] * Math.sin(c[1] * t);
       if (c[0] === 0) L += v;
@@ -292,6 +294,8 @@ export class Ephem {
     });
     this.pi = bodies.map((b) => (b.parent ? this.idx.get(b.parent) : -1));
     this.corr = bodies.map((b) => (b.orbit && b.orbit.kind === 'sat' && b.orbit.corr) || null);
+    this.bary = bodies.map((b) => (b.orbit && b.orbit.bary ? [this.idx.get(b.orbit.bary[0]), b.orbit.bary[1]] : null));
+    this._bt = [0, 0, 0];
     /* dlouhodobá teorie: jen když ji mají všechny planety i Pluto */
     const lg = LONG_IDS.map((id) => (this.idx.has(id) ? bodies[this.idx.get(id)].orbit.long : null));
     this.LG = lg.every(Boolean) ? lg : null;
@@ -322,7 +326,17 @@ export class Ephem {
       return out;
     }
     const F = this.F[this.pi[i]];
-    return satPos(this.sat[i], F, jd, out, this.variant >= 2 ? this.corr[i] : null);
+    satPos(this.sat[i], F, jd, out, this.variant >= 2 ? this.corr[i] : null);
+    /* 2.1: malé měsíce Pluta obíhají těžiště Pluta a Charonu – dráha je kolem těžiště a k ní se přičte výkyv Pluta
+       (podíl hmotnosti Charonu × poloha Charonu vůči Plutu), jinak by Pluto „stál“ a měsíce byly až o 3° jinde */
+    const q = this.bary[i];
+    if (q) {
+      const c = this.local(q[0], jd, this._bt);
+      out[0] += q[1] * c[0];
+      out[1] += q[1] * c[1];
+      out[2] += q[1] * c[2];
+    }
+    return out;
   }
   // heliocentrická poloha v AU (měsíce = planeta + posun)
   helio(i, jd, out) {

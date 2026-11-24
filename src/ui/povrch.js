@@ -4,20 +4,16 @@
 // Zjednodušení, která uživatel vidí v nápovědě: zem je rovná plocha bez krajiny, lom světla ve vzduchu se nepočítá,
 // denní obloha je ilustrace (barva podle výšky Slunce), u těles bez pevného povrchu stojíme na horní vrstvě oblak.
 import { B, idx, par, kids, P, SUN, EARTH, MOON, AU } from '../core/sim.js';
+import { createPovrchInfo } from './povrch_info.js';
+import { AIR } from '../data/mista.js';
 const DEG = Math.PI / 180,
   RS = 696000;
-/* tělesa se vzduchem, přes který je vidět na oblohu: barva zenitu a obzoru ve dne, barva soumraku u obzoru, síla */
-const AIR = {
-  earth: { z: [38, 92, 190], h: [150, 190, 238], tw: [240, 150, 85], k: 1 },
-  /* Mars: přes den růžovohnědá obloha od prachu, kolem zapadajícího Slunce modravá (snímky vozítek NASA) */
-  mars: { z: [150, 118, 92], h: [205, 172, 138], tw: [120, 150, 200], k: 0.96 },
-};
 /* tělesa, kde by ze skutečného povrchu obloha vidět nebyla nebo povrch není */
 const NOTE = {
   venus:
-    'Venuše je celá pod hustou oblačností: ze skutečného povrchu není vidět Slunce ani hvězdy. Ukazuji oblohu, jak by vypadala nad mraky.',
+    'Venuše je celá pod hustou oblačností: ze skutečného povrchu není vidět Slunce ani hvězdy. Ukazuji oblohu nad oblaky; tlačítko „🌫 Pod oblaky“ ukáže, jak to vypadá dole.',
   titan:
-    'Titan halí oranžový opar: ze skutečného povrchu není vidět Saturn ani hvězdy. Ukazuji oblohu, jak by vypadala nad oparem.',
+    'Titan halí oranžový opar: ze skutečného povrchu není vidět Saturn ani hvězdy. Ukazuji oblohu nad oparem; tlačítko „🌫 Pod oblaky“ ukáže, jak to vypadá dole.',
   jupiter: 'Jupiter nemá pevný povrch. Stojíš na horní vrstvě oblak.',
   saturn: 'Saturn nemá pevný povrch. Stojíš na horní vrstvě oblak.',
   uranus: 'Uran nemá pevný povrch. Stojíš na horní vrstvě oblak.',
@@ -30,7 +26,8 @@ export function createPovrch(S, A, ui) {
     air = $('#skyair'),
     kid = () => document.body.classList.contains('kid'),
     num = (v, d = 0) => v.toLocaleString('cs-CZ', { maximumFractionDigits: d, minimumFractionDigits: d });
-  let txtT = 0,
+  let info = null,
+    txtT = 0,
     lastAir = '',
     day = 0; /* jak moc je den (0–1), pro barvu země */
   const place = (q) => {
@@ -123,8 +120,12 @@ export function createPovrch(S, A, ui) {
       `<div class="sf-b"><select aria-label="Najít těleso na obloze"></select>` +
       `<button data-s="out" title="Širší zorné pole (kolečko myši)">−</button><span class="sf-fov"></span><button data-s="in" title="Užší zorné pole – dalekohled (kolečko myši)">+</button>` +
       (hasAir
-        ? `<button data-s="air" class="${q.air ? 'sel' : ''}" title="Denní obloha: se vzduchem přes den hvězdy nevidíš">🌫 Vzduch</button>`
+        ? AIR[b.id].opaque
+          ? `<button data-s="air" class="${q.air ? 'sel' : ''}" title="Pohled ze skutečného povrchu pod oblaky: obloha je zatažená, Slunce ani hvězdy nejsou vidět">🌫 Pod oblaky</button>`
+          : `<button data-s="air" class="${q.air ? 'sel' : ''}" title="Denní obloha: se vzduchem přes den hvězdy nevidíš">🌫 Vzduch</button>`
         : '') +
+      `<button data-s="grid" class="${info && info.gridOn() ? 'sel' : ''}" title="Mřížka na obloze: azimut a výška ve stupních (G)">⌗ Mřížka</button>` +
+      `<button data-s="info" class="${info && info.open() ? 'sel' : ''}" title="Obloha odsud: místo a čas, tělesa a hvězdy nad obzorem, osa a otáčení, barva oblohy, vodítka">📋 Obloha</button>` +
       (b.id === 'earth' ? `<button data-s="praha" title="Postavit se do Prahy">📍 Praha</button>` : '') +
       `</div>`;
     fillFind();
@@ -157,7 +158,18 @@ export function createPovrch(S, A, ui) {
     if (i === SUN) return ui.toast('Na Slunci stát nejde – nemá pevný povrch a má 5 500 °C.');
     if (S.focus !== i || S.surf) S.jump(i);
     if (lat === undefined) [lat, lon] = S.subPoint(i);
-    S.setSurf({ i, lat, lon, fov: opt.fov || 68, el: 24 * DEG, track: -1, air: opt.air, quiet: !!opt.quiet });
+    const op = AIR[B[i].id] && AIR[B[i].id].opaque;
+    S.setSurf({
+      i,
+      lat,
+      lon,
+      fov: opt.fov || 68,
+      el: 24 * DEG,
+      track: -1,
+      air: opt.air === undefined ? !op : opt.air /* Venuše a Titan: napřed nad oblaky, ať je co vidět */,
+      quiet: !!opt.quiet,
+      lt: opt.lt,
+    });
     const q = S.surf,
       order = [SUN, par[i] !== SUN ? par[i] : -1, i === EARTH ? MOON : EARTH].filter((j) => j >= 0 && j !== i);
     let best = null;
@@ -173,6 +185,9 @@ export function createPovrch(S, A, ui) {
       q.az = best.az;
       q.el = Math.max(10 * DEG, Math.min(26 * DEG, best.el - 8 * DEG));
     } else q.az = Math.PI;
+    /* přesně zadaný směr pohledu (referenční snímky, zkoušky): azimut od severu k východu a výška ve stupních */
+    if (opt.az !== undefined) q.az = opt.az * DEG;
+    if (opt.el !== undefined) q.el = opt.el * DEG;
     A.play('panel_open');
     draw();
     if (!opt.quiet) {
@@ -203,6 +218,14 @@ export function createPovrch(S, A, ui) {
     else if (a === 'out') S.zoom(1.7);
     else if (a === 'air') {
       q.air = !q.air;
+      A.play('a_tick');
+      draw();
+    } else if (a === 'grid') {
+      info.grid();
+      A.play('a_tick');
+      draw();
+    } else if (a === 'info') {
+      info.toggle();
       A.play('a_tick');
       draw();
     } else if (a === 'praha') {
@@ -261,9 +284,23 @@ export function createPovrch(S, A, ui) {
     let dim = 1;
     if (q.i === EARTH) dim = Math.pow(1 - Math.min(1, cover(MOON)), 0.4);
     day = sst(-9, 4, se) * dim;
-    const sky = a && q.air ? sst(-13, 1, se) * dim * a.k : 0;
+    const opq = !!(a && a.opaque && q.air);
+    const sky = opq ? 1 : a && q.air ? sst(-13, 1, se) * dim * a.k : 0;
     S.skyDim = sky;
-    if (sky > 0.004 && yh > 0) {
+    if (opq && yh > 0) {
+      /* pod oblaky Venuše a v oparu Titanu: rovnoměrná zatažená obloha zakryje všechno nad obzorem */
+      const dl = 0.06 + 0.94 * sst(-8, 6, se),
+        g = ctx.createLinearGradient(0, 0, 0, Math.min(H, yh)),
+        c = (v) => `rgb(${v.map((x) => Math.round(x * dl))})`;
+      g.addColorStop(0, c(a.z));
+      g.addColorStop(1, c(a.h));
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, Math.min(H, yh));
+      if (lastAir) {
+        lastAir = '';
+        air.style.display = 'none';
+      }
+    } else if (sky > 0.004 && yh > 0) {
       const tw = Math.max(0, 1 - Math.abs(se + 1.5) / 9) * 0.85,
         mix = (c1, c2, t) => c1.map((v, k) => Math.round((v + (c2[k] - v) * t) * sky)),
         cz = a.z.map((v) => Math.round(v * sky)),
@@ -330,6 +367,7 @@ export function createPovrch(S, A, ui) {
       }
     }
   });
+  info = createPovrchInfo(S, A, ui, { targets, place, wind, kid, draw: () => draw(), enter, exit, cover });
   return {
     enter,
     exit,
@@ -348,9 +386,13 @@ export function createPovrch(S, A, ui) {
             air: S.surf.air,
             sky: S.skyDim,
             day,
+            lt: S.ltOn,
           }
         : null,
     cover,
     AU,
+    info,
+    targets,
+    draw,
   };
 }

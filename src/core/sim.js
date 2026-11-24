@@ -1,8 +1,9 @@
 // Soustava 200 – katalog, efemeridy, natočení těles. Souřadnice scény: km, heliocentricky, osa Y = severní pól ekliptiky
 // (ekliptika J2000 (x, y, z) → scéna (x, z, −y)). Vše v plovoucí čárce 64 bit; do GPU jdou až rozdíly vůči kameře.
-import { Ephem, eq2ecl, DEG, J2000, conicPos, longWeight } from './ephem.js';
+import { Ephem, DEG, J2000, conicPos, longWeight } from './ephem.js';
 import { shapeParams } from './shape.js';
 import CAT from '../data/cat.json';
+import ROT from '../data/rot.json';
 
 export const AU = 149597870.7;
 export const B = CAT.bodies,
@@ -166,7 +167,13 @@ function ed2j(x, y, z, T, out) {
 // --- Čas: aplikace ukazuje světový čas (UT), dráhy těles běží v rovnoměrném čase efemerid (TT). Rozdíl ΔT = TT − UT roste se
 // vzdáleností od současnosti, protože se rotace Země zpomaluje (dnes asi 70 s, v roce 1000 asi 26 minut, v roce −500 asi 4,8 hodiny).
 // Polynomy: Espenak a Meeus, Five Millennium Canon of Solar Eclipses (NASA/TP-2006-214141). Výsledek v sekundách.
+let dtFix = null;
+/* pro zkoušky: pevná hodnota ΔT v sekundách (null = polynomy níže); zkouška věrnosti tak použije stejné ΔT jako JPL Horizons */
+export const setDeltaT = (v) => {
+  dtFix = v;
+};
 export function deltaT(jd) {
+  if (dtFix !== null) return dtFix;
   const y = 2000 + (jd - J2000) / 365.25;
   let t, u;
   if (y < -500) return ((u = (y - 1820) / 100), -20 + 32 * u * u);
@@ -345,20 +352,75 @@ export function orbitSamples(i, jd, n, out, ph) {
 }
 
 // --- natočení: sloupce = osy tělesa (x nultý poledník, z pól) ve scéně ---
-const s3 = (v) => {
-  eq2ecl(v);
-  return [v[0], v[2], -v[1]];
+// Verze 2.1: úplný model IAU WGCCRE 2015 (Archinal a kol. 2018) z jádra NAIF pck00011.tpc (src/data/rot.json, staví
+// tools/data/rot_build.py) – stejné konstanty používá JPL Horizons. Pól: α = a0 + a1·T + a2·T² + Σ cα·sin θ,
+// δ = d0 + d1·T + d2·T² + Σ cδ·cos θ; nultý poledník: W = w0 + w1·d + w2·d² + Σ cW·sin θ (T století, d dny od J2000, čas TDB).
+// Dřív se brala jen konstanta a lineární člen pólu k roku 2027 a lineární W: Mars měl pól o 1,6° vedle, Měsíc až o 4°
+// (chyběla precese osy s uzlem dráhy 18,6 roku a librace), Triton o desítky stupňů, Ida měla pól o 84° jinde.
+const rot = B.map((b) => ROT[b.id] || null);
+/* Jupiter: mapa oblačnosti a Velká rudá skvrna se drží Systému II (oblaka mírných šířek, 870,27°/den); IAU a Horizons mají
+   Systém III (magnetické pole, 870,536°/den). Pól je z IAU, otáčení mapy ze Systému II. */
+const JUP = idx.get('jupiter'),
+  WJ2 = [43.3, 870.27],
+  CE = Math.cos(23.4392911 * DEG),
+  SE = Math.sin(23.4392911 * DEG);
+export const rotOf = (i) => rot[i];
+/* rozdíl W(Systém III) − W(Systém II) u Jupiteru ve stupních: o tolik je třeba posunout délku místa z Horizons */
+export const jupSys = (jdTT) => {
+  const d = jdTT - J2000,
+    r = rot[JUP];
+  return r.w[0] + r.w[1] * d - (WJ2[0] + WJ2[1] * d);
 };
-const frames = B.map((b) => {
-  if (!b.pole) return null;
-  const T = 0.27,
-    ra = (b.pole[0] + b.pole[2] * T) * DEG,
-    de = (b.pole[1] + b.pole[3] * T) * DEG;
-  const p = [Math.cos(de) * Math.cos(ra), Math.cos(de) * Math.sin(ra), Math.sin(de)],
-    X = [-Math.sin(ra), Math.cos(ra), 0];
-  const Y = [p[1] * X[2] - p[2] * X[1], p[2] * X[0] - p[0] * X[2], p[0] * X[1] - p[1] * X[0]];
-  return { X: s3(X), Y: s3(Y), Z: s3(p) };
-});
+/* rovníkové souřadnice (ICRF) → scéna */
+const e2s = (x, y, z, m, o) => {
+  m[o] = x;
+  m[o + 1] = -y * SE + z * CE;
+  m[o + 2] = -(y * CE + z * SE);
+};
+function iauBasis(i, jdTT, m) {
+  const r = rot[i],
+    d = jdTT - J2000,
+    T = d / 36525;
+  let ra = r.ra[0] + (r.ra[1] + r.ra[2] * T) * T,
+    de = r.de[0] + (r.de[1] + r.de[2] * T) * T,
+    w = i === JUP ? WJ2[0] + WJ2[1] * d : r.w[0] + (r.w[1] + r.w[2] * d) * d;
+  if (r.n)
+    for (const t of r.n) {
+      const th = ((t[0] + (t[1] + t[2] * T) * T) % 360) * DEG,
+        sn = Math.sin(th);
+      if (t[3]) ra += t[3] * sn;
+      if (t[4]) de += t[4] * Math.cos(th);
+      if (t[5] && i !== JUP) w += t[5] * sn;
+    }
+  ra *= DEG;
+  de *= DEG;
+  w = (w % 360) * DEG;
+  const cr = Math.cos(ra),
+    sr = Math.sin(ra),
+    cd = Math.cos(de),
+    sd = Math.sin(de),
+    cw = Math.cos(w),
+    sw = Math.sin(w),
+    /* pól p, uzel rovníku tělesa na rovníku ICRF n = (−sin α, cos α, 0), třetí osa q = p × n */
+    px = cd * cr,
+    py = cd * sr,
+    pz = sd,
+    nx = -sr,
+    ny = cr,
+    qx = -pz * ny,
+    qy = pz * nx,
+    qz = px * ny - py * nx;
+  e2s(nx * cw + qx * sw, ny * cw + qy * sw, qz * sw, m, 0);
+  e2s(-nx * sw + qx * cw, -ny * sw + qy * cw, qz * cw, m, 3);
+  e2s(px, py, pz, m, 6);
+  return m;
+}
+const _pz = new Array(9);
+/* pól tělesa ve scéně (pro měsíce bez vlastního modelu: osa kolmá k rovníku planety) */
+function poleZ(i, jdTT) {
+  iauBasis(i, jdTT, _pz);
+  return [_pz[6], _pz[7], _pz[8]];
+}
 // Země: osa i jarní bod data (precese 50,3″ za rok, sklon i pohyb ekliptiky) a hvězdný čas v Greenwichi
 // ze světového času. Díky tomu padá stín zatmění na správné místo Země i tisíce let od současnosti.
 const _eq = [0, 0, 0],
@@ -366,11 +428,22 @@ const _eq = [0, 0, 0],
 function earthBasis(jd, m) {
   const d = jd - J2000,
     T = d / 36525,
-    eps = (23.4392911 - (46.815 * T + 0.00059 * T * T - 0.001813 * T * T * T) / 3600) * DEG,
-    G = ((((280.46061837 + 360.98564736629 * d + 0.000387933 * T * T) % 360) + 360) % 360) * DEG;
-  /* v ekliptice data: jarní bod (1, 0, 0), pól (0, sin ε, cos ε); převod na ekliptiku J2000 */
-  const q = ed2j(1, 0, 0, T, _eq),
-    Z = ed2j(0, Math.sin(eps), Math.cos(eps), T, _ez),
+    /* 2.1: nutace (hlavní členy, Meeus kap. 22; přesnost asi 0,5″): kývání osy s periodou 18,6 roku (uzel dráhy Měsíce)
+       a půl roku. Bez ní byl směr k tělesům z míst na Zemi až o 17″ jinde než podle JPL Horizons. */
+    Om = (125.04452 - 1934.136261 * T) * DEG,
+    Ls = (280.4665 + 36000.7698 * T) * DEG,
+    Lm = (218.3165 + 481267.8813 * T) * DEG,
+    dpsi = (-17.2 * Math.sin(Om) - 1.32 * Math.sin(2 * Ls) - 0.23 * Math.sin(2 * Lm) + 0.21 * Math.sin(2 * Om)) * AS,
+    deps = (9.2 * Math.cos(Om) + 0.57 * Math.cos(2 * Ls) + 0.1 * Math.cos(2 * Lm) - 0.09 * Math.cos(2 * Om)) * AS,
+    eps0 = (23.4392911 - (46.815 * T + 0.00059 * T * T - 0.001813 * T * T * T) / 3600) * DEG,
+    eps = eps0 + deps,
+    G =
+      ((((280.46061837 + 360.98564736629 * d + 0.000387933 * T * T) % 360) + 360) % 360) * DEG + dpsi * Math.cos(eps0);
+  /* v ekliptice data: pravý jarní bod je o Δψ zpět po ekliptice, pól je od něj skloněný o ε; převod na ekliptiku J2000 */
+  const cp = Math.cos(dpsi),
+    sp = Math.sin(dpsi),
+    q = ed2j(cp, -sp, 0, T, _eq),
+    Z = ed2j(Math.sin(eps) * sp, Math.sin(eps) * cp, Math.cos(eps), T, _ez),
     u = [Z[1] * q[2] - Z[2] * q[1], Z[2] * q[0] - Z[0] * q[2], Z[0] * q[1] - Z[1] * q[0]],
     c = Math.cos(G),
     s = Math.sin(G);
@@ -391,25 +464,15 @@ function earthBasis(jd, m) {
 const seedOf = (b) => [...b.id].reduce((s, c) => (s * 31 + c.charCodeAt(0)) % 9973, 7) / 9973;
 const _l = [0, 0, 0];
 export function basis(i, jd, m) {
-  // m: pole 9 čísel (sloupce X, Y, Z)
+  // m: pole 9 čísel (sloupce X, Y, Z); jd je světový čas (UT) jako všude v aplikaci
   const b = B[i],
-    f = frames[i],
     d = jd - J2000;
   if (i === EARTH) return earthBasis(jd, m);
-  if (f && b.W) {
-    const W = ((b.W[0] + b.W[1] * d) % 360) * DEG,
-      c = Math.cos(W),
-      s = Math.sin(W);
-    for (let k = 0; k < 3; k++) {
-      m[k] = f.X[k] * c + f.Y[k] * s;
-      m[3 + k] = -f.X[k] * s + f.Y[k] * c;
-      m[6 + k] = f.Z[k];
-    }
-    return m;
-  }
+  /* otáčení těles běží v rovnoměrném čase (TT), stejně jako jejich dráhy; dřív se bralo UT (Mars dnes o 0,3° jinak, ve starověku o desítky stupňů) */
+  if (rot[i]) return iauBasis(i, ttOf(jd), m);
   let Z = [0, 1, 0];
   const p = par[i];
-  if (p >= 0 && p !== SUN && frames[p]) Z = frames[p].Z;
+  if (p >= 0 && p !== SUN && rot[p]) Z = poleZ(p, ttOf(jd));
   else if (p === SUN) {
     const s = seedOf(b),
       ob = s * 0.6,
@@ -449,6 +512,7 @@ function norm(a) {
 }
 export function spinRate(i) {
   const b = B[i];
+  if (rot[i]) return (i === JUP ? WJ2[1] : rot[i].w[1]) * DEG;
   if (b.W) return b.W[1] * DEG;
   if (par[i] !== SUN && par[i] >= 0) return (2 * Math.PI) / period[i];
   return (2 * Math.PI * 24) / (b.rot || 10);
