@@ -47,7 +47,7 @@ for m in meta:
         ph = Image.open(pd).convert('RGB')
         ph = ph.resize((int(ph.width * im.height / ph.height), im.height))
         panes.append((ph, 'skutečnost: NASA PIA17935 (NASA/JPL-Caltech/MSSS/TAMU)'))
-    lines = [s['popis'] + (' – výřez' if key.endswith('_detail') else ''),
+    lines = [('Výřez 0,6°: Země a Měsíc z Marsu (Curiosity, sol 529)' if key.endswith('_detail') else s['popis']),
              f"{MISTO.get(s['c'], s['c'])} {abs(s['lat']):.2f}° {'s.' if s['lat'] >= 0 else 'j.'} š., {s['lon'] % 360:.2f}° v. d. · "
              f"{s['ut'] if key == s['id'] or not s.get('snimek') else s['ut']} UT · zorné pole {m['fov']}° na výšku"]
     if 'min_sep' in s and r.get('ukaz'):
@@ -85,7 +85,7 @@ md = ['# Referenční snímky: model × skutečnost', '',
       'Každý list ukazuje pohled z povrchu v modelu (vlevo) a u úkazů ze sond skutečnou fotografii NASA (vpravo). Čísla pod snímkem '
       'porovnávají model s JPL Horizons (nezávislá efemerida NASA/JPL): úhel mezi směrem modelu a Horizons pro každé těleso a u úkazů '
       'čas a vzdálenost největšího přiblížení, které model najde sám. Fotografie mají přibližné místo a čas z popisu NASA; přesný okamžik '
-      'úkazu je z Horizons. Staví `node tools/test/ref_snimky.mjs` → `SCENY_JSON=… npm run test:sceny` → `python3 -I tools/test/ref_slozit.py`.', '',
+      'úkazu je z Horizons. U pomalých úkazů (konjunkce planet) je minimum vzdálenosti ploché a jeho čas sám nic neříká – rozhoduje vzdálenost. Staví `node tools/test/ref_snimky.mjs` → `SCENY_JSON=… npm run test:sceny` → `python3 -I tools/test/ref_slozit.py`.', '',
       '| Scéna | Kdy (UT) | Úkaz: model − Horizons | Poloha, nejhůř | Fotografie |', '|---|---|---|---|---|']
 for key, s, r in index:
     u = r.get('ukaz')

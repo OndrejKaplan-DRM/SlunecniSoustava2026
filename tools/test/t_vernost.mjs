@@ -62,7 +62,16 @@ for (const c of ref.pripady) {
   /* skupina: odkud → kam */
   const ri = root(i),
     rj = root(j),
-    from = c.c === 'earth' ? 'Země' : B[i].type === 'moon' ? 'měsíc' : B[i].type === 'planet' ? 'planeta' : c.c === 'pluto' ? 'Pluto' : 'planetka (Ceres, Vesta)',
+    from =
+      c.c === 'earth'
+        ? 'Země'
+        : B[i].type === 'moon'
+          ? 'měsíc'
+          : B[i].type === 'planet'
+            ? 'planeta'
+            : c.c === 'pluto'
+              ? 'Pluto'
+              : 'planetka (Ceres, Vesta)',
     to =
       j === SUN
         ? 'Slunce'
@@ -82,7 +91,10 @@ for (const c of ref.pripady) {
                 ? 'Pluto'
                 : 'planetka (Ceres, Vesta)',
     /* u těles téže soustavy: chyba přepočtená na zlomek poloměru dráhy měsíce */
-    orb = ri === rj && j !== SUN ? (Math.tan(g * DEG) * dist) / (semi[B[j].type === 'moon' && j !== ri ? j : i] || dist) : null;
+    orb =
+      ri === rj && j !== SUN
+        ? (Math.tan(g * DEG) * dist) / (semi[B[j].type === 'moon' && j !== ri ? j : i] || dist)
+        : null;
   rows.push({ c, g, a, from, to, azG, elG, diam, dist, orb, yr: 2000 + (jdUT - 2451545) / 365.25 });
 }
 const q = (arr, p) => {
@@ -97,19 +109,45 @@ for (const r of rows) {
   groups.get(k).push(r);
 }
 /* Meze (stupně, 95. percentil geometrického směru a největší odchylka) – nastavené podle změřeného stavu s rezervou; hlídají zhoršení. */
+/* meze [95 %, největší] ve stupních pro zdánlivé směry (to aplikace ukazuje v pohledu z povrchu); verze 2.1: dvojnásobek změřených hodnot
+   po kalibraci (Měsíc, dráhy měsíců a planetek na JPL Horizons). Ceres a Vesta jako pozorovatel: jiný model rotace v Horizons, viz VEROHODNOST.md */
 const LIM = {
-  'Země → Slunce': [0.02, 0.05],
-  'Země → planeta': [0.05, 0.12],
-  'Země → vlastní měsíc': [0.06, 0.12],
+  'Pluto → Měsíc': [0.002, 0.002],
+  'Pluto → Slunce': [0.01, 0.01],
+  'Pluto → planeta': [0.01, 0.01],
+  'Pluto → vlastní měsíc': [0.01, 0.01],
+  'Země → Pluto': [0.005, 0.005],
+  'Země → Slunce': [0.01, 0.01],
+  'Země → cizí měsíc': [0.01, 0.05],
+  'Země → planeta': [0.01, 0.03],
+  'Země → planetka (Ceres, Vesta)': [1, 2],
+  'Země → vlastní měsíc': [0.05, 0.1],
+  'měsíc → Měsíc': [0.03, 0.03],
+  'měsíc → Pluto': [0.01, 0.01],
+  'měsíc → Slunce': [0.03, 0.1],
+  'měsíc → mateřské těleso': [0.3, 1],
+  'měsíc → planeta': [0.02, 0.1],
+  'měsíc → sousední měsíc': [1, 3],
+  'planeta → Měsíc': [0.01, 0.01],
+  'planeta → Pluto': [0.005, 0.005],
+  'planeta → Slunce': [0.01, 0.02],
+  'planeta → planeta': [0.02, 0.03],
+  'planeta → vlastní měsíc': [0.3, 2],
+  'planetka (Ceres, Vesta) → Měsíc': [8, 8],
+  'planetka (Ceres, Vesta) → Pluto': [8, 8],
+  'planetka (Ceres, Vesta) → Slunce': [15, 15],
+  'planetka (Ceres, Vesta) → planeta': [10, 15],
 };
 let bad = 0;
 console.log(`Případů: ${rows.length} (reference: ${ref.zdroj})`);
-console.log('skupina'.padEnd(40) + 'n'.padStart(5) + '  medián geom.   95 % geom.    největší    | medián zdánl.  95 % zdánl.');
+console.log(
+  'skupina'.padEnd(40) + 'n'.padStart(5) + '  medián geom.   95 % geom.    největší    | medián zdánl.  95 % zdánl.'
+);
 for (const [k, rs] of [...groups].sort((x, y) => x[0].localeCompare(y[0], 'cs'))) {
   const G = rs.map((r) => r.g),
     A = rs.map((r) => r.a),
     lim = LIM[k],
-    ok = !lim || (q(G, 0.95) <= lim[0] && Math.max(...G) <= lim[1]);
+    ok = !lim || (q(A, 0.95) <= lim[0] && Math.max(...A) <= lim[1]);
   if (!ok) bad++;
   console.log(
     `${ok ? '  ok  ' : ' CHYBA'} ${k.padEnd(33)}${String(rs.length).padStart(5)}  ${fmt(q(G, 0.5)).padStart(11)}  ${fmt(q(G, 0.95)).padStart(11)}  ${fmt(Math.max(...G)).padStart(11)}    | ${fmt(q(A, 0.5)).padStart(11)}  ${fmt(q(A, 0.95)).padStart(11)}`
@@ -129,7 +167,11 @@ setDeltaT(null);
 if (dts.length) {
   const far = dts.filter((d) => d[0] < 1700 || d[0] > 2030),
     near = dts.filter((d) => d[0] >= 1700 && d[0] <= 2030),
-    md = (a) => q(a.map((d) => Math.abs(d[1] - d[2])), 0.5),
+    md = (a) =>
+      q(
+        a.map((d) => Math.abs(d[1] - d[2])),
+        0.5
+      ),
     mx = (a) => Math.max(...a.map((d) => Math.abs(d[1] - d[2])));
   console.log(
     `\nΔT (TT − UT), model × Horizons: roky 1700–2030 medián rozdílu ${md(near).toFixed(1)} s, největší ${mx(near).toFixed(1)} s (${near.length} okamžiků); mimo ně medián ${md(far).toFixed(0)} s, největší ${mx(far).toFixed(0)} s (${far.length} okamžiků; po roce 2027 Horizons drží 69 s)`
@@ -137,11 +179,24 @@ if (dts.length) {
 }
 /* úhlové průměry */
 const dd = rows.filter((r) => r.c.diam && r.diam).map((r) => Math.abs((r.diam * 3600) / r.c.diam - 1));
-console.log(`\nÚhlový průměr: medián odchylky ${(q(dd, 0.5) * 100).toFixed(2)} %, 95 % ${(q(dd, 0.95) * 100).toFixed(2)} %, největší ${(Math.max(...dd) * 100).toFixed(2)} %`);
+console.log(
+  `\nÚhlový průměr: medián odchylky ${(q(dd, 0.5) * 100).toFixed(2)} %, 95 % ${(q(dd, 0.95) * 100).toFixed(2)} %, největší ${(Math.max(...dd) * 100).toFixed(2)} %`
+);
 if (process.env.VERNOST_JSON)
   fs.writeFileSync(
     process.env.VERNOST_JSON,
-    JSON.stringify(rows.map((r) => ({ c: r.c.c, t: r.c.t, lat: r.c.lat, lon: r.c.lon, yr: +r.yr.toFixed(2), g: +r.g.toFixed(5), a: +r.a.toFixed(5), sk: r.from + ' → ' + r.to })))
+    JSON.stringify(
+      rows.map((r) => ({
+        c: r.c.c,
+        t: r.c.t,
+        lat: r.c.lat,
+        lon: r.c.lon,
+        yr: +r.yr.toFixed(2),
+        g: +r.g.toFixed(5),
+        a: +r.a.toFixed(5),
+        sk: r.from + ' → ' + r.to,
+      }))
+    )
   );
 console.log(bad ? `\n${bad} skupin mimo meze` : '\nbez chyb');
 process.exit(bad ? 1 : 0);

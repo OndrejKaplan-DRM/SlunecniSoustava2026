@@ -99,7 +99,12 @@ for (const [key, p] of Object.entries(POHLED)) {
   meta.push({ id: key, scena: s.id, ut: s.ut, jd, fov: p.fov, nad_obzorem: rows });
   console.log(key, s.ut, 'UT', rows.length, 'těles nad obzorem');
 }
-fs.writeFileSync(`${out}/meta.json`, JSON.stringify(meta, null, 1));
+/* při výběru scén se doplní k dřívějším (stejné id se přepíše) */
+const old = fs.existsSync(`${out}/meta.json`) ? JSON.parse(fs.readFileSync(`${out}/meta.json`, 'utf8')) : [];
+const all = [...old.filter((m) => !meta.some((x) => x.id === m.id)), ...meta].sort(
+  (x, y) => Object.keys(POHLED).indexOf(x.id) - Object.keys(POHLED).indexOf(y.id)
+);
+fs.writeFileSync(`${out}/meta.json`, JSON.stringify(all, null, 1));
 console.log(errs.length ? errs.join('\n') : 'bez chyb stránky');
 await browser.close();
 srv.close();

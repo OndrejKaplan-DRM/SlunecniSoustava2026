@@ -145,8 +145,8 @@ export const AIR = {
   earth: { z: [38, 92, 190], h: [150, 190, 238], tw: [240, 150, 85], k: 1 },
   /* Mars: přes den růžovohnědá obloha od prachu, kolem zapadajícího Slunce modravá (snímky vozítek NASA) */
   /* Mars: prach vysoko v atmosféře prodlouží soumrak – Spirit (sol 63) fotil hodinu před východem a Curiosity (sol 529) 80 min po západu
-     ještě světlou oblohu; obloha proto slábne až do výšky Slunce −20° (pozemská do −13°). Odhad z těchto snímků, ne výpočet rozptylu. */
-  mars: { z: [150, 118, 92], h: [205, 172, 138], tw: [120, 150, 200], k: 0.96, tw0: -20 },
+     ještě světlou oblohu; obloha proto slábne až do výšky Slunce −24° (pozemská do −13°). Odhad z těchto snímků, ne výpočet rozptylu. */
+  mars: { z: [150, 118, 92], h: [205, 172, 138], tw: [120, 150, 200], k: 0.96, tw0: -24 },
   venus: { z: [196, 150, 70], h: [214, 172, 88], tw: [120, 80, 30], k: 1, opaque: true },
   titan: { z: [150, 96, 42], h: [182, 124, 56], tw: [90, 55, 25], k: 1, opaque: true },
   jupiter: { z: [34, 62, 120], h: [150, 158, 172], tw: [200, 150, 110], k: 0.9, odhad: true },
