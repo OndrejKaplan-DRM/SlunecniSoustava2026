@@ -1,15 +1,16 @@
 # Sluneční soustava 200 – autoři, zdroje a licence
 
-Stav k 24. 11. 2026, verze 2.2 (zkušební; dřívější stav popisu 1.2 doplněn o oddíly pro 1.8b–2.2).
+Stav k 25. 11. 2026, verze 2.2b (zkušební; dřívější stav popisu 1.2 doplněn o oddíly pro 1.8b–2.2b).
 
 ## Autorství
 - Námět, zadání, odborná kontrola a testování: **Ing. Ondřej Kaplan, Ph.D.** (ondrej.kaplan@gmail.com).
 - Kód napsaly podle jeho zadání modely **Claude Fable 5.2** a od verze 2.1 též **Claude Opus 5.5** (Anthropic). Vývoj probíhal po iteracích ve větvích `iterace-N`; každou verzi hlídají automatické testy (`npm test`, `npm run test:fakta`).
 - Aplikace je zdarma, bez reklam a bez registrace. Neodesílá žádné údaje; nastavení a postup hry ukládá jen do úložiště prohlížeče.
 
-## Verze 2.2: krajina a obloha z povrchu
+## Verze 2.2 a 2.2b: krajina a obloha z povrchu
 | Co | Zdroj | Licence / podmínky |
 |---|---|---|
+| Rozměry konvektivních věží v oblacích Jupiteru (asi 50 km široké a vysoké, 2.2b) a stíny vyvýšených oblaků Neptunu | popisy snímků v NASA Image and Video Library: PIA21647 (Juno, 19. 5. 2017) a PIA02220 (Voyager 2, 1989); výškové škály atmosfér NASA NSSDCA Fact Sheets – jen čísla, snímky v aplikaci ani v repu nejsou | údaje; snímek PIA21647 je zpracování G. Eichstädta a S. Dorana (CC BY-NC-SA) z dat NASA/JPL-Caltech/SwRI/MSSS, PIA02220 NASA/JPL |
 | Výšková mapa Měsíce (`dist/maps/dem/moon*.webp`: celé těleso 4 body na stupeň, výřezy 16 bodů na stupeň kolem míst přistání) | NASA LRO LOLA, „CGI Moon Kit“ NASA Scientific Visualization Studio (E. Wright), soubor `ldem_16.tif`, https://svs.gsfc.nasa.gov/4720; převod `tools/data/dem_build.py` | volné dílo NASA |
 | Výšková mapa Marsu (`dist/maps/dem/mars*.webp`) | NASA MGS MOLA MEGDR, PDS Geosciences Node, `megt90n000eb.img` (16 bodů na stupeň), https://pds-geosciences.wustl.edu/mgs/mgs-m-mola-5-megdr-l3-v1/ | volné dílo NASA |
 | Model rozptylu světla v atmosféře (Rayleigh, Mie, ozon) a hodnoty pro Zemi | E. Bruneton, F. Neyret (2008): *Precomputed Atmospheric Scattering*, Computer Graphics Forum 27(4); fázová funkce Cornette & Shanks (1992); jas oblohy pro kalibraci: A. J. Preetham a kol. (1999) | vzorce a čísla z publikací; vlastní kód |
@@ -141,4 +142,4 @@ Další obrazové podklady:
 - **Suno**: autor má placený tarif Premier, který podle ceníku zahrnuje práva ke komerčnímu užití (snímek účtu z 13. 11. 2026). Plné znění podmínek služby jsem nečetla.
 
 ## Jak citovat
-Kaplan, O. (2026). *Sluneční soustava 200* (verze 2.2) [software]. https://github.com/OndrejKaplan-DRM/SlunecniSoustava2026
+Kaplan, O. (2026). *Sluneční soustava 200* (verze 2.2b) [software]. https://github.com/OndrejKaplan-DRM/SlunecniSoustava2026
