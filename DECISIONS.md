@@ -45,6 +45,27 @@ Kdo rozhodl: **O** = Ondřej, **K** = Kristína (AI) s Ondřejovým souhlasem ne
 - **13. 11. 2026 (K)** – Aplikace ukazuje světový čas (UT), dráhy běží v čase efemerid (ΔT podle Espenaka a Meeuse).
 
 ## Rozhraní a zobrazení
+- **24. 11. 2026 (O → K)** – Kolečko myši se u povrchu neblokuje, ale dostalo smysl: na nejbližší vzdálenosti od tělesa 3 kroky dovnitř
+  do 1,5 s zapnou zaměřovací křížek, další 3 kroky přistanou; na povrchu kolečko ven při nejširším poli = vzlet. Tlačítko přistání
+  ukazuje skutečný stav (🛬 Přistát na povrchu → ✅ Přistát sem → 🚀 Vzlétnout) v kartě, v ☰ i na liště a mění se i po vzletu
+  kolečkem. Důvod (O): ikona po přechodu kolečkem nabízela „Vzlétnout“ na oběžné dráze. Výklad zoomu kolečkem je můj (K).
+- **24. 11. 2026 (O → K)** – Přistání „prodat“: zlaté tlačítko přes celou šířku karty hned pod popisem, tlačítko 🛬 na horní liště vedle
+  Hledat, míření zeleně pulzuje, na povrchu modré 🚀; sestup s ukazatelem výšky, zvuky brzdění a startu (neslyšené v sandboxu).
+  Umístění na liště je můj výklad (K).
+- **24. 11. 2026 (O → K)** – **Noční vidění** na povrchu: pod osvětlením asi jako úplněk se oko dál nepřizpůsobuje, ale přidá se slabé
+  namodralé světlo (adaptace na tmu, Purkyňův posun) a barvy se ztlumí. Jas je úměrný albedu → sníh a led září, tmavá půda skoro ne;
+  obzor je vidět proti noční záři oblohy. Přisvětlení ☀ na povrchu násobí expozici ×1 až ×3,2 a po vzletu se vrátí. Důvod (O): přistání
+  v Grónsku v noci bylo černočerné a posuvník nereagoval. Úroveň (bílá plocha asi na desetině poledního jasu) je můj odhad (K), ne měření.
+- **24. 11. 2026 (K, na podnět O)** – Expozice podle osvětlení je strmější (jas bílé plochy 0,25 + 0,06·log₁₀ E místo 0,045) a albedo
+  nejvýš 0,9; led a sníh nejsou stínované jako regolit. Pluto v poledne: asi 26 % jasu pozemského poledne (dřív 44 %). Důvod (O): Pluto vypadalo
+  „prosluněné“ proti tmavé obloze. Pluto je opravdu jasné (albedo ~0,5–0,7 neověřeno, osvětlení ~1/1000 Země) – oko by se částečně přizpůsobilo.
+- **24. 11. 2026 (K)** – Regolit bez vzduchu (Měsíc, Merkur, planetky, komety) stínovaný podle Lommela a Seeligera s opozičním
+  zjasněním; led jen zčásti, Země, Venuše, Titan a oblaka podle Lamberta. Důvod: Měsíc na fotkách z Apolla netmavne k okraji ani při
+  nízkém Slunci. Stíny terénu na terénu se počítají pochodem paprsku ke Slunci (hory a hrany kráterů vrhají stín, do 70 km).
+- **24. 11. 2026 (O → K)** – Oblačná vrstva obrů: zvlnění výrazně plošší (sklon do ~8° místo přes 60°), ale s ojedinělými konvektivními
+  věžemi až 45 km vysokými. Důvod: Ondřej se ptal, jestli vertikální členění existuje – existuje, ale v jiném měřítku: Juno vidí
+  mezi pásy hladkou vrstvu a v ní věže asi 50 km široké a 50 km vysoké, které vrhají stín (PIA21647); výšková škála atmosféry Jupiteru je
+  27 km (Země 8,5 km, NSSDCA). Saturn (59,5 km, víc oparu), Uran a Neptun hladší – odhad. Pozorovatel 1,5 km nad vrstvou.
 - **24. 11. 2026 (O → K)** – Pohled z povrchu 2.2: realistická krajina a obloha místo 2D výplně. Obloha se **počítá** (jednonásobný
   Rayleighův a Mieův rozptyl, ozon, stín planety při soumraku, lom světla), ne kreslí podle barev ze snímků; krajina je 3D terén kolem
   pozorovatele (`render/krajina.js`, `render/teren.js`, `render/atmo.js`, předvolby `data/krajiny.js`). Důvod (O): „nemastné-neslané“,

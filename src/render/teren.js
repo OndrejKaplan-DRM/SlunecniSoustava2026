@@ -178,19 +178,55 @@ export function buildTeren(o) {
     out[1] = lon0 + Math.atan2(Math.sin(th) * sd * cl0, cd - sl0 * Math.sin(la));
     return out;
   };
+  /* konvektivní věže obrů: p = podíl buněk 70 × 70 km s věží, H = rozsah výšek (m), k = síla zvlnění vrstvy.
+     Jupiter: věže asi 50 km široké i vysoké (Juno, PIA21647); Saturn hlouběji pod oparem (výšková škála 59,5 km), Uran a Neptun
+     skoro hladké (Neptun: jednotlivá vyvýšená oblaka nad hlubší vrstvou, Voyager 2) – Saturn, Uran a Neptun jsou odhad */
+  const DK = {
+      jupiter: { p: 0.2, H: [15000, 45000], k: 1 },
+      saturn: { p: 0.06, H: [8000, 25000], k: 0.6 },
+      uranus: { p: 0.03, H: [3000, 8000], k: 0.4 },
+      neptune: { p: 0.08, H: [4000, 12000], k: 0.4 },
+    },
+    dk = deck ? DK[o.id] || DK.jupiter : null,
+    CELL = 70000;
+  const tower = (x, y) => {
+    const cx = Math.floor(x / CELL),
+      cy = Math.floor(y / CELL);
+    let h = 0;
+    for (let j = -1; j <= 1; j++)
+      for (let i = -1; i <= 1; i++) {
+        const gx = cx + i,
+          gy = cy + j;
+        if (hash2(gx, gy, seed + 41) > dk.p) continue;
+        const px = (gx + 0.15 + 0.7 * hash2(gx, gy, seed + 42)) * CELL,
+          py = (gy + 0.15 + 0.7 * hash2(gx, gy, seed + 43)) * CELL;
+        /* ne nad pozorovatelem ani těsně u něj (zakryla by výhled) */
+        if (Math.hypot(px, py) < 32000) continue;
+        const H = dk.H[0] + (dk.H[1] - dk.H[0]) * hash2(gx, gy, seed + 44),
+          rr = 0.5 * H * (0.8 + 0.5 * hash2(gx, gy, seed + 45)),
+          d = Math.hypot(x - px, y - py) / (rr * (1 + 0.22 * fbm(x / 9000, y / 9000, seed + 46, 3)));
+        if (d >= 1) continue;
+        /* kupa se strmými boky a „květákem“ navrchu */
+        h = Math.max(h, H * Math.sqrt(1 - d * d) * (0.86 + 0.14 * Math.abs(fbm(x / 2600, y / 2600, seed + 47, 3))));
+      }
+    return h;
+  };
   /* reliéf (m) v bodě (x východ, y sever); minD = nejmenší kráter, který má smysl při hustotě mřížky */
   const ej = [0];
   const relief = (x, y, minD, la, lo) => {
     if (deck) {
-      /* oblačná pokrývka obra: kupy a věže, vzdálené pásy */
-      const b = fbm(x / 22000, y / 22000, seed, 4),
-        c = Math.max(0, fbm(x / 6000, y / 6000, seed + 7, 4));
-      /* kupy (asi 1–3 km) s „květákem“ navrchu */
+      /* oblačná vrstva obra (2.2b): mírné zvlnění (stovky metrů na desítky km, sklon do ~8°) a „kupky“ navrchu; dřív kupy 1–3 km
+         na 6 km se sklonem přes 60° (vypadalo jako sněhové kopce). Juno: mezi pásy hladká vrstva, v ní ojedinělé konvektivní věže
+         asi 50 km široké a 50 km vysoké, které vrhají stín na oblaka pod sebou (PIA21647) – ty jsou tady zvlášť (věž). */
+      const b = fbm(x / 30000, y / 30000, seed, 3),
+        c = fbm(x / 7000, y / 7000, seed + 7, 4);
       return (
-        1400 * b +
-        2600 * c * c +
-        260 * Math.abs(fbm(x / 900, y / 900, seed + 9, 4)) +
-        40 * fbm(x / 120, y / 120, seed + 10, 3)
+        dk.k *
+          (600 * b +
+            150 * c +
+            110 * Math.abs(fbm(x / 2500, y / 2500, seed + 9, 4)) +
+            22 * fbm(x / 160, y / 160, seed + 10, 3)) +
+        tower(x, y)
       );
     }
     let h = 0;
@@ -274,6 +310,11 @@ export function buildTeren(o) {
       c0 *= kk;
       c1 *= kk * (1 - br * 0.14 * (1 - t));
       c2 *= kk * (1 - br * 0.28 * (1 - t));
+      /* věže: jasně bílé vršky (led amoniaku a vody) */
+      const wt = 0.85 * Math.max(0, Math.min(1, (h - h0 - 1500) / 8000));
+      c0 += (0.78 - c0) * wt;
+      c1 += (0.78 - c1) * wt;
+      c2 += (0.76 - c2) * wt;
     }
     const nn = 0.82 + 0.36 * (0.5 + 0.5 * fbm(x / 35, y / 35, seed + 21, 3)) * (T.typ === 'led' ? 0.8 : 1);
     let k = nn * (T.ton || 1) * (1 + 0.5 * ej[0]);

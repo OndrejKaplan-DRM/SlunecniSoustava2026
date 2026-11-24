@@ -21,9 +21,27 @@ je `iterace-24`. Soubor na vyzkoušení: `node tools/build/build_offline.mjs <v�
 | 2.0 + objekty 157 | 20. 11. 2026 | `iterace-23b` = `main` (sloučeno 20. 11. večer) | `iterace-24` (hvězdy a další objekty na obloze; na stránce zatím není) |
 | 2.1 (zkušební) | 24. 11. 2026 | `iterace-25` | `main` (2.0 se 157 objekty) |
 | 2.2 (zkušební) | 24. 11. 2026 | `iterace-26` | `iterace-25` (2.1) |
+| 2.2b (zkušební) | 24. 11. 2026 | `iterace-26` | 2.2 (doladění po Ondřejových připomínkách) |
 
 Do verze 1.8a na sebe větve navazují v řadě. Verze 1.8b, 1.8m a 1.9 vznikly souběžně ve třech sešnách z `iterace-19`;
 `iterace-22` je slučuje a přidává pohled z povrchu, takže obsahuje vše předchozí.
+
+## 2.2b – zkušební: tlačítka přistání a vzletu, noční vidění, plošší oblaka obrů (24. 11. 2026)
+Stejná větev `iterace-26`. Připomínky Ondřeje k 2.2 (22:36):
+
+1. **Stav tlačítka přistání** odpovídá skutečnosti v kartě, v ☰ i na liště: 🛬 Přistát na povrchu → ✅ Přistát sem (míření) →
+   🚀 Vzlétnout (na povrchu), i po vzletu kolečkem. **Kolečko**: u povrchu tělesa na nejbližší vzdálenosti 3 kroky dovnitř zapnou
+   zaměřovací křížek, další 3 kroky přistanou; na povrchu 3 kroky ven při nejširším poli = vzlet.
+2. **Noční vidění**: v noci slabé namodralé světlo jako oči přivyklé tmě, ztlumené barvy; sníh a led září víc než tmavá půda, obzor
+   je vidět, hvězdy zůstanou. **Přisvětlení ☀ na povrchu funguje** (×1 až ×3,2) a po vzletu se vrátí původní hodnota.
+   Slabé Slunce (Pluto) dává tmavší krajinu než dřív (asi 26 % jasu pozemského poledne místo 44 %), albedo nejvýš 0,9.
+3. **Stíny terénu**: hory a hrany kráterů vrhají stín na krajinu, kameny ve stínu jsou tmavé. Regolit bez vzduchu (Měsíc, Merkur,
+   planetky) stínovaný podle Lommela a Seeligera s opozičním zjasněním – Měsíc vypadá jako na fotkách z Apolla.
+4. **Přistání výrazněji**: zlaté tlačítko přes celou šířku karty hned pod popisem, 🛬 na horní liště vedle Hledat, v ☰; míření
+   zeleně pulzuje, na povrchu modré 🚀 Vzlétnout. Sestup s ukazatelem výšky, zvuk brzdění; vzlet se zvukem startu.
+5. **Oblačná vrstva obrů** výrazně plošší (sklon do ~8° místo přes 60°), s ojedinělými konvektivními věžemi až 45 km vysokými
+   s bílými vršky a stínem (Juno: věže asi 50 × 50 km, PIA21647); pozorovatel 1,5 km nad vrstvou. Saturn, Uran a Neptun hladší (odhad).
+6. Zkoušky: `t_krajina` 49 kontrol (stavy tlačítek, kolečko, přisvětlení a jeho vrácení, Grónsko v noci, Pluto), `pristani_snimky.mjs`.
 
 ## 2.2 – zkušební: krajina a obloha z povrchu, přistání zaměřovacím křížkem (24. 11. 2026)
 Větev `iterace-26` z `iterace-25`. Do `main` ani na stránku nic. Připomínky Ondřeje k 2.1 („pohledy z těles jsou nemastné-neslané“):

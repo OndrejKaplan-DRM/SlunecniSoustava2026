@@ -43,6 +43,7 @@ export const CASES = [
   ['venuse', 'venus', -7.5, 303.0, 40, 'sun+90', 8, 70],
   ['titan', 'titan', -10.3, 192.3, 30, 'sun+90', 8, 70],
   ['jupiter', 'jupiter', 20, 0, 30, 'sun+150', 6, 70],
+  ['jupiter_veze', 'jupiter', 20, 0, 14, 'sun+100', 5, 75],
   ['uran', 'uranus', 0, 0, 12, 'sun+150', 6, 70],
   ['io', 'io', 12.6, 51.1, 25, 'par', 10, 75],
   ['pluto', 'pluto', 20, 180, 25, 'sun+150', 8, 70],

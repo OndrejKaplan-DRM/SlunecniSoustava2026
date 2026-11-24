@@ -11,8 +11,9 @@ Nejnovější předávka sešny je v projektových dokumentech claude.ai (`claud
 - `main` = `7a0831c` – verze 2.0, kandidát k vydání (157 objektů na obloze). Na webu (`gh-pages`) je starší stav `iterace-24` (62 objektů).
 - `iterace-25` – verze 2.1 (zkušební, 24. 11. 2026): atmosféry a složení, srovnání ve dvojici, pásy, pohled z povrchu s panelem
   a vodítky, kalibrace poloh proti JPL Horizons, referenční snímky. Regrese prošla (viz `TODO.md`). Do `main` jen s Ondřejovým „ano“.
-- `iterace-26` – verze 2.2 (zkušební, 24. 11. 2026, z `iterace-25`): krajina a obloha z povrchu (rozptyl světla, výškové mapy Měsíce
-  a Marsu, `docs/KRAJINA.md`), přistání zaměřovacím křížkem. Do `main` jen s Ondřejovým „ano“.
+- `iterace-26` – verze 2.2 a 2.2b (zkušební, 24. 11. 2026, z `iterace-25`): krajina a obloha z povrchu (rozptyl světla, výškové mapy
+  Měsíce a Marsu, `docs/KRAJINA.md`), přistání zaměřovacím křížkem; 2.2b: stav tlačítek přistání a vzletu, kolečko u povrchu,
+  noční vidění, přisvětlení na povrchu, stíny terénu, plošší oblaka obrů s věžemi. Do `main` jen s Ondřejovým „ano“.
 - Body návratu: `iterace-24`, `verze-1.2`, `verze-1.1-stabilni`.
 
 ## Spuštění
@@ -25,7 +26,8 @@ npm run test:model                    # polohy planet, Pluta a Měsíce proti JP
 npm run test:vernost                  # pohled z povrchu: 996 náhodných případů proti JPL Horizons
 npm run test:sceny                    # referenční scény (přechody Phobosu a Deimosu, zatmění, konjunkce) proti JPL Horizons
 node tools/test/t_krajina.mjs /tmp/tk # krajina a obloha z povrchu (2.2): režimy, výškové mapy, barvy oblohy, moře → pevnina
-node tools/test/krajina_snimky.mjs /tmp/kraj [jméno,…]   # 19 pohledů z povrchu (den, západ, noc, Mars, Měsíc, Venuše, Titan…)
+node tools/test/krajina_snimky.mjs /tmp/kraj [jméno,…]   # 23 pohledů z povrchu (den, západ, noc, Grónsko v noci, Mars, Měsíc, obři…)
+node tools/test/pristani_snimky.mjs /tmp/pr            # tok přistání v 5 snímcích (karta, míření, sestup, povrch, vzlet kolečkem)
 node tools/build/build_offline.mjs /tmp/S200.html --hi   # jeden soubor HTML na flashku (musí mít < 400 MB)
 ```
 Další zkoušky v prohlížeči (`t_preload`, `t_karty`, `t_displej`, `t_pasy`, `t_obloha`, `t_scena`, `t_povrch`, `t_l2`, `t_okna`, `t_hi`)
