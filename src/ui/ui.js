@@ -680,7 +680,7 @@ export function createUI(S, A) {
     }
     $('#card').innerHTML =
       `<div class="hd"><div class="ball">${ico(i, 46)}</div><div><h2>${b.cs}</h2><div class="sub">${sub}${b.name !== b.cs && !/[()]/.test(b.name) ? ' · ' + b.name.replace('`', 'ʻ') : ''}</div></div>${ib}<div class="stamp ${seen ? 'on' : ''}" title="${seen ? 'Navštíveno' : 'Ještě nenavštíveno'}">${seen ? '✓' : '?'}</div></div>
-      <p class="kid">${kid}</p><table>${rows.map((r) => `<tr><th>${r[0]}</th><td>${r[1]}</td></tr>`).join('')}</table>${b.adult ? `<p class="adult">${b.adult}</p>` : ''}${fbox}
+      <p class="kid">${kid}</p>${i === SUN ? '' : `<div class="landrow">${surfBtn(i)}</div>`}<table>${rows.map((r) => `<tr><th>${r[0]}</th><td>${r[1]}</td></tr>`).join('')}</table>${b.adult ? `<p class="adult">${b.adult}</p>` : ''}${fbox}
       ${sunBox}<p class="src">${b.mk === 'foto' ? '📷 Povrch: skutečné snímky ze sond.' : i === SUN ? '' : '🎨 Povrch: ilustrace – zblízka ho zatím nikdo nevyfotil celý.'}${b.src === 'pamet' ? ' Dráha jen přibližná.' : ''}${COVER[b.id] ? '<br>🗺️ ' + COVER[b.id] : ''}<br>${A.note(i)}</p>
       <div class="row">${S.focus === i ? `<button data-a="close" class="pri">Přiblížit</button><button data-a="far">Oddálit</button>` : `<button data-a="go" class="pri">Leť tam ⏎</button>`}${p > 0 ? `<button data-a="parent">↑ ${B[p].cs}</button>` : ''}</div>`;
     cardExtra(i);
@@ -701,7 +701,7 @@ export function createUI(S, A) {
       nx = S.focus === i ? nextUp(i) : [],
       e = el('div', 'more');
     e.innerHTML =
-      `<div class="row"><button data-a="cmp" title="Porovnat velikost">⚖ ${K() ? 'Jak je to velké?' : 'Porovnat'}</button><button data-a="pin" title="Měřit vzdálenost odsud (Shift+D)">📏 ${api.X && api.X.ruler === i ? 'Zrušit měření' : 'Měřit odsud'}</button>${i === SUN ? '' : surfBtn(i)}${i === SUN || S.focus !== i ? '' : `<button data-a="gridb" class="${api.povrch && api.povrch.info.guides().body ? 'sel' : ''}" title="Mřížka zeměpisných šířek a délek na povrchu: rovník, nultý poledník, póly, místo, kde je Slunce v nadhlavníku">🌐 Mřížka</button>`}</div>` +
+      `<div class="row"><button data-a="cmp" title="Porovnat velikost">⚖ ${K() ? 'Jak je to velké?' : 'Porovnat'}</button><button data-a="pin" title="Měřit vzdálenost odsud (Shift+D)">📏 ${api.X && api.X.ruler === i ? 'Zrušit měření' : 'Měřit odsud'}</button>${i === SUN || S.focus !== i ? '' : `<button data-a="gridb" class="${api.povrch && api.povrch.info.guides().body ? 'sel' : ''}" title="Mřížka zeměpisných šířek a délek na povrchu: rovník, nultý poledník, póly, místo, kde je Slunce v nadhlavníku">🌐 Mřížka</button>`}</div>` +
       (nx.length
         ? `<div class="next"><span>${K() ? '🧭 Kam poletíme dál?' : 'Kam dál:'}</span>${nx.map((j) => `<button class="it chip" data-i="${j}"><b>${ico(j, 30)}</b><span>${B[j].cs}</span></button>`).join('')}</div>`
         : '');
@@ -1851,9 +1851,24 @@ export function createUI(S, A) {
   S.bus.on('fly', () => sweep(document.body.classList.contains('mob') ? [...SWEEP, '#list', '#gamebox'] : SWEEP));
   /* 2.2: stav přistání (přistání, míření, vzlet – i kolečkem) hned v kartě a v nabídce ☰, ať tlačítko nenabízí starý stav */
   const surfMenu = () => {
-    const b = $('#more [data-a="surf"]');
+    const b = $('#more [data-a="surf"]'),
+      t = $('#b-surf');
     if (!b) return;
     const pk = api.povrch && api.povrch.pickState();
+    if (t) {
+      const [ic, tx, cl] = S.surf
+        ? ['🚀', 'Vzlétnout', 'up']
+        : pk && pk.phase === 'vyber'
+          ? ['✅', 'Přistát sem', 'aim']
+          : ['🛬', 'Přistát', ''];
+      t.innerHTML = `${ic} <span>${tx}</span>`;
+      t.className = cl;
+      t.title = S.surf
+        ? 'Vzlétnout zpátky do vesmíru (Esc, nebo kolečkem ven)'
+        : pk && pk.phase === 'vyber'
+          ? 'Přistát na místě pod zaměřovacím křížkem (Enter, dvojklik)'
+          : 'Přistát na povrchu vybraného tělesa: krajina, obloha, Slunce a hvězdy odtud (nebo kolečkem blíž a blíž)';
+    }
     b.textContent = S.surf
       ? '🚀 Vzlétnout z povrchu'
       : pk && pk.phase === 'vyber'

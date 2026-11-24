@@ -108,6 +108,22 @@ export function createPristani(S, A, ui, P0) {
   S.ticks.push(tick);
   /* křížek uprostřed obrazu (pod ním je místo, nad kterým kamera stojí) */
   S.overlays.push((ctx, e) => {
+    if (st && st.phase === 'sestup') {
+      /* sestup: výška nad povrchem, ať je vidět, že se přistává */
+      const k = S.txtK || 1,
+        h = Math.max(0, S.cam.alt),
+        t = `🛬 ${kid() ? 'Přistáváme' : 'Sestup'} · ${h >= 10 ? nf(h, 0) + ' km' : nf(h * 1000, 0) + ' m'} nad povrchem`;
+      ctx.save();
+      ctx.font = `700 ${17 * k}px system-ui, -apple-system, Segoe UI, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = 'rgba(0,0,0,0.75)';
+      ctx.strokeText(t, e.W / 2, e.H * 0.3);
+      ctx.fillStyle = '#ffe2a8';
+      ctx.fillText(t, e.W / 2, e.H * 0.3);
+      ctx.restore();
+      return;
+    }
     if (!st || st.phase !== 'vyber') return;
     const r = e.R[st.i];
     if (!r || r.z <= 0) return;
@@ -197,7 +213,7 @@ export function createPristani(S, A, ui, P0) {
     st.phase = 'sestup';
     st.t0 = performance.now();
     pan.classList.remove('on');
-    A.play('fly_start');
+    A.play('brake');
     S.flyTo(i, { alt: B[i].R * 0.004 });
     S.bus.emit('surfPick', st.phase);
     S.wake();

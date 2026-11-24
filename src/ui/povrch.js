@@ -210,7 +210,8 @@ export function createPovrch(S, A, ui) {
   function exit() {
     if (!S.surf) return;
     S.setSurf(null);
-    A.play('panel_close');
+    A.play('launch');
+    ui.toast(kid() ? '🚀 Startujeme zpátky do vesmíru!' : '🚀 Vzlet – stoupáš zpátky na oběžnou dráhu.', 2600);
   }
   /* 2.2: přisvětlení (☀) na povrchu řídí jas krajiny; po vzletu (tlačítkem, Esc i kolečkem) se vrátí, jak bylo před přistáním */
   let gam0 = null;
@@ -407,14 +408,15 @@ export function createPovrch(S, A, ui) {
     adjust: (i, la, lo) => (adjust ? adjust(i, la, lo) : S.krajina ? S.krajina.adjust(i, la, lo) : null),
   });
   /* 2.2: kolečkem ven při nejširším zorném poli = vzlet (uživatel chce zpátky do vesmíru) */
-  S.bus.on('surfOut', () =>
+  S.bus.on('surfOut', () => {
+    A.play('launch');
     ui.toast(
       kid()
         ? '🚀 Odlétáme zpátky do vesmíru!'
-        : '⬆ Vzlet – kolečkem ven při nejširším zorném poli se vracíš do vesmíru.',
+        : '🚀 Vzlet – kolečkem ven při nejširším zorném poli se vracíš do vesmíru.',
       3500
-    )
-  );
+    );
+  });
   return {
     enter,
     exit,
