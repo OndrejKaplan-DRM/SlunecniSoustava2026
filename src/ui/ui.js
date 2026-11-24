@@ -701,11 +701,28 @@ export function createUI(S, A) {
       nx = S.focus === i ? nextUp(i) : [],
       e = el('div', 'more');
     e.innerHTML =
-      `<div class="row"><button data-a="cmp" title="Porovnat velikost">⚖ ${K() ? 'Jak je to velké?' : 'Porovnat'}</button><button data-a="pin" title="Měřit vzdálenost odsud (Shift+D)">📏 ${api.X && api.X.ruler === i ? 'Zrušit měření' : 'Měřit odsud'}</button>${i === SUN ? '' : `<button data-a="surf" title="Postavit se na povrch a dívat se na oblohu (místo uprostřed obrazu)">🔭 ${S.surf && S.surf.i === i ? 'Vzlétnout' : K() ? 'Stoupnout si sem' : 'Z povrchu'}</button>`}${i === SUN || S.focus !== i ? '' : `<button data-a="gridb" class="${api.povrch && api.povrch.info.guides().body ? 'sel' : ''}" title="Mřížka zeměpisných šířek a délek na povrchu: rovník, nultý poledník, póly, místo, kde je Slunce v nadhlavníku">🌐 Mřížka</button>`}</div>` +
+      `<div class="row"><button data-a="cmp" title="Porovnat velikost">⚖ ${K() ? 'Jak je to velké?' : 'Porovnat'}</button><button data-a="pin" title="Měřit vzdálenost odsud (Shift+D)">📏 ${api.X && api.X.ruler === i ? 'Zrušit měření' : 'Měřit odsud'}</button>${i === SUN ? '' : surfBtn(i)}${i === SUN || S.focus !== i ? '' : `<button data-a="gridb" class="${api.povrch && api.povrch.info.guides().body ? 'sel' : ''}" title="Mřížka zeměpisných šířek a délek na povrchu: rovník, nultý poledník, póly, místo, kde je Slunce v nadhlavníku">🌐 Mřížka</button>`}</div>` +
       (nx.length
         ? `<div class="next"><span>${K() ? '🧭 Kam poletíme dál?' : 'Kam dál:'}</span>${nx.map((j) => `<button class="it chip" data-i="${j}"><b>${ico(j, 30)}</b><span>${B[j].cs}</span></button>`).join('')}</div>`
         : '');
     c.appendChild(e);
+  }
+  /* 2.2: tlačítko přistání v kartě ukazuje stav: Přistát → (míření) Přistát sem → (na povrchu) Vzlétnout */
+  function surfBtn(i) {
+    const pk = api.povrch && api.povrch.pickState(),
+      on = S.surf && S.surf.i === i,
+      aim = pk && pk.i === i && pk.phase === 'vyber',
+      gas = /^(jupiter|saturn|uranus|neptune)$/.test(B[i].id);
+    const [ic, t, ti] = on
+      ? ['🚀', 'Vzlétnout', 'Vzlétnout zpátky do vesmíru (Esc)']
+      : aim
+        ? ['✅', K() ? 'Přistát tady' : 'Přistát sem', 'Přistát na místě pod zaměřovacím křížkem (Enter, dvojklik)']
+        : [
+            gas ? '☁' : '🛬',
+            gas ? (K() ? 'Na mraky' : 'Přistát na mracích') : K() ? 'Přistát' : 'Přistát na povrchu',
+            'Přistát a rozhlédnout se: krajina, obloha, Slunce a hvězdy odtud. Místo vybereš zaměřovacím křížkem (nebo kolečkem blíž a blíž).',
+          ];
+    return `<button data-a="surf" class="landb${aim ? ' aim' : ''}${on ? ' up' : ''}" title="${ti}">${ic} ${t}</button>`;
   }
   $('#card').addEventListener('click', (e) => {
     const chip = e.target.closest('.chip');
@@ -724,7 +741,11 @@ export function createUI(S, A) {
     }
     if (a === 'cmp') return act.cmp();
     /* 2.2: tlačítko v kartě dřív nic nedělalo (chyběla obsluha); teď spustí výběr místa přistání se zaměřovacím křížkem */
-    if (a === 'surf') return S.surf ? api.povrch.exit() : api.povrch.pick(i);
+    if (a === 'surf') {
+      if (S.surf) return api.povrch.exit();
+      const pk = api.povrch.pickState();
+      return pk && pk.i === i && pk.phase === 'vyber' ? api.povrch.land() : api.povrch.pick(i);
+    }
     if (a === 'gridb') {
       const on = api.povrch.info.bodyGrid();
       A.play('a_tick');
@@ -1011,6 +1032,8 @@ export function createUI(S, A) {
       /* 1.10: pohled z povrchu vybraného tělesa (u Slunce z tělesa, u kterého právě jsme; jinak ze Země) */
       if (!api.povrch) return;
       if (S.surf) return api.povrch.exit();
+      const pk = api.povrch.pickState();
+      if (pk && pk.phase === 'vyber') return api.povrch.land();
       api.povrch.pick(S.sel !== SUN ? S.sel : S.focus !== SUN ? S.focus : EARTH);
     },
     orbfade() {
@@ -1826,6 +1849,23 @@ export function createUI(S, A) {
       for (const s of sels) if ($(s).classList.contains('on')) toggle(s, false);
     };
   S.bus.on('fly', () => sweep(document.body.classList.contains('mob') ? [...SWEEP, '#list', '#gamebox'] : SWEEP));
+  /* 2.2: stav přistání (přistání, míření, vzlet – i kolečkem) hned v kartě a v nabídce ☰, ať tlačítko nenabízí starý stav */
+  const surfMenu = () => {
+    const b = $('#more [data-a="surf"]');
+    if (!b) return;
+    const pk = api.povrch && api.povrch.pickState();
+    b.textContent = S.surf
+      ? '🚀 Vzlétnout z povrchu'
+      : pk && pk.phase === 'vyber'
+        ? '✅ Přistát pod křížkem'
+        : '🛬 Přistát na povrchu';
+  };
+  const surfSync = () => {
+    if (S.sel >= 0) drawCardRaw(S.sel);
+    surfMenu();
+  };
+  S.bus.on('surf', surfSync);
+  S.bus.on('surfPick', surfSync);
   cv.addEventListener('pointerdown', (e) => {
     if (e.isTrusted)
       sweep(document.body.classList.contains('mob') ? [...SWEEP, '#list', '#gamebox'] : ['#help', '#cmp', '#dev']);

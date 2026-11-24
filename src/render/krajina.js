@@ -70,7 +70,7 @@ const COMP_FS = `precision highp float;
 in vec2 vUv;
 out vec4 oC;
 uniform sampler2D tScene, tL, tT;
-uniform vec3 uRt, uUp, uFw, uMs;
+uniform vec3 uRt, uUp, uFw, uMs, uNG;
 uniform vec2 uTan;
 uniform float uExp, uRefK, uMask, uOpq, uSat, uSunR;
 uniform vec3 uS;
@@ -105,13 +105,19 @@ void main(){
   float c = dot(st, vec3(0.2126, 0.7152, 0.0722));
   /* hvězda zmizí, když je slabší než jas oblohy kolem (práh kontrastu oka); Slunce ne */
   float m = mix(clamp(1.0 - uMask * lb / max(c, 1e-5), 0.0, 1.0), 1.0, sm);
-  oC = vec4(pow(st * m + L, vec3(1.0 / 2.2)), 1.0);
+  /* noční záře oblohy: u obzoru jasnější (van Rhijn); do prahu viditelnosti hvězd se nepočítá */
+  vec3 ngl = uNG * (0.75 + 0.9 * pow(1.0 - clamp(d.z, 0.0, 1.0), 4.0));
+  oC = vec4(pow(st * m + L + ngl, vec3(1.0 / 2.2)), 1.0);
 }`;
 const lin = (v) => Math.pow(v, 2.2);
 const lum = (c) => 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
 /* jas krajiny podle osvětlení (v násobcích pozemského poledne nad atmosférou): oko se přizpůsobí, ale ne úplně –
    poledne 0,25, Pluto v poledne asi 0,11, pozemský úplněk 0,0035 (zelené louky v měsíčním světle jsou šedé a tmavé) */
-const brightOf = (E) => Math.max(0.004, Math.min(0.42, 0.25 + 0.045 * Math.log10(Math.max(1e-14, E))));
+/* 2.2b: strmější (Pluto v poledne asi 16 % pozemského poledne – šero, ne „prosluněná“ pláň) */
+const brightOf = (E) => Math.max(0.004, Math.min(0.42, 0.25 + 0.06 * Math.log10(Math.max(1e-14, E))));
+/* noční vidění: oko přivyklé tmě vidí obzor a světlý sníh i bez Měsíce (jas krajiny s albedem 0,2 asi 3,5 % poledne) */
+const NIGHT_B = 0.024,
+  NIGHT_TINT = [0.82, 0.93, 1.18];
 export function createKrajina(S, renderer) {
   let terScene = null,
     ter = null,
@@ -138,12 +144,21 @@ export function createKrajina(S, renderer) {
     uDet: { value: black },
     uDetK: { value: 0 },
     uDetS: { value: 0.5 },
+    uNight: { value: 0 },
+    uNG: { value: new THREE.Vector3() },
+    uSunFrac: { value: 1 },
+    uLS: { value: 0 },
+    uSunV: { value: new THREE.Vector3(0, 1, 0) },
   };
-  const patch = (mat, detail) => {
+  const patch = (mat, detail, vis) => {
     mat.onBeforeCompile = (sh) => {
       Object.assign(sh.uniforms, U);
       sh.vertexShader = sh.vertexShader
-        .replace('#include <common>', '#include <common>\nvarying vec3 vWp;')
+        .replace(
+          '#include <common>',
+          `#include <common>\nvarying vec3 vWp;${vis ? '\nattribute float vis;\nvarying float vVis;' : ''}`
+        )
+        .replace('#include <begin_vertex>', `#include <begin_vertex>${vis ? '\n vVis = vis;' : ''}`)
         .replace(
           '#include <project_vertex>',
           '#include <project_vertex>\n vec4 wpK = vec4(transformed, 1.0);\n#ifdef USE_INSTANCING\n wpK = instanceMatrix * wpK;\n#endif\n vWp = (modelMatrix * wpK).xyz;'
@@ -151,7 +166,7 @@ export function createKrajina(S, renderer) {
       sh.fragmentShader = sh.fragmentShader
         .replace(
           '#include <common>',
-          `#include <common>\nvarying vec3 vWp;\nuniform sampler2D uSkyL, uDet;\nuniform vec2 uRes;\nuniform float uExpS, uFogOn, uDetK, uDetS;\nuniform vec3 uExt;\n${TONE}`
+          `#include <common>\nvarying vec3 vWp;${vis ? '\nvarying float vVis;' : ''}\nuniform sampler2D uSkyL, uDet;\nuniform vec2 uRes;\nuniform float uExpS, uFogOn, uDetK, uDetS, uNight, uSunFrac, uLS;\nuniform vec3 uExt, uNG, uSunV;\n${TONE}`
         )
         .replace(
           '#include <color_fragment>',
@@ -162,11 +177,28 @@ export function createKrajina(S, renderer) {
             : '#include <color_fragment>'
         )
         .replace(
+          '#include <lights_fragment_end>',
+          `#include <lights_fragment_end>${vis ? '\n reflectedLight.directDiffuse *= mix(1.0, vVis, uSunFrac);' : ''}
+           /* prachový regolit bez vzduchu nesvítí jako Lambertova plocha, ale podle Lommela a Seeligera (jas ~ μ0/(μ0+μ)):
+              Měsíc je i při nízkém Slunci a při pohledu k obzoru světlý, směrem od Slunce ještě světlejší (opoziční efekt) */
+           if (uLS > 0.0) {
+             vec3 nn = normalize(normal), vv = normalize(vViewPosition);
+             float mu0 = max(dot(nn, uSunV), 0.0), mu = max(dot(nn, vv), 0.03),
+               ph = acos(clamp(dot(uSunV, vv), -1.0, 1.0)),
+               ls = min(6.0, 2.0 / (mu0 + mu + 0.04)) * (1.0 + 0.5 * exp(-ph / 0.09)) * (1.0 - 0.25 * ph / 3.1416);
+             reflectedLight.directDiffuse *= mix(1.0, ls, uLS * uSunFrac);
+           }`
+        )
+        .replace(
           '#include <opaque_fragment>',
           `#include <opaque_fragment>
            { float dk = length(vViewPosition) * 0.001; vec3 Tf = exp(-uExt * dk);
-             vec3 Lh = kTone(texture2D(uSkyL, gl_FragCoord.xy / uRes).rgb * uExpS);
-             gl_FragColor.rgb = kTone(gl_FragColor.rgb) * Tf + Lh * (1.0 - Tf) * uFogOn; }`
+             vec3 Lh = kTone(texture2D(uSkyL, gl_FragCoord.xy / uRes).rgb * uExpS) + uNG * 1.2;
+             vec3 c = kTone(gl_FragColor.rgb);
+             /* v noci barvy blednou (vidění tyčinkami) */
+             float lc = dot(c, vec3(0.2126, 0.7152, 0.0722));
+             c = mix(c, lc * vec3(0.86, 0.95, 1.12), uNight * 0.8);
+             gl_FragColor.rgb = c * Tf + Lh * (1.0 - Tf) * uFogOn; }`
         );
     };
     return mat;
@@ -224,6 +256,7 @@ export function createKrajina(S, renderer) {
       uOpq: { value: 0 },
       uSat: { value: 1 },
       uSunR: { value: 0.0047 },
+      uNG: { value: new THREE.Vector3() },
       uS: skyMat.uniforms.uS,
     },
     depthTest: false,
@@ -489,7 +522,8 @@ export function createKrajina(S, renderer) {
     };
     const t0 = performance.now();
     ter = buildTeren(o);
-    const mat = patch(new THREE.MeshLambertMaterial({ vertexColors: true }), true);
+    ter.ls = T.ls || 0;
+    const mat = patch(new THREE.MeshLambertMaterial({ vertexColors: true }), true, true);
     const ground = new THREE.Mesh(ter.geo, mat);
     ground.receiveShadow = true;
     ground.castShadow = false;
@@ -509,6 +543,7 @@ export function createKrajina(S, renderer) {
             : c0.map((v) => v * 0.8);
     const rocks = buildRocks(o, ter),
       trees = buildTrees(o, ter);
+    rockMeshes = rocks;
     for (const m of [...rocks, ...trees]) {
       patch(m.material, false);
       m.frustumCulled = false;
@@ -519,6 +554,7 @@ export function createKrajina(S, renderer) {
     sunL.shadow.camera.near = 1;
     sunL.shadow.camera.far = 3000;
     sunL.shadow.camera.updateProjectionMatrix();
+    visKey = null;
     U.uDet.value = detailTex(T.typ);
     U.uDetK.value = T.typ === 'mraky' ? 0 : 0.55;
     U.uDetS.value = T.typ === 'zeme' ? 0.9 : 0.45;
@@ -635,6 +671,43 @@ export function createKrajina(S, renderer) {
   const sE = [0, 0, 0],
     pE = [0, 0, 0],
     tmp = [0, 0, 0];
+  let visKey = null,
+    visT = 0,
+    rockMeshes = [];
+  const lsDir = new THREE.Vector3();
+  /* stín terénu přepočítat, když se Slunce posune o víc než ~0,3° (nejvýš dvakrát za sekundu) */
+  function sunShadow() {
+    if (!ter || !ter.computeVis) return;
+    const sl = [sE[0], sE[2], -sE[1]],
+      now = performance.now();
+    if (visKey && now - visT < 500) return;
+    if (visKey && Math.hypot(sl[0] - visKey[0], sl[1] - visKey[1], sl[2] - visKey[2]) < 0.005) return;
+    const t0 = performance.now();
+    ter.computeVis(sl);
+    /* kameny ve stínu terénu ztmavnout (mapa stínů pokrývá jen okolí 110 m a terén sám stín nevrhá) */
+    for (const m of rockMeshes) {
+      const bs = m.userData.base,
+        xz = m.userData.xz;
+      if (!bs || !m.instanceColor) continue;
+      const a = m.instanceColor.array;
+      for (let k = 0; k < m.count; k++) {
+        const w = 0.12 + 0.88 * ter.visAt(xz[k * 2], xz[k * 2 + 1]);
+        a[k * 3] = bs[k * 3] * w;
+        a[k * 3 + 1] = bs[k * 3 + 1] * w;
+        a[k * 3 + 2] = bs[k * 3 + 2] * w;
+      }
+      m.instanceColor.needsUpdate = true;
+    }
+    visKey = sl;
+    visT = now;
+    stat.visMs = Math.round(performance.now() - t0);
+    {
+      const va = ter.geo.attributes.vis.array;
+      let sm = 0;
+      for (let k = 0; k < va.length; k++) sm += va[k];
+      stat.visMean = sm / va.length;
+    }
+  }
   /* hlavní výpočet za snímek: režim, expozice, barvy světel, uniformy */
   function update(q, v) {
     const b = B[q.i],
@@ -742,6 +815,10 @@ export function createKrajina(S, renderer) {
       X = Xg * Math.pow(Math.min(1, Xs / Xg), 0.78);
       stat.Lv = Lv;
     }
+    sunShadow();
+    /* přisvětlení (☀ v liště): na povrchu zjasní krajinu i noční vidění; po vzletu se vrátí (ui/povrch.js) */
+    const gm = 1 + 2.2 * (S.gamma || 0);
+    X *= gm;
     /* krajina: světla (intenzita × π, Lambert dělí π) */
     const K = Math.PI * X;
     const sunUp = sz > -0.02 && !oc;
@@ -753,11 +830,40 @@ export function createKrajina(S, renderer) {
     psL.color.setRGB(Epl[0] * K, Epl[1] * K, Epl[2] * K);
     psL.intensity = bestJ >= 0 ? 1 : 0;
     psL.position.set(pE[0] * 800, pE[2] * 800, -pE[1] * 800);
-    const sky = [0, 1, 2].map((k) => (Esky[k] * toa + Eoc[k]) * X),
-      gr = Eh.map((c) => c * 0.12 * X);
-    hemL.color.setRGB(sky[0], sky[1], sky[2]);
-    hemL.groundColor.setRGB(gr[0], gr[1], gr[2]);
+    /* světlo oblohy: polokoule (three dělí π stejně jako u přímého světla) */
+    const sky = [0, 1, 2].map((k) => (Esky[k] * toa + Eoc[k]) * K),
+      gr = Eh.map((c) => c * 0.12 * K);
+    /* noční vidění: chybějící světlo do jasu NIGHT_B doplní namodralé „okolní světlo“ (oko přivyklé tmě) */
+    const Bn = NIGHT_B * gm,
+      have = 0.2 * E * X,
+      nvA = Math.max(0, Bn - have) / 0.2,
+      nightF = Math.min(1, nvA / (Bn / 0.2));
+    hemL.color.setRGB(
+      sky[0] + Math.PI * nvA * NIGHT_TINT[0],
+      sky[1] + Math.PI * nvA * NIGHT_TINT[1],
+      sky[2] + Math.PI * nvA * NIGHT_TINT[2]
+    );
+    hemL.groundColor.setRGB(
+      gr[0] + Math.PI * nvA * NIGHT_TINT[0] * 0.55,
+      gr[1] + Math.PI * nvA * NIGHT_TINT[1] * 0.55,
+      gr[2] + Math.PI * nvA * NIGHT_TINT[2] * 0.55
+    );
     hemL.intensity = 1;
+    U.uNight.value = nightF;
+    /* noční záře oblohy (airglow a rozptýlené světlo hvězd; u obzoru jasnější) – jen se vzduchem; hvězdy kvůli ní nemizí */
+    const ng = atm ? Bn * 0.42 * nightF : 0;
+    compMat.uniforms.uNG.value.set(ng * NIGHT_TINT[0] * 0.8, ng * NIGHT_TINT[1] * 0.85, ng * NIGHT_TINT[2]);
+    U.uNG.value.copy(compMat.uniforms.uNG.value);
+    /* podíl Slunce na přímém světle: stín terénu (vrchol nevidí Slunce) ztlumí jen sluneční část */
+    const ds = lum(Edir) * Math.max(0, sz),
+      dp = lum(Epl) * plUp;
+    U.uSunFrac.value = sunUp ? ds / (ds + dp + 1e-20) : 0;
+    stat.night = nightF;
+    /* směr ke Slunci v soustavě kamery krajiny (pro stínování regolitu) */
+    U.uLS.value = ter && ter.ls !== undefined ? ter.ls : 0;
+    lsDir.set(sE[0], sE[2], -sE[1]).transformDirection(terCam.matrixWorldInverse);
+    U.uSunV.value.copy(lsDir);
+    stat.gm = gm;
     /* obloha */
     const G = atm ? atm.gain || 1 : 1;
     const su = skyMat.uniforms,
@@ -785,13 +891,13 @@ export function createKrajina(S, renderer) {
       su.uAB.value.fromArray(atm.ab || [0, 0, 0]);
       su.uG.value.fromArray(atm.g);
     }
-    let expS = toa * X * Math.PI * G;
+    let expS = toa * (X / Math.sqrt(gm)) * Math.PI * G;
     if (oc) {
       /* jas zatažené oblohy: ozáření pod oblaky / π (rovnoměrná záře) */
       const k = toa * oc.podil * Math.max(0, Math.min(1, (sz + 0.12) / 0.5)) ** 1.3;
       su.uOcC.value.set(oc.col[0] * k, oc.col[1] * k, oc.col[2] * k).multiplyScalar(1 / Math.PI);
       su.uOcGlow.value = oc.glow || 0;
-      expS = X * Math.PI;
+      expS = (X / Math.sqrt(gm)) * Math.PI;
     }
     /* expozice se uplatní už v shaderu oblohy (uPre); složení a mlha krajiny pak násobí jen 1 */
     su.uPre.value = expS;
@@ -862,6 +968,27 @@ export function createKrajina(S, renderer) {
       });
     }
   }
+  /* kamera krajiny: stejné natočení jako kamera oblohy, v místní soustavě (x = východ, y = nahoru, z = jih) */
+  function setCam(q, v) {
+    const f = S.surfSite(),
+      r = enu([v.right.x, v.right.y, v.right.z], f, [0, 0, 0]),
+      u = enu([v.up.x, v.up.y, v.up.z], f, [0, 0, 0]),
+      fw = enu([v.fwd.x, v.fwd.y, v.fwd.z], f, [0, 0, 0]),
+      /* nad oblačným mořem obrů jako z letadla (1,5 km nad vršky kup), jinak výška očí */
+      eye = ter.deck ? 1500 : B[q.i].R < 50 ? 1.2 : 1.7;
+    const M = new THREE.Matrix4().makeBasis(
+      new THREE.Vector3(r[0], r[2], -r[1]),
+      new THREE.Vector3(u[0], u[2], -u[1]),
+      new THREE.Vector3(-fw[0], -fw[2], fw[1])
+    );
+    M.setPosition(0, eye, 0);
+    terCam.matrix.copy(M);
+    terCam.matrixWorldNeedsUpdate = true;
+    terCam.fov = v.fov;
+    terCam.aspect = v.W / v.H;
+    terCam.updateProjectionMatrix();
+    terCam.updateMatrixWorld(true);
+  }
   const dbs = new THREE.Vector2();
   let V = null;
   /* před kreslením: stavba krajiny a výpočet světla (nastaví S.skyDim, podle něj engine ztlumí hvězdy) */
@@ -874,6 +1001,7 @@ export function createKrajina(S, renderer) {
     }
     shadowsOn = S.quality >= 1 || !document.body.classList.contains('mob');
     build(q);
+    setCam(q, v);
     update(q, v);
   }
   function render(scene, camera) {
@@ -901,30 +1029,18 @@ export function createKrajina(S, renderer) {
       U.uSkyL.value = black;
     }
     U.uRes.value.set(w, h);
-    /* kamera krajiny: stejné natočení jako kamera oblohy, v místní soustavě (x = východ, y = nahoru, z = jih) */
-    const f = S.surfSite(),
-      r = enu([v.right.x, v.right.y, v.right.z], f, [0, 0, 0]),
-      u = enu([v.up.x, v.up.y, v.up.z], f, [0, 0, 0]),
-      fw = enu([v.fwd.x, v.fwd.y, v.fwd.z], f, [0, 0, 0]),
-      eye = ter.deck ? 60 : B[q.i].R < 50 ? 1.2 : 1.7;
-    const M = new THREE.Matrix4().makeBasis(
-      new THREE.Vector3(r[0], r[2], -r[1]),
-      new THREE.Vector3(u[0], u[2], -u[1]),
-      new THREE.Vector3(-fw[0], -fw[2], fw[1])
-    );
-    M.setPosition(0, eye, 0);
-    terCam.matrix.copy(M);
-    terCam.matrixWorldNeedsUpdate = true;
-    terCam.fov = v.fov;
-    terCam.aspect = v.W / v.H;
-    terCam.updateProjectionMatrix();
-    terCam.updateMatrixWorld(true);
     const ac = renderer.autoClear;
     renderer.autoClear = false;
     renderer.clearDepth();
     renderer.render(terScene, terCam);
     renderer.autoClear = ac;
   }
+  /* po vzletu: vypnout mapu stínů (hlavní scéna ji nepotřebuje) – vše jako před přistáním */
+  S.bus.on('surf', (q) => {
+    if (q) return;
+    renderer.shadowMap.enabled = false;
+    S.skyDim = 0;
+  });
   function prep(i) {
     if (i >= 0 && B[i]) return Promise.all([loadMap(B[i].id), loadDem(B[i].id)]);
     return Promise.resolve(null);

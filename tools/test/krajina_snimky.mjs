@@ -31,6 +31,9 @@ export const CASES = [
   ['zeme_noc', 'earth', 50.09, 14.42, -14, 180, 25, 70],
   ['zeme_poust', 'earth', 25.69, 32.64, 30, 'sun+120', 8, 70],
   ['zeme_lom', 'earth', 25.69, 32.64, -0.25, 'sun', 0.2, 3, true],
+  ['gronsko_noc', 'earth', 72, -40, -20, 180, 4, 70, false, 0, 2461375.5],
+  ['gronsko_noc_g', 'earth', 72, -40, -20, 180, 4, 70, false, 0.7, 2461375.5],
+  ['mesic_rano', 'moon', 0.674, 23.473, 8, 'sun+150', 4, 70],
   ['mars_den', 'mars', -4.59, 137.442, 45, 'sun+150', 8, 70],
   ['mars_zapad', 'mars', -4.59, 137.442, 2, 'sun', 6, 60, true],
   ['mesic_den', 'moon', 0.674, 23.473, 20, 'sun+120', 6, 70],
@@ -64,11 +67,11 @@ await page.addStyleTag({
 });
 const stav = {};
 for (const c of CASES) {
-  const [name, id, lat, lon, sunEl, az, el, fov, setting] = c;
+  const [name, id, lat, lon, sunEl, az, el, fov, setting, gam, jd0] = c;
   if (only && !only.has(name)) continue;
   const t0 = Date.now();
   const r = await page.evaluate(
-    async ([id, lat, lon, sunEl, az, el, fov, setting]) => {
+    async ([id, lat, lon, sunEl, az, el, fov, setting, gam, jd0]) => {
       const { S, sim, povrch, misto } = window.S200,
         i = sim.idx.get(id),
         SUN = sim.SUN,
@@ -77,7 +80,7 @@ for (const c of CASES) {
       if (S.surf) povrch.exit();
       S.paused = true;
       /* čas: od 1. 6. 2026 hledat po krocích okamžik, kdy Slunce prochází zadanou výškou (při západu klesá) */
-      let jd = 2461192.5;
+      let jd = jd0 || 2461192.5;
       if (sunEl !== null) {
         const sd = Math.abs(misto.solarDay(i) || 1),
           step = Math.min(sd / 96, 2);
@@ -120,10 +123,11 @@ for (const c of CASES) {
         q.track = -1;
       } else q.az = az * D;
       q.el = el * D;
+      S.setGamma(gam || 0);
       S.wake();
       return { jd };
     },
-    [id, lat, lon, sunEl, az, el, fov, setting]
+    [id, lat, lon, sunEl, az, el, fov, setting, gam, jd0]
   );
   await page.waitForTimeout(3500);
   await page.evaluate(() => window.S200.S.wake());

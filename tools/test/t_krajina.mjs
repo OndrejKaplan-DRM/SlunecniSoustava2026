@@ -46,6 +46,7 @@ await page.addStyleTag({
 });
 /* postavit se na místo v čase, kdy je Slunce v zadané výšce (při západu klesá), a dívat se zadaným směrem */
 async function go(id, lat, lon, sunEl, az, el, fov = 70, setting = false, opt = {}) {
+  opt.jd0 = opt.jd0 || 2461192.5;
   await page.evaluate(
     async ([id, lat, lon, sunEl, az, el, fov, setting, opt]) => {
       const { S, sim, povrch, misto } = window.S200,
@@ -55,7 +56,7 @@ async function go(id, lat, lon, sunEl, az, el, fov = 70, setting = false, opt = 
       document.body.classList.add('refsnap');
       if (S.surf) povrch.exit();
       S.paused = true;
-      let jd = 2461192.5;
+      let jd = opt.jd0;
       const sd = Math.abs(misto.solarDay(i) || 1),
         step = Math.min(sd / 96, 2);
       let e0 = misto.elevAt(i, lat, lon, SUN, jd) / D;
@@ -225,6 +226,123 @@ ok(s.dim < 0.2, `Měsíc: pohled do nadhlavníku bez krajiny – hvězdy jsou vi
 await go('venus', -7.5, 303, 40, 'sun', 20, 70);
 c = await color('venuse', 0.1, 0.05, 0.9, 0.25);
 ok(c[0] > c[2] + 40 && c[0] > 120, `Venuše pod oblaky: obloha oranžová a zatažená (${c})`);
+
+console.log('== tlačítka přistání a vzletu (karta, ☰, kolečko)');
+await page.evaluate(() => {
+  const { S, povrch, sim } = window.S200;
+  document.body.classList.remove('refsnap');
+  if (S.surf) povrch.exit();
+  S.paused = true;
+  S.setGamma(0.2);
+  document.querySelector('#gam').value = 0.2;
+  S.flyTo(sim.idx.get('mars'));
+});
+await page.waitForFunction(() => !window.S200.S.flying(), null, { timeout: 60000 });
+await page.waitForTimeout(800);
+const btn = () =>
+  page.evaluate(() => {
+    const b = document.querySelector('#card [data-a="surf"]'),
+      m = document.querySelector('#more [data-a="surf"]');
+    return {
+      card: b ? b.textContent.trim() : null,
+      cls: b ? b.className : '',
+      menu: m ? m.textContent.trim() : null,
+      surf: !!window.S200.S.surf,
+      pick: window.S200.povrch.pickState(),
+    };
+  });
+let b = await btn();
+ok(
+  /Přistát na povrchu/.test(b.card) && /landb/.test(b.cls) && /Přistát/.test(b.menu),
+  `na oběžné dráze: „${b.card}“, v ☰ „${b.menu}“`
+);
+await page.evaluate(() => document.querySelector('#card [data-a="surf"]').click());
+await page.waitForFunction(() => (window.S200.povrch.pickState() || {}).phase === 'vyber', null, { timeout: 30000 });
+await page.waitForTimeout(400);
+b = await btn();
+ok(/Přistát sem/.test(b.card) && /aim/.test(b.cls) && /křížkem/.test(b.menu), `míření: „${b.card}“, v ☰ „${b.menu}“`);
+await page.evaluate(() => document.querySelector('#card [data-a="surf"]').click());
+await page.waitForFunction(() => !!window.S200.S.surf, null, { timeout: 30000 });
+await page.waitForTimeout(600);
+b = await btn();
+const g1 = await page.evaluate(() => {
+  window.S200.S.setGamma(0.8);
+  return window.S200.S.gamma;
+});
+ok(b.surf && /Vzlétnout/.test(b.menu), `po přistání: v ☰ „${b.menu}“ (karta je schovaná)`);
+/* vzlet kolečkem ven při nejširším poli */
+await page.evaluate(() => {
+  const S = window.S200.S;
+  S.surf.fov = 75;
+  S.zoom(1.7);
+  S.zoom(1.7);
+  S.zoom(1.7);
+});
+await page.waitForTimeout(800);
+b = await btn();
+const g2 = await page.evaluate(() => [
+  window.S200.S.gamma,
+  +document.querySelector('#gam').value,
+  window.S200.S.skyDim,
+]);
+ok(
+  !b.surf && /Přistát na povrchu/.test(b.card) && /Přistát/.test(b.menu),
+  `vzlet kolečkem: tlačítko hned nabízí „${b.card}“, v ☰ „${b.menu}“`
+);
+ok(
+  Math.abs(g2[0] - 0.2) < 1e-9 && Math.abs(g2[1] - 0.2) < 1e-9 && g2[2] === 0,
+  `po vzletu je přisvětlení zpět na 0,2 (na povrchu ${g1}), hvězdy bez ztlumení`
+);
+/* kolečkem blíž u povrchu: 3 kroky → křížek, další 3 → přistání */
+await page.waitForFunction(() => !window.S200.S.flying(), null, { timeout: 60000 });
+const zin = await page.evaluate(async () => {
+  const S = window.S200.S,
+    wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  /* blíž po krocích, dokud se neobjeví křížek (třetí krok u nejmenší výšky) */
+  for (let k = 0; k < 80 && !window.S200.povrch.pickState(); k++) S.zoom(0.6);
+  await wait(300);
+  const a = window.S200.povrch.pickState();
+  for (let k = 0; k < 3; k++) S.zoom(0.6);
+  await wait(200);
+  return { a, b: window.S200.povrch.pickState() };
+});
+ok(
+  zin.a && zin.a.phase === 'vyber',
+  `kolečkem blíž až k povrchu: objeví se zaměřovací křížek (${JSON.stringify(zin.a)})`
+);
+ok(zin.b && zin.b.phase === 'sestup', `dalším otočením kolečka blíž začne přistání (${JSON.stringify(zin.b)})`);
+await page.waitForFunction(() => !!window.S200.S.surf, null, { timeout: 30000 }).catch(() => {});
+ok(await page.evaluate(() => !!window.S200.S.surf), 'a přistane');
+await page.evaluate(() => window.S200.povrch.exit());
+await page.waitForTimeout(500);
+b = await btn();
+ok(!b.surf && /Přistát na povrchu/.test(b.card), `🚀 Vzlétnout / Esc: tlačítko zpět „${b.card}“`);
+console.log('== noc a přisvětlení');
+await go('earth', 72, -40, -20, 180, 3, 70, false, { jd0: 2461375.5 });
+await page.evaluate(() => window.S200.S.setGamma(0));
+await page.waitForTimeout(1500);
+let cs = await color('gronsko_noc', 0.1, 0.62, 0.9, 0.9),
+  cz = await color('gronsko_noc', 0.1, 0.1, 0.9, 0.35);
+s = await st();
+ok(s.night > 0.9, `Grónsko v noci (Slunce −20°): noční vidění zapnuté (${s.night.toFixed(2)})`);
+ok(cs[0] + cs[1] + cs[2] > 3 * 45 && cs[2] >= cs[0], `sníh je vidět, namodralý (${cs})`);
+ok(
+  cs[0] + cs[1] + cs[2] > cz[0] + cz[1] + cz[2] + 30,
+  `obzor je vidět: sníh světlejší než noční obloha (${cs} × ${cz})`
+);
+ok(s.dim < 0.1, `hvězdy v noci svítí (ztlumení ${s.dim.toFixed(2)})`);
+await page.evaluate(() => window.S200.S.setGamma(0.8));
+await page.waitForTimeout(1500);
+const cg = await color('gronsko_noc_prisvetleni', 0.1, 0.62, 0.9, 0.9);
+ok(cg[0] + cg[1] + cg[2] > (cs[0] + cs[1] + cs[2]) * 1.4, `přisvětlení ☀ zjasní noční krajinu (${cs} → ${cg})`);
+await page.evaluate(() => window.S200.S.setGamma(0));
+await go('pluto', 20, 180, 25, 'sun', 6, 70);
+s = await st();
+const cp = await color('pluto_poledne', 0.1, 0.6, 0.9, 0.95);
+ok(
+  s.bright < 0.06 && (cp[0] + cp[1] + cp[2]) / 3 < 150,
+  `Pluto v poledne: šero (jas ${((s.bright / 0.25) * 100).toFixed(0)} % poledne, půda ${cp})`
+);
 console.log(errs.length ? errs.join('\n') : 'bez chyb stránky');
 console.log(bad ? `CHYBY: ${bad} z ${n} kontrol` : `bez chyb (${n} kontrol)`);
 await browser.close();

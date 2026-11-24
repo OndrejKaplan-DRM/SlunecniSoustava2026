@@ -157,24 +157,26 @@ export const OBRI = new Set(['jupiter', 'saturn', 'uranus', 'neptune']);
 
 /* krajina: typ, reliéf (m) – far: vzdálené kopce, mid: zvlnění, near: drobný; krátery (hustota 0–1), kameny (hustota, max. velikost m),
    tón (násobí barvu mapy), mlha (dohlednost km, 0 = bez vzduchu) */
+/* ls: podíl stínování podle Lommela a Seeligera (prachový regolit bez vzduchu: Měsíc, Merkur, planetky = 1; led méně;
+   Země, Venuše, Titan, oblaka = 0 → Lambertova plocha) */
 const T = {
   /* Měsíc: na snímcích z Apolla jsou kameny hlavně drobné, balvany jen ojediněle (u čerstvých kráterů) */
-  regolit: { typ: 'regolit', far: 900, mid: 14, near: 0.5, krat: 1, kam: 0.22, kamMax: 0.8, mlha: 0 },
-  merkur: { typ: 'regolit', far: 1100, mid: 50, near: 0.7, krat: 1, kam: 0.3, kamMax: 1.1, mlha: 0 },
+  regolit: { typ: 'regolit', ls: 1, far: 900, mid: 14, near: 0.5, krat: 1, kam: 0.22, kamMax: 0.8, mlha: 0 },
+  merkur: { typ: 'regolit', ls: 1, far: 1100, mid: 50, near: 0.7, krat: 1, kam: 0.3, kamMax: 1.1, mlha: 0 },
   /* Mars: barevné mapy jsou kvůli vzhledu přesycené, na snímcích vozítek je půda hnědožlutá (sat) */
-  mars: { typ: 'mars', far: 700, mid: 12, near: 0.3, krat: 0.35, kam: 0.8, kamMax: 0.55, mlha: 45, sat: 0.62 },
+  mars: { typ: 'mars', ls: 0.35, far: 700, mid: 12, near: 0.3, krat: 0.35, kam: 0.8, kamMax: 0.55, mlha: 45, sat: 0.62 },
   zeme: { typ: 'zeme', far: 180, mid: 18, near: 0.15, krat: 0, kam: 0.03, kamMax: 0.6, mlha: 60, stromy: 1 },
   venuse: { typ: 'venuse', far: 300, mid: 8, near: 0.25, krat: 0.05, kam: 0.4, kamMax: 0.5, mlha: 8 },
   /* Titan u Huygensu: rovina s oblázky z vodního ledu 1–15 cm (Tomasko a kol. 2005) */
   titan: { typ: 'titan', far: 150, mid: 6, near: 0.08, krat: 0, kam: 1.4, kamMax: 0.2, mlha: 6 },
   duny: { typ: 'duny', far: 150, mid: 6, near: 0.1, krat: 0, kam: 0.05, kamMax: 0.2, mlha: 6, duny: 1 },
-  led: { typ: 'led', far: 500, mid: 20, near: 0.3, krat: 0.5, kam: 0.2, kamMax: 0.8, mlha: 0, hrebeny: 0 },
-  europa: { typ: 'led', far: 250, mid: 30, near: 0.4, krat: 0.08, kam: 0.4, kamMax: 1.0, mlha: 0, hrebeny: 1 },
-  io: { typ: 'sira', far: 600, mid: 15, near: 0.2, krat: 0.02, kam: 0.3, kamMax: 0.8, mlha: 0, oblak: 1 },
+  led: { typ: 'led', ls: 0.15, far: 500, mid: 20, near: 0.3, krat: 0.5, kam: 0.2, kamMax: 0.8, mlha: 0, hrebeny: 0 },
+  europa: { typ: 'led', ls: 0.4, far: 250, mid: 30, near: 0.4, krat: 0.08, kam: 0.4, kamMax: 1.0, mlha: 0, hrebeny: 1 },
+  io: { typ: 'sira', ls: 0.5, far: 600, mid: 15, near: 0.2, krat: 0.02, kam: 0.3, kamMax: 0.8, mlha: 0, oblak: 1 },
   /* Pluto: dusíkové pláně (Sputnik Planitia) a hory z vodního ledu vysoké až 3–5 km (New Horizons) */
-  pluto: { typ: 'led', far: 2200, mid: 25, near: 0.3, krat: 0.15, kam: 0.2, kamMax: 0.9, mlha: 0 },
-  maly: { typ: 'regolit', far: 0, mid: 0, near: 0.5, krat: 1, kam: 1.6, kamMax: 3, mlha: 0, maly: 1 },
-  kometa: { typ: 'kometa', far: 0, mid: 0, near: 1, krat: 0.3, kam: 1.2, kamMax: 4, mlha: 0, maly: 1 },
+  pluto: { typ: 'led', ls: 0, far: 2200, mid: 25, near: 0.3, krat: 0.15, kam: 0.2, kamMax: 0.9, mlha: 0 },
+  maly: { typ: 'regolit', ls: 1, far: 0, mid: 0, near: 0.5, krat: 1, kam: 1.6, kamMax: 3, mlha: 0, maly: 1 },
+  kometa: { typ: 'kometa', ls: 1, far: 0, mid: 0, near: 1, krat: 0.3, kam: 1.2, kamMax: 4, mlha: 0, maly: 1 },
   mraky: { typ: 'mraky', mlha: 120 },
 };
 export const KR = T;

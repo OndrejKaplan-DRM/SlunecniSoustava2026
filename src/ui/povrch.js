@@ -117,7 +117,7 @@ export function createPovrch(S, A, ui) {
       hasAir = !!AIR[b.id];
     bar.innerHTML =
       `<div class="sf-h"><b>🔭 <span class="sf-t">${kid() ? 'Stojíš tady:' : 'Pohled z povrchu:'}</span> ${b.cs}</b> <span class="sf-pl">${place(q)}</span>` +
-      `<button class="sf-x" data-s="exit" title="Vzlétnout zpět na oběžnou dráhu (Esc)">⬆ Vzlétnout</button></div>` +
+      `<button class="sf-x" data-s="exit" title="Vzlétnout zpět na oběžnou dráhu (Esc, nebo kolečkem ven při nejširším poli)">🚀 Vzlétnout</button></div>` +
       `<div class="sf-r"><span class="sf-dir"></span><span class="sf-sun"></span></div>` +
       `<div class="sf-b"><select aria-label="Najít těleso na obloze"></select>` +
       `<button data-s="out" title="Širší zorné pole (kolečko myši)">−</button><span class="sf-fov"></span><button data-s="in" title="Užší zorné pole – dalekohled (kolečko myši)">+</button>` +
@@ -201,7 +201,7 @@ export function createPovrch(S, A, ui) {
         (NOTE[b.id] ? NOTE[b.id] + ' ' : '') +
           (kid()
             ? `Stojíš na tělese ${b.cs}! Tahej a rozhlížej se. ${touch() ? 'Dvěma prsty' : 'Kolečkem'} si oblohu přiblížíš jako dalekohledem.`
-            : `Stojíš na povrchu (${b.cs}, ${place(q)}). Tahem se rozhlížíš, ${touch() ? 'dvěma prsty' : 'kolečkem'} měníš zorné pole jako dalekohledem. Zpátky do vesmíru: ⬆ Vzlétnout, Esc nebo ${touch() ? 'roztažením prstů' : 'kolečkem'} ven.`),
+            : `Stojíš na povrchu (${b.cs}, ${place(q)}). Tahem se rozhlížíš, ${touch() ? 'dvěma prsty' : 'kolečkem'} měníš zorné pole jako dalekohledem. Zpátky do vesmíru: 🚀 Vzlétnout, Esc nebo ${touch() ? 'roztažením prstů' : 'kolečkem'} ven.`),
         7000
       );
     }
@@ -212,7 +212,20 @@ export function createPovrch(S, A, ui) {
     S.setSurf(null);
     A.play('panel_close');
   }
-  S.bus.on('surf', () => draw());
+  /* 2.2: přisvětlení (☀) na povrchu řídí jas krajiny; po vzletu (tlačítkem, Esc i kolečkem) se vrátí, jak bylo před přistáním */
+  let gam0 = null;
+  S.bus.on('surf', (q) => {
+    if (q && gam0 === null) gam0 = S.gamma;
+    else if (!q && gam0 !== null) {
+      if (S.gamma !== gam0) {
+        S.setGamma(gam0);
+        const g = document.querySelector('#gam');
+        if (g) g.value = gam0;
+      }
+      gam0 = null;
+    }
+    draw();
+  });
   bar.addEventListener('click', (ev) => {
     const b = ev.target.closest('button[data-s]'),
       q = S.surf;

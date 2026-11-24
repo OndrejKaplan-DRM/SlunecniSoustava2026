@@ -1298,6 +1298,16 @@ export function createEngine(canvas, overlay) {
       q.fov = Math.min(SURF_FOV[1], Math.max(SURF_FOV[0], q.fov * k));
       return wake();
     }
+    /* 2.2: kdo u povrchu točí kolečkem dál blíž, chce přistát – třetí krok při nejmenší výšce během 1,5 s (posílá 'zoomIn') */
+    if (k < 1 && !cam.fly && cam.altT <= minAlt(S.focus) * 1.02 && S.focus !== SUN) {
+      const now = performance.now();
+      cam.inN = now - (cam.inT || 0) < 1500 ? (cam.inN || 0) + 1 : 1;
+      cam.inT = now;
+      if (cam.inN >= 3) {
+        cam.inN = 0;
+        S.bus.emit('zoomIn', S.focus);
+      }
+    } else if (k > 1) cam.inN = 0;
     cam.altT = Math.min(3e11, Math.max(minAlt(S.focus), cam.altT * k));
     if (cam.fly && cam.fly.ph === 2) cam.fly = null;
     wake();

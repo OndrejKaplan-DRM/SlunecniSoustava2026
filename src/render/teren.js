@@ -244,6 +244,15 @@ export function buildTeren(o) {
       c1 = sm[1];
       c2 = sm[2];
     }
+    {
+      /* albedo nad 0,9 neexistuje (mapy světlých těles přepočtené na albedo z katalogu by ho jinde překročily) */
+      const mx = Math.max(c0, c1, c2);
+      if (mx > 0.9) {
+        c0 *= 0.9 / mx;
+        c1 *= 0.9 / mx;
+        c2 *= 0.9 / mx;
+      }
+    }
     if (o.ground) {
       /* půda, kterou mapa neukazuje (Venuše a Titan pod oblaky): barva z barevných snímků sond */
       const v = 0.85 + 0.3 * fbm(x / 3000, y / 3000, seed + 31, 3);
@@ -325,6 +334,69 @@ export function buildTeren(o) {
   geo.setIndex(idx);
   geo.computeVertexNormals();
   geo.computeBoundingSphere();
+  /* stín terénu: vidí vrchol Slunce? (pochod paprskem k Slunci nad mřížkou; 1 = ano, 0 = ve stínu kopce nebo hrany kráteru) */
+  const visA = new Float32Array(nV).fill(1);
+  geo.setAttribute('vis', new THREE.BufferAttribute(visA, 1));
+  const lq = Math.log(q);
+  const gridY = (x, z) => {
+    const r = Math.hypot(x, z);
+    if (r <= rMin) return pos[1];
+    if (r >= rMax) return -1e9;
+    const kf = Math.log(r / rMin) / lq,
+      k0 = Math.min(NR - 2, Math.floor(kf)),
+      t = kf - k0,
+      th = (Math.atan2(x, -z) + TAU) % TAU;
+    const ring = (k) => {
+      const af = (th / TAU) * NA - (k & 1) * 0.5,
+        a0 = Math.floor(af),
+        ta = af - a0,
+        i0 = 1 + k * NA + (((a0 % NA) + NA) % NA),
+        i1 = 1 + k * NA + ((((a0 + 1) % NA) + NA) % NA);
+      return pos[i0 * 3 + 1] * (1 - ta) + pos[i1 * 3 + 1] * ta;
+    };
+    return ring(k0) * (1 - t) + ring(k0 + 1) * t;
+  };
+  /* viditelnost Slunce v bodě (x, z) podle nejbližšího vrcholu mřížky – pro kameny */
+  const visAt = (x, z) => {
+    const r = Math.hypot(x, z);
+    if (r <= rMin) return visA[0];
+    if (r >= rMax) return 1;
+    const k = Math.min(NR - 1, Math.max(0, Math.round(Math.log(r / rMin) / lq))),
+      th = (Math.atan2(x, -z) + TAU) % TAU,
+      a = Math.round((th / TAU) * NA - (k & 1) * 0.5);
+    return visA[1 + k * NA + (((a % NA) + NA) % NA)];
+  };
+  /* s = směr ke Slunci v soustavě krajiny (x východ, y nahoru, z jih), jednotkový */
+  const computeVis = (s) => {
+    const sh = Math.hypot(s[0], s[2]);
+    if (s[1] <= -0.05 || sh < 1e-6) {
+      visA.fill(s[1] > 0 ? 1 : 0);
+      geo.attributes.vis.needsUpdate = true;
+      return;
+    }
+    const ux = s[0] / sh,
+      uz = s[2] / sh,
+      te = s[1] / sh;
+    for (let v = 0; v < nV; v++) {
+      const px = pos[v * 3],
+        py = pos[v * 3 + 1] + 0.3,
+        pz = pos[v * 3 + 2];
+      let m = 1;
+      for (let t = 2; t < 70000; t *= 1.36) {
+        const x = px + ux * t,
+          z = pz + uz * t,
+          gy = gridY(x, z);
+        if (gy < -1e8) break;
+        const c = (py + te * t - gy) / t;
+        if (c < m) m = c;
+        if (m < -0.004) break;
+      }
+      /* měkký okraj stínu (polostín přes ~1°) */
+      const u = Math.max(0, Math.min(1, (m + 0.004) / 0.02));
+      visA[v] = u * u * (3 - 2 * u);
+    }
+    geo.attributes.vis.needsUpdate = true;
+  };
   const group = new THREE.Group();
   /* výška terénu pod bodem (x, z) ve stejné soustavě jako mřížka – pro kameny a stromy */
   const yAt = (x, z) => {
@@ -344,7 +416,7 @@ export function buildTeren(o) {
       a = Math.round((th / TAU) * NA - (k & 1) * 0.5);
     return kinds[1 + k * NA + (((a % NA) + NA) % NA)];
   };
-  return { geo, group, yAt, kindAt, h0, rMax, deck, water0, info: { NA, NR, rMax } };
+  return { geo, group, yAt, kindAt, h0, rMax, deck, water0, computeVis, visAt, info: { NA, NR, rMax } };
 }
 /* ---------- kameny, oblázky, stromy ---------- */
 function rockGeo(seed, kind) {
@@ -414,7 +486,8 @@ export function buildRocks(o, ter) {
   let si = 0;
   for (const st of sets) {
     const g = rockGeo(seed + si * 7, kind),
-      im = new THREE.InstancedMesh(g, mat, st.n);
+      im = new THREE.InstancedMesh(g, mat, st.n),
+      xz = new Float32Array(st.n * 2);
     let n = 0;
     for (let k = 0; k < st.n * 3 && n < st.n; k++) {
       const u = hash2(k, si, seed + 55),
@@ -439,9 +512,14 @@ export function buildRocks(o, ter) {
       const v = 0.7 + 0.6 * hash2(k, 9, seed);
       cc.setRGB(tint[0] * v, tint[1] * v, tint[2] * v);
       im.setColorAt(n, cc);
+      xz[n * 2] = x;
+      xz[n * 2 + 1] = z;
       n++;
     }
     im.count = n;
+    /* poloha a barva kamenů pro stín terénu (kámen ve stínu kopce nebo kráteru nesvítí) */
+    im.userData.base = im.instanceColor ? im.instanceColor.array.slice(0, n * 3) : null;
+    im.userData.xz = xz.slice(0, n * 2);
     im.castShadow = st.shadow;
     im.receiveShadow = true;
     im.instanceMatrix.needsUpdate = true;

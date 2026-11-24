@@ -1,5 +1,5 @@
 // Přistání na povrchu (verze 2.2): výběr místa zaměřovacím křížkem, sestup, úklid oken a snadný návrat do vesmíru.
-// Tok: tlačítko „🔭 Z povrchu“ (karta, ☰) → těleso se přiblíží, zapne se mřížka zeměpisných souřadnic a uprostřed obrazu je křížek;
+// Tok: tlačítko „🛬 Přistát na povrchu“ (karta, ☰; nebo kolečkem blíž u povrchu) → těleso se přiblíží, zapne se mřížka zeměpisných souřadnic a uprostřed obrazu je křížek;
 // uživatel tahem natočí těleso tak, aby bylo vybrané místo pod křížkem (nebo vybere pojmenované místo) → „Přistát“ (Enter,
 // dvojklik) → kamera sestoupí kolmo k místu → pohled z povrchu. Zpět do vesmíru: ⬆ Vzlétnout, Esc, kolečkem ven při nejširším
 // zorném poli, klik na jiné těleso v liště.
@@ -77,6 +77,7 @@ export function createPristani(S, A, ui, P0) {
       st.phase = 'vyber';
       S.cam.ly = S.cam.lp = 0;
       draw();
+      S.bus.emit('surfPick', st.phase);
     }
     if (st.phase === 'vyber') {
       const now = performance.now();
@@ -140,19 +141,22 @@ export function createPristani(S, A, ui, P0) {
     ctx.restore();
   });
 
-  function start(i) {
+  function start(i, opt = {}) {
     if (i === SUN) return ui.toast('Na Slunci stát nejde – nemá pevný povrch a má 5 500 °C.');
     if (S.surf) P0.exit();
     if (st) finish(true);
     st = { i, phase: 'let', grid0: P0.info.guides().body };
     P0.info.bodyGrid(true);
     document.body.classList.add('surfpick');
-    S.flyTo(i, { alt: pickAlt(i) });
+    /* kolečkem blíž u povrchu (opt.stay): zůstat, kde kamera je – místo pod ní je to, co si uživatel přibližoval */
+    if (!(opt.stay && S.focus === i && !S.flying())) S.flyTo(i, { alt: pickAlt(i) });
     A.play('panel_open');
     if (!S.flying()) {
       st.phase = 'vyber';
+      S.cam.ly = S.cam.lp = 0;
       draw();
     }
+    S.bus.emit('surfPick', st.phase);
     S.wake();
   }
   function finish(cancel) {
@@ -162,6 +166,7 @@ export function createPristani(S, A, ui, P0) {
     document.body.classList.remove('surfpick');
     pan.classList.remove('on');
     if (cancel) A.play('panel_close');
+    S.bus.emit('surfPick', null);
     S.wake();
   }
   /* natočit těleso tak, aby místo (šířka, délka) bylo pod kamerou */
@@ -194,6 +199,7 @@ export function createPristani(S, A, ui, P0) {
     pan.classList.remove('on');
     A.play('fly_start');
     S.flyTo(i, { alt: B[i].R * 0.004 });
+    S.bus.emit('surfPick', st.phase);
     S.wake();
   }
   pan.addEventListener('click', (ev) => {
@@ -245,6 +251,19 @@ export function createPristani(S, A, ui, P0) {
   /* jiný přelet (ikona v liště, seznam) výběr zruší */
   S.bus.on('fly', (j) => {
     if (st && st.phase === 'vyber' && j !== st.i) finish(true);
+  });
+  /* kolečkem blíž u povrchu: první trojice kroků ukáže křížek, další trojice přistane */
+  S.bus.on('zoomIn', (i) => {
+    if (S.surf || i === SUN || !B[i]) return;
+    if (st && st.phase === 'vyber' && st.i === i) return land();
+    if (st) return;
+    start(i, { stay: true });
+    ui.toast(
+      kid()
+        ? '🛬 Přistáváme! Ještě kolečkem blíž – nebo klikni na ✅ Přistát.'
+        : '🛬 Místo pod křížkem: dalším otočením kolečka blíž přistaneš (nebo ✅ Přistát, Enter).',
+      4500
+    );
   });
   return {
     start,
