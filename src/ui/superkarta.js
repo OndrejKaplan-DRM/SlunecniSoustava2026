@@ -96,7 +96,12 @@ function co2Box() {
     `<div class="sk-co2"><b>Oxid uhličitý v ovzduší</b>` +
     `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Graf: CO₂ v ovzduší 1959 až 2026">` +
     `<line x1="34" y1="${yy(280)}" x2="${W - 10}" y2="${yy(280)}" class="pre"/><text x="${W - 12}" y="${yy(280) - 3}" text-anchor="end" class="mu">280 ppm před průmyslovou revolucí</text>` +
-    [300, 350, 400].map((v) => `<line x1="34" y1="${yy(v)}" x2="${W - 10}" y2="${yy(v)}" class="gr"/><text x="30" y="${yy(v) + 3}" text-anchor="end">${v}</text>`).join('') +
+    [300, 350, 400]
+      .map(
+        (v) =>
+          `<line x1="34" y1="${yy(v)}" x2="${W - 10}" y2="${yy(v)}" class="gr"/><text x="30" y="${yy(v) + 3}" text-anchor="end">${v}</text>`
+      )
+      .join('') +
     [1960, 1980, 2000, 2020].map((y) => `<text x="${x(y)}" y="${H - 5}" text-anchor="middle">${y}</text>`).join('') +
     `<polyline points="${pts}" class="ln"/><circle cx="${x(2026)}" cy="${yy(CO2.ted)}" r="3" class="dot"/>` +
     `</svg><p>${nf(r[0][1], 0)} ppm v roce ${r[0][0]} → ${nf(r[r.length - 1][1], 0)} ppm v roce ${r[r.length - 1][0]} → asi <b>${CO2.ted} ppm</b> (0,043 %) v roce 2026. ` +
@@ -199,7 +204,11 @@ export function createSuperkarta(S, A, ui) {
       row('Otočka (vůči hvězdám)', b.rot ? dur(Math.abs(b.rot)) : null, b.rot < 0 ? 'otáčí se pozpátku' : ''),
       b.rot ? row('Rychlost na rovníku', sig((2 * Math.PI * b.R) / Math.abs(b.rot)) + ' km/h') : '',
       rotOf(i)
-        ? row('Severní pól míří', `RA ${nf(rotOf(i).ra[0], 1)}°, Dec ${nf(rotOf(i).de[0], 1)}°`, 'podle IAU; nultý poledník a otáčení z téhož modelu')
+        ? row(
+            'Severní pól míří',
+            `RA ${nf(rotOf(i).ra[0], 1)}°, Dec ${nf(rotOf(i).de[0], 1)}°`,
+            'podle IAU; nultý poledník a otáčení z téhož modelu'
+          )
         : b.pole
           ? row('Severní pól míří', `RA ${nf(b.pole[0], 1)}°, Dec ${nf(b.pole[1], 1)}°`)
           : row('Osa', 'směr osy není změřen', 'v modelu zvolená náhodně'),
@@ -272,9 +281,7 @@ export function createSuperkarta(S, A, ui) {
       ni = slz.nitro,
       sN = ni
         ? [
-            ...(ni.vrstvy || []).map((v) =>
-              row(v[0] + (v[1] ? ` <small>${v[1]}</small>` : ''), v[2], v[3])
-            ),
+            ...(ni.vrstvy || []).map((v) => row(v[0] + (v[1] ? ` <small>${v[1]}</small>` : ''), v[2], v[3])),
             row('Celkem', ni.celek),
             row('Povrch', ni.povrch),
             row('Prstence', slz.prstence),

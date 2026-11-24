@@ -159,13 +159,24 @@ await snimek('7_pluto_z_dalky');
 
 await pohled('sun', 7.2, 0.9, 0.6);
 /* 2.1: přepínač má tři stupně – nenápadné (výchozí) → výrazné → vypnuté */
-const lv = () => page.evaluate(() => [S200.S.belts.lvl, S200.S.belts.belts[0].pts.material.uniforms.uA.value, S200.S.belts.belts[0].pts.material.uniforms.uSize.value]);
+const lv = () =>
+  page.evaluate(() => [
+    S200.S.belts.lvl,
+    S200.S.belts.belts[0].pts.material.uniforms.uA.value,
+    S200.S.belts.belts[0].pts.material.uniforms.uSize.value,
+  ]);
 const l1 = await lv();
-ok(l1[0] === 1 && l1[1] < 0.3, `výchozí stupeň je nenápadný (stupeň ${l1[0]}, krytí teček ${l1[1].toFixed(3)}, velikost ${l1[2].toFixed(2)} b.)`);
+ok(
+  l1[0] === 1 && l1[1] < 0.3,
+  `výchozí stupeň je nenápadný (stupeň ${l1[0]}, krytí teček ${l1[1].toFixed(3)}, velikost ${l1[2].toFixed(2)} b.)`
+);
 await page.evaluate(() => S200.ui.act('belts'));
 await page.waitForTimeout(800);
 const l2 = await lv();
-ok(l2[0] === 2 && l2[1] > l1[1] * 1.8 && l2[2] > l1[2], `druhý stupeň je výrazný (krytí ${l2[1].toFixed(3)}, velikost ${l2[2].toFixed(2)} b.)`);
+ok(
+  l2[0] === 2 && l2[1] > l1[1] * 1.8 && l2[2] > l1[2],
+  `druhý stupeň je výrazný (krytí ${l2[1].toFixed(3)}, velikost ${l2[2].toFixed(2)} b.)`
+);
 await snimek('7b_vyrazne');
 await page.evaluate(() => S200.ui.act('belts'));
 await page.waitForTimeout(2500);

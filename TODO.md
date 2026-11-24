@@ -22,9 +22,18 @@ Zadání Ondřeje (24. 11.): 1) atmosféry a složení, 2) srovnání velikostí
 - [x] Verze 2.1 (zkušební) v `dist/index.html`, README, CREDITS (zdroje 2.1); `docs/ZMENY.md`, `docs/VEROHODNOST.md`.
 - [x] Paměť projektu v repu: `CLAUDE.md`, `ARCHITECTURE.md`, `DECISIONS.md`, `TODO.md`.
 
+### Regrese 24. 11. 2026 (po jednom, větev `iterace-25`)
+- [x] `tut` (10/10, obě rozhraní), `t_preload`, `t_karty` (32 karet úkazů, 201 Superkaret), `t_pasy`, `t_scena` (287 kontrol),
+      `t_povrch` (199 kontrol), `t_l2`, `t_hi` (11/11), `test:fakta`, `test:model`, `test:vernost`, `test:sceny` – bez chyb.
+- [x] `t_obloha` – po úpravě testu bez chyb: test čekal natočení k prvnímu objektu nad obzorem, s rotací Měsíce podle IAU 2015
+      ale padl přímo do záběru (Omega Centauri), kde se podle návrhu neotáčí; test teď bere objekt mimo záběr.
+- [x] `t_okna` – 5 nálezů „#mission × #card“ jen u nb1280/děti v prvním běhu; opakovaný běh 0 nálezů v nové i původní verzi
+      (šířka hádanky se mění).
+- [ ] `t_displej` – `tv_400: podrobná mapa mercury se nenačetla` – **stejně padá i `main`** (`7a0831c`); emulace televize se 4× hustotou
+      v sandboxu, ne změna 2.1. Ověřit na skutečné televizi.
+
 ### Rozpracováno
-- [ ] Regrese po jednom (`tut`, `t_preload`, `t_karty`, `t_displej`, `t_pasy`, `t_obloha`, `t_scena`, `t_povrch`, `t_l2`, `t_okna`,
-      `t_hi`) – běží; výsledek dopsat sem. Pak Prettier (`npm run format`), soubor na flashku, mřížka snímků, zpráva Ondřejovi.
+- [ ] Soubor na flashku, mřížka snímků, zpráva Ondřejovi.
 
 ### Zbývá / nápady na další iteraci
 - [ ] Pozorovatel na Ceres a Vestě: rozdíl rotace proti Horizons (~0,02–0,06°/rok) – zjistit, který model Horizons používá.

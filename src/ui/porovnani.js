@@ -100,7 +100,15 @@ export function pairView(el, i, j, opts = {}) {
         if (b.abc) ay = Math.max(0.3, b.abc[2] / Math.max(...b.abc));
         else if (b.flat) ay = 1 - b.flat;
         ctx.beginPath();
-        ctx.ellipse(x, cy, d / 2, (d / 2) * (b.abc && Math.max(...b.abc) / Math.min(...b.abc) > 1.2 ? 1 : ay), 0, 0, 6.2832);
+        ctx.ellipse(
+          x,
+          cy,
+          d / 2,
+          (d / 2) * (b.abc && Math.max(...b.abc) / Math.min(...b.abc) > 1.2 ? 1 : ay),
+          0,
+          0,
+          6.2832
+        );
         ctx.clip();
       }
       ctx.drawImage(s.cv, x - (s.sz.w * k) / 2, cy - (s.sz.h * k) / 2, s.sz.w * k, s.sz.h * k);
@@ -127,7 +135,13 @@ export function pairView(el, i, j, opts = {}) {
       ctx.fillText(t, x, y);
     };
     const yl = H - 30;
-    label(bs.cs, Math.min(W - 8, Math.max(xs, 40)), Math.min(yl, cy + Math.max(ds / 2, 9) + 18), 'center', sm === i ? '#ffc857' : '#e9f0ff');
+    label(
+      bs.cs,
+      Math.min(W - 8, Math.max(xs, 40)),
+      Math.min(yl, cy + Math.max(ds / 2, 9) + 18),
+      'center',
+      sm === i ? '#ffc857' : '#e9f0ff'
+    );
     const bx = Math.max(8, Math.min(xb, xs - ds / 2 - gap - 40));
     label(
       bb.cs + (xb - db / 2 < -4 ? ' (jen okraj)' : ''),

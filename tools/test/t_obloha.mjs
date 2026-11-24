@@ -605,7 +605,9 @@ console.log('jména bez překryvů, hvězdy, hledání, pohled z povrchu');
       await snimky(4);
       const b = S.surfBasis(),
         el = (id) => Math.asin(O.get(id).v.dot(b.n)),
-        nad = O.ids().find((i) => el(i) > 0.35 && el(i) < 1.2),
+        /* objekt nad obzorem, který není v záběru (ten, který v záběru je, se podle návrhu neotáčí); 2.1: s rotací Měsíce podle
+           IAU 2015 padl první kandidát (omegacen) přímo do záběru */
+        nad = O.ids().find((i) => el(i) > 0.35 && el(i) < 1.2 && !O.state().vis.some((v) => v.id === i)),
         pod = O.ids().find((i) => el(i) < -0.3),
         q = S.surf,
         a0 = [q.az, q.el];
