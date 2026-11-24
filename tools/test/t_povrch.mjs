@@ -107,7 +107,11 @@ for (const lay of which) {
         sun: q ? dir('sun') : null,
         moon: q ? dir('moon') : null,
         dim: S.skyDim,
-        airOn: getComputedStyle(air).display !== 'none',
+        /* 2.2: denní oblohu kreslí krajina (render/krajina.js), starý přechod #skyair jen bez ní */
+        airOn:
+          getComputedStyle(air).display !== 'none' ||
+          !!(q && S.krajina.on() && /jasno|zatazeno/.test(S.krajina.state().mode)),
+        kr: q && S.krajina.on() ? S.krajina.state() : null,
         cardOn: !!card && card.clientWidth > 0 && getComputedStyle(card).visibility !== 'hidden',
         focus: sim.B[S.focus].id,
         alt: S.cam.alt,
@@ -256,10 +260,25 @@ for (const lay of which) {
   s = await stav();
   ok(Math.abs(s.q.fov - 0.25) < 1e-6, `nejužší pole je 0,25° (${s.q.fov})`);
   await page.evaluate(() => {
-    for (let k = 0; k < 30; k++) S200.S.zoom(2);
+    for (let k = 0; k < 30 && S200.S.surf.fov < 75; k++) S200.S.zoom(2);
   });
   s = await stav();
   ok(Math.abs(s.q.fov - 75) < 1e-6, `nejširší pole je 75° (${s.q.fov})`);
+  /* 2.2: kdo při nejširším poli točí kolečkem dál ven, chce zpátky do vesmíru – třetí krok během 1,5 s je vzlet */
+  const vz = await page.evaluate(() => {
+    const S = S200.S,
+      q = { ...S.surf };
+    S.zoom(1.7);
+    const a = !!S.surf;
+    S.zoom(1.7);
+    const b = !!S.surf;
+    S.zoom(1.7);
+    const c = !!S.surf;
+    S200.povrch.enter(q.i, q.lat, q.lon, { quiet: true });
+    Object.assign(S.surf, { az: q.az, el: q.el, fov: 75, quiet: false });
+    return [a, b, c];
+  });
+  ok(vz[0] && vz[1] && !vz[2], `kolečko ven při nejširším poli: dva kroky zůstane, třetí je vzlet (${vz})`);
   // 7) najít na obloze: Měsíc (nebo hláška, že je pod obzorem)
   const found = await page.evaluate(() => {
     const sel = document.querySelector('#surf select'),
@@ -294,9 +313,14 @@ for (const lay of which) {
     Math.abs(sub[0] - 50.09) < 1.5 && Math.abs(sub[1] - 14.42) < 1.5,
     `a to přímo nad místem, kde stála (${sub[0].toFixed(1)}°, ${sub[1].toFixed(1)}°)`
   );
-  // 9) tlačítko v kartě, odlet na jiné těleso pohled ukončí
+  // 9) tlačítko v kartě (2.2: zaměřovací křížek a potvrzení přistání), odlet na jiné těleso pohled ukončí
   await page.evaluate(() => S200.ui.act('surf'));
-  await page.waitForTimeout(800);
+  await page
+    .waitForFunction(() => (S200.povrch.pickState() || {}).phase === 'vyber', null, { timeout: 25000 })
+    .catch(() => {});
+  await page.evaluate(() => S200.povrch.land());
+  await page.waitForFunction(() => !!S200.S.surf, null, { timeout: 15000 }).catch(() => {});
+  await page.waitForTimeout(500);
   s = await stav();
   ok(
     s.on && s.q.i === (await page.evaluate(() => S200.sim.idx.get('earth'))),
@@ -321,7 +345,10 @@ for (const lay of which) {
   await frames();
   s = await stav();
   ok(s.on && /Měsíc/.test(s.txt) && !/Vzduch/.test(s.txt), 'Měsíc: bez vzduchu, lišta přepínač nenabízí');
-  ok(s.dim === 0, 'na Měsíci je obloha černá i ve dne');
+  ok(
+    s.kr && s.kr.mode === 'bez',
+    'na Měsíci je obloha černá i ve dne (2.2: hvězdy ztlumí jen oslnění osvětlenou krajinou v záběru)'
+  );
   const earthDir = await page.evaluate(() => S200.S.surfDir(S200.sim.idx.get('earth')).el * (180 / Math.PI));
   ok(earthDir > 50, `z Moře klidu stojí Země vysoko na obloze (${earthDir.toFixed(0)}°)`);
   await page.evaluate(() => S200.povrch.exit());
@@ -335,7 +362,13 @@ for (const lay of which) {
   });
   await page.waitForTimeout(1200);
   await page.evaluate(() => S200.ui.act('surf'));
-  await page.waitForTimeout(1500);
+  /* 2.2: tlačítko nejdřív ukáže zaměřovací křížek, přistání se potvrdí */
+  await page
+    .waitForFunction(() => (S200.povrch.pickState() || {}).phase === 'vyber', null, { timeout: 25000 })
+    .catch(() => {});
+  await page.evaluate(() => S200.povrch.land());
+  await page.waitForFunction(() => !!S200.S.surf, null, { timeout: 15000 }).catch(() => {});
+  await page.waitForTimeout(800);
   s = await stav();
   await snap('5_detske');
   ok(

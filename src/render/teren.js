@@ -128,8 +128,9 @@ export function buildTeren(o) {
     /* dosah: do 150 km, na malých tělesech kus koule (horizont je blízko) */
     rMax = Math.min(150000, Rm * (T.maly ? 0.9 : 0.6)),
     rMin = 0.35,
-    NA = 384,
-    NR = 170,
+    /* telefon: řidší mřížka */
+    NA = o.lite ? 256 : 384,
+    NR = o.lite ? 130 : 170,
     q = Math.pow(rMax / rMin, 1 / (NR - 1)),
     map = o.map,
     alb = o.alb || 1,
@@ -185,11 +186,17 @@ export function buildTeren(o) {
       const b = fbm(x / 22000, y / 22000, seed, 4),
         c = Math.max(0, fbm(x / 6000, y / 6000, seed + 7, 4));
       /* kupy (asi 1–3 km) s „květákem“ navrchu */
-      return 1400 * b + 2600 * c * c + 260 * Math.abs(fbm(x / 900, y / 900, seed + 9, 4)) + 40 * fbm(x / 120, y / 120, seed + 10, 3);
+      return (
+        1400 * b +
+        2600 * c * c +
+        260 * Math.abs(fbm(x / 900, y / 900, seed + 9, 4)) +
+        40 * fbm(x / 120, y / 120, seed + 10, 3)
+      );
     }
     let h = 0;
     if (dem && la !== undefined) h += dem.at(la, lo);
-    else if (T.far) h += T.far * (0.65 * ridged(x / 26000, y / 26000, seed, 5) + 0.35 * fbm(x / 9000, y / 9000, seed + 3, 4));
+    else if (T.far)
+      h += T.far * (0.65 * ridged(x / 26000, y / 26000, seed, 5) + 0.35 * fbm(x / 9000, y / 9000, seed + 3, 4));
     if (T.mid) h += T.mid * fbm(x / 600, y / 600, seed + 5, 5);
     if (T.near) h += T.near * fbm(x / 7, y / 7, seed + 11, 4);
     if (T.duny) {
@@ -227,7 +234,7 @@ export function buildTeren(o) {
     const minD = Math.max(1.2, r * 0.09);
     toLL(r, Math.atan2(x, y), ll);
     let h = relief(x, y, minD, ll[0], ll[1]);
-    const drop = Rm - Math.sqrt(Math.max(0, Rm * Rm - r * r)) /* zakřivení: přesně koule */;
+    const drop = Rm - Math.sqrt(Math.max(0, Rm * Rm - r * r)); /* zakřivení: přesně koule */
     sample(ll[0], ll[1], sm);
     let c0 = lin(sm[0]) * alb,
       c1 = lin(sm[1]) * alb,
@@ -378,8 +385,24 @@ export function buildRocks(o, ter) {
   const kind = T.typ === 'venuse' ? 'deska' : T.typ === 'titan' ? 'oblazek' : 'kamen',
     mat = new THREE.MeshLambertMaterial({ vertexColors: false, color: 0xffffff }),
     sets = [
-      { n: Math.round(700 * T.kam), r0: 4, r1: 260, s0: 0.06 * T.kamMax, s1: T.kamMax, shadow: true, p: 4 },
-      { n: Math.round(2400 * Math.min(1.5, T.kam)), r0: 0.7, r1: 25, s0: 0.012, s1: 0.1 * T.kamMax + 0.03, shadow: true, p: 2.6 },
+      {
+        n: Math.round((o.lite ? 350 : 700) * T.kam),
+        r0: 4,
+        r1: 260,
+        s0: 0.06 * T.kamMax,
+        s1: T.kamMax,
+        shadow: true,
+        p: 4,
+      },
+      {
+        n: Math.round((o.lite ? 1000 : 2400) * Math.min(1.5, T.kam)),
+        r0: 0.7,
+        r1: 25,
+        s0: 0.012,
+        s1: 0.1 * T.kamMax + 0.03,
+        shadow: true,
+        p: 2.6,
+      },
     ],
     m4 = new THREE.Matrix4(),
     qt = new THREE.Quaternion(),
@@ -433,7 +456,7 @@ export function buildTrees(o, ter) {
   if (o.id !== 'earth') return [];
   const seed = o.seed,
     cone = mergeVertices(new THREE.ConeGeometry(1, 1, 9, 3).deleteAttribute('normal').deleteAttribute('uv')),
-    ball = mergeVertices(new THREE.IcosahedronGeometry(1, 2).deleteAttribute('normal').deleteAttribute('uv'));
+    ball = mergeVertices(new THREE.IcosahedronGeometry(1, 1).deleteAttribute('normal').deleteAttribute('uv'));
   /* koruny nepravidelné: zvlněný povrch, smrk s patry větví */
   for (const [g, k] of [
     [cone, 0.12],
@@ -452,8 +475,10 @@ export function buildTrees(o, ter) {
   cone.translate(0, 0.5, 0);
   ball.translate(0, 0.5, 0);
   const mat = new THREE.MeshLambertMaterial({ color: 0xffffff }),
-    jeh = new THREE.InstancedMesh(cone, mat, 5000),
-    lis = new THREE.InstancedMesh(ball, mat, 3000),
+    NJ = o.lite ? 1800 : 5000,
+    NL = o.lite ? 1000 : 3000,
+    jeh = new THREE.InstancedMesh(cone, mat, NJ),
+    lis = new THREE.InstancedMesh(ball, mat, NL),
     m4 = new THREE.Matrix4(),
     qt = new THREE.Quaternion(),
     sc = new THREE.Vector3(),
@@ -461,7 +486,7 @@ export function buildTrees(o, ter) {
     cc = new THREE.Color();
   let nj = 0,
     nl = 0;
-  for (let k = 0; k < 40000 && (nj < 5000 || nl < 3000); k++) {
+  for (let k = 0; k < 40000 && (nj < NJ || nl < NL); k++) {
     const u = hash2(k, 1, seed + 77),
       r = 70 * Math.pow(5000 / 70, u),
       th = hash2(k, 2, seed + 77) * TAU,
@@ -475,7 +500,7 @@ export function buildTrees(o, ter) {
       hgt = 9 + 16 * hash2(k, 3, seed + 77),
       con = hash2(k, 4, seed + 77) < 0.55;
     qt.identity();
-    if (con && nj < 5000) {
+    if (con && nj < NJ) {
       sc.set(hgt * 0.22, hgt, hgt * 0.22);
       ps.set(x, y - 0.5, z);
       m4.compose(ps, qt, sc);
@@ -483,7 +508,7 @@ export function buildTrees(o, ter) {
       const v = 0.75 + 0.5 * hash2(k, 5, seed);
       cc.setRGB(0.012 * v, 0.028 * v, 0.012 * v);
       jeh.setColorAt(nj++, cc);
-    } else if (!con && nl < 3000) {
+    } else if (!con && nl < NL) {
       sc.set(hgt * 0.33, hgt * 0.8, hgt * 0.33);
       ps.set(x, y + hgt * 0.15, z);
       m4.compose(ps, qt, sc);
@@ -496,7 +521,8 @@ export function buildTrees(o, ter) {
   jeh.count = nj;
   lis.count = nl;
   for (const m of [jeh, lis]) {
-    m.castShadow = true;
+    /* stromy začínají 70 m od pozorovatele, stín do mapy stínů by stál tisíce kreslení navíc */
+    m.castShadow = false;
     m.receiveShadow = true;
     m.instanceMatrix.needsUpdate = true;
     if (m.instanceColor) m.instanceColor.needsUpdate = true;

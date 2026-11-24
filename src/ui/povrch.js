@@ -168,7 +168,8 @@ export function createPovrch(S, A, ui) {
       fov: opt.fov || 68,
       el: 24 * DEG,
       track: -1,
-      air: opt.air === undefined ? true : opt.air /* 2.2: i Venuše a Titan napřed skutečný povrch pod oblaky (Ondřej) */,
+      air:
+        opt.air === undefined ? true : opt.air /* 2.2: i Venuše a Titan napřed skutečný povrch pod oblaky (Ondřej) */,
       quiet: !!opt.quiet,
       lt: opt.lt,
     });
@@ -389,7 +390,8 @@ export function createPovrch(S, A, ui) {
     enter,
     exit,
     info,
-    adjust: (i, la, lo) => (adjust ? adjust(i, la, lo) : null),
+    /* krajina umí přistání posunout z moře na pevninu (render/krajina.js) */
+    adjust: (i, la, lo) => (adjust ? adjust(i, la, lo) : S.krajina ? S.krajina.adjust(i, la, lo) : null),
   });
   /* 2.2: kolečkem ven při nejširším zorném poli = vzlet (uživatel chce zpátky do vesmíru) */
   S.bus.on('surfOut', () =>
@@ -403,12 +405,20 @@ export function createPovrch(S, A, ui) {
   return {
     enter,
     exit,
-    pick: (i = S.sel) => pick.start(i),
+    pick: (i = S.sel) => {
+      /* mapu a výškovou mapu tělesa načíst už během míření (posun z moře potřebuje mapu) */
+      if (S.krajina) S.krajina.prep(i);
+      return pick.start(i);
+    },
     pickState: () => pick.state(),
     land: () => pick.land(),
     aimAt: (i, la, lo) => pick.aimAt(i, la, lo),
     setAdjust: (f) => (adjust = f),
-    toggle: (i = S.sel) => (S.surf ? exit() : pick.start(i)),
+    toggle: (i = S.sel) => {
+      if (S.surf) return exit();
+      if (S.krajina) S.krajina.prep(i);
+      return pick.start(i);
+    },
     on: () => !!S.surf,
     state: () =>
       S.surf

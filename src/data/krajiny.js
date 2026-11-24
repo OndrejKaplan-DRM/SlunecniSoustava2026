@@ -42,7 +42,7 @@ export const ATM = {
     g: [0.6, 0.72, 0.88],
     refr: 0.02,
     /* prach s τ ≈ 0,5 a albedem 0,9 rozptyluje světlo mnohokrát: obloha je jasnější a rovnoměrnější, než dá jednonásobný rozptyl */
-    ms: 2.2,
+    ms: 1.6,
   },
   /* Titan: N₂ 1,5 baru při 94 K (4,5× hustota vzduchu), výšková škála 20 km; oranžový opar τ ≈ 4 (červená) až 10 (modrá) */
   titan: {

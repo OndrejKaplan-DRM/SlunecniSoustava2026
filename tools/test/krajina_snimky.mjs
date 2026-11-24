@@ -84,14 +84,18 @@ for (const c of CASES) {
         for (let k = 0; k < 400; k++) {
           const t = jd + step,
             e1 = misto.elevAt(i, lat, lon, SUN, t) / D;
-          const hit = setting ? e0 >= sunEl && e1 < sunEl : sunEl > 0 ? e0 < sunEl && e1 >= sunEl : e0 >= sunEl && e1 < sunEl;
+          const hit = setting
+            ? e0 >= sunEl && e1 < sunEl
+            : sunEl > 0
+              ? e0 < sunEl && e1 >= sunEl
+              : e0 >= sunEl && e1 < sunEl;
           if (hit) {
             let a = jd,
               b = t;
             for (let j = 0; j < 30; j++) {
               const m = (a + b) / 2,
                 em = misto.elevAt(i, lat, lon, SUN, m) / D;
-              if ((em >= sunEl) === (e0 >= sunEl)) a = m;
+              if (em >= sunEl === e0 >= sunEl) a = m;
               else b = m;
             }
             jd = (a + b) / 2;
@@ -125,7 +129,13 @@ for (const c of CASES) {
   await page.waitForTimeout(2500);
   const st = await page.evaluate(() => {
     const k = window.S200.S.krajina.state();
-    return { ...k, skyDim: window.S200.S.skyDim, fps: window.S200.S.fps, el: (window.S200.S.surf.el * 180) / Math.PI, fov: window.S200.S.fov() };
+    return {
+      ...k,
+      skyDim: window.S200.S.skyDim,
+      fps: window.S200.S.fps,
+      el: (window.S200.S.surf.el * 180) / Math.PI,
+      fov: window.S200.S.fov(),
+    };
   });
   await page.screenshot({ path: `${out}/${name}.jpg`, type: 'jpeg', quality: 85 });
   stav[name] = { jd: r.jd, ...st };

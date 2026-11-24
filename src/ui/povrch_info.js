@@ -451,6 +451,33 @@ export function createPovrchInfo(S, A, ui, P0) {
       );
     },
     obl(q, b) {
+      /* 2.2: co ukazuje krajina (render/krajina.js) */
+      const krajRows = () => {
+        if (!S.krajina || !S.krajina.on()) return '';
+        const k = S.krajina.state(),
+          T = {
+            regolit: 'prachový regolit s krátery všech velikostí',
+            mars: 'kamenitá prachová pláň (jako na snímcích vozítek)',
+            zeme: 'podle mapy: louky a lesy, poušť, led nebo moře',
+            venuse: 'tmavé čedičové desky (jako u Veněr 13 a 14)',
+            titan: 'pláň s ledovými oblázky (jako u sondy Huygens)',
+            duny: 'písečné duny z organických zrn (tmavá místa na mapách Cassini)',
+            led: 'ledová pláň s krátery',
+            sira: 'pláně zbarvené sírou a sopečným popelem',
+            mraky: 'horní vrstva oblak – pevný povrch tu není',
+            kometa: 'tmavý zvrásněný povrch jádra',
+          },
+          src = k.dem
+            ? `výšky z výškové mapy ${b.id === 'moon' ? 'LOLA (Lunar Reconnaissance Orbiter)' : 'MOLA (Mars Global Surveyor)'}, ${nf(k.dem / 1000, 1)} km na bod; menší tvary vymyšlené`
+            : k.typ === 'mraky'
+              ? 'tvar oblak vymyšlený, barva z mapy planety'
+              : 'tvary vymyšlené podle typu povrchu, barva půdy z mapy tělesa',
+          pl = k.planet ? B[idx.get(k.planet)].cs : null;
+        return (
+          `<tr><th>Krajina</th><td>${T[k.typ] || k.typ} <small>– ${src}</small></td></tr>` +
+          `<tr><th>Světlo</th><td>${k.mode === 'zatazeno' ? 'jen rozptýlené pod oblaky' : k.sunEl > 0 ? 'Slunce' + (k.mode === 'jasno' ? ' (barva po průchodu atmosférou)' : '') : 'Slunce pod obzorem'}${k.mode === 'jasno' ? ', světlo oblohy' : ''}${pl && k.Epl > 1e-7 ? `, odražené světlo: ${pl}` : ''}; oko se přizpůsobí (krajina má ${nf(Math.min(100, (k.bright / 0.25) * 100), 0)} % jasu pozemského poledne)</td></tr>`
+        );
+      };
       const a = AIR[b.id],
         se = sunEl(),
         sw = (c) => `<i class="sp-sw" style="background:rgb(${c})"></i>`,
@@ -463,9 +490,14 @@ export function createPovrchInfo(S, A, ui, P0) {
         `<table class="sp-kv"><tr><th>Teď</th><td>${st}; Slunce ${se >= 0 ? nf(se, 1) + '° nad obzorem' : nf(-se, 1) + '° pod obzorem'}</td></tr>` +
         `<tr><th>Slunce odsud</th><td>${ang((2 * Math.asin(RS / Math.hypot(P[SUN * 3] - S.camPos[0], P[SUN * 3 + 1] - S.camPos[1], P[SUN * 3 + 2] - S.camPos[2]))) / DEG)} <small>(ze Země 0,53°)</small>, světlo letí ${dur(S.ltSun || 0)}</td></tr>` +
         (a
-          ? `<tr><th>Zobrazení</th><td>${a.opaque ? (q.air ? 'pod oblaky (skutečný povrch)' : 'nad oblačností') : q.air ? 'se vzduchem' : 'bez vzduchu (hvězdy i ve dne)'} <small>– přepíná tlačítko 🌫 v liště</small></td></tr>`
+          ? `<tr><th>Zobrazení</th><td>${a.opaque ? (q.air ? 'pod oblaky (skutečný povrch)' : 'nad oblačností') : q.air ? 'se vzduchem' : 'bez vzduchu (hvězdy i ve dne)'} <small>– přepíná tlačítko v liště</small></td></tr>`
           : '') +
-        `</table><p class="sp-note">Barvy oblohy jsou ilustrace podle snímků sond, ne výpočet rozptylu světla.</p>`
+        krajRows() +
+        `</table><p class="sp-note">${
+          S.krajina && S.krajina.on()
+            ? 'Obloha je spočítaná z rozptylu světla v atmosféře (molekuly, prach a opar, ozon, stín planety při soumraku); u obřích planet a nad oblaky Venuše a Titanu jsou hodnoty odhad. Krajina je ilustrace: velké tvary z výškových map, kde je máme (Měsíc, Mars), drobnosti vymyšlené podle typu povrchu.'
+            : 'Barvy oblohy jsou ilustrace podle snímků sond, ne výpočet rozptylu světla.'
+        }</p>`
       );
     },
     poh(q, b) {

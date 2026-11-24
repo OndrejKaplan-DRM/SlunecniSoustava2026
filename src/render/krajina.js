@@ -22,7 +22,7 @@ layout(location = 0) out vec4 oL;
 layout(location = 1) out vec4 oT;
 uniform vec3 uRt, uUp, uFw, uS, uBR, uBM, uAM, uOZ, uAB, uG, uOcC;
 uniform vec2 uTan;
-uniform float uPR, uTop, uH0, uHR, uHM, uMode, uOcGlow;
+uniform float uPR, uTop, uH0, uHR, uHM, uMode, uOcGlow, uPre;
 const int NS = 20, NL = 6;
 const float PI = 3.14159265;
 vec2 sph(vec3 o, vec3 d, float r){ float b = dot(o, d), c = dot(o, o) - r * r, D = b * b - c; if (D < 0.0) return vec2(1e9, -1e9); float s = sqrt(D); return vec2(-b - s, -b + s); }
@@ -42,7 +42,7 @@ void main(){
   if (uMode > 1.5) {
     /* zataženo (Venuše, Titan pod oblaky): rovnoměrná záře, nahoře o něco jasnější, směrem ke Slunci světlejší skvrna */
     float z = max(d.z, 0.0);
-    oL = vec4(uOcC * (0.72 + 0.28 * sqrt(z)) * (1.0 + uOcGlow * exp((mu - 1.0) * 5.0)), 1.0);
+    oL = vec4(uPre * uOcC * (0.72 + 0.28 * sqrt(z)) * (1.0 + uOcGlow * exp((mu - 1.0) * 5.0)), 1.0);
     oT = vec4(0.0, 0.0, 0.0, 1.0);
     return;
   }
@@ -58,7 +58,8 @@ void main(){
     L += exp(-(od + e * du * 0.5)) * sunT(x) * (uBR * dn.x * pr + uBM * dn.y * pm) * du;
     od += e * du;
   }
-  oL = vec4(L, 1.0);
+  /* jas se ukládá už vynásobený expozicí: v noci je fyzikální jas ~10⁻⁹ a poloviční přesnost obrazu by dala proužky */
+  oL = vec4(L * uPre, 1.0);
   oT = vec4(exp(-od), 1.0);
 }`;
 /* tónová křivka: do 0,7 lineární, nad tím měkké rameno (jasné Slunce a led se nepřepálí do plochy) */
@@ -194,6 +195,7 @@ export function createKrajina(S, renderer) {
       uHM: { value: 1.2 },
       uMode: { value: 0 },
       uOcGlow: { value: 0 },
+      uPre: { value: 1 },
     },
     depthTest: false,
     depthWrite: false,
@@ -299,51 +301,59 @@ export function createKrajina(S, renderer) {
     if (!DEM[id]) return Promise.resolve(null);
     if (demCache.has(id)) return demCache.get(id);
     const I = DEM[id],
-      pr = Promise.all([readPx('maps/dem/' + id + '.webp'), readPx('maps/dem/' + id + '_mista.webp')]).then(([g, t]) => {
-        if (!g) return null;
-        const bil = (img, ox, oy, fx, fy, wrapW) => {
-          const x0 = Math.floor(fx),
-            y0 = Math.floor(fy),
-            tx = fx - x0,
-            ty = fy - y0,
-            X = (x) => (wrapW ? ((x % wrapW) + wrapW) % wrapW : Math.max(0, Math.min(img.w - 1, x))),
-            Y = (y) => Math.max(0, Math.min(img.h - 1, y)),
-            v = (x, y) => img.v[(oy + Y(y)) * img.w + ox + X(x)];
-          return (v(x0, y0) * (1 - tx) + v(x0 + 1, y0) * tx) * (1 - ty) + (v(x0, y0 + 1) * (1 - tx) + v(x0 + 1, y0 + 1) * tx) * ty;
-        };
-        const glob = { w: g.w, h: g.h, v: g.v };
-        const m = {
-          /* výška (m) v šířce a délce (radiány) */
-          at(la, lo) {
-            const laD = la / DEG,
-              loD = ((((lo / DEG) % 360) + 360) % 360);
-            let hg = bil(glob, 0, 0, loD * I.ppd - 0.5, (90 - laD) * I.ppd - 0.5, g.w);
-            if (t)
-              for (const tl of I.tiles) {
-                const fy = (90 - laD) * I.mppd - 0.5 - tl.r0,
-                  fx = ((((loD * I.mppd - 0.5 - tl.c0) % 5760) + 5760) % 5760) % 5760;
-                if (fx < 0 || fy < 0 || fx > I.T - 1.001 || fy > I.T - 1.001) continue;
-                const e = Math.min(fx, fy, I.T - 1 - fx, I.T - 1 - fy),
-                  w = Math.min(1, e / 10);
-                const ht = (() => {
-                  const x0 = Math.floor(fx),
-                    y0 = Math.floor(fy),
-                    tx = fx - x0,
-                    ty = fy - y0,
-                    v = (x, y) => t.v[(tl.y + y) * t.w + tl.x + x];
-                  return (v(x0, y0) * (1 - tx) + v(x0 + 1, y0) * tx) * (1 - ty) + (v(x0, y0 + 1) * (1 - tx) + v(x0 + 1, y0 + 1) * tx) * ty;
-                })();
-                hg = hg * (1 - w) + ht * w;
-                m.fine = Math.max(m.fine || 0, w);
-                break;
-              }
-            return hg + I.h0;
-          },
-          res: 0,
-        };
-        pr.dem = m;
-        return m;
-      });
+      pr = Promise.all([readPx('maps/dem/' + id + '.webp'), readPx('maps/dem/' + id + '_mista.webp')]).then(
+        ([g, t]) => {
+          if (!g) return null;
+          const bil = (img, ox, oy, fx, fy, wrapW) => {
+            const x0 = Math.floor(fx),
+              y0 = Math.floor(fy),
+              tx = fx - x0,
+              ty = fy - y0,
+              X = (x) => (wrapW ? ((x % wrapW) + wrapW) % wrapW : Math.max(0, Math.min(img.w - 1, x))),
+              Y = (y) => Math.max(0, Math.min(img.h - 1, y)),
+              v = (x, y) => img.v[(oy + Y(y)) * img.w + ox + X(x)];
+            return (
+              (v(x0, y0) * (1 - tx) + v(x0 + 1, y0) * tx) * (1 - ty) +
+              (v(x0, y0 + 1) * (1 - tx) + v(x0 + 1, y0 + 1) * tx) * ty
+            );
+          };
+          const glob = { w: g.w, h: g.h, v: g.v };
+          const m = {
+            /* výška (m) v šířce a délce (radiány) */
+            at(la, lo) {
+              const laD = la / DEG,
+                loD = (((lo / DEG) % 360) + 360) % 360;
+              let hg = bil(glob, 0, 0, loD * I.ppd - 0.5, (90 - laD) * I.ppd - 0.5, g.w);
+              if (t)
+                for (const tl of I.tiles) {
+                  const fy = (90 - laD) * I.mppd - 0.5 - tl.r0,
+                    fx = ((((loD * I.mppd - 0.5 - tl.c0) % 5760) + 5760) % 5760) % 5760;
+                  if (fx < 0 || fy < 0 || fx > I.T - 1.001 || fy > I.T - 1.001) continue;
+                  const e = Math.min(fx, fy, I.T - 1 - fx, I.T - 1 - fy),
+                    w = Math.min(1, e / 10);
+                  const ht = (() => {
+                    const x0 = Math.floor(fx),
+                      y0 = Math.floor(fy),
+                      tx = fx - x0,
+                      ty = fy - y0,
+                      v = (x, y) => t.v[(tl.y + y) * t.w + tl.x + x];
+                    return (
+                      (v(x0, y0) * (1 - tx) + v(x0 + 1, y0) * tx) * (1 - ty) +
+                      (v(x0, y0 + 1) * (1 - tx) + v(x0 + 1, y0 + 1) * tx) * ty
+                    );
+                  })();
+                  hg = hg * (1 - w) + ht * w;
+                  m.fine = Math.max(m.fine || 0, w);
+                  break;
+                }
+              return hg + I.h0;
+            },
+            res: 0,
+          };
+          pr.dem = m;
+          return m;
+        }
+      );
     demCache.set(id, pr);
     return pr;
   }
@@ -380,8 +390,9 @@ export function createKrajina(S, renderer) {
       return true;
     };
     if (land(lat, lon)) return null;
-    const step = 180 / m.h;
-    for (let r = 1; r < 140; r++) {
+    /* hledání po kružnicích s krokem aspoň 0,1° do vzdálenosti 60° (střed Tichého oceánu) */
+    const step = Math.max(180 / m.h, 0.1);
+    for (let r = 1; r < 600; r++) {
       let best = null;
       for (let k = 0; k < 8 * r; k++) {
         const t = (k / (8 * r)) * Math.PI * 2,
@@ -441,9 +452,13 @@ export function createKrajina(S, renderer) {
     /* albedo půdy: barvy mapy přepočtené tak, aby průměr odpovídal albedu tělesa z katalogu (mapy jsou kvůli vzhledu
        zesvětlené); Země vlastní (albedo planety zahrnuje oblaka), obři a oblaka beze změny */
     const alb =
-      b.id === 'earth' ? 1.15 : md === 'nad' || OBRI.has(b.id) || !map ? 1 : Math.max(0.25, Math.min(3, (b.albedo || 0.15) / map.mean));
+      b.id === 'earth'
+        ? 1.15
+        : md === 'nad' || OBRI.has(b.id) || !map
+          ? 1
+          : Math.max(0.25, Math.min(3, (b.albedo || 0.15) / map.mean));
     const gcol =
-      md === 'nad' ? null : b.id === 'venus' ? [0.085, 0.07, 0.06] : b.id === 'titan' ? [0.26, 0.2, 0.13] : null;
+      md === 'nad' ? null : b.id === 'venus' ? [0.14, 0.12, 0.1] : b.id === 'titan' ? [0.26, 0.2, 0.13] : null;
     const dem = md === 'nad' ? null : demNow(b.id);
     if (dem) {
       /* rozlišení výškové mapy v místě: výřez kolem známého místa, jinak celé těleso */
@@ -451,7 +466,20 @@ export function createKrajina(S, renderer) {
       dem.at(q.lat * DEG, q.lon * DEG);
       dem.res = (((Math.PI * b.R * 1000) / 180) * 1) / (dem.fine > 0.5 ? DEM[b.id].mppd : DEM[b.id].ppd);
     }
-    const o = { T, R: b.R, seed, map, lat: q.lat, lon: q.lon, col, id: b.id, alb, ground: gcol, dem };
+    const o = {
+      T,
+      R: b.R,
+      seed,
+      map,
+      lat: q.lat,
+      lon: q.lon,
+      col,
+      id: b.id,
+      alb,
+      ground: gcol,
+      dem,
+      lite: document.body.classList.contains('mob') || S.quality < 1,
+    };
     const t0 = performance.now();
     ter = buildTeren(o);
     const mat = patch(new THREE.MeshLambertMaterial({ vertexColors: true }), true);
@@ -697,7 +725,12 @@ export function createKrajina(S, renderer) {
         mx = (c) => Math.max(0.6 * lum(c), 0.45 * Math.max(c[0], c[1], c[2])),
         l1 = mx(skyDir(atm, b.R, h0, [hz[0] * Math.cos(el), hz[1] * Math.cos(el), Math.sin(el)], sE).L),
         l2 = mx(skyDir(atm, b.R, h0, [hz[0], hz[1], 0.035], sE).L),
-        Lv = Math.max(l1, l2) * toa * (atm.gain || 1),
+        /* Slunce v záběru: světlá aureola kolem něj (10° od Slunce směrem k nadhlavníku) */
+        sIn = tmp[0] * sE[0] + tmp[1] * sE[1] + tmp[2] * sE[2] > Math.cos((v.fov * 0.6 * Math.PI) / 180),
+        an = [sE[0] * 0.985, sE[1] * 0.985, sE[2] * 0.985 + 0.17],
+        anl = Math.hypot(an[0], an[1], an[2]),
+        l3 = sIn && sE[2] > -0.05 ? mx(skyDir(atm, b.R, h0, [an[0] / anl, an[1] / anl, an[2] / anl], sE).L) * 0.7 : 0,
+        Lv = Math.max(l1, l2, l3) * toa * (atm.gain || 1),
         Xs = 0.5 / (Math.PI * Math.max(1e-14, Lv));
       X = Xg * Math.pow(Math.min(1, Xs / Xg), 0.78);
       stat.Lv = Lv;
@@ -753,7 +786,9 @@ export function createKrajina(S, renderer) {
       su.uOcGlow.value = oc.glow || 0;
       expS = X * Math.PI;
     }
-    cu.uExp.value = expS;
+    /* expozice se uplatní už v shaderu oblohy (uPre); složení a mlha krajiny pak násobí jen 1 */
+    su.uPre.value = expS;
+    cu.uExp.value = 1;
     cu.uOpq.value = oc ? 1 : 0;
     cu.uSat.value = atm ? atm.sat || 1 : 1;
     /* mnohonásobný rozptyl přibližně: okolní záře úměrná světlu oblohy a odrazu od země */
@@ -765,21 +800,28 @@ export function createKrajina(S, renderer) {
         ((Esky[1] + 0.15 * Edir[1] * Math.max(0, sz)) / (4 * Math.PI)) * w[1] * (atm.ms || 1),
         ((Esky[2] + 0.15 * Edir[2] * Math.max(0, sz)) / (4 * Math.PI)) * w[2] * (atm.ms || 1)
       );
+      cu.uMs.value.multiplyScalar(expS);
     } else cu.uMs.value.set(0, 0, 0);
     /* lom světla: síla podle hustoty vzduchu u země (Země = 1); Mars asi 1/50 */
     cu.uRefK.value = atm ? atm.refr || 0 : 0;
     cu.uMask.value = 1.15;
     /* krajina: mlha */
-    U.uExpS.value = expS;
+    U.uExpS.value = 1;
     U.uFogOn.value = atm || oc ? 1 : 0;
     const ex = atm ? groundExt(atm) : oc ? [3 / oc.vis, 3.6 / oc.vis, 4.4 / oc.vis] : [0, 0, 0];
     U.uExt.value.set(ex[0], ex[1], ex[2]);
     /* hvězdy: přes den je přesvítí obloha; bez vzduchu je přezáří osvětlená krajina (oko je oslněné) */
     const Lzd = lum(Lz) * expS,
-      yh = 0.5 + 0.5 * (v.fwd.dot(v.n) / Math.max(1e-3, v.up.dot(v.n))) / ty,
+      yh = 0.5 + (0.5 * (v.fwd.dot(v.n) / Math.max(1e-3, v.up.dot(v.n)))) / ty,
       ground = Math.max(0, Math.min(1, 1 - yh)),
       glare = Math.max(0, Math.min(1, (Math.log10(Math.max(1e-12, E)) + 3.2) / 2.4));
-    S.skyDim = oc ? 1 : Math.max(Math.min(1, Lzd / 0.12), glare * Math.min(1, ground * 2.5) * 0.95);
+    /* oslnění krajinou jen na tělesech bez vzduchu; kdo na Zemi vypne vzduch, chce vidět hvězdy i ve dne */
+    const airless = !ATM[b.id] && !OVERCAST[b.id];
+    /* jas nadhlavníku ve fyzikálních jednotkách: ve dne (10⁻³ a víc) hvězdy zmizí, za občanského soumraku (10⁻⁵) svítí
+       nejjasnější, za nautického (10⁻⁷) všechny */
+    const Lzp = lum(Lz) * toa * (atm ? atm.gain || 1 : 1),
+      dayDim = Lzp > 0 ? Math.max(0, Math.min(1, (Math.log10(Lzp) + 6.6) / 3.2)) : 0;
+    S.skyDim = oc ? 1 : Math.max(dayDim, airless ? glare * Math.min(1, ground * 2.5) * 0.95 : 0);
     stat.mode = md;
     stat.E = E;
     stat.X = X;
@@ -889,7 +931,11 @@ export function createKrajina(S, renderer) {
       /* jas oblohy ve směru d (místní soustava) – zkoušky */
       const q = S.surf;
       if (!q || !atm) return null;
-      return skyDir(atm, B[q.i].R, 0.002, d, [skyMat.uniforms.uS.value.x, skyMat.uniforms.uS.value.y, skyMat.uniforms.uS.value.z]);
+      return skyDir(atm, B[q.i].R, 0.002, d, [
+        skyMat.uniforms.uS.value.x,
+        skyMat.uniforms.uS.value.y,
+        skyMat.uniforms.uS.value.z,
+      ]);
     },
     dispose,
   };
