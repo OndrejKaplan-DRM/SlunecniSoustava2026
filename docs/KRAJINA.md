@@ -86,7 +86,7 @@ tělesa z katalogu (mapy jsou kvůli vzhledu zesvětlené). Stejné místo dá v
   dnem Gale), přistání mimo moře, barvy oblohy z obrazu (Země ve dne modrá, při západu oranžová u obzoru, Mars žlutohnědá, Měsíc
   černá, Venuše oranžová), barva Slunce u obzoru, mizení hvězd ve dne, oslnění krajinou na Měsíci.
 - `node tools/test/pristani_snimky.mjs <složka>` (2.2b) – tok přistání v 5 snímcích: karta, míření na Curiosity, sestup, povrch, vzlet kolečkem.
-- `node tools/test/krajina_snimky.mjs <složka>` – 23 snímků (2.2b + Grónsko v noci, s přisvětlením, Měsíc ráno, věže na Jupiteru); (Země den / západ / soumrak / noc / poušť / lom u obzoru, Mars den /
+- `node tools/test/krajina_snimky.mjs <složka>` – 25 snímků (2.2b + Grónsko v noci, s přisvětlením, Měsíc ráno, věže na Jupiteru, Saturn, Neptun); (Země den / západ / soumrak / noc / poušť / lom u obzoru, Mars den /
   západ / Gale, Měsíc den / Hadley / popelavý svit, Venuše, Titan, Jupiter, Uran, Io, Pluto, Ceres).
 - Polohy těles se nezměnily – `test:vernost` (996 případů proti JPL Horizons), `test:sceny`, `test:model` beze změny.
 
