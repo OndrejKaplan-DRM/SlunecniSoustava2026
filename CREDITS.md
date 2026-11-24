@@ -1,11 +1,23 @@
 # Sluneční soustava 200 – autoři, zdroje a licence
 
-Stav k 13. 11. 2026, verze 1.2.
+Stav k 24. 11. 2026, verze 2.1 (zkušební; dřívější stav popisu 1.2 doplněn o oddíly pro 1.8b–2.1).
 
 ## Autorství
 - Námět, zadání, odborná kontrola a testování: **Ing. Ondřej Kaplan, Ph.D.** (ondrej.kaplan@gmail.com).
-- Kód napsal podle jeho zadání model **Claude Fable 5.2** (Anthropic). Vývoj probíhal po iteracích ve větvích `iterace-N`; každou verzi hlídají automatické testy (`npm test`, `npm run test:fakta`).
+- Kód napsaly podle jeho zadání modely **Claude Fable 5.2** a od verze 2.1 též **Claude Opus 5.5** (Anthropic). Vývoj probíhal po iteracích ve větvích `iterace-N`; každou verzi hlídají automatické testy (`npm test`, `npm run test:fakta`).
 - Aplikace je zdarma, bez reklam a bez registrace. Neodesílá žádné údaje; nastavení a postup hry ukládá jen do úložiště prohlížeče.
+
+## Verze 2.1: atmosféry a složení, pohled z povrchu, kalibrace poloh
+| Co | Zdroj | Licence / podmínky |
+|---|---|---|
+| Natočení a póly všech těles (IAU WGCCRE 2015) | NAIF PCK `pck00011.tpc` (NASA/JPL NAIF), převod `tools/data/rot_build.py` → `src/data/rot.json` | volné dílo NASA |
+| Reference poloh: 996 náhodných případů, referenční scény, dráhy měsíců a planetek, doplňkové členy Měsíce | JPL Horizons API (DE441, modely satelitů JPL, malá tělesa JPL SBDB), dotazy listopad 2026 (`tools/model/vernost/`) | volné dílo NASA/JPL |
+| Atmosféry a nitra těles (složení, tlak, teplota, vrstvy) | NASA NSSDCA Planetary Fact Sheets (D. R. Williams), přehledové práce misí (MESSENGER, Juno, Cassini, Dawn, New Horizons) uvedené v `src/data/slozeni.js` | fakta; volné dílo NASA |
+| CO₂ v ovzduší Země 1959–2025 | NOAA GML, Mauna Loa, roční průměry (`co2_annmean_mlo.txt`) | volné dílo NOAA |
+| Fotografie k porovnání (jen `docs/ref/foto`, aplikace je nenačítá) | NASA Image and Video Library: PIA25179 (NASA/JPL-Caltech/ASU/MSSS/SSI), PIA23134 (NASA/JPL-Caltech/MSSS), PIA17350 (NASA/JPL-Caltech/Malin Space Science Systems/Texas A&M Univ.), PIA17936 a PIA17935 (NASA/JPL-Caltech/MSSS/TAMU), PIA05547 (NASA/JPL/Cornell/Texas A&M) | snímky NASA volně užitelné s uvedením autorů |
+| Hvězdy v panelu „Obloha odsud“ | Yale Bright Star Catalogue, 5. vyd. (Hoffleit & Warren 1991), V ≤ 6,3 – stejná data jako hvězdná obloha aplikace (`src/data/stardata.js`) | volná vědecká data |
+
+Měření přesnosti a meze: `docs/VEROHODNOST.md`; porovnání se skutečnými snímky: `docs/REFERENCNI_SNIMKY.md`.
 
 ## Licence
 | Co | Licence |
@@ -119,4 +131,4 @@ Další obrazové podklady:
 - **Suno**: autor má placený tarif Premier, který podle ceníku zahrnuje práva ke komerčnímu užití (snímek účtu z 13. 11. 2026). Plné znění podmínek služby jsem nečetla.
 
 ## Jak citovat
-Kaplan, O. (2026). *Sluneční soustava 200* (verze 1.2) [software]. https://github.com/OndrejKaplan-DRM/SlunecniSoustava2026
+Kaplan, O. (2026). *Sluneční soustava 200* (verze 2.1) [software]. https://github.com/OndrejKaplan-DRM/SlunecniSoustava2026
