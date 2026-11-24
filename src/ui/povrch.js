@@ -12,9 +12,9 @@ const DEG = Math.PI / 180,
 /* tělesa, kde by ze skutečného povrchu obloha vidět nebyla nebo povrch není */
 const NOTE = {
   venus:
-    'Venuše je celá pod hustou oblačností: ze skutečného povrchu není vidět Slunce ani hvězdy. Ukazuji oblohu nad oblaky; tlačítko „🌫 Pod oblaky“ ukáže, jak to vypadá dole.',
+    'Venuše je celá pod hustou oblačností: ze skutečného povrchu není vidět Slunce ani hvězdy, jen oranžové šero. Tlačítko „☁ Nad oblaka“ tě vynese nad oblačnost.',
   titan:
-    'Titan halí oranžový opar: ze skutečného povrchu není vidět Saturn ani hvězdy. Ukazuji oblohu nad oparem; tlačítko „🌫 Pod oblaky“ ukáže, jak to vypadá dole.',
+    'Titan halí oranžový opar: ze skutečného povrchu není vidět Saturn ani hvězdy, Slunce je jen světlejší skvrna. Tlačítko „☁ Nad oblaka“ tě vynese nad opar.',
   jupiter: 'Jupiter nemá pevný povrch. Stojíš na horní vrstvě oblak.',
   saturn: 'Saturn nemá pevný povrch. Stojíš na horní vrstvě oblak.',
   uranus: 'Uran nemá pevný povrch. Stojíš na horní vrstvě oblak.',
@@ -123,7 +123,7 @@ export function createPovrch(S, A, ui) {
       `<button data-s="out" title="Širší zorné pole (kolečko myši)">−</button><span class="sf-fov"></span><button data-s="in" title="Užší zorné pole – dalekohled (kolečko myši)">+</button>` +
       (hasAir
         ? AIR[b.id].opaque
-          ? `<button data-s="air" class="${q.air ? 'sel' : ''}" title="Pohled ze skutečného povrchu pod oblaky: obloha je zatažená, Slunce ani hvězdy nejsou vidět">🌫 Pod oblaky</button>`
+          ? `<button data-s="air" class="${q.air ? '' : 'sel'}" title="${q.air ? 'Vystoupat nad oblačnost: odtud je vidět Slunce i hvězdy' : 'Zpátky na skutečný povrch pod oblaky'}">${q.air ? '☁ Nad oblaka' : '🌫 Pod oblaky'}</button>`
           : `<button data-s="air" class="${q.air ? 'sel' : ''}" title="Denní obloha: se vzduchem přes den hvězdy nevidíš">🌫 Vzduch</button>`
         : '') +
       `<button data-s="grid" class="${info && info.gridOn() ? 'sel' : ''}" title="Mřížka na obloze: azimut a výška ve stupních (G)">⌗ Mřížka</button>` +
@@ -168,7 +168,7 @@ export function createPovrch(S, A, ui) {
       fov: opt.fov || 68,
       el: 24 * DEG,
       track: -1,
-      air: opt.air === undefined ? !op : opt.air /* Venuše a Titan: napřed nad oblaky, ať je co vidět */,
+      air: opt.air === undefined ? true : opt.air /* 2.2: i Venuše a Titan napřed skutečný povrch pod oblaky (Ondřej) */,
       quiet: !!opt.quiet,
       lt: opt.lt,
     });
@@ -290,8 +290,15 @@ export function createPovrch(S, A, ui) {
     day = sst(-9, 4, se) * dim;
     const opq = !!(a && a.opaque && q.air);
     const sky = opq ? 1 : a && q.air ? sst(a.tw0 || -13, 1, se) * dim * a.k : 0;
-    S.skyDim = sky;
-    if (opq && yh > 0) {
+    /* 2.2: krajinu a oblohu kreslí render/krajina.js (3D); tady zbudou jen světové strany na obzoru */
+    const kr = S.krajina && S.krajina.on();
+    if (!kr) S.skyDim = sky;
+    if (kr) {
+      if (lastAir) {
+        lastAir = '';
+        air.style.display = 'none';
+      }
+    } else if (opq && yh > 0) {
       /* pod oblaky Venuše a v oparu Titanu: rovnoměrná zatažená obloha zakryje všechno nad obzorem */
       const dl = 0.06 + 0.94 * sst(-8, 6, se),
         g = ctx.createLinearGradient(0, 0, 0, Math.min(H, yh)),
@@ -320,7 +327,7 @@ export function createPovrch(S, A, ui) {
       lastAir = '';
       air.style.display = 'none';
     }
-    if (yh < H) {
+    if (yh < H && !kr) {
       const col = b.col || [0.5, 0.5, 0.5],
         lit = 0.1 + 0.3 * day,
         c = (k) => col.map((v) => Math.round(255 * Math.min(1, (0.25 + 0.75 * v) * k))),
@@ -331,13 +338,19 @@ export function createPovrch(S, A, ui) {
       g.addColorStop(1, `rgb(${c(lit * 0.45)})`);
       ctx.fillStyle = g;
       ctx.fillRect(0, y0, W, H - y0);
+    }
+    if (yh < H) {
+      const col = b.col || [0.5, 0.5, 0.5],
+        c = (k) => col.map((v) => Math.round(255 * Math.min(1, (0.25 + 0.75 * v) * k)));
       if (yh >= 0) {
-        ctx.strokeStyle = `rgba(${c(0.55 + 0.4 * day)},0.9)`;
-        ctx.lineWidth = 1.2;
-        ctx.beginPath();
-        ctx.moveTo(0, yh);
-        ctx.lineTo(W, yh);
-        ctx.stroke();
+        if (!kr) {
+          ctx.strokeStyle = `rgba(${c(0.55 + 0.4 * day)},0.9)`;
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.moveTo(0, yh);
+          ctx.lineTo(W, yh);
+          ctx.stroke();
+        }
         /* světové strany na obzoru */
         ctx.textAlign = 'center';
         ctx.textBaseline = 'top';

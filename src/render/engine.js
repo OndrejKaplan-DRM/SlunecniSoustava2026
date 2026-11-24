@@ -30,6 +30,7 @@ import * as SH from './shaders.js';
 import { siteFrame, applyLightTime, clearLightTime } from '../core/misto.js';
 import { createBelts } from './belts.js';
 import { createL2 } from './l2.js';
+import { createKrajina } from './krajina.js';
 import { STAR_N, STAR_POS, STAR_MAG, STAR_TK, CON_LINES, CON_IDS, STAR_NAMES } from '../data/stardata.js';
 import { CON_CZ, STAR_CZ } from '../data/connames.js';
 import CAT from '../data/cat.json';
@@ -156,6 +157,8 @@ export function createEngine(canvas, overlay) {
     lastArea = 0;
   renderer.setPixelRatio(PR);
   renderer.setClearColor(0x000000, 1);
+  const krajina = createKrajina(S, renderer);
+  S.krajina = krajina;
   const scene = new THREE.Scene(),
     camera = new THREE.PerspectiveCamera(FOV, 1, 1, 1e12);
   camera.matrixAutoUpdate = false;
@@ -2038,11 +2041,15 @@ export function createEngine(canvas, overlay) {
       f[3].uniforms.uOff.value.set(0, -oy);
       for (let q = 1; q < 5; q++) S.conLines.children[q].visible = fr > 0.004;
     }
+    /* 2.2: pohled z povrchu s krajinou a oblohou (render/krajina.js) – nejdřív světlo a jas oblohy, podle něj hvězdy */
+    const kraj = S.surf && krajina.on();
+    if (kraj) krajina.pre({ fwd, right, up, n: sN, fov: fovNow, W, H });
     starMat.uniforms.uGain.value =
       (1 + S.gamma * 1.2) * (S.disco ? 1.3 + 0.5 * Math.sin(now * 0.008) : 1) * (1 - 0.97 * S.skyDim);
     /* fotka Mléčné dráhy má 0,18° na bod: v dalekohledu (úzké zorné pole) by byla jen rozmazaná skvrna, proto slábne */
     skyMat.uniforms.uGain.value = (0.5 + S.gamma * 1.2) * (1 - S.skyDim) * (S.surf ? sstep(2.5, 14, fovNow) : 1);
-    renderer.render(scene, camera);
+    if (kraj) krajina.render(scene, camera);
+    else renderer.render(scene, camera);
     drawOverlay(big);
     // návštěva, HUD, výkon
     if (!cam.fly && cam.alt < shape[fi].rmax * 14) S.on.visit(fi);
