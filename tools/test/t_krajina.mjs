@@ -254,7 +254,7 @@ const btn = () =>
   });
 let b = await btn();
 ok(
-  /Přistát na povrchu/.test(b.card) && /landb/.test(b.cls) && /Přistát/.test(b.menu),
+  /🛬 Přistát/.test(b.card) && /landb/.test(b.cls) && /Přistát/.test(b.menu),
   `na oběžné dráze: „${b.card}“, v ☰ „${b.menu}“`
 );
 await page.evaluate(() => document.querySelector('#card [data-a="surf"]').click());
@@ -318,14 +318,14 @@ const g2 = await page.evaluate(() => [
   window.S200.S.skyDim,
 ]);
 ok(
-  !b.surf && /Přistát na povrchu/.test(b.card) && /Přistát/.test(b.menu),
+  !b.surf && /🛬 Přistát/.test(b.card) && /Přistát/.test(b.menu),
   `vzlet kolečkem: tlačítko hned nabízí „${b.card}“, v ☰ „${b.menu}“`
 );
 ok(
   Math.abs(g2[0] - 0.2) < 1e-9 && Math.abs(g2[1] - 0.2) < 1e-9 && g2[2] === 0,
   `po vzletu je přisvětlení zpět na 0,2 (na povrchu ${g1}), hvězdy bez ztlumení`
 );
-/* kolečkem blíž u povrchu: 3 kroky → křížek, další 3 → přistání */
+/* 2.3: kolečkem blíž u povrchu → rovnou přistání pod kurzorem (dřív nejdřív křížek) */
 await page.waitForFunction(() => !window.S200.S.flying(), null, { timeout: 60000 });
 const zin = await page.evaluate(async () => {
   const S = window.S200.S,
@@ -339,16 +339,15 @@ const zin = await page.evaluate(async () => {
   return { a, b: window.S200.povrch.pickState() };
 });
 ok(
-  zin.a && zin.a.phase === 'vyber',
-  `kolečkem blíž až k povrchu: objeví se zaměřovací křížek (${JSON.stringify(zin.a)})`
+  zin.a && zin.a.phase === 'sestup',
+  `kolečkem blíž až k povrchu: rovnou přistání pod kurzorem (${JSON.stringify(zin.a)})`
 );
-ok(zin.b && zin.b.phase === 'sestup', `dalším otočením kolečka blíž začne přistání (${JSON.stringify(zin.b)})`);
 await page.waitForFunction(() => !!window.S200.S.surf, null, { timeout: 30000 }).catch(() => {});
 ok(await page.evaluate(() => !!window.S200.S.surf), 'a přistane');
 await page.evaluate(() => window.S200.povrch.exit());
 await page.waitForTimeout(500);
 b = await btn();
-ok(!b.surf && /Přistát na povrchu/.test(b.card), `🚀 Vzlétnout / Esc: tlačítko zpět „${b.card}“`);
+ok(!b.surf && /🛬 Přistát/.test(b.card), `🚀 Vzlétnout / Esc: tlačítko zpět „${b.card}“`);
 console.log('== noc a přisvětlení');
 await go('earth', 72, -40, -20, 180, 3, 70, false, { jd0: 2461375.5 });
 await page.evaluate(() => window.S200.S.setGamma(0));

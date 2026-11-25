@@ -1,11 +1,21 @@
 # Sluneční soustava 200 – autoři, zdroje a licence
 
-Stav k 25. 11. 2026, verze 2.2b (zkušební; dřívější stav popisu 1.2 doplněn o oddíly pro 1.8b–2.2b).
+Stav k 25. 11. 2026, verze 2.3 (zkušební; dřívější stav popisu 1.2 doplněn o oddíly pro 1.8b–2.3).
 
 ## Autorství
 - Námět, zadání, odborná kontrola a testování: **Ing. Ondřej Kaplan, Ph.D.** (ondrej.kaplan@gmail.com).
 - Kód napsaly podle jeho zadání modely **Claude Fable 5.2** a od verze 2.1 též **Claude Opus 5.5** (Anthropic). Vývoj probíhal po iteracích ve větvích `iterace-N`; každou verzi hlídají automatické testy (`npm test`, `npm run test:fakta`).
 - Aplikace je zdarma, bez reklam a bez registrace. Neodesílá žádné údaje; nastavení a postup hry ukládá jen do úložiště prohlížeče.
+
+## Verze 2.3: chůze, zajímavosti po přistání, prstence, oblaka obrů v pohybu
+
+| Co | Zdroj | Licence / použití |
+|---|---|---|
+| Rychlosti větrů (Jupiter do 150 m/s pod 30° a 40 m/s nad 30°, Saturn 400 / 150, Uran 0–250, Neptun 0–580, Mars 2–30 m/s, Venuše u povrchu 0,3–1 m/s, Země 0–100 m/s), hustota u hladiny 1 baru, výšky stupnice (J 27, S 59,5, U 27,7, N 19,1–20,3 km) | NASA NSSDCA Planetary Fact Sheets (nssdc.gsfc.nasa.gov/planetary/factsheet/) | údaje |
+| Bouře na rovníku Saturnu se pohybují na východ rychlostí až 450 m/s | popis snímku PIA05386 (NASA/JPL/Space Science Institute) v NASA Image and Video Library | údaj; snímek v aplikaci není |
+| Prstence: složení, rozměry a vznik (texty „💍 co to je?“) | popisy snímků PIA00658, PIA01976, PIA00142, PIA01493, ARC-1986-A86-7011, ARC-1989-A89-7042 (Voyager, Galileo, Cassini; NASA/JPL, NASA Ames) | údaje; snímky v aplikaci nejsou |
+| Chodec (tíže, šouravý krok, klokaní poskoky, klouzání po ledu, odlet skokem) | vlastní kód; vzor ovládání a pocitu: chodec Oliverovy Planetky 8 (`src/engine/controls.js`, projekt téhož autora) – kód se nekopíroval | MIT (tento repozitář) |
+| Směr větrů podle šířky u obrů a Venuše, rychlost větru na Titanu | z paměti – neověřeno (označeno v `src/render/krajina.js`) | – |
 
 ## Verze 2.2 a 2.2b: krajina a obloha z povrchu
 | Co | Zdroj | Licence / podmínky |
@@ -142,4 +152,4 @@ Další obrazové podklady:
 - **Suno**: autor má placený tarif Premier, který podle ceníku zahrnuje práva ke komerčnímu užití (snímek účtu z 13. 11. 2026). Plné znění podmínek služby jsem nečetla.
 
 ## Jak citovat
-Kaplan, O. (2026). *Sluneční soustava 200* (verze 2.2b) [software]. https://github.com/OndrejKaplan-DRM/SlunecniSoustava2026
+Kaplan, O. (2026). *Sluneční soustava 200* (verze 2.3) [software]. https://github.com/OndrejKaplan-DRM/SlunecniSoustava2026
