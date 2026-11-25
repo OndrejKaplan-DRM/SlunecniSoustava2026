@@ -123,9 +123,9 @@ export function createPristani(S, A, ui, P0) {
         if (u >= 1) st.rot = null;
       }
       if (t > 1.9 || S.cam.alt < R * 0.012) {
-        const { i, lat, lon } = st;
+        const { i, lat, lon, az } = st;
         finish();
-        P0.enter(i, lat, lon, { landed: true });
+        P0.enter(i, lat, lon, az === undefined ? { landed: true } : { landed: true, az, el: -4 });
       }
     }
   }
@@ -281,6 +281,10 @@ export function createPristani(S, A, ui, P0) {
     st.t0 = performance.now();
     pan.classList.remove('on');
     A.play('brake');
+    /* 2.3: známé místo může mít doporučený směr pohledu (okraj kaldery Olympu → do kaldery) */
+    st.az = undefined;
+    for (const p of PLACES[B[i].id] || [])
+      if (p[3] !== undefined && gc(lat, lon, p[1], p[2]) * DEG * B[i].R < 3) st.az = p[3];
     S.flyTo(i, { alt: B[i].R * 0.004 });
     S.bus.emit('surfPick', st.phase);
     S.wake();

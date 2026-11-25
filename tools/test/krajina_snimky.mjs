@@ -39,6 +39,8 @@ export const CASES = [
   ['mesic_den', 'moon', 0.674, 23.473, 20, 'sun+120', 6, 70],
   ['mesic_hadley', 'moon', 26.132, 3.634, 25, 170, 4, 70],
   ['mars_gale', 'mars', -4.59, 137.442, 35, 140, 4, 70],
+  ['mars_olymp', 'mars', 17.34, 226.97, 30, 135, -4, 70],
+  ['mars_olymp_kaldera', 'mars', 18.15, 226.15, 30, 90, -6, 70],
   ['mesic_zeme', 'moon', 0.674, 23.473, -20, 'par', 8, 70],
   ['venuse', 'venus', -7.5, 303.0, 40, 'sun+90', 8, 70],
   ['titan', 'titan', -10.3, 192.3, 30, 'sun+90', 8, 70],

@@ -149,6 +149,8 @@ export function createKrajina(S, renderer) {
     uSunFrac: { value: 1 },
     uLS: { value: 0 },
     uSunV: { value: new THREE.Vector3(0, 1, 0) },
+    uHobs: { value: 0 },
+    uHsc: { value: 8 },
   };
   const patch = (mat, detail, vis) => {
     mat.onBeforeCompile = (sh) => {
@@ -166,7 +168,7 @@ export function createKrajina(S, renderer) {
       sh.fragmentShader = sh.fragmentShader
         .replace(
           '#include <common>',
-          `#include <common>\nvarying vec3 vWp;${vis ? '\nvarying float vVis;' : ''}\nuniform sampler2D uSkyL, uDet;\nuniform vec2 uRes;\nuniform float uExpS, uFogOn, uDetK, uDetS, uNight, uSunFrac, uLS;\nuniform vec3 uExt, uNG, uSunV;\n${TONE}`
+          `#include <common>\nvarying vec3 vWp;${vis ? '\nvarying float vVis;' : ''}\nuniform sampler2D uSkyL, uDet;\nuniform vec2 uRes;\nuniform float uExpS, uFogOn, uDetK, uDetS, uNight, uSunFrac, uLS, uHobs, uHsc;\nuniform vec3 uExt, uNG, uSunV;\n${TONE}`
         )
         .replace(
           '#include <color_fragment>',
@@ -192,7 +194,11 @@ export function createKrajina(S, renderer) {
         .replace(
           '#include <opaque_fragment>',
           `#include <opaque_fragment>
-           { float dk = length(vViewPosition) * 0.001; vec3 Tf = exp(-uExt * dk);
+           { float dk = length(vViewPosition) * 0.001;
+             /* 2.3: opar podle výšky – cesta k místu hluboko pod pozorovatelem (pohled z Olympu) vede hustším vzduchem */
+             float h1 = uHobs, h2 = max(0.0, uHobs + (vWp.y - cameraPosition.y) * 0.001), dh = h1 - h2,
+               dens = abs(dh) > 0.02 ? uHsc * (exp(-h2 / uHsc) - exp(-h1 / uHsc)) / dh : exp(-h1 / uHsc);
+             vec3 Tf = exp(-uExt * dk * dens);
              vec3 Lh = kTone(texture2D(uSkyL, gl_FragCoord.xy / uRes).rgb * uExpS) + uNG * 1.2;
              vec3 c = kTone(gl_FragColor.rgb);
              /* v noci barvy blednou (vidění tyčinkami) */
@@ -507,9 +513,39 @@ export function createKrajina(S, renderer) {
       dem.at(q.lat * DEG, q.lon * DEG);
       dem.res = (((Math.PI * b.R * 1000) / 180) * 1) / (dem.fine > 0.5 ? DEM[b.id].mppd : DEM[b.id].ppd);
     }
+    /* 2.3: výška místa nad okolím z výškové mapy (Olympus Mons asi 21 km nad Tharsis): obzor je dál a níž, terén se staví až
+       k němu, a vzduch nad pozorovatelem je řidší (obloha tmavší, opar slabší) */
+    rFar = 0;
+    hObs = 0.002;
+    let relH = 0;
+    if (dem) {
+      const hs = dem.at(q.lat * DEG, q.lon * DEG),
+        Rk = b.R;
+      let lo = 0,
+        n = 0;
+      for (let a = 0; a < 16; a++) {
+        const d = 320 / Rk,
+          la = Math.asin(
+            Math.sin(q.lat * DEG) * Math.cos(d) + Math.cos(q.lat * DEG) * Math.sin(d) * Math.cos((a * Math.PI) / 8)
+          ),
+          lo2 =
+            q.lon * DEG +
+            Math.atan2(
+              Math.sin((a * Math.PI) / 8) * Math.sin(d) * Math.cos(q.lat * DEG),
+              Math.cos(d) - Math.sin(q.lat * DEG) * Math.sin(la)
+            );
+        lo += dem.at(la, lo2);
+        n++;
+      }
+      const rel = hs - lo / n;
+      if (rel > 2000) rFar = Math.min(700000, 1.15 * Math.sqrt(2 * Rk * 1000 * rel));
+      if (ATM[b.id]) hObs = Math.max(0.002, hs / 1000);
+      relH = Math.round(rel);
+    }
     const o = {
       T,
       R: b.R,
+      rFar,
       seed,
       map,
       lat: q.lat,
@@ -570,6 +606,8 @@ export function createKrajina(S, renderer) {
       rMax: ter.rMax,
     };
     stat.dem = dem ? Math.round(dem.res) : 0;
+    stat.relH = relH;
+    stat.hObs = hObs;
     if (!map && md !== 'nad')
       loadMap(b.id).then((m) => {
         if (m && S.surf && S.surf.i === q.i) S.wake();
@@ -736,7 +774,7 @@ export function createKrajina(S, renderer) {
     const toa = (AU / dS) ** 2 * (1 - cov),
       sz = sE[2];
     /* pozorovatel ve výšce: na obrech nad oblaky, nad oblaky Venuše a Titanu výš */
-    const h0 = md === 'nad' ? (b.id === 'venus' ? 0.5 : 2) : 0.002;
+    const h0 = md === 'nad' ? (b.id === 'venus' ? 0.5 : 2) : hObs;
     /* atmosféra: propustnost pro Slunce, světlo oblohy (přepočet jen při pohybu Slunce o víc než 0,1°) */
     let Tsun = [1, 1, 1],
       Esky = [0, 0, 0],
@@ -929,6 +967,9 @@ export function createKrajina(S, renderer) {
     U.uExpS.value = 1;
     U.uFogOn.value = atm || oc ? 1 : 0;
     const ex = atm ? groundExt(atm) : oc ? [3 / oc.vis, 3.6 / oc.vis, 4.4 / oc.vis] : [0, 0, 0];
+    /* vyvýšený pozorovatel: opar řídne s výškou (výšková škála prachu a plynu); hustotu po cestě počítá shader */
+    U.uHobs.value = atm && hObs > 0.01 ? hObs : 0;
+    U.uHsc.value = atm ? atm.hM || atm.hR || 8 : 8;
     U.uExt.value.set(ex[0], ex[1], ex[2]);
     /* hvězdy: přes den je přesvítí obloha; bez vzduchu je přezáří osvětlená krajina (oko je oslněné) */
     const Lzd = lum(Lz) * expS,
@@ -973,7 +1014,9 @@ export function createKrajina(S, renderer) {
   }
   /* nad oblačným mořem obrů jako z letadla (1,5 km nad vršky kup), jinak výška očí */
   const eyeOf = (q) => (ter && ter.deck ? 1500 : B[q.i].R < 50 ? 1.2 : 1.7);
-  let hProf = null;
+  let hProf = null,
+    rFar = 0,
+    hObs = 0.002;
   /* kamera krajiny: stejné natočení jako kamera oblohy, v místní soustavě (x = východ, y = nahoru, z = jih) */
   function setCam(q, v) {
     const f = S.surfSite(),

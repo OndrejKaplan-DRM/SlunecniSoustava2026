@@ -126,7 +126,8 @@ export function buildTeren(o) {
     /* s výškovou mapou dělá velké tvary mapa; šum a krátery jen pod její rozlišení */
     craters = craterField(T, seed, dem ? Math.min(800, dem.res * 0.45) : 0),
     /* dosah: do 150 km, na malých tělesech kus koule (horizont je blízko) */
-    rMax = Math.min(150000, Rm * (T.maly ? 0.9 : 0.6)),
+    /* 2.3: z vyvýšeného místa (Olympus Mons) je obzor dál – terén až k němu (o.rFar), jinak by hora vypadala jako náhorní rovina */
+    rMax = Math.min(Math.max(150000, o.rFar || 0), Rm * (T.maly ? 0.9 : 0.6)),
     rMin = 0.35,
     /* telefon: řidší mřížka */
     NA = o.lite ? 256 : 384,
@@ -383,6 +384,21 @@ export function buildTeren(o) {
   geo.setIndex(idx);
   geo.computeVertexNormals();
   geo.computeBoundingSphere();
+  if (!deck && !earth) {
+    /* 2.3: strmé svahy tmavší (holá skála, méně prachu) – hloubka krajiny je pak vidět i při rovnoměrném světle
+       (stěna kaldery Olympu, svahy kráterů) */
+    const nrm = geo.attributes.normal.array,
+      col = geo.attributes.color.array;
+    for (let v = 0; v < nV; v++) {
+      const sl = 1 - nrm[v * 3 + 1],
+        t = Math.max(0, Math.min(1, (sl - 0.04) / 0.22)),
+        k = 1 - 0.32 * t * t * (3 - 2 * t);
+      col[v * 3] *= k;
+      col[v * 3 + 1] *= k * 0.97;
+      col[v * 3 + 2] *= k * 0.95;
+    }
+    geo.attributes.color.needsUpdate = true;
+  }
   /* stín terénu: vidí vrchol Slunce? (pochod paprskem k Slunci nad mřížkou; 1 = ano, 0 = ve stínu kopce nebo hrany kráteru) */
   const visA = new Float32Array(nV).fill(1);
   geo.setAttribute('vis', new THREE.BufferAttribute(visA, 1));
