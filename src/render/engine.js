@@ -539,7 +539,8 @@ export function createEngine(canvas, overlay) {
     jupiter: {
       io: [92000, 226000],
       op: 1,
-      tex: ringTex((x) => [150, 120, 95, 10 + 34 * band(x, 0.26, 0.02) + 10 * (x < 0.27 ? 1 : 0.4)]),
+      /* 2.3: prachové prstence jsou zepředu skoro neviditelné – slabší halo a pavučinové prstence, hlavní prstenec zůstává */
+      tex: ringTex((x) => [150, 120, 95, 30 * band(x, 0.26, 0.02) + 2.5 * (x < 0.27 ? 1 : 0.3)]),
     },
     uranus: {
       io: [38000, 51500],
@@ -761,12 +762,16 @@ export function createEngine(canvas, overlay) {
           uFill: gamU.fill,
           uGam: gamU.gam,
           uFlat: { value: 1 - (b.flat || 0) },
+          uOcc: { value: b.id === 'jupiter' ? 0.12 : b.id === 'neptune' ? 0.25 : b.id === 'uranus' ? 0.5 : 1 },
         },
         vertexShader: SH.RING_VS,
         fragmentShader: SH.RING_FS,
         transparent: true,
         side: THREE.DoubleSide,
         depthWrite: false,
+        blending: THREE.CustomBlending,
+        blendSrc: THREE.OneFactor,
+        blendDst: THREE.OneMinusSrcAlphaFactor,
       });
       const ring = new THREE.Mesh(g, rm);
       ring.frustumCulled = false;
@@ -1152,7 +1157,8 @@ export function createEngine(canvas, overlay) {
   /* 1.9 mizející dráhy (vzor NASA Eyes): čára je nejjasnější těsně za tělesem a slábne proti směru pohybu,
      takže je směr oběhu vidět i při zastaveném čase. S.orbFade = false vrátí rovnoměrnou čáru. */
   const ORB_LO = 0.2,
-    ORB_GAIN = 1.9;
+    ORB_GAIN = 1.9,
+    orbFull = { value: 0 };
   function orbitLine(i) {
     const r = R[i];
     if (r.orbit) return r.orbit;
@@ -1167,6 +1173,16 @@ export function createEngine(canvas, overlay) {
       g,
       new THREE.LineBasicMaterial({ color: c, transparent: true, opacity: 0.5, depthWrite: false, vertexColors: true })
     );
+    /* 2.3: při přeletu nad pólem se mizející stopa na okamžik spojí v celou elipsu a jemně zazáří (orbFull 1 → 0) */
+    line.material.onBeforeCompile = (sh) => {
+      sh.uniforms.uFull = orbFull;
+      sh.fragmentShader = sh.fragmentShader
+        .replace('#include <common>', '#include <common>\nuniform float uFull;')
+        .replace(
+          '#include <color_fragment>',
+          '#include <color_fragment>\n diffuseColor.a = mix(diffuseColor.a, opacity, uFull); diffuseColor.rgb *= 1.0 + 0.8 * uFull;'
+        );
+    };
     line.frustumCulled = false;
     line.matrixAutoUpdate = false;
     line.renderOrder = -5;
@@ -1600,6 +1616,8 @@ export function createEngine(canvas, overlay) {
         if (S.poleFx < 0.02) S.poleFx = 0;
         else wake();
       }
+      /* celé elipsy: rychlý náběh a pomalejší návrat ke stopě (asi 1,5 s) */
+      orbFull.value = Math.min(1, S.poleFx * 1.8) ** 1.5;
     }
     dirOf(cam.yaw, cam.pitch, dv);
     const flipY = Math.cos(cam.pitch) < 0 ? -1 : 1,

@@ -4,6 +4,8 @@ import { B, P, idx, par, basis, shape, SUN, EARTH, AU, DEG } from '../core/sim.j
 import { fmtDist } from './ui.js';
 
 // útvary: [jméno, šířka °, východní délka °]
+/* 2.3: poloměr (km), kde stojí popisek prstenců: hlavní prstenec Jupiteru, vnější okraj prstence B Saturnu, ε Uranu, Adams Neptunu */
+const RING_R = { jupiter: 126800, saturn: 117600, uranus: 51150, neptune: 62930 };
 export const FEAT = {
   earth: [
     ['Praha', 50.08, 14.43],
@@ -274,6 +276,58 @@ export function createExtras(S, A, api) {
       }
       ctx.globalAlpha = 1;
     }
+    // --- 2.3: prstence obrů: popisek na okraji prstence, klik vysvětlí, co to je (děti se ptají na „věnečky“) ---
+    X.ringHot = null;
+    const RR = RING_R[B[fi].id];
+    if (RR && !S.surf && !S.evSet && S.labMode > 0 && rf.pr > 45 && rf.z > 0) {
+      basis(fi, S.jd, m9);
+      const cx = P[fi * 3],
+        cy = P[fi * 3 + 1],
+        cz = P[fi * 3 + 2],
+        pz = [m9[6], m9[7], m9[8]],
+        v = [cx - C[0], cy - C[1], cz - C[2]],
+        a = [pz[1] * v[2] - pz[2] * v[1], pz[2] * v[0] - pz[0] * v[2], pz[0] * v[1] - pz[1] * v[0]],
+        la = Math.hypot(a[0], a[1], a[2]);
+      if (la > 1e-9) {
+        /* okraj prstence vpravo, ale ne pod kartou tělesa (jinak vlevo) */
+        const cd = document.querySelector('#card'),
+          cb = cd ? cd.getBoundingClientRect() : null,
+          cr = cb && cb.width > 0 && getComputedStyle(cd).display !== 'none' ? cb : null,
+          ok = (p) =>
+            p &&
+            p[0] > 20 &&
+            p[0] < W - 140 &&
+            p[1] > 70 &&
+            p[1] < H - 110 &&
+            !(cr && p[0] + 110 > cr.left && p[0] < cr.right && p[1] > cr.top - 20 && p[1] < cr.bottom);
+        let best = null;
+        for (const sg of [1, -1]) {
+          const k = (sg * RR) / la,
+            p = proj(cx + a[0] * k, cy + a[1] * k, cz + a[2] * k);
+          if (ok(p) && (!best || p[0] > best[0])) best = p;
+        }
+        if (best) {
+          const lab = kid ? '💍 prstence – co to je?' : '💍 prstence';
+          ctx.globalAlpha = Math.min(1, (rf.pr - 45) / 40);
+          ctx.strokeStyle = kid ? '#ffd23f' : '#e9d7b8';
+          ctx.lineWidth = 1.3;
+          ctx.beginPath();
+          ctx.arc(best[0], best[1], 5, 0, 6.2832);
+          ctx.moveTo(best[0] + 4, best[1] + 4);
+          ctx.lineTo(best[0] + 14, best[1] + 14);
+          ctx.stroke();
+          text(
+            lab,
+            best[0] + 16,
+            best[1] + 18,
+            kid ? '#ffe27a' : '#efe2c8',
+            (kid ? '600 13px ' : '12px ') + 'system-ui, sans-serif'
+          );
+          ctx.globalAlpha = 1;
+          X.ringHot = { i: fi, x: best[0], y: best[1], w: 16 + ctx.measureText(lab).width };
+        }
+      }
+    }
     // --- sondy ---
     X.probes.length = 0;
     if (S.labMode > 0 && !S.evSet) {
@@ -481,6 +535,14 @@ export function createExtras(S, A, api) {
     }
   });
   X.pickProbe = (x, y) => X.probes.find((p) => Math.hypot(p.x - x, p.y - y) < 14) || null;
+  /* 2.3: klik na popisek prstenců (kroužek nebo text) */
+  X.pickRing = (x, y) => {
+    const h = X.ringHot;
+    if (!h) return -1;
+    return Math.hypot(h.x - x, h.y - y) < 14 || (x > h.x + 10 && x < h.x + h.w + 4 && Math.abs(y - h.y - 18) < 10)
+      ? h.i
+      : -1;
+  };
   // --- minimapa: pohled shora na ekliptiku, vzdálenost od Slunce logaritmicky ---
   const mc = document.getElementById('mini'),
     mx = mc.getContext('2d'),

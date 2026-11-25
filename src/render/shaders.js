@@ -300,7 +300,7 @@ void main(){ vR = length(position.xy); vP = mat3(modelMatrix) * position; gl_Pos
 export const RING_FS = /* glsl */ `
 #include <common>
 #include <logdepthbuf_pars_fragment>
-uniform sampler2D tRing; uniform vec3 uSun; uniform vec3 uPole; uniform vec3 uCtr; uniform vec3 uIO; uniform float uRad; uniform float uSunR; uniform float uFill; uniform float uGam; uniform float uFlat;
+uniform sampler2D tRing; uniform vec3 uSun; uniform vec3 uPole; uniform vec3 uCtr; uniform vec3 uIO; uniform float uRad; uniform float uSunR; uniform float uFill; uniform float uGam; uniform float uFlat; uniform float uOcc;
 varying vec3 vP; varying float vR;
 void main(){
   #include <logdepthbuf_fragment>
@@ -314,7 +314,9 @@ void main(){
   float fs = pow(max(dot(-V, L), 0.0), 8.0) * (1.0 - t.a) * 1.5;                             // dopředný rozptyl proti Slunci
   vec3 col = t.rgb * 4.2 * (br * sh + fs * sh + uFill);
   col = pow(max(col, vec3(0.0)), vec3(1.0 / uGam));
-  gl_FragColor = vec4(col, al);
+  /* 2.3: předem vynásobená alfa – řídký prachový prstenec (Jupiter, Uran, Neptun) zakrývá hvězdy jen málo (uOcc), jinak by
+     stín planety na něm udělal za planetou černý ovál */
+  gl_FragColor = vec4(col * al, al * uOcc);
   #include <colorspace_fragment>
 }`;
 export const ATM_VS = /* glsl */ `

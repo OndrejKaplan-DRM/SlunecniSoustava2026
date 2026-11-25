@@ -2,6 +2,7 @@
 import { B, N, P, idx, par, kids, root, SUN, EARTH, AU, period, semi, shape } from '../core/sim.js';
 import { factsOf } from '../data/facts.js';
 import { slozeniOf } from '../data/slozeni.js';
+import { PRSTENCE } from '../data/prstence.js';
 import { drawBall, ballSize, loadMap } from '../render/ball.js';
 import { pairView } from './porovnani.js';
 import { RATE_LABEL } from '../render/engine.js';
@@ -593,6 +594,11 @@ export function createUI(S, A) {
             ? `skoro žádná <small>(odrazem bys odletěl)</small>`
             : `${sig((b.g / 9.80665) * 1000)} tisícin g`,
       ]);
+    if (PRSTENCE[b.id])
+      rows.push([
+        'Prstence',
+        `${PRSTENCE[b.id].kratce} <button class="mini" data-a="ring" title="Co jsou ty „věnečky“ kolem planety?">💍 co to je?</button>`,
+      ]);
     if (MOONS[b.id] !== undefined) {
       const m = MOONS[b.id],
         inm = kids[i].size !== undefined ? kids[i].size : kids[i].length;
@@ -664,6 +670,11 @@ export function createUI(S, A) {
       tiles.push(['📏', `Průměr <b>${fmtDist(D).replace(/ \(.*/, '')}</b>${i === EARTH ? '' : ' – ' + sizeLike(D)}.`]);
       if (!slz.atm.zadna && slz.atm.kid) tiles.push([i === SUN ? '🔥' : '🌬️', slz.atm.kid]);
       if (slz.nitro && slz.nitro.kid && slz.vlastni) tiles.push(['🪨', slz.nitro.kid]);
+      if (PRSTENCE[b.id])
+        tiles.push([
+          '💍',
+          `Kolem planety jsou <b>prstence</b> – ten „věneček“. <button class="mini" data-a="ring">Co to je?</button>`,
+        ]);
       if (b.rot)
         tiles.push([
           '🌗',
@@ -685,6 +696,20 @@ export function createUI(S, A) {
       <div class="row">${S.focus === i ? `<button data-a="close" class="pri">Přiblížit</button><button data-a="far">Oddálit</button>` : `<button data-a="go" class="pri">Leť tam ⏎</button>`}${i === SUN ? '' : surfBtn(i)}${p > 0 ? `<button data-a="parent">↑ ${B[p].cs}</button>` : ''}</div>`;
     cardExtra(i);
     drawSub();
+  }
+  /* 2.3: vysvětlení prstenců (dětské rozhraní jednodušeji) v okénku s křížkem */
+  const rip = el('div', 'panel');
+  rip.id = 'ringinfo';
+  document.body.appendChild(rip);
+  rip.addEventListener('click', (e) => {
+    if (e.target.closest('[data-x]')) rip.classList.remove('on');
+  });
+  function ringInfo(i) {
+    const r = PRSTENCE[B[i].id];
+    if (!r) return;
+    rip.innerHTML = `<button data-x title="Zavřít">✕</button><div class="ri-h">💍 ${r.nazev}</div><p>${K() ? r.kid : r.adult}</p>${K() ? '' : `<p class="ri-s">${r.kid}</p>`}`;
+    rip.classList.add('on');
+    A.play('panel_open');
   }
   // „Kam dál?“ – tři nenavštívená tělesa: nejdřív ze stejné soustavy, pak nejbližší
   function nextUp(i) {
@@ -767,6 +792,7 @@ export function createUI(S, A) {
       toast(api.X.ruler < 0 ? 'Měření zrušeno.' : `📏 Měřím od tělesa ${B[i].cs}. Vyber klikem jiné těleso.`);
       return drawCard(i);
     }
+    if (a === 'ring') return ringInfo(i);
     if (a === 'go') S.flyTo(i);
     if (a === 'close') S.flyTo(i, { alt: shape[i].rmax * 0.6 });
     if (a === 'far')
@@ -1418,6 +1444,14 @@ export function createUI(S, A) {
     if (api.povrch && api.povrch.pickClick(e.clientX, e.clientY)) {
       lastTap = 0;
       return;
+    }
+    /* 2.3: klik na popisek prstenců vysvětlí, co ty „věnečky“ jsou */
+    {
+      const ri = api.X ? api.X.pickRing(e.clientX, e.clientY) : -1;
+      if (ri >= 0) {
+        lastTap = 0;
+        return ringInfo(ri);
+      }
     }
     const i = S.pick(e.clientX, e.clientY),
       now = performance.now();

@@ -7,6 +7,8 @@
 // použije obecný popis podle druhu tělesa (a u planetek podle spektrální třídy, kde ji známe).
 // Vrstvy: [název, rozsah, složení, stav / poznámka]. Plyny: [plyn, podíl].
 
+import { PRSTENCE } from './prstence.js';
+
 export const CO2 = {
   /* roční průměry Mauna Loa, ppm (NOAA GML, soubor co2_annmean_mlo.txt, staženo 24. 11. 2026) */
   rada: [
@@ -755,7 +757,7 @@ export function slozeniOf(b) {
     g = generic(b),
     atm = (s && s.atm) || g.atm || { ...NONE, zadna: true },
     nitro = (s && s.nitro) || g.nitro || null;
-  return { atm, nitro, prstence: s && s.prstence, vlastni: !!s };
+  return { atm, nitro, prstence: (s && s.prstence) || (PRSTENCE[b.id] && PRSTENCE[b.id].adult), vlastni: !!s };
 }
 export const SLOZENI_ZDROJ =
   'Atmosféry: NASA NSSDCA Planetary Fact Sheets (2024–2025), podíly objemově. CO₂: NOAA GML, Mauna Loa. Nitra: seismologie (Země, Měsíc, Mars – InSight), jinak modely z měření sond.';
