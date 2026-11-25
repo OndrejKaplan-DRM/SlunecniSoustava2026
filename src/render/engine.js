@@ -1375,7 +1375,7 @@ export function createEngine(canvas, overlay) {
      a výška nad obzorem. Zorné pole 0,25–75° (kolečko = dalekohled). track ≥ 0: pohled drží zvolené těleso, případně
      posunuté o (ox, oy) bodů od středu obrazu (volná plocha vedle karty úkazu). */
   const SURF_FOV = [0.25, 75],
-    SURF_EL = [-0.35, 1.5533],
+    SURF_EL = [-1.5, 1.5533] /* 2.3: s krajinou se dá podívat i pod nohy (dřív −20°) */,
     sN = new THREE.Vector3(),
     sE = new THREE.Vector3(),
     sNo = new THREE.Vector3(),

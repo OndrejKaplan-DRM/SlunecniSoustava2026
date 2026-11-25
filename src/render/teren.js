@@ -275,8 +275,13 @@ export function buildTeren(o) {
   const h0 = relief(0, 0, 0.5, lat0, lon0);
   let water0 = 0;
   const KIND = { more: 1, les: 2, poust: 3, led: 4 };
-  const setV = (v, x, y, r) => {
-    const minD = Math.max(1.2, r * 0.09);
+  /* 2.3 (chůze): mřížka může mít střed jinde než místo přistání (cx, cy = metry na východ a sever); výšky, barvy i zakřivení
+     se počítají v soustavě místa přistání, takže nová mřížka kolem chodce navazuje na starou */
+  const cx = o.cx || 0,
+    cy = o.cy || 0;
+  const setV = (v, x, y, rl) => {
+    const minD = Math.max(1.2, rl * 0.09),
+      r = Math.hypot(x, y);
     toLL(r, Math.atan2(x, y), ll);
     let h = relief(x, y, minD, ll[0], ll[1]);
     const drop = Rm - Math.sqrt(Math.max(0, Rm * Rm - r * r)); /* zakřivení: přesně koule */
@@ -348,9 +353,9 @@ export function buildTeren(o) {
         c2 = 0.8;
       }
     }
-    pos[v * 3] = x;
+    pos[v * 3] = x - cx;
     pos[v * 3 + 1] = h - h0 - drop;
-    pos[v * 3 + 2] = -y;
+    pos[v * 3 + 2] = -(y - cy);
     col[v * 3] = c0 * k;
     col[v * 3 + 1] = c1 * k;
     col[v * 3 + 2] = c2 * k;
@@ -359,12 +364,12 @@ export function buildTeren(o) {
     /* Země: pozorovatel stojí na pevnině několik metrů až desítek metrů nad mořem (kopce z reliéfu) */
     water0 = Math.max(4, h0 - (T.far || 0) * 0.15 + 12);
   }
-  setV(0, 0, 0, 0);
+  setV(0, cx, cy, 0);
   for (let k = 0; k < NR; k++)
     for (let a = 0; a < NA; a++) {
       const th = ((a + (k & 1) * 0.5) / NA) * TAU,
         r = rr[k];
-      setV(1 + k * NA + a, r * Math.sin(th), r * Math.cos(th), r);
+      setV(1 + k * NA + a, cx + r * Math.sin(th), cy + r * Math.cos(th), r);
     }
   const idx = [];
   for (let a = 0; a < NA; a++) idx.push(0, 1 + ((a + 1) % NA), 1 + a);
@@ -500,7 +505,23 @@ export function buildTeren(o) {
     }
     return out;
   };
-  return { geo, group, yAt, gridY, kindAt, h0, rMax, deck, water0, computeVis, visAt, horizon, info: { NA, NR, rMax } };
+  return {
+    geo,
+    group,
+    yAt,
+    gridY,
+    kindAt,
+    h0,
+    rMax,
+    deck,
+    water0,
+    computeVis,
+    visAt,
+    horizon,
+    cx,
+    cy,
+    info: { NA, NR, rMax },
+  };
 }
 /* ---------- kameny, oblázky, stromy ---------- */
 function rockGeo(seed, kind) {
@@ -571,7 +592,8 @@ export function buildRocks(o, ter) {
   for (const st of sets) {
     const g = rockGeo(seed + si * 7, kind),
       im = new THREE.InstancedMesh(g, mat, st.n),
-      xz = new Float32Array(st.n * 2);
+      xz = new Float32Array(st.n * 2),
+      rt = new Float32Array(st.n * 2);
     let n = 0;
     for (let k = 0; k < st.n * 3 && n < st.n; k++) {
       const u = hash2(k, si, seed + 55),
@@ -598,12 +620,16 @@ export function buildRocks(o, ter) {
       im.setColorAt(n, cc);
       xz[n * 2] = x;
       xz[n * 2 + 1] = z;
+      /* 2.3: poloměr a vršek kamene pro kolize chodce */
+      rt[n * 2] = s * Math.max(ax, az) * 0.85;
+      rt[n * 2 + 1] = y + s * 0.12 + s * 0.62;
       n++;
     }
     im.count = n;
     /* poloha a barva kamenů pro stín terénu (kámen ve stínu kopce nebo kráteru nesvítí) */
     im.userData.base = im.instanceColor ? im.instanceColor.array.slice(0, n * 3) : null;
     im.userData.xz = xz.slice(0, n * 2);
+    im.userData.rt = rt.slice(0, n * 2);
     im.castShadow = st.shadow;
     im.receiveShadow = true;
     im.instanceMatrix.needsUpdate = true;

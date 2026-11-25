@@ -173,7 +173,7 @@ export function createKrajina(S, renderer) {
         .replace(
           '#include <color_fragment>',
           detail
-            ? `#include <color_fragment>\n{ float dd = length(vWp.xz); float fd = uDetK * (1.0 - smoothstep(12.0, 60.0, dd));
+            ? `#include <color_fragment>\n{ float dd = length(vWp.xz - cameraPosition.xz); float fd = uDetK * (1.0 - smoothstep(12.0, 60.0, dd));
                float t1 = texture2D(uDet, vWp.xz * uDetS).r, t2 = texture2D(uDet, vWp.xz * uDetS * 0.173 + 0.37).r;
                diffuseColor.rgb *= mix(1.0, (0.55 + 0.9 * t1) * (0.8 + 0.4 * t2), fd); }`
             : '#include <color_fragment>'
@@ -567,6 +567,9 @@ export function createKrajina(S, renderer) {
     ground.receiveShadow = true;
     ground.castShadow = false;
     ground.frustumCulled = false;
+    groundMesh = ground;
+    lastO = o;
+    shKey = null;
     terScene = new THREE.Scene();
     terScene.add(ground, sunL, sunL.target, psL, psL.target, hemL);
     /* kameny: barva podle půdy v místě (tmavší, méně prachu); stromy jen na Zemi */
@@ -732,7 +735,7 @@ export function createKrajina(S, renderer) {
       if (!bs || !m.instanceColor) continue;
       const a = m.instanceColor.array;
       for (let k = 0; k < m.count; k++) {
-        const w = 0.12 + 0.88 * ter.visAt(xz[k * 2], xz[k * 2 + 1]);
+        const w = 0.12 + 0.88 * ter.visAt(xz[k * 2] - ter.cx, xz[k * 2 + 1] + ter.cy);
         a[k * 3] = bs[k * 3] * w;
         a[k * 3 + 1] = bs[k * 3 + 1] * w;
         a[k * 3 + 2] = bs[k * 3 + 2] * w;
@@ -774,7 +777,7 @@ export function createKrajina(S, renderer) {
     const toa = (AU / dS) ** 2 * (1 - cov),
       sz = sE[2];
     /* pozorovatel ve výšce: na obrech nad oblaky, nad oblaky Venuše a Titanu výš */
-    const h0 = md === 'nad' ? (b.id === 'venus' ? 0.5 : 2) : hObs;
+    const h0 = md === 'nad' ? (b.id === 'venus' ? 0.5 : 2) : hObs + (q.hOff || 0) / 1000;
     /* atmosféra: propustnost pro Slunce, světlo oblohy (přepočet jen při pohybu Slunce o víc než 0,1°) */
     let Tsun = [1, 1, 1],
       Esky = [0, 0, 0],
@@ -866,8 +869,20 @@ export function createKrajina(S, renderer) {
     sunL.color.setRGB(Edir[0] * K, Edir[1] * K, Edir[2] * K);
     sunL.intensity = sunUp ? 1 : 0;
     sunL.castShadow = sunUp && sz > 0.005 && shadowsOn;
-    sunL.position.set(sE[0] * 800, sE[2] * 800, -sE[1] * 800);
-    sunL.target.position.set(0, 0, 0);
+    /* 2.3: stín jen kolem chodce; levné stíny – mapa stínů se překreslí jen při pohybu Slunce nebo chodce o kus dál */
+    {
+      const w = q.walk,
+        wx = w ? Math.round(w.x / 8) * 8 : 0,
+        wz = w ? Math.round(w.z / 8) * 8 : 0,
+        wy = w ? w.ground : 0;
+      sunL.position.set(wx + sE[0] * 800, wy + sE[2] * 800, wz - sE[1] * 800);
+      sunL.target.position.set(wx, wy, wz);
+      const sk = [wx, wz, Math.round(sE[0] * 400), Math.round(sE[1] * 400), Math.round(sE[2] * 400)].join(',');
+      if (sk !== shKey) {
+        shKey = sk;
+        renderer.shadowMap.needsUpdate = true;
+      }
+    }
     psL.color.setRGB(Epl[0] * K, Epl[1] * K, Epl[2] * K);
     psL.intensity = bestJ >= 0 ? 1 : 0;
     psL.position.set(pE[0] * 800, pE[2] * 800, -pE[1] * 800);
@@ -968,7 +983,7 @@ export function createKrajina(S, renderer) {
     U.uFogOn.value = atm || oc ? 1 : 0;
     const ex = atm ? groundExt(atm) : oc ? [3 / oc.vis, 3.6 / oc.vis, 4.4 / oc.vis] : [0, 0, 0];
     /* vyvýšený pozorovatel: opar řídne s výškou (výšková škála prachu a plynu); hustotu po cestě počítá shader */
-    U.uHobs.value = atm && hObs > 0.01 ? hObs : 0;
+    U.uHobs.value = atm && h0 > 0.01 ? h0 : 0;
     U.uHsc.value = atm ? atm.hM || atm.hR || 8 : 8;
     U.uExt.value.set(ex[0], ex[1], ex[2]);
     /* hvězdy: přes den je přesvítí obloha; bez vzduchu je přezáří osvětlená krajina (oko je oslněné) */
@@ -1014,6 +1029,33 @@ export function createKrajina(S, renderer) {
   }
   /* nad oblačným mořem obrů jako z letadla (1,5 km nad vršky kup), jinak výška očí */
   const eyeOf = (q) => (ter && ter.deck ? 1500 : B[q.i].R < 50 ? 1.2 : 1.7);
+  let groundMesh = null,
+    lastO = null,
+    shKey = null,
+    followT = 0;
+  /* 2.3 (chůze): mřížku krajiny postavit znovu kolem chodce (výšky jsou v soustavě místa přistání, takže navazuje);
+     kameny a stromy zůstávají */
+  function recenter(x, z) {
+    if (!ter || !lastO || !terScene) return;
+    const t0 = performance.now(),
+      t2 = buildTeren({ ...lastO, cx: x, cy: -z });
+    t2.ls = ter.ls;
+    const old = groundMesh,
+      g = new THREE.Mesh(t2.geo, old.material);
+    g.receiveShadow = true;
+    g.frustumCulled = false;
+    g.position.set(t2.cx, 0, -t2.cy);
+    terScene.remove(old);
+    old.geometry.dispose();
+    terScene.add(g);
+    groundMesh = g;
+    ter = t2;
+    hProf = ter.horizon(0, 0, eyeOf(S.surf));
+    visKey = null;
+    renderer.shadowMap.needsUpdate = true;
+    stat.recenterMs = Math.round(performance.now() - t0);
+    stat.recenters = (stat.recenters || 0) + 1;
+  }
   let hProf = null,
     rFar = 0,
     hObs = 0.002;
@@ -1023,13 +1065,18 @@ export function createKrajina(S, renderer) {
       r = enu([v.right.x, v.right.y, v.right.z], f, [0, 0, 0]),
       u = enu([v.up.x, v.up.y, v.up.z], f, [0, 0, 0]),
       fw = enu([v.fwd.x, v.fwd.y, v.fwd.z], f, [0, 0, 0]),
-      eye = eyeOf(q);
+      eye = eyeOf(q),
+      w = q.walk,
+      hOff = q.hOff || 0;
     const M = new THREE.Matrix4().makeBasis(
       new THREE.Vector3(r[0], r[2], -r[1]),
       new THREE.Vector3(u[0], u[2], -u[1]),
       new THREE.Vector3(-fw[0], -fw[2], fw[1])
     );
-    M.setPosition(0, eye, 0);
+    /* 2.3: chodec (poloha, výška očí, náklon v poryvu větru) a sestup z výšky */
+    if (w && w.roll) M.multiply(new THREE.Matrix4().makeRotationZ(w.roll));
+    if (w) M.setPosition(w.x, w.eye + eye + hOff, w.z);
+    else M.setPosition(0, eye + hOff, 0);
     terCam.matrix.copy(M);
     terCam.matrixWorldNeedsUpdate = true;
     terCam.fov = v.fov;
@@ -1046,6 +1093,8 @@ export function createKrajina(S, renderer) {
     if (!renderer.shadowMap.enabled) {
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.shadowMap.autoUpdate = false;
+      renderer.shadowMap.needsUpdate = true;
     }
     shadowsOn = S.quality >= 1 || !document.body.classList.contains('mob');
     build(q);
@@ -1087,6 +1136,7 @@ export function createKrajina(S, renderer) {
   S.bus.on('surf', (q) => {
     if (q) return;
     renderer.shadowMap.enabled = false;
+    renderer.shadowMap.autoUpdate = true;
     S.skyDim = 0;
   });
   function prep(i) {
@@ -1100,6 +1150,42 @@ export function createKrajina(S, renderer) {
     adjust,
     on: () => !!S.surf && !S.surf.quiet && S.krajinaOn !== false,
     state: () => ({ ...stat, key }),
+    /* 2.3 (chůze): dá se tu chodit? (oblačné moře obrů a pohled nad oblaky ne) */
+    walkable: () => !!(ter && !ter.deck && mode !== 'nad'),
+    /* výška země (m) v bodě (x východ, z jih) – stejná plocha, jakou kreslí mřížka; mimo ni přesný výpočet */
+    ground: (x, z) => {
+      if (!ter) return 0;
+      const y = ter.gridY(x - ter.cx, z + ter.cy);
+      return y < -1e8 ? ter.yAt(x, z) : y;
+    },
+    /* kameny v okolí bodu: [{ x, z, r, top }] */
+    obstacles: (x, z, rad) => {
+      const out = [];
+      for (const m of rockMeshes) {
+        const xz = m.userData.xz,
+          rt = m.userData.rt;
+        if (!xz || !rt) continue;
+        for (let k = 0; k < m.count; k++) {
+          const r = rt[k * 2];
+          if (r < 0.12) continue;
+          const dx = xz[k * 2] - x,
+            dz = xz[k * 2 + 1] - z,
+            lim = r + rad;
+          if (dx * dx + dz * dz < lim * lim) out.push({ x: xz[k * 2], z: xz[k * 2 + 1], r, top: rt[k * 2 + 1] });
+        }
+      }
+      return out;
+    },
+    /* chodec daleko od středu mřížky (> 60 m): postavit ji kolem něj */
+    follow: (x, z) => {
+      if (!ter) return;
+      const now = performance.now();
+      if (now - followT < 1500) return;
+      if (Math.hypot(x - ter.cx, -z - ter.cy) > 60) {
+        followT = now;
+        recenter(x, z);
+      }
+    },
     /* 2.3: výška obzoru krajiny v azimutu az (rad, od severu k východu) v radiánech, null bez krajiny */
     horizonEl: (az) => {
       if (!hProf || !ter) return null;

@@ -1,3 +1,4 @@
+import { createChuze } from './ui/chuze.js';
 import * as misto from './core/misto.js';
 import { createEngine } from './render/engine.js';
 import { createUI } from './ui/ui.js';
@@ -61,5 +62,7 @@ S.bus.on('belt', (b) => {
 });
 F.setKid(document.body.classList.contains('kid'));
 S.bus.on('mode', (k) => F.setKid(k));
+/* 2.3: chůze po povrchu po přistání */
+const chuze = createChuze(S, A, ui);
 S.start();
-window.S200 = { S, ui, sim, A, mob, zv, orient, uk, sk, F, obloha, povrch, misto };
+window.S200 = { S, ui, sim, A, mob, zv, orient, uk, sk, F, obloha, povrch, misto, chuze };

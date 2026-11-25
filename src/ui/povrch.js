@@ -199,6 +199,16 @@ export function createPovrch(S, A, ui) {
     /* přesně zadaný směr pohledu (referenční snímky, zkoušky): azimut od severu k východu a výška ve stupních */
     if (opt.az !== undefined) q.az = opt.az * DEG;
     if (opt.el !== undefined) q.el = opt.el * DEG;
+    /* 2.3: plynulé sklouznutí z výšky do pohledu z očí: kamera začne nad místem s pohledem dolů, klesá (logaritmicky)
+       a teprve na konci zvedne pohled k obzoru; přechod z oběžné dráhy zakryje krátký závoj (opar, nebo tma bez vzduchu) */
+    if (opt.landed && !opt.quiet) {
+      const h0 = Math.max(60, Math.min(25000, B[i].R * 1000 * 0.008));
+      q.desc = { t0: performance.now(), h0, el0: -84 * DEG, elT: q.el, fov0: 50, fovT: q.fov };
+      q.el = q.desc.el0;
+      q.fov = q.fovNow = 50;
+      q.hOff = h0;
+      veil(i);
+    }
     A.play('panel_open');
     draw();
     /* 2.2: po dosednutí uklidit okna (karta tělesa a minimapa se v pohledu z povrchu skryjí stylem body.surfon) */
@@ -214,6 +224,50 @@ export function createPovrch(S, A, ui) {
       );
     }
     S.wake();
+  }
+  /* 2.3: sestup do pohledu z očí (3,4 s) */
+  const VD = 3.4;
+  S.ticks.push(() => {
+    const q = S.surf;
+    if (!q || !q.desc) return;
+    const d = q.desc,
+      t = (performance.now() - d.t0) / 1000 / VD;
+    if (t >= 1) {
+      q.desc = null;
+      q.hOff = 0;
+      q.el = d.elT;
+      q.fov = d.fovT;
+      return S.wake();
+    }
+    const e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+      l0 = Math.log(d.h0 + 1.7),
+      l1 = Math.log(1.7),
+      u = Math.max(0, Math.min(1, (t - 0.42) / 0.58)),
+      ue = u * u * (3 - 2 * u);
+    q.hOff = Math.exp(l0 + (l1 - l0) * e) - 1.7;
+    q.el = d.el0 + (d.elT - d.el0) * ue;
+    q.fov = d.fov0 + (d.fovT - d.fov0) * ue;
+    S.wake();
+  });
+  const vl = document.createElement('div');
+  vl.id = 'veil';
+  document.body.appendChild(vl);
+  function veil(i) {
+    const id = B[i].id,
+      c =
+        AIR[id] && AIR[id].opaque
+          ? 'rgb(230,170,90)'
+          : /^(mars)$/.test(id)
+            ? 'rgb(200,150,110)'
+            : id === 'earth'
+              ? 'rgb(235,240,248)'
+              : /^(titan)$/.test(id)
+                ? 'rgb(210,150,70)'
+                : 'rgb(0,0,0)';
+    vl.style.background = c;
+    vl.classList.remove('on');
+    void vl.offsetWidth;
+    vl.classList.add('on');
   }
   /* 2.3: zajímavosti po přistání – panel pod lištou pohledu z povrchu, sám zmizí po 18 s (✕ dřív) */
   const fp = document.createElement('div');
