@@ -215,11 +215,12 @@ export function createPovrch(S, A, ui) {
     if (!opt.quiet) S.bus.emit('fly', i);
     if (!opt.quiet) setTimeout(() => facts(i), 700);
     if (!opt.quiet) {
-      const b = B[i];
+      const b = B[i],
+        walk = !touch() && !/^(jupiter|saturn|uranus|neptune)$/.test(b.id);
       ui.toast(
         kid()
-          ? `Stojíš na tělese ${b.cs}! Tahej a rozhlížej se. ${touch() ? 'Dvěma prsty' : 'Kolečkem'} si oblohu přiblížíš jako dalekohledem.`
-          : `Stojíš na povrchu (${b.cs}, ${place(q)}). Tahem se rozhlížíš, ${touch() ? 'dvěma prsty' : 'kolečkem'} měníš zorné pole jako dalekohledem. Zpátky do vesmíru: 🚀 Vzlétnout, Esc nebo ${touch() ? 'roztažením prstů' : 'kolečkem'} ven.`,
+          ? `Stojíš na tělese ${b.cs}! Tahej a rozhlížej se. ${touch() ? 'Dvěma prsty' : 'Kolečkem'} si oblohu přiblížíš jako dalekohledem.${walk ? ' Projít se můžeš klávesami W A S D.' : ''}`
+          : `Stojíš na povrchu (${b.cs}, ${place(q)}). Tahem se rozhlížíš, ${touch() ? 'dvěma prsty' : 'kolečkem'} měníš zorné pole jako dalekohledem.${walk ? ' Procházka: W A S D, Shift běh, mezerník skok.' : ''} Zpátky do vesmíru: 🚀 Vzlétnout, Esc nebo ${touch() ? 'roztažením prstů' : 'kolečkem'} ven.`,
         7000
       );
     }

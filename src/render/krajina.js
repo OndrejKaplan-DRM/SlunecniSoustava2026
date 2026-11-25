@@ -10,7 +10,7 @@ import { B, P, SUN, par, kids, AU, MOON, EARTH } from '../core/sim.js';
 import { AS } from '../core/asset.js';
 import { ATM, ATM_NAD, OVERCAST, OBRI, krajinaMista, KR } from '../data/krajiny.js';
 import { skyDir, sunAt, hemi, groundExt, ssa } from './atmo.js';
-import { buildTeren, buildRocks, buildTrees, seedOf, biome } from './teren.js';
+import { buildTeren, buildTerenGen, buildRocks, buildTrees, seedOf, biome, nearRocks, rockGeo } from './teren.js';
 import HI_IDS from '../data/hi.json';
 import DEM from '../data/dem.json';
 const DEG = Math.PI / 180,
@@ -469,6 +469,8 @@ export function createKrajina(S, renderer) {
   }
   function dispose() {
     hProf = null;
+    job = null;
+    nearR = null;
     if (!terScene) return;
     terScene.traverse((o) => {
       if (o.geometry) o.geometry.dispose();
@@ -728,7 +730,19 @@ export function createKrajina(S, renderer) {
     if (visKey && Math.hypot(sl[0] - visKey[0], sl[1] - visKey[1], sl[2] - visKey[2]) < 0.005) return;
     const t0 = performance.now();
     ter.computeVis(sl);
-    /* kameny ve stínu terénu ztmavnout (mapa stínů pokrývá jen okolí 110 m a terén sám stín nevrhá) */
+    shadeRocks();
+    visKey = sl;
+    visT = now;
+    stat.visMs = Math.round(performance.now() - t0);
+    {
+      const va = ter.geo.attributes.vis.array;
+      let sm = 0;
+      for (let k = 0; k < va.length; k++) sm += va[k];
+      stat.visMean = sm / va.length;
+    }
+  }
+  /* kameny ve stínu terénu ztmavnout (mapa stínů pokrývá jen okolí 110 m a terén sám stín nevrhá) */
+  function shadeRocks() {
     for (const m of rockMeshes) {
       const bs = m.userData.base,
         xz = m.userData.xz;
@@ -742,18 +756,14 @@ export function createKrajina(S, renderer) {
       }
       m.instanceColor.needsUpdate = true;
     }
-    visKey = sl;
-    visT = now;
-    stat.visMs = Math.round(performance.now() - t0);
-    {
-      const va = ter.geo.attributes.vis.array;
-      let sm = 0;
-      for (let k = 0; k < va.length; k++) sm += va[k];
-      stat.visMean = sm / va.length;
-    }
   }
   /* hlavní výpočet za snímek: režim, expozice, barvy světel, uniformy */
   function update(q, v) {
+    /* 2.3: přestavba mřížky kolem chodce běží po kouscích */
+    if (job) {
+      recenterStep(2);
+      S.wake();
+    }
     const b = B[q.i],
       f = S.surfSite(),
       C = S.camPos,
@@ -1031,14 +1041,51 @@ export function createKrajina(S, renderer) {
   const eyeOf = (q) => (ter && ter.deck ? 1500 : B[q.i].R < 50 ? 1.2 : 1.7);
   let groundMesh = null,
     lastO = null,
-    shKey = null,
-    followT = 0;
-  /* 2.3 (chůze): mřížku krajiny postavit znovu kolem chodce (výšky jsou v soustavě místa přistání, takže navazuje);
-     kameny a stromy zůstávají */
+    shKey = null;
+  /* 2.3 (chůze): mřížku krajiny postavit znovu kolem chodce (výšky jsou v soustavě místa přistání, takže navazuje).
+     Stavba běží po kouscích na pozadí (nejvýš ~2 ms za snímek: mřížka, stín terénu, profil obzoru) a stará mřížka se
+     vymění až za hotovou – žádné zaškobrtnutí; chodec mezitím jde po staré (sahá 150 km daleko). */
+  let job = null;
   function recenter(x, z) {
-    if (!ter || !lastO || !terScene) return;
-    const t0 = performance.now(),
-      t2 = buildTeren({ ...lastO, cx: x, cy: -z });
+    if (!ter || !lastO || !terScene || job) return;
+    const sl = visKey || [sE[0], sE[2], -sE[1]];
+    job = {
+      it: buildTerenGen({ ...lastO, cx: x, cy: -z, slice: true }),
+      t2: null,
+      vis: null,
+      sl,
+      hp: new Float32Array(360),
+      ha: 0,
+      t0: performance.now(),
+      work: 0,
+      n: 0,
+    };
+  }
+  function recenterStep(budget) {
+    const t0 = performance.now();
+    while (job && performance.now() - t0 < budget) {
+      job.n++;
+      if (!job.t2) {
+        const r = job.it.next();
+        if (r.done) {
+          job.t2 = r.value;
+          job.vis = job.t2.computeVisGen(job.sl, true);
+        }
+      } else if (job.vis) {
+        if (job.vis.next().done) job.vis = null;
+      } else if (job.ha < 360) {
+        job.t2.horizon(0, 0, eyeOf(S.surf), job.hp, job.ha, job.ha + 30);
+        job.ha += 30;
+      } else swapGround();
+    }
+    const dt = performance.now() - t0;
+    if (job) {
+      job.work += dt;
+      job.mx = Math.max(job.mx || 0, dt);
+    } else stat.recenterMax = Math.max(stat.recenterMax || 0, Math.round(dt * 10) / 10);
+  }
+  function swapGround() {
+    const t2 = job.t2;
     t2.ls = ter.ls;
     const old = groundMesh,
       g = new THREE.Mesh(t2.geo, old.material);
@@ -1050,11 +1097,78 @@ export function createKrajina(S, renderer) {
     terScene.add(g);
     groundMesh = g;
     ter = t2;
-    hProf = ter.horizon(0, 0, eyeOf(S.surf));
-    visKey = null;
+    hProf = job.hp;
+    visKey = job.sl;
+    visT = performance.now();
+    shadeRocks();
     renderer.shadowMap.needsUpdate = true;
-    stat.recenterMs = Math.round(performance.now() - t0);
+    stat.recenterMs = Math.round(job.work);
+    stat.recenterWall = Math.round(performance.now() - job.t0);
+    stat.recenterSlices = job.n;
+    stat.recenterMax = Math.round((job.mx || 0) * 10) / 10;
     stat.recenters = (stat.recenters || 0) + 1;
+    job = null;
+  }
+  /* kameny kolem chodce (InstancedMesh, přestaví se po 5 m chůze; buňky ukotvené v místě, takže blízké kameny zůstávají) */
+  let nearR = null;
+  const nm4 = new THREE.Matrix4(),
+    nq = new THREE.Quaternion(),
+    ne = new THREE.Euler(),
+    nsc = new THREE.Vector3(),
+    nps = new THREE.Vector3(),
+    ncc = new THREE.Color();
+  function nearUpdate(x, z) {
+    if (!ter || !lastO || !terScene || ter.deck || !lastO.T.kam) return;
+    if (nearR && Math.hypot(x - nearR.x, z - nearR.z) < 5) return;
+    const t0 = performance.now();
+    if (!nearR) {
+      const cap = 1400,
+        kind = lastO.T.typ === 'venuse' ? 'deska' : lastO.T.typ === 'titan' ? 'oblazek' : 'kamen',
+        mat = patch(new THREE.MeshLambertMaterial({ color: 0xffffff }), false),
+        im = new THREE.InstancedMesh(rockGeo(lastO.seed + 77, kind), mat, cap);
+      im.castShadow = im.receiveShadow = true;
+      im.frustumCulled = false;
+      im.userData.base = new Float32Array(cap * 3);
+      im.userData.xz = new Float32Array(cap * 2);
+      im.userData.rt = new Float32Array(cap * 2);
+      im.setColorAt(0, ncc.setRGB(1, 1, 1));
+      terScene.add(im);
+      rockMeshes.push(im);
+      nearR = { im, buf: { d: new Float32Array(cap * 8), cap }, x: 0, z: 0 };
+    }
+    nearR.x = x;
+    nearR.z = z;
+    const im = nearR.im,
+      n = nearRocks(lastO, ter, x, z, nearR.buf),
+      d = nearR.buf.d,
+      tint = lastO.rockCol || [0.3, 0.28, 0.26],
+      ud = im.userData;
+    for (let k = 0; k < n; k++) {
+      const o = k * 8,
+        sc = d[o + 3];
+      ne.set(0.2 * Math.sin(d[o + 6] * 3), d[o + 6], 0.2 * Math.cos(d[o + 6] * 5));
+      nq.setFromEuler(ne);
+      nsc.set(sc * d[o + 4], sc, sc * d[o + 5]);
+      nps.set(d[o], d[o + 1], d[o + 2]);
+      nm4.compose(nps, nq, nsc);
+      im.setMatrixAt(k, nm4);
+      const v = d[o + 7],
+        w = 0.12 + 0.88 * ter.visAt(d[o] - ter.cx, d[o + 2] + ter.cy);
+      ud.base[k * 3] = tint[0] * v;
+      ud.base[k * 3 + 1] = tint[1] * v;
+      ud.base[k * 3 + 2] = tint[2] * v;
+      im.setColorAt(k, ncc.setRGB(tint[0] * v * w, tint[1] * v * w, tint[2] * v * w));
+      ud.xz[k * 2] = d[o];
+      ud.xz[k * 2 + 1] = d[o + 2];
+      ud.rt[k * 2] = sc * Math.max(d[o + 4], d[o + 5]) * 0.85;
+      ud.rt[k * 2 + 1] = d[o + 1] + sc * 0.62;
+    }
+    im.count = n;
+    im.instanceMatrix.needsUpdate = true;
+    if (im.instanceColor) im.instanceColor.needsUpdate = true;
+    renderer.shadowMap.needsUpdate = true;
+    stat.nearN = n;
+    stat.nearMs = Math.round((performance.now() - t0) * 10) / 10;
   }
   let hProf = null,
     rFar = 0,
@@ -1176,15 +1290,15 @@ export function createKrajina(S, renderer) {
       }
       return out;
     },
-    /* chodec daleko od středu mřížky (> 60 m): postavit ji kolem něj */
+    /* chodec daleko od středu mřížky (> 35 m): postavit ji kolem něj (po kouscích); kameny kolem chodce po 5 m */
     follow: (x, z) => {
       if (!ter) return;
-      const now = performance.now();
-      if (now - followT < 1500) return;
-      if (Math.hypot(x - ter.cx, -z - ter.cy) > 60) {
-        followT = now;
-        recenter(x, z);
-      }
+      if (!job && Math.hypot(x - ter.cx, -z - ter.cy) > 35) recenter(x, z);
+      nearUpdate(x, z);
+    },
+    /* zkoušky: přestavbu dokončit hned */
+    finishRecenter: () => {
+      while (job) recenterStep(1e9);
     },
     /* 2.3: výška obzoru krajiny v azimutu az (rad, od severu k východu) v radiánech, null bez krajiny */
     horizonEl: (az) => {

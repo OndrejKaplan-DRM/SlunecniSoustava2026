@@ -114,7 +114,54 @@ const lin = (v) => Math.pow(v / 255, 2.2);
  * Stavba krajiny. o = { T (typ z krajiny.js), R (km), seed, map: {w, h, d (RGBA)} nebo null, lat, lon (°), col (barva tělesa 0–1), id, eye (m) }
  * Vrací { group, eyeY, minDist, info }.
  */
+/* 2.3 (chůze): stavba mřížky po kouscích – generátor vrací řízení po každých dvou prstencích (o.slice), takže nová mřížka
+   kolem chodce vzniká na pozadí během několika desítek snímků bez zaškobrtnutí; buildTeren ji postaví najednou */
 export function buildTeren(o) {
+  const it = buildTerenGen(o);
+  for (;;) {
+    const r = it.next();
+    if (r.done) return r.value;
+  }
+}
+/* index trojúhelníků závisí jen na velikosti mřížky – sdílený mezi stavbami */
+const IDX = new Map();
+function gridIndex(NA, NR) {
+  const k = NA + ',' + NR;
+  if (IDX.has(k)) return IDX.get(k);
+  const ix = new Uint32Array(NA * 3 + (NR - 1) * NA * 6);
+  let n = 0;
+  for (let a = 0; a < NA; a++) {
+    ix[n++] = 0;
+    ix[n++] = 1 + ((a + 1) % NA);
+    ix[n++] = 1 + a;
+  }
+  for (let k2 = 0; k2 < NR - 1; k2++)
+    for (let a = 0; a < NA; a++) {
+      const a1 = (a + 1) % NA,
+        i0 = 1 + k2 * NA + a,
+        i1 = 1 + k2 * NA + a1,
+        j0 = 1 + (k2 + 1) * NA + a,
+        j1 = 1 + (k2 + 1) * NA + a1;
+      if (k2 & 1) {
+        ix[n++] = i0;
+        ix[n++] = i1;
+        ix[n++] = j1;
+        ix[n++] = i0;
+        ix[n++] = j1;
+        ix[n++] = j0;
+      } else {
+        ix[n++] = i0;
+        ix[n++] = i1;
+        ix[n++] = j0;
+        ix[n++] = i1;
+        ix[n++] = j1;
+        ix[n++] = j0;
+      }
+    }
+  IDX.set(k, ix);
+  return ix;
+}
+export function* buildTerenGen(o) {
   const T = o.T,
     Rm = o.R * 1000,
     seed = o.seed,
@@ -365,29 +412,52 @@ export function buildTeren(o) {
     water0 = Math.max(4, h0 - (T.far || 0) * 0.15 + 12);
   }
   setV(0, cx, cy, 0);
-  for (let k = 0; k < NR; k++)
+  for (let k = 0; k < NR; k++) {
     for (let a = 0; a < NA; a++) {
       const th = ((a + (k & 1) * 0.5) / NA) * TAU,
         r = rr[k];
       setV(1 + k * NA + a, cx + r * Math.sin(th), cy + r * Math.cos(th), r);
     }
-  const idx = [];
-  for (let a = 0; a < NA; a++) idx.push(0, 1 + ((a + 1) % NA), 1 + a);
-  for (let k = 0; k < NR - 1; k++)
-    for (let a = 0; a < NA; a++) {
-      const a1 = (a + 1) % NA,
-        i0 = 1 + k * NA + a,
-        i1 = 1 + k * NA + a1,
-        j0 = 1 + (k + 1) * NA + a,
-        j1 = 1 + (k + 1) * NA + a1;
-      if (k & 1) idx.push(i0, i1, j1, i0, j1, j0);
-      else idx.push(i0, i1, j0, i1, j1, j0);
-    }
+    if (o.slice) yield 0;
+  }
+  const ix = gridIndex(NA, NR);
   const geo = new THREE.BufferGeometry();
   geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
   geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
-  geo.setIndex(idx);
-  geo.computeVertexNormals();
+  geo.setIndex(new THREE.BufferAttribute(ix, 1));
+  /* normály po kouscích (stejně jako three computeVertexNormals: součet normál trojúhelníků ve vrcholu) */
+  const nrA = new Float32Array(nV * 3);
+  for (let t = 0; t < ix.length; t += 3) {
+    const a = ix[t] * 3,
+      b = ix[t + 1] * 3,
+      c = ix[t + 2] * 3,
+      cbx = pos[c] - pos[b],
+      cby = pos[c + 1] - pos[b + 1],
+      cbz = pos[c + 2] - pos[b + 2],
+      abx = pos[a] - pos[b],
+      aby = pos[a + 1] - pos[b + 1],
+      abz = pos[a + 2] - pos[b + 2],
+      nx = cby * abz - cbz * aby,
+      ny = cbz * abx - cbx * abz,
+      nz = cbx * aby - cby * abx;
+    nrA[a] += nx;
+    nrA[a + 1] += ny;
+    nrA[a + 2] += nz;
+    nrA[b] += nx;
+    nrA[b + 1] += ny;
+    nrA[b + 2] += nz;
+    nrA[c] += nx;
+    nrA[c + 1] += ny;
+    nrA[c + 2] += nz;
+    if (o.slice && t % 24000 === 0 && t) yield 0;
+  }
+  for (let v = 0; v < nV * 3; v += 3) {
+    const l = Math.hypot(nrA[v], nrA[v + 1], nrA[v + 2]) || 1;
+    nrA[v] /= l;
+    nrA[v + 1] /= l;
+    nrA[v + 2] /= l;
+  }
+  geo.setAttribute('normal', new THREE.BufferAttribute(nrA, 3));
   geo.computeBoundingSphere();
   if (!deck && !earth) {
     /* 2.3: strmé svahy tmavší (holá skála, méně prachu) – hloubka krajiny je pak vidět i při rovnoměrném světle
@@ -437,7 +507,8 @@ export function buildTeren(o) {
     return visA[1 + k * NA + (((a % NA) + NA) % NA)];
   };
   /* s = směr ke Slunci v soustavě krajiny (x východ, y nahoru, z jih), jednotkový */
-  const computeVis = (s) => {
+  /* po kouscích (slice): vrací řízení po každých 1 500 vrcholech */
+  const computeVisGen = function* (s, slice) {
     const sh = Math.hypot(s[0], s[2]);
     if (s[1] <= -0.05 || sh < 1e-6) {
       visA.fill(s[1] > 0 ? 1 : 0);
@@ -464,8 +535,12 @@ export function buildTeren(o) {
       /* měkký okraj stínu (polostín přes ~1°) */
       const u = Math.max(0, Math.min(1, (m + 0.004) / 0.02));
       visA[v] = u * u * (3 - 2 * u);
+      if (slice && v % 400 === 399) yield 0;
     }
     geo.attributes.vis.needsUpdate = true;
+  };
+  const computeVis = (s) => {
+    for (const _ of computeVisGen(s, false));
   };
   const group = new THREE.Group();
   /* výška terénu pod bodem (x, z) ve stejné soustavě jako mřížka – pro kameny a stromy */
@@ -488,9 +563,9 @@ export function buildTeren(o) {
   };
   /* 2.3: profil obzoru z bodu (px, pz) ve výšce oka eye: pro každý stupeň azimutu (od severu k východu) největší výška
      terénu nad vodorovnou rovinou v radiánech – hvězdy, jména a značky pod ním jsou za terénem a nekreslí se */
-  const horizon = (px, pz, eye, out = new Float32Array(360)) => {
+  const horizon = (px, pz, eye, out = new Float32Array(360), a0 = 0, a1 = 360) => {
     const y0 = gridY(px, pz) + eye;
-    for (let a = 0; a < 360; a++) {
+    for (let a = a0; a < a1; a++) {
       const th = ((a + 0.5) * Math.PI) / 180,
         sx = Math.sin(th),
         sz = -Math.cos(th);
@@ -516,6 +591,7 @@ export function buildTeren(o) {
     deck,
     water0,
     computeVis,
+    computeVisGen,
     visAt,
     horizon,
     cx,
@@ -639,6 +715,57 @@ export function buildRocks(o, ter) {
   }
   return meshes;
 }
+/* 2.3 (chůze): kameny v okolí chodce – buňky 3 × 3 m ukotvené v soustavě místa (stejná buňka = stejný kámen, i po přestavbě),
+   do 40 m od chodce; na okraji se kámen zmenší do ztracena (nic neproblikne); u místa přistání řidší, tam jsou kameny
+   z buildRocks. Vrací pole poloh a vlastností pro InstancedMesh (plní ho krajina). */
+export const NEAR_R = 40;
+export function nearRocks(o, ter, wx, wz, out) {
+  const T = o.T,
+    seed = o.seed + 901,
+    C = 3,
+    dens = Math.min(1.6, T.kam || 0) * 0.55,
+    s1 = 0.35 * (T.kamMax || 0.5) + 0.04,
+    s0 = 0.015;
+  let n = 0;
+  if (!T.kam || ter.deck) return 0;
+  const i0 = Math.floor((wx - NEAR_R) / C),
+    i1 = Math.floor((wx + NEAR_R) / C),
+    j0 = Math.floor((wz - NEAR_R) / C),
+    j1 = Math.floor((wz + NEAR_R) / C);
+  for (let i = i0; i <= i1; i++)
+    for (let j = j0; j <= j1; j++)
+      for (let m = 0; m < 2; m++) {
+        if (n >= out.cap) return n;
+        const hx = hash2(i * 2 + m, j, seed),
+          hz = hash2(i * 2 + m, j, seed + 1),
+          x = (i + hx) * C,
+          z = (j + hz) * C,
+          d = Math.hypot(x - wx, z - wz);
+        if (d > NEAR_R) continue;
+        const dl = Math.hypot(x, z),
+          pl = dens * (0.25 + 0.75 * Math.min(1, Math.max(0, (dl - 25) / 35)));
+        if (hash2(i * 2 + m, j, seed + 2) > pl) continue;
+        if (fbm(x / 40, z / 40, o.seed + 57, 2) < -0.25 + 0.2 * hash2(i, j, seed + 3)) continue;
+        if (ter.kindAt(x - ter.cx, z + ter.cy) === 1) continue;
+        const fade = Math.min(1, (NEAR_R - d) / 10),
+          s = s0 * Math.pow(s1 / s0, Math.pow(hash2(i * 2 + m, j, seed + 4), 2.4)) * fade,
+          y = ter.yAt(x, z),
+          ax = 0.7 + 0.6 * hash2(i, j * 2 + m, seed + 5),
+          az = 0.7 + 0.6 * hash2(i, j * 2 + m, seed + 6),
+          k = n * 8;
+        out.d[k] = x;
+        out.d[k + 1] = y + s * 0.12;
+        out.d[k + 2] = z;
+        out.d[k + 3] = s;
+        out.d[k + 4] = ax;
+        out.d[k + 5] = az;
+        out.d[k + 6] = hash2(i, j, seed + 7) * TAU;
+        out.d[k + 7] = 0.7 + 0.6 * hash2(i, j, seed + 8);
+        n++;
+      }
+  return n;
+}
+export { rockGeo };
 /* stromy: jen na Zemi a jen tam, kde mapa ukazuje les nebo trávu (nikdy na jiném tělese) */
 export function buildTrees(o, ter) {
   if (o.id !== 'earth') return [];

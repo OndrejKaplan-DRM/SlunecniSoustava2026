@@ -99,8 +99,14 @@ export function createChuze(S, A, ui) {
   });
 
   /* --- klávesy: zachytit dřív než zbytek rozhraní (šipky tam otáčejí pohledem, mezerník pouští čas) --- */
+  let lockOffT = 0;
   const onKey = (down) => (e) => {
     if (!can() || e.target.closest('input, select, textarea')) return;
+    /* Esc se zamčenou myší jen uvolní myš (nevzlétat) */
+    if (e.code === 'Escape' && (locked() || performance.now() - lockOffT < 400)) {
+      e.stopImmediatePropagation();
+      return;
+    }
     const a = KEYS[e.code];
     if (!a) return;
     if (a === 'run') {
@@ -110,6 +116,7 @@ export function createChuze(S, A, ui) {
     e.preventDefault();
     e.stopImmediatePropagation();
     keys[a] = down;
+    if (down && W) W.moved = true;
     if (down && !hint) showHint();
   };
   window.addEventListener('keydown', onKey(true), true);
@@ -125,7 +132,8 @@ export function createChuze(S, A, ui) {
     (e) => {
       if (!can() || touch()) return;
       if (!locked()) {
-        if (e.button === 0 && W && W.t > 0.5) {
+        /* myš se zamkne až po prvním kroku (do té doby klik a tah fungují jako dřív: rozhlížení, výběr na obloze) */
+        if (e.button === 0 && W && W.moved && W.t > 0.5) {
           try {
             const r = cv.requestPointerLock();
             if (r && r.catch) r.catch(() => {});
@@ -158,7 +166,11 @@ export function createChuze(S, A, ui) {
     q.el = Math.max(-1.45, Math.min(1.5, q.el - e.movementY * k));
     S.wake();
   });
+  cv.addEventListener('contextmenu', (e) => {
+    if (locked() || (can() && W && W.moved)) e.preventDefault();
+  });
   document.addEventListener('pointerlockchange', () => {
+    if (!locked()) lockOffT = performance.now();
     document.body.classList.toggle('fps', locked());
     if (locked() && !hint) showHint();
   });
@@ -169,7 +181,7 @@ export function createChuze(S, A, ui) {
     ui.toast(
       kid()
         ? `🚶 Jdeme na procházku! ${t ? 'Táhni prstem a rozhlížej se.' : 'Klávesy W A S D nebo šipky, myš na rozhlížení, Shift = běh, mezerník = skok.'}`
-        : `🚶 Chůze: W A S D / šipky, myš (klik do obrazu ji zamkne), Shift běh, mezerník nebo pravé tlačítko skok, levé tlačítko podržet = vzlet, Esc uvolní myš.`,
+        : `🚶 Chůze: W A S D / šipky, Shift běh, mezerník skok. Klik do obrazu zamkne myš (rozhlížení jako ve hře): pravé tlačítko skok, levé podržet = vzlet, Esc myš uvolní.`,
       7000
     );
   }
