@@ -68,7 +68,10 @@ await page.waitForTimeout(800);
 const row = await page.evaluate(() => {
   const b = document.querySelector('#card [data-a="surf"]'),
     r = b && b.closest('.row');
-  return { ok: !!(r && r.querySelector('[data-a="close"]') && r.querySelector('[data-a="far"]')), t: b && b.textContent.trim() };
+  return {
+    ok: !!(r && r.querySelector('[data-a="close"]') && r.querySelector('[data-a="far"]')),
+    t: b && b.textContent.trim(),
+  };
 });
 ok(row.ok && /🛬 Přistát/.test(row.t), `řada karty: Přiblížit, Oddálit, „${row.t}“`);
 
@@ -94,7 +97,10 @@ const dbl = await page.evaluate(async () => {
   await wait(100);
   return { near, ll, r: !!r, ph: (povrch.pickState() || {}).phase };
 });
-ok(dbl.near && dbl.ll && dbl.r && dbl.ph === 'sestup', `blízko (${dbl.near}), místo ${dbl.ll && dbl.ll.map((v) => v.toFixed(1))}, sestup: ${dbl.ph}`);
+ok(
+  dbl.near && dbl.ll && dbl.r && dbl.ph === 'sestup',
+  `blízko (${dbl.near}), místo ${dbl.ll && dbl.ll.map((v) => v.toFixed(1))}, sestup: ${dbl.ph}`
+);
 await page.waitForFunction(() => !!window.S200.S.surf, null, { timeout: 30000 });
 const ds = await page.evaluate(() => {
   const q = window.S200.S.surf;
@@ -116,7 +122,11 @@ console.log('== zajímavosti po přistání');
 await page.waitForFunction(() => document.querySelector('#landfacts.on'), null, { timeout: 30000 }).catch(() => {});
 const lf = await page.evaluate(() => {
   const p = document.querySelector('#landfacts');
-  return { on: p && p.classList.contains('on'), li: p ? p.querySelectorAll('li, .f').length : 0, t: p ? p.textContent : '' };
+  return {
+    on: p && p.classList.contains('on'),
+    li: p ? p.querySelectorAll('li, .f').length : 0,
+    t: p ? p.textContent : '',
+  };
 });
 ok(lf.on && /Země/.test(lf.t) && /g/.test(lf.t), `panel „co je tu jinak“ (${lf.t.slice(0, 90).replace(/\s+/g, ' ')}…)`);
 
@@ -125,14 +135,28 @@ await page.waitForFunction(() => window.S200.S.krajina.walkable(), null, { timeo
 await page.evaluate(() => {
   window.S200.chuze.key('KeyW', true);
 });
-await page.waitForFunction(() => (window.S200.chuze.state() || {}).x > 0.6 || (window.S200.chuze.state() || {}).z < -0.6 || Math.hypot((window.S200.chuze.state() || {}).x || 0, (window.S200.chuze.state() || {}).z || 0) > 0.6, null, { timeout: 60000 }).catch(() => {});
+await page
+  .waitForFunction(
+    () =>
+      (window.S200.chuze.state() || {}).x > 0.6 ||
+      (window.S200.chuze.state() || {}).z < -0.6 ||
+      Math.hypot((window.S200.chuze.state() || {}).x || 0, (window.S200.chuze.state() || {}).z || 0) > 0.6,
+    null,
+    { timeout: 60000 }
+  )
+  .catch(() => {});
 const w1 = await page.evaluate(() => {
   window.S200.chuze.key('KeyW', false);
   return window.S200.chuze.state();
 });
-ok(w1 && Math.hypot(w1.x, w1.z) > 0.6 && w1.grounded, `W: chodec ušel ${w1 && Math.hypot(w1.x, w1.z).toFixed(2)} m po zemi`);
+ok(
+  w1 && Math.hypot(w1.x, w1.z) > 0.6 && w1.grounded,
+  `W: chodec ušel ${w1 && Math.hypot(w1.x, w1.z).toFixed(2)} m po zemi`
+);
 await page.evaluate(() => window.S200.chuze.key('Space', true));
-await page.waitForFunction(() => (window.S200.chuze.state() || {}).grounded === false, null, { timeout: 20000 }).catch(() => {});
+await page
+  .waitForFunction(() => (window.S200.chuze.state() || {}).grounded === false, null, { timeout: 20000 })
+  .catch(() => {});
 await page.evaluate(() => window.S200.chuze.key('Space', false));
 let top = -1e9;
 for (let k = 0; k < 20; k++) {
@@ -171,13 +195,22 @@ await page.evaluate(() => {
   const { sim, povrch } = window.S200;
   povrch.enter(sim.idx.get('bennu'), 0, 0, { landed: true, az: 90, el: -4 });
 });
-await page.waitForFunction(() => window.S200.S.surf && !window.S200.S.surf.desc && window.S200.S.krajina.walkable(), null, {
-  timeout: 60000,
-});
+await page.waitForFunction(
+  () => window.S200.S.surf && !window.S200.S.surf.desc && window.S200.S.krajina.walkable(),
+  null,
+  {
+    timeout: 60000,
+  }
+);
 await page.evaluate(() => window.S200.chuze.key('Space', true));
 await page.waitForTimeout(600);
 await page.evaluate(() => window.S200.chuze.key('Space', false));
-const esc = await page.waitForFunction(() => !window.S200.S.surf, null, { timeout: 30000 }).then(() => true, () => false);
+const esc = await page
+  .waitForFunction(() => !window.S200.S.surf, null, { timeout: 30000 })
+  .then(
+    () => true,
+    () => false
+  );
 ok(esc, 'Bennu: po skoku chodec odletí do vesmíru (úniková rychlost asi 0,2 m/s)');
 
 console.log('== oblačná vrstva obrů v pohybu');
@@ -220,7 +253,11 @@ const rk = await page.evaluate(() => {
   const b = document.querySelector('#card [data-a="ring"], #card .tile[data-a="ring"]');
   if (b) b.click();
   const p = document.querySelector('#ringinfo');
-  return { btn: !!b, on: !!(p && getComputedStyle(p).display !== 'none' && p.textContent.length > 100), t: p ? p.textContent.slice(0, 80) : '' };
+  return {
+    btn: !!b,
+    on: !!(p && getComputedStyle(p).display !== 'none' && p.textContent.length > 100),
+    t: p ? p.textContent.slice(0, 80) : '',
+  };
 });
 ok(rk.btn && rk.on, `karta Saturnu: „💍 co to je?“ otevře vysvětlení (${rk.t.replace(/\s+/g, ' ')}…)`);
 console.log(`  (popisek prstenců na plátně: ${ring.h ? 'ano' : 'nezjištěno přes API'})`);

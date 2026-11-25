@@ -2,6 +2,53 @@
 
 Aktualizuje se na konci každého kroku a před koncem sešny. Starší historie verzí: `docs/ZMENY.md`. Důvody rozhodnutí: `DECISIONS.md`.
 
+## Iterace 27 → verze 2.3 (větev `iterace-27` z `iterace-26`, 25. 11. 2026 v noci)
+Zadání Ondřeje (25. 11. 02:24 a 02:31): 1/ úvod pod sebou („Spustit“, „Celá obrazovka“, Ukázka ovládání); 2/ Přiblížit / Oddálit /
+Přistát v jedné řadě, dvojklik daleko = přiblížit, blízko = přistát v místě dvojkliku, křížek = přesné místo kliknutím, kolečkem
+k povrchu = přistání, kolečkem ven = odlet; po přistání zajímavosti (přednost má to nejzajímavější, v záloze teplota, tlak,
+složení, tíže, úniková rychlost); Olympus Mons s vyvýšeným obzorem; Velká rudá skvrna; hvězdy a souhvězdí nesmí prosvítat
+terénem; Venuše – při přistání vidět kus povrchu; 3/ chůze po povrchu jako Quake 3 (tíže, rychlost chůze, kolize s kameny,
+poryvy, klouzání, vrávorání, otřesy, vibrace), levné stíny, plynulé „sklouznutí“ do pohledu z očí, cíl 120 snímků/s na Lenovu
+T460; 4/ nad pólem se dráhy na okamžik spojí v celé elipsy a zazáří; 5/ „věnečky“ = prstence: vysvětlit (dětem #ELI10), karta,
+Superkarta, aby šly zacílit; 6/ oblaka obrů v pohybu (rychlost a směr větru, turbulence, barva, odlesk, vlnění) levným trikem.
+
+### Hotovo
+- [x] 1 – úvod v jednom sloupci: 🚀 Spustit (Enter), ▶ Ukázka ovládání (U), ⛶ Celá obrazovka; text bez lámání do „schodů“.
+- [x] 2 – řada karty Přiblížit · Oddálit · 🛬 Přistát (stavy 🎯 Letím… / ✅ Přistát sem / 🛬 Přistávám… / 🚀 Vzlétnout);
+      dvojklik: daleko přiblíží, blízko (výška ≤ 1,25 R) přistane v místě dvojkliku; křížek sleduje myš, klik = přistání přesně
+      tam (dřív jen střed); kolečkem k povrchu = přistání pod kurzorem (dřív nejdřív křížek); kolečko ven = vzlet (beze změny).
+- [x] 2 – panel „co je tu jinak“ po přistání (`data/zajimavosti.js`): tři nejzajímavější věci podle místa a okamžiku (není
+      povrch, modrý západ na Marsu, Slunce jen jako hvězda, planeta na obloze, Země z Měsíce, měsíce nad obzorem, polární
+      záře, Olympus…) a řádek teplota · tlak · plyny · tíže · únik; větry z NSSDCA. Zmizí po 18 s.
+- [x] 2 – Olympus Mons: místo „vrchol (21,2 km)“ a „okraj kaldery“, terén až k obzoru (do 700 km), opar podle výšky, obloha
+      z výšky místa, tmavší strmé svahy; Velká rudá skvrna jako místo na Jupiteru (−22°, −94°).
+- [x] 2 – hvězdy, jména a souhvězdí za terénem se nekreslí (`S.under`, profil obzoru `horizonEl`); Venuše: pohled po přistání
+      2° nad obzor (vidět kus povrchu).
+- [x] 3 – chůze (`ui/chuze.js`): W A S D / šipky, Shift běh, mezerník skok; myš se zamkne klikem až po prvním kroku (pravé
+      tlačítko skok, levé podržet 0,7 s = vzlet, Esc myš uvolní). Tíže tělesa (šouravý krok, klokaní poskoky), led (setrvačnost),
+      svah nad 35° (led 18°) klouže, kameny jako válce (na nízký se vystoupí), poryvy podle hustoty vzduchu s náklonem, otřesy
+      na Io, chvění při běhu, houpání hlavy, dosed po skoku; skok rychlejší než úniková rychlost = odlet (Bennu).
+- [x] 3 – terén kolem chodce: po 35 m se mřížka postaví znovu kolem něj po kouscích (≤ 2 ms za snímek, celkem ~0,27 s práce
+      v sandboxu), kameny kolem chodce v buňkách ukotvených v místě (do 40 m, okraj se zmenší do ztracena); levné stíny
+      (mapa stínů jen při pohybu Slunce nebo chodce o 8 m).
+- [x] 3 – sestup 3,4 s: kamera začne nad místem (0,8 % poloměru, nejvýš 25 km) s pohledem dolů, klesá a na konci zvedne pohled
+      k obzoru; přechod z oběžné dráhy zakryje krátký závoj v barvě vzduchu (bez vzduchu tma).
+- [x] 4 – nad pólem se dráhy na okamžik spojí v celé elipsy a zazáří (`uFull`), pak zase hlava a mizející ocas.
+- [x] 5 – prstence (`data/prstence.js`): popisek „💍 prstence“ u prstenců na plátně (klik = vysvětlení), řádek v kartě s „co to je?“,
+      dětská dlaždice, Superkarta; řídké prachové prstence nezakrývají hvězdy.
+- [x] 6 – oblaka obrů v pohybu (shader terénu): kupy nesené větrem podle šířky, dvě fáze prolínání, zkroucení a drobné víry,
+      vlnění výšek, reliéf do stínování, bělejší vršky, dopředný rozptyl proti Slunci.
+- [x] Zkouška `t_23` (15 kontrol), `t_krajina` podle nového chování kolečka.
+
+### Neuděláno / zbývá
+- [ ] 120 snímků/s na Lenovu T460 v sandboxu ověřit nejde (softwarové kreslení 3–18 snímků/s). Změřeno: přestavba terénu ≤ 2 ms
+      za snímek (nejdelší kousek ~10 ms před zjemněním, po zjemnění neměřeno na zařízení), kameny kolem chodce 0,5 ms.
+- [ ] Chůze na telefonu a tabletu (jen rozhlížení tahem) – neuděláno, nebylo výslovně v zadání.
+- [ ] Stromy na Zemi jen kolem místa přistání (chodec od nich odejde).
+- [ ] „Feel“ (síla poryvů, houpání, otřesy) a výška skoku – doladit v poslední iteraci (tabulka `FEEL` v `ui/chuze.js`).
+- [ ] Zvuky kroku a skoku nejsou (volání `A.play('step')` se tiše ignoruje); zvuk v sandboxu neslyším.
+- [ ] Směr větrů podle šířky (pásy) a vítr na Titanu – z paměti, neověřeno.
+
 ## Verze 2.2b (stejná větev `iterace-26`, 24. 11. 2026 pozdě večer)
 Připomínky Ondřeje k 2.2 (22:36): „docela dobré, jen doladit technické detaily“.
 1. Ikona přistát / vzlétnout po přechodu kolečkem pořád nabízí „Vzlétnout“ – opravit, kolečko nezablokovat, ale dát mu smysl (zoom).

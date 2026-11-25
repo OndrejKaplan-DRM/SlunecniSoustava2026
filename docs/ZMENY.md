@@ -26,6 +26,20 @@ je `iterace-24`. Soubor na vyzkoušení: `node tools/build/build_offline.mjs <v�
 Do verze 1.8a na sebe větve navazují v řadě. Verze 1.8b, 1.8m a 1.9 vznikly souběžně ve třech sešnách z `iterace-19`;
 `iterace-22` je slučuje a přidává pohled z povrchu, takže obsahuje vše předchozí.
 
+## 2.3 – zkušební: chůze po povrchu, zajímavosti po přistání, prstence, oblaka obrů v pohybu (25. 11. 2026)
+Větev `iterace-27` (z `iterace-26`).
+- Úvod v jednom sloupci: 🚀 Spustit, ▶ Ukázka ovládání, ⛶ Celá obrazovka.
+- Karta: Přiblížit · Oddálit · 🛬 Přistát v jedné řadě. Dvojklik daleko přiblíží, blízko přistane v místě dvojkliku; v zaměřování
+  klik na těleso přistane přesně tam; kolečkem k povrchu přistání pod kurzorem.
+- Sestup z výšky (3,4 s) s pohledem dolů a závojem při přechodu; panel „co je tu jinak“ po přistání.
+- Chůze: W A S D / šipky, Shift, mezerník, myš jako ve hře; tíže, led, svahy, kameny, vítr, otřesy, odlet skokem z malých těles;
+  terén a kameny se staví kolem chodce po kouscích.
+- Olympus Mons (vrchol a kaldera) s dalekým obzorem a oparem podle výšky; Velká rudá skvrna.
+- Hvězdy a jména za terénem se nekreslí.
+- Nad pólem se dráhy spojí v celé elipsy a zazáří.
+- Prstence: popisek na plátně, vysvětlení pro děti i dospělé, karta a Superkarta.
+- Oblaka obrů v pohybu podle větrů NSSDCA.
+
 ## 2.2b – zkušební: tlačítka přistání a vzletu, noční vidění, plošší oblaka obrů (24. 11. 2026)
 Stejná větev `iterace-26`. Připomínky Ondřeje k 2.2 (22:36):
 

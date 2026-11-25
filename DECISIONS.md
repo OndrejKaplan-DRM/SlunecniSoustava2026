@@ -45,6 +45,38 @@ Kdo rozhodl: **O** = Ondřej, **K** = Kristína (AI) s Ondřejovým souhlasem ne
 - **13. 11. 2026 (K)** – Aplikace ukazuje světový čas (UT), dráhy běží v čase efemerid (ΔT podle Espenaka a Meeuse).
 
 ## Rozhraní a zobrazení
+- **25. 11. 2026 (O → K)** – Verze 2.3: dvojklik na těleso **daleko = přiblížit, blízko (výška ≤ 1,25 R, bez letu) = přistát** v místě
+  dvojkliku; v zaměřování přistane klik na těleso přesně tam (křížek sleduje myš); **kolečkem k povrchu rovnou přistání pod kurzorem**
+  (2.2b: nejdřív křížek, pak přistání – Ondřej chtěl „co nejintuitivnější“). Hranice „blízko“ (1,25 R) je můj výklad (K).
+- **25. 11. 2026 (O → K)** – **Chůze**: ovládání podle Ondřeje (W A S D, šipky, myš, Shift běh, mezerník skok). Myš: **pravé tlačítko =
+  skok** (stejně jako Oliverova Planetka 8), **levé podržet 0,7 s = vzlet**, Esc myš uvolní (nevzlétá). Myš se zamyká klikem **až po prvním
+  kroku** – do té doby funguje klik a tah na povrchu jako dřív (rozhlížení, výběr na obloze). Volba tlačítek je můj výklad (K); Ondřej
+  napsal, že ji ještě odladíme.
+- **25. 11. 2026 (K)** – Pocit chůze (`FEEL` v `ui/chuze.js`): chůze 1,45·√(g/g⊕) m/s (0,7–1,45), běh 4,5 m/s, při g < 0,4 g⊕ poskoky;
+  skok 2,8 m/s (Měsíc ~2,4 m, Bennu odlet); led = malé tření; svah nad 35° (led 18°) klouže; poryvy podle hustoty vzduchu (Země 1,
+  Venuše 0,55, Mars 0,45, Titan 0,35) s náklonem pohledu; otřesy jen na Io. Čísla jsou odhad k doladění v poslední iteraci (O).
+- **25. 11. 2026 (K)** – Terén kolem chodce se po 35 m postaví znovu **po kouscích** (generátor `buildTerenGen`, ≤ 2 ms za snímek; stará
+  mřížka se vymění až hotová). Výšky jsou v soustavě místa přistání → nová mřížka navazuje (rozdíl < 1 cm až 2 cm). Důvod: najednou
+  to v sandboxu trvalo 0,25 s + 0,2 s stín = viditelné zaškobrtnutí. Kameny kolem chodce v buňkách 3 × 3 m ukotvených v místě
+  (stejná buňka = stejný kámen) – nic nepřeskakuje; okraj 30–40 m se zmenšuje do ztracena.
+- **25. 11. 2026 (K)** – **Levné stíny**: mapa stínů se nepřekresluje každý snímek, jen když se Slunce posune nebo chodec ujde 8 m.
+  Mihotavý stín (každý snímek) zůstává v záloze, jak chtěl Ondřej.
+- **25. 11. 2026 (O → K)** – Sestup „sklouznutím“: po přiletu nad místo se přepne na pohled z povrchu ve výšce 0,8 % poloměru
+  (60 m až 25 km) s pohledem 84° dolů, výška klesá logaritmicky 3,4 s a pohled se k obzoru zvedne až v poslední polovině; přepnutí
+  zakryje závoj (opar podle vzduchu, bez vzduchu tma). Délka a výšky jsou můj výklad (K).
+- **25. 11. 2026 (O → K)** – **Zajímavosti po přistání** (`data/zajimavosti.js`): přednost mají jevy (žádný povrch, zatažená obloha,
+  modrý západ, Slunce jen jako hvězda nebo naopak velké, planeta nad hlavou, Země z Měsíce, měsíce nad obzorem, polární záře,
+  Olympus, unikneš skokem…), v záloze teplota, tlak, plyny, tíže a úniková rychlost. Pořadí priorit je můj výklad (K).
+- **25. 11. 2026 (O → K)** – „Věnečky“ jsou prstence (ne polární záře). Popisek „💍 prstence“ na plátně u ansy (mimo kartu), klik =
+  vysvětlení; řádek v kartě, dětská dlaždice, Superkarta. Řídké prachové prstence (Jupiter 0,12, Neptun 0,25, Uran 0,5) zakrývají hvězdy
+  jen podle své hustoty (předem vynásobená alfa).
+- **25. 11. 2026 (O → K)** – **Oblaka obrů v pohybu** levným trikem v shaderu terénu: šumová textura 256² (buňky + šum) posouvaná větrem
+  ve dvou střídajících se fázích (flow map), zkroucení, drobné víry rychleji a se střihem, vlnění výšek ve vrcholech, reliéf jen do
+  stínování. Čas = skutečný čas (ne čas simulace): mraky plují rychlostí větru i při zastaveném čase a při zrychlení neletí (K).
+  Rychlosti NSSDCA, směr podle šířky z paměti (neověřeno).
+- **25. 11. 2026 (O → K)** – Olympus Mons: z vyvýšeného místa (výška nad okolím z MOLA > 2 km) sahá terén až k obzoru (do 700 km), opar
+  houstne s hloubkou pod pozorovatelem a obloha se počítá z výšky místa. Vrchol hory je ve skutečnosti skoro rovný (svahy ~5°) – „nudnou
+  rovinu“ nelze vyloučit úplně; proto i místo „okraj kaldery“ s pohledem do kaldery (K).
 - **24. 11. 2026 (O → K)** – Kolečko myši se u povrchu neblokuje, ale dostalo smysl: na nejbližší vzdálenosti od tělesa 3 kroky dovnitř
   do 1,5 s zapnou zaměřovací křížek, další 3 kroky přistanou; na povrchu kolečko ven při nejširším poli = vzlet. Tlačítko přistání
   ukazuje skutečný stav (🛬 Přistát na povrchu → ✅ Přistát sem → 🚀 Vzlétnout) v kartě, v ☰ i na liště a mění se i po vzletu

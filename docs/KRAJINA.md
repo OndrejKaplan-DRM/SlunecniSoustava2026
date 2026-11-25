@@ -116,3 +116,19 @@ Ondřej: „povrch mraků možná nepatrně méně vertikálně členitý – po
 (Apollo 15), Mount Sharp (Curiosity), modrý západ Slunce na Marsu, Titan (Huygens), regolit (Apollo 17), Mars (Opportunity).
 Mřížka 12 pohledů: `docs/ref/krajina_snimky.jpg`. Verze 2.2b: `docs/ref/krajina_snimky_2_2b.jpg` (noc v Grónsku, Pluto, Měsíc ráno, oblaka obrů) a tok přistání
 `docs/ref/pristani_2_2b.jpg` (karta, míření, sestup, povrch, vzlet kolečkem).
+
+
+## 8. Chůze (2.3, `src/ui/chuze.js`)
+- Chodec žije v soustavě krajiny (x východ, y nahoru, z jih) a zapisuje `S.surf.walk = { x, z, eye, roll, ground }`; kamera krajiny
+  (`setCam`) z něj bere polohu a náklon. Výška země `S.krajina.ground(x, z)` je táž plocha, jakou kreslí mřížka (`gridY`).
+- Kroky fyziky: vstup → cílová rychlost (tíže, běh, poskoky) → tření (země 9, led 0,6–1,2, vzduch 0,6) → svah → vítr →
+  kolize s kameny (`obstacles`, válce, krok nahoru 0,32 m) → svislý pohyb (skok, dosed, únik) → výstup do `q.walk`.
+- Mřížka se po 35 m od středu staví znovu kolem chodce po kouscích (`buildTerenGen` s `slice`, `computeVisGen`, profil obzoru po 30°);
+  `state()`: `recenters`, `recenterMs` (čistá práce), `recenterWall`, `recenterMax` (nejdelší kousek). Kameny kolem chodce `nearRocks`.
+- Zkoušky: `t_23.mjs` (krok, skok, přestavba, kameny, odlet z Bennu); `S200.chuze.key(kód, true|false)` a `state()`.
+
+## 9. Oblaka obrů v pohybu (2.3)
+- Definice `DECK` v materiálu terénu: `deckBig` (vrcholy) + `DECK_COL` (barva a výška pro stínování) + `DECK_BUMP` (normála z derivací)
+  + `DECK_LIGHT` (dopředný rozptyl, lesk). Uniformy `uTime` (skutečný čas, přetočí se po 64 dlaždicích bez skoku), `uWind`, `uDeckL`,
+  `uDeckC`, `uDeckA`, `uDeckTp`, textura `tDeck` (R buňky, G a B zkroucení, A drobné víry).
+- Parametry `DECKW` podle tělesa; vítr podle šířky místa (NSSDCA velikosti, směr z paměti). `state().wind` = vítr v m/s (kladně na východ).

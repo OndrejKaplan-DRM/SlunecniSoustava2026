@@ -14,6 +14,9 @@ Nejnovější předávka sešny je v projektových dokumentech claude.ai (`claud
 - `iterace-26` – verze 2.2 a 2.2b (zkušební, 24. 11. 2026, z `iterace-25`): krajina a obloha z povrchu (rozptyl světla, výškové mapy
   Měsíce a Marsu, `docs/KRAJINA.md`), přistání zaměřovacím křížkem; 2.2b: stav tlačítek přistání a vzletu, kolečko u povrchu,
   noční vidění, přisvětlení na povrchu, stíny terénu, plošší oblaka obrů s věžemi. Do `main` jen s Ondřejovým „ano“.
+- `iterace-27` – verze 2.3 (zkušební, 25. 11. 2026, z `iterace-26`): chůze po povrchu (`ui/chuze.js`), sestup z výšky, přistání
+  dvojklikem a kolečkem pod kurzor, zajímavosti po přistání, prstence s vysvětlením, oblaka obrů v pohybu. Zkouška `t_23`. Do `main`
+  jen s Ondřejovým „ano“.
 - Body návratu: `iterace-24`, `verze-1.2`, `verze-1.1-stabilni`.
 
 ## Spuštění
@@ -28,6 +31,7 @@ npm run test:sceny                    # referenční scény (přechody Phobosu a
 node tools/test/t_krajina.mjs /tmp/tk # krajina a obloha z povrchu (2.2): režimy, výškové mapy, barvy oblohy, moře → pevnina
 node tools/test/krajina_snimky.mjs /tmp/kraj [jméno,…]   # 25 pohledů z povrchu (den, západ, noc, Grónsko v noci, Mars, Měsíc, obři…)
 node tools/test/pristani_snimky.mjs /tmp/pr            # tok přistání v 5 snímcích (karta, míření, sestup, povrch, vzlet kolečkem)
+node tools/test/t_23.mjs /tmp/t23                       # 2.3: úvod, řada karty, dvojklik, sestup, zajímavosti, chůze, oblaka, prstence
 node tools/build/build_offline.mjs /tmp/S200.html --hi   # jeden soubor HTML na flashku (musí mít < 400 MB)
 ```
 Další zkoušky v prohlížeči (`t_preload`, `t_karty`, `t_displej`, `t_pasy`, `t_obloha`, `t_scena`, `t_povrch`, `t_l2`, `t_okna`, `t_hi`)
@@ -65,6 +69,8 @@ spouštěj **po jedné** a během nich nic nesestavuj. Playwright je globálně 
 - Horizons: tělesa s kladnou západní délkou chtějí východní délku se záporným znaménkem (Mars, Měsíc, Io…); záporná délka sama nic neznamená.
 - Testy proti Horizons nastavují stejné ΔT (`setDeltaT`): Horizons po roce 2027 drží 69 s, aplikace extrapoluje parabolou.
 - Ve swiftshaderu má Země zblízka „sníh“ z bílých kostiček – artefakt softwarového kreslení, je i v `main`.
+- Chůze (2.3): v testech jen přes `S200.chuze.key('KeyW', true)` – zámek myši (`requestPointerLock`) v headless shellu nafukuje paměť
+  rendereru → OOM; přestavbu terénu dokonči `S.krajina.finishRecenter()`. Sestup po přistání trvá 3,4 s skutečného času (`q.desc`).
 - Krajina (2.2): `S.krajina.prep(i)` načte mapu a výškovou mapu (bez ní posun z moře nefunguje); v testech přistání přes
   `povrch.pick(i)` → počkat na `pickState().phase === 'vyber'` → `povrch.land()`. Obraz oblohy ukládá jas už vynásobený expozicí
   (`uPre`) – jinak v noci proužky z poloviční přesnosti. Kotouč Slunce se v obraze zesiluje (`uSunR`), jinak u obzoru zmizí v záři.
