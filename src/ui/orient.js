@@ -214,6 +214,8 @@ export function createOrient(S, A, ui) {
     if (pa <= 0) return;
     // obloha: dvě souhvězdí a tři hvězdy
     for (const f of FIGS) {
+      /* 2.3: z povrchu se obrazec pod obzorem nebo za terénem nekreslí (Velký vůz „zapadlý“ do země) */
+      if (S.surf && f.p.some((v) => S.under(v))) continue;
       const pp = f.p.map((v) => {
         const c = cam(v);
         if (c[2] <= 0.15) return null;
@@ -262,6 +264,7 @@ export function createOrient(S, A, ui) {
       } else if (!pm[2]) arrow(pm, '#9fd0ff', f.name, pa * 0.85);
     }
     for (const [name, v, sub] of STARS) {
+      if (S.surf && S.under(v)) continue;
       const p = place(cam(v));
       if (p[2]) {
         if (!hid(p[0], p[1])) label(p[0], p[1], name, sub, '#ffe9a8', pa);

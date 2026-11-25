@@ -465,7 +465,26 @@ export function buildTeren(o) {
       a = Math.round((th / TAU) * NA - (k & 1) * 0.5);
     return kinds[1 + k * NA + (((a % NA) + NA) % NA)];
   };
-  return { geo, group, yAt, kindAt, h0, rMax, deck, water0, computeVis, visAt, info: { NA, NR, rMax } };
+  /* 2.3: profil obzoru z bodu (px, pz) ve výšce oka eye: pro každý stupeň azimutu (od severu k východu) největší výška
+     terénu nad vodorovnou rovinou v radiánech – hvězdy, jména a značky pod ním jsou za terénem a nekreslí se */
+  const horizon = (px, pz, eye, out = new Float32Array(360)) => {
+    const y0 = gridY(px, pz) + eye;
+    for (let a = 0; a < 360; a++) {
+      const th = ((a + 0.5) * Math.PI) / 180,
+        sx = Math.sin(th),
+        sz = -Math.cos(th);
+      let m = -Math.PI / 2;
+      for (let t = 1.5; t < rMax; t *= 1.15) {
+        const y = gridY(px + sx * t, pz + sz * t);
+        if (y < -1e8) break;
+        const e = Math.atan2(y - y0, t);
+        if (e > m) m = e;
+      }
+      out[a] = m;
+    }
+    return out;
+  };
+  return { geo, group, yAt, gridY, kindAt, h0, rMax, deck, water0, computeVis, visAt, horizon, info: { NA, NR, rMax } };
 }
 /* ---------- kameny, oblázky, stromy ---------- */
 function rockGeo(seed, kind) {

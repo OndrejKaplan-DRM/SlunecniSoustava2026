@@ -1494,6 +1494,34 @@ export function createEngine(canvas, overlay) {
       z = dv.x * m9[6] + dv.y * m9[7] + dv.z * m9[8];
     return [Math.asin(Math.max(-1, Math.min(1, z))) / DEG, Math.atan2(y, x) / DEG];
   };
+  /* 2.3: místo na tělese i pod bodem obrazu (x, y v bodech CSS): [šířka, délka] ve stupních, nebo null mimo kotouč.
+     Paprsek z kamery protne kouli o poloměru tělesa (u zploštělých a nepravidelných těles stačí na hrubé místo). */
+  S.screenLL = (i, x, y) => {
+    if (S.surf || i < 0 || !B[i]) return null;
+    const C = S.camPos,
+      ax = (x - W / 2) / F,
+      ay = -(y - H / 2) / F;
+    dv.copy(fwd).addScaledVector(right, ax).addScaledVector(up, ay).normalize();
+    const cx = P[i * 3] - C[0],
+      cy = P[i * 3 + 1] - C[1],
+      cz = P[i * 3 + 2] - C[2],
+      Rr = B[i].R,
+      tca = cx * dv.x + cy * dv.y + cz * dv.z,
+      d2 = cx * cx + cy * cy + cz * cz - tca * tca;
+    if (tca <= 0 || d2 > Rr * Rr) return null;
+    const t = tca - Math.sqrt(Rr * Rr - d2),
+      hx = dv.x * t - cx,
+      hy = dv.y * t - cy,
+      hz = dv.z * t - cz,
+      l = Math.hypot(hx, hy, hz) || 1;
+    basis(i, S.jd, m9);
+    const bx = (hx * m9[0] + hy * m9[1] + hz * m9[2]) / l,
+      by = (hx * m9[3] + hy * m9[4] + hz * m9[5]) / l,
+      bz = (hx * m9[6] + hy * m9[7] + hz * m9[8]) / l;
+    return [Math.asin(Math.max(-1, Math.min(1, bz))) / DEG, Math.atan2(by, bx) / DEG];
+  };
+  /* 2.3: je kamera „blízko“ tělesa? (po Přiblížit; dvojklik pak přistane místo dalšího přibližování) */
+  S.nearBody = (i = S.focus) => i === S.focus && !cam.fly && cam.altT <= shape[i].rmax * 1.25;
   /* směr k tělesu j při pohledu z povrchu: { az, el } v radiánech, nebo null mimo tento režim */
   S.surfDir = (j) => {
     if (!S.surf) return null;
@@ -1502,6 +1530,16 @@ export function createEngine(canvas, overlay) {
     return { az: o[0], el: o[1] };
   };
   S.surfBasis = () => ({ n: sN, e: sE, no: sNo });
+  /* 2.3: je směr v (scéna, od pozorovatele) pod obzorem nebo za terénem krajiny? (hvězdy, jména a značky se pak nekreslí) */
+  S.under = (v) => {
+    if (!S.surf) return false;
+    const l = Math.hypot(v.x, v.y, v.z) || 1,
+      el = Math.asin(Math.max(-1, Math.min(1, (v.x * sN.x + v.y * sN.y + v.z * sN.z) / l)));
+    if (el > 0.6) return false;
+    const az = Math.atan2(v.x * sE.x + v.y * sE.y + v.z * sE.z, v.x * sNo.x + v.y * sNo.y + v.z * sNo.z),
+      hz = S.krajina && S.krajina.on() && S.krajina.horizonEl ? S.krajina.horizonEl(az) : 0;
+    return el < (hz === null ? 0 : hz) - 0.0015;
+  };
   S.surfSite = () => sF;
   S.fov = () => fovNow;
   function updateCamera(dt) {
@@ -2117,6 +2155,7 @@ export function createEngine(canvas, overlay) {
       const put = (o, star) => {
         const z = o.c.dot(fwd);
         if (z < 0.25) return;
+        if (S.surf && S.under(o.c)) return;
         const x = W / 2 + (o.c.dot(right) / z) * F,
           y = H / 2 - (o.c.dot(up) / z) * F;
         if (x < 0 || x > W || y < 50 || y > H - 90) return;
@@ -2198,6 +2237,7 @@ export function createEngine(canvas, overlay) {
         for (const o of cons) {
           const z = o.c.dot(fwd);
           if (z < 0.25) continue;
+          if (S.surf && S.under(o.c)) continue;
           const x = W / 2 + (o.c.dot(right) / z) * F,
             y = H / 2 - (o.c.dot(up) / z) * F;
           if (x < 0 || x > W || y < 50 || y > H - 90) continue;
@@ -2254,7 +2294,8 @@ export function createEngine(canvas, overlay) {
       const r = R[i],
         b = B[i];
       if (r.z <= 0 || r.sx < -40 || r.sx > W + 40 || r.sy < -40 || r.sy > H + 40) continue;
-      if (S.surf && r.rel.dot(sN) < -0.004 * r.dist) continue; /* 1.10: těleso je pod obzorem */
+      if (S.surf && (r.rel.dot(sN) < -0.004 * r.dist || S.under(r.rel)))
+        continue; /* 1.10: těleso je pod obzorem; 2.3: nebo za terénem */
       /* 1.9: při ukázce úkazu (S.evSet) mají značku a jméno jen tělesa, která k němu patří, a planety */
       const hot = i === fi || i === S.sel || i === S.hover || (S.evSet !== null && S.evSet.has(i)),
         p = par[i];

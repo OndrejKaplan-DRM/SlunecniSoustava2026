@@ -183,11 +183,17 @@ export function createPovrch(S, A, ui) {
         break;
       }
     }
+    /* 2.3: po přistání musí být vidět kus země kvůli orientaci – obzor asi v třetině výšky obrazu, i když je cíl vysoko
+       (Venuše: dřív pohled 24° nad obzor do oranžového oparu) */
+    const elMax = 0.15 * q.fov * DEG;
     if (opt.track !== undefined && opt.track >= 0) q.track = opt.track;
-    else if (best) {
+    else if (best && !op) {
       q.az = best.az;
-      q.el = Math.max(10 * DEG, Math.min(26 * DEG, best.el - 8 * DEG));
-    } else q.az = Math.PI;
+      q.el = Math.max(-4 * DEG, Math.min(elMax, best.el - 8 * DEG));
+    } else {
+      q.az = best ? best.az : Math.PI;
+      q.el = 2 * DEG;
+    }
     /* přesně zadaný směr pohledu (referenční snímky, zkoušky): azimut od severu k východu a výška ve stupních */
     if (opt.az !== undefined) q.az = opt.az * DEG;
     if (opt.el !== undefined) q.el = opt.el * DEG;
@@ -427,6 +433,8 @@ export function createPovrch(S, A, ui) {
     },
     pickState: () => pick.state(),
     land: () => pick.land(),
+    landAt: (i, x, y) => pick.landAt(i, x, y),
+    pickClick: (x, y) => pick.pickClick(x, y),
     aimAt: (i, la, lo) => pick.aimAt(i, la, lo),
     setAdjust: (f) => (adjust = f),
     toggle: (i = S.sel) => {

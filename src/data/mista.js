@@ -113,7 +113,7 @@ export const PLACES = {
   deimos: [['Mars v nadhlavníku', 0, 0]],
   jupiter: [
     ['Rovník', 0, 0],
-    ['Pásmo Velké rudé skvrny', -22, 0],
+    ['Velká rudá skvrna', -22, -94] /* 2.3: stejné místo jako popisek na mapě (ui/extras.js), ne délka 0° */,
     ['Severní pól – polární záře', 85, 0],
   ],
   saturn: [

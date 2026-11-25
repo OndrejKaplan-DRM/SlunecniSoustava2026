@@ -1,4 +1,6 @@
-// Přistání na povrchu (verze 2.2): výběr místa zaměřovacím křížkem, sestup, úklid oken a snadný návrat do vesmíru.
+// Přistání na povrchu (verze 2.2, 2.3): výběr místa zaměřovacím křížkem, sestup, úklid oken a snadný návrat do vesmíru.
+// 2.3: křížek sleduje myš a klik na těleso = přistání přesně tam; blízko u tělesa dvojklik na místo = přistání (hrubé místo);
+// kolečkem dál blíž při nejmenší výšce = přistání pod kurzorem; sestup kamera plynule natočí nad cílové místo.
 // Tok: tlačítko „🛬 Přistát na povrchu“ (karta, ☰; nebo kolečkem blíž u povrchu) → těleso se přiblíží, zapne se mřížka zeměpisných souřadnic a uprostřed obrazu je křížek;
 // uživatel tahem natočí těleso tak, aby bylo vybrané místo pod křížkem (nebo vybere pojmenované místo) → „Přistát“ (Enter,
 // dvojklik) → kamera sestoupí kolmo k místu → pohled z povrchu. Zpět do vesmíru: ⬆ Vzlétnout, Esc, kolečkem ven při nejširším
@@ -42,6 +44,8 @@ export function createPristani(S, A, ui, P0) {
     }
     return best && best.d * DEG * B[i].R < Math.max(150, B[i].R * 0.08) ? best : null;
   };
+  /* místo pod myší (jen při výběru místa a jen nad tělesem) */
+  const mouseLL = () => (st && st.phase === 'vyber' && S.mouse ? S.screenLL(st.i, S.mouse[0], S.mouse[1]) : null);
   /* vzdálenost kamery, při které těleso zabere zhruba 60 % výšky obrazu */
   const pickAlt = (i) => {
     const R = shape[i] ? shape[i].rmax : B[i].R,
@@ -59,9 +63,9 @@ export function createPristani(S, A, ui, P0) {
       pl = PLACES[b.id] || [];
     pan.innerHTML =
       `<div class="pk-h">${kid() ? '🛬 Kam přistaneme?' : '🛬 Vyber místo přistání'} – ${b.cs}</div>` +
-      `<p class="pk-t">${kid() ? 'Táhni planetu, ať je místo pod křížkem. Pak klikni na Přistát.' : 'Tahem natoč těleso tak, aby bylo místo pod křížkem uprostřed. Kolečkem přiblížíš.'}</p>` +
+      `<p class="pk-t">${kid() ? 'Klikni na místo, kde chceš přistát. Táhnutím planetu otočíš.' : 'Klikni na místo přistání – křížek ukazuje přesně kam. Tahem těleso otočíš, kolečkem přiblížíš.'}</p>` +
       `<p class="pk-ll"></p>` +
-      `<div class="pk-b"><button class="pk-go" data-k="go" title="Přistát na místě pod křížkem (Enter, dvojklik)">✅ Přistát</button>` +
+      `<div class="pk-b"><button class="pk-go" data-k="go" title="Přistát na místě uprostřed obrazu (Enter)">✅ Přistát uprostřed</button>` +
       (pl.length
         ? `<select data-k="pl" aria-label="Pojmenovaná místa"><option value="">📍 známá místa…</option>${pl.map((p, k) => `<option value="${k}">${p[0]}</option>`).join('')}</select>`
         : '') +
@@ -83,13 +87,14 @@ export function createPristani(S, A, ui, P0) {
       const now = performance.now();
       if (now - tLL > 120) {
         tLL = now;
-        const [lat, lon] = S.subPoint(st.i),
+        const mll = mouseLL(),
+          [lat, lon] = mll || S.subPoint(st.i),
           e = sunEl(st.i, lat, lon),
           n = near(st.i, lat, lon),
           el = pan.querySelector('.pk-ll');
         if (el) {
           const t =
-            `📍 <b>${placeTxt(lat, lon)}</b> · ${e > 0.5 ? `☀ den, Slunce ${nf(e, 0)}° nad obzorem` : e > -6 ? '🌅 soumrak' : '🌙 noc'}` +
+            `${mll ? '🎯' : '📍'} <b>${placeTxt(lat, lon)}</b> · ${e > 0.5 ? `☀ den, Slunce ${nf(e, 0)}° nad obzorem` : e > -6 ? '🌅 soumrak' : '🌙 noc'}` +
             (n ? ` · u místa <b>${n.n}</b> (${nf(n.d * DEG * B[st.i].R, 0)} km)` : '');
           if (el.innerHTML !== t) el.innerHTML = t;
         }
@@ -98,6 +103,25 @@ export function createPristani(S, A, ui, P0) {
     if (st.phase === 'sestup') {
       const t = (performance.now() - st.t0) / 1000,
         R = B[st.i].R;
+      if (st.rot) {
+        /* natočit kameru po hlavní kružnici nad cílové místo (asi za 1,1 s), ať těleso pod kamerou neodskočí */
+        const u = Math.min(1, t / 1.1),
+          e = u * u * (3 - 2 * u),
+          a = st.rot.a0,
+          b = st.rot.a1,
+          w = Math.acos(Math.max(-1, Math.min(1, a[0] * b[0] + a[1] * b[1] + a[2] * b[2])));
+        let v = b;
+        if (w > 1e-4 && u < 1) {
+          const sw = Math.sin(w),
+            ka = Math.sin((1 - e) * w) / sw,
+            kb = Math.sin(e * w) / sw;
+          v = [a[0] * ka + b[0] * kb, a[1] * ka + b[1] * kb, a[2] * ka + b[2] * kb];
+        }
+        S.cam.pitch = Math.asin(Math.max(-1, Math.min(1, v[1])));
+        S.cam.yaw = Math.atan2(v[2], v[0]);
+        S.cam.ly = S.cam.lp = 0;
+        if (u >= 1) st.rot = null;
+      }
       if (t > 1.9 || S.cam.alt < R * 0.012) {
         const { i, lat, lon } = st;
         finish();
@@ -127,9 +151,21 @@ export function createPristani(S, A, ui, P0) {
     if (!st || st.phase !== 'vyber') return;
     const r = e.R[st.i];
     if (!r || r.z <= 0) return;
-    const x = e.W / 2,
-      y = e.H / 2,
+    /* 2.3: křížek je u myši, když je nad tělesem; jinak uprostřed (místo, nad kterým kamera stojí) */
+    const m = mouseLL() ? S.mouse : null,
+      x = m ? m[0] : e.W / 2,
+      y = m ? m[1] : e.H / 2,
       k = S.txtK || 1;
+    if (m) {
+      /* malá značka středu, kam míří ✅ Přistát uprostřed */
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255, 214, 102, 0.55)';
+      ctx.lineWidth = 1.2 * k;
+      ctx.beginPath();
+      ctx.arc(e.W / 2, e.H / 2, 5 * k, 0, 2 * Math.PI);
+      ctx.stroke();
+      ctx.restore();
+    }
     ctx.save();
     ctx.lineWidth = 2 * k;
     ctx.strokeStyle = 'rgba(0,0,0,0.55)';
@@ -185,6 +221,35 @@ export function createPristani(S, A, ui, P0) {
     S.bus.emit('surfPick', null);
     S.wake();
   }
+  /* směr od středu tělesa ke kameře (jednotkový, scéna) */
+  const dirNow = () => {
+    const c = S.cam,
+      cp = Math.cos(c.pitch);
+    return [cp * Math.cos(c.yaw), Math.sin(c.pitch), cp * Math.sin(c.yaw)];
+  };
+  /* 2.3: přistát rovnou na místě pod bodem obrazu (dvojklik blízko u tělesa, kolečko pod kurzorem) */
+  function landAt(i, x, y) {
+    if (i === SUN || !B[i] || S.surf) return false;
+    const ll = S.screenLL(i, x, y);
+    if (!ll) return false;
+    if (S.krajina) S.krajina.prep(i);
+    if (st && st.i !== i) finish(true);
+    if (!st) {
+      st = { i, phase: 'vyber', grid0: P0.info.guides().body };
+      document.body.classList.add('surfpick');
+    }
+    st.phase = 'vyber';
+    land(ll);
+    return true;
+  }
+  /* 2.3: klik při výběru místa: na tělese = přistát přesně tam (vrací true, když klik spotřeboval) */
+  function pickClick(x, y) {
+    if (!st || st.phase !== 'vyber') return false;
+    const ll = S.screenLL(st.i, x, y);
+    if (!ll) return false;
+    land(ll);
+    return true;
+  }
   /* natočit těleso tak, aby místo (šířka, délka) bylo pod kamerou */
   function aimAt(i, lat, lon) {
     siteFrame(i, lat, lon, S.jd, fo);
@@ -194,10 +259,11 @@ export function createPristani(S, A, ui, P0) {
     S.cam.ly = S.cam.lp = 0;
     S.wake();
   }
-  function land() {
+  function land(ll) {
     if (!st || st.phase !== 'vyber') return;
     const i = st.i;
-    let [lat, lon] = S.subPoint(i);
+    let [lat, lon] = ll || S.subPoint(i);
+    st.rot = { a0: dirNow(), a1: null };
     /* krajina umí místo posunout (např. z oceánu na nejbližší pevninu) */
     if (P0.adjust) {
       const a = P0.adjust(i, lat, lon);
@@ -205,9 +271,10 @@ export function createPristani(S, A, ui, P0) {
         if (a.msg) ui.toast(a.msg, 6000);
         lat = a.lat;
         lon = a.lon;
-        aimAt(i, lat, lon);
       }
     }
+    siteFrame(i, lat, lon, S.jd, fo);
+    st.rot.a1 = [fo.n[0], fo.n[1], fo.n[2]];
     st.lat = lat;
     st.lon = lon;
     st.phase = 'sestup';
@@ -252,39 +319,30 @@ export function createPristani(S, A, ui, P0) {
     },
     true
   );
-  const cv = document.querySelector('#gl');
-  if (cv)
-    cv.addEventListener(
-      'dblclick',
-      (ev) => {
-        if (!st || st.phase !== 'vyber') return;
-        ev.preventDefault();
-        ev.stopPropagation();
-        land();
-      },
-      true
-    );
   /* jiný přelet (ikona v liště, seznam) výběr zruší */
   S.bus.on('fly', (j) => {
     if (st && st.phase === 'vyber' && j !== st.i) finish(true);
   });
   /* kolečkem blíž u povrchu: první trojice kroků ukáže křížek, další trojice přistane */
+  /* 2.3: kolečkem dál blíž při nejmenší výšce = přistání: pod kurzorem, je-li nad tělesem, jinak uprostřed */
   S.bus.on('zoomIn', (i) => {
     if (S.surf || i === SUN || !B[i]) return;
-    if (st && st.phase === 'vyber' && st.i === i) return land();
-    if (st) return;
-    start(i, { stay: true });
-    ui.toast(
-      kid()
-        ? '🛬 Přistáváme! Ještě kolečkem blíž – nebo klikni na ✅ Přistát.'
-        : '🛬 Místo pod křížkem: dalším otočením kolečka blíž přistaneš (nebo ✅ Přistát, Enter).',
-      4500
-    );
+    if (st && st.phase !== 'vyber') return;
+    const m = S.mouse;
+    if (m && landAt(i, m[0], m[1])) return;
+    if (!st) {
+      if (S.krajina) S.krajina.prep(i);
+      st = { i, phase: 'vyber', grid0: P0.info.guides().body };
+      document.body.classList.add('surfpick');
+    }
+    land();
   });
   return {
     start,
     cancel: () => finish(true),
     land,
+    landAt,
+    pickClick,
     aimAt,
     state: () => (st ? { i: st.i, phase: st.phase } : null),
   };

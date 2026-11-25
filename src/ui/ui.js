@@ -673,16 +673,16 @@ export function createUI(S, A) {
         `<div class="hd"><div class="ball">${ico(i, 56)}</div><div><h2>${b.cs}</h2><div class="sub">${sub}</div></div>${ib}<div class="stamp ${seen ? 'on' : ''}">${seen ? '✓' : '?'}</div></div>
         <p class="kid">${kid}</p><div class="tiles">${tiles.map((t) => `<div><span>${t[0]}</span><p>${t[1]}</p></div>`).join('')}</div>${b.adult ? `<p class="adult"><b>Pro zvídavé:</b> ${b.adult}</p>` : ''}${b.missions ? `<p class="adult">🛰️ <b>Byly tu sondy:</b> ${b.missions}</p>` : ''}${fbox}${sunBox}
         <p class="src">${b.mk === 'foto' ? '📷 Tak to tam opravdu vypadá – fotily to sondy.' : i === SUN ? '' : '🎨 Zblízka to nikdo nevyfotil, povrch je namalovaný.'}</p>
-        <div class="row">${S.focus === i ? `<button data-a="close" class="pri">🔍 Blíž</button><button data-a="far">🔭 Dál</button>` : `<button data-a="go" class="pri">🚀 Leť tam!</button>`}${p > 0 ? `<button data-a="parent">↑ ${B[p].cs}</button>` : ''}</div>`;
+        <div class="row">${S.focus === i ? `<button data-a="close" class="pri">🔍 Blíž</button><button data-a="far">🔭 Dál</button>` : `<button data-a="go" class="pri">🚀 Leť tam!</button>`}${i === SUN ? '' : surfBtn(i)}${p > 0 ? `<button data-a="parent">↑ ${B[p].cs}</button>` : ''}</div>`;
       cardExtra(i);
       drawSub();
       return;
     }
     $('#card').innerHTML =
       `<div class="hd"><div class="ball">${ico(i, 46)}</div><div><h2>${b.cs}</h2><div class="sub">${sub}${b.name !== b.cs && !/[()]/.test(b.name) ? ' · ' + b.name.replace('`', 'ʻ') : ''}</div></div>${ib}<div class="stamp ${seen ? 'on' : ''}" title="${seen ? 'Navštíveno' : 'Ještě nenavštíveno'}">${seen ? '✓' : '?'}</div></div>
-      <p class="kid">${kid}</p>${i === SUN ? '' : `<div class="landrow">${surfBtn(i)}</div>`}<table>${rows.map((r) => `<tr><th>${r[0]}</th><td>${r[1]}</td></tr>`).join('')}</table>${b.adult ? `<p class="adult">${b.adult}</p>` : ''}${fbox}
+      <p class="kid">${kid}</p><table>${rows.map((r) => `<tr><th>${r[0]}</th><td>${r[1]}</td></tr>`).join('')}</table>${b.adult ? `<p class="adult">${b.adult}</p>` : ''}${fbox}
       ${sunBox}<p class="src">${b.mk === 'foto' ? '📷 Povrch: skutečné snímky ze sond.' : i === SUN ? '' : '🎨 Povrch: ilustrace – zblízka ho zatím nikdo nevyfotil celý.'}${b.src === 'pamet' ? ' Dráha jen přibližná.' : ''}${COVER[b.id] ? '<br>🗺️ ' + COVER[b.id] : ''}<br>${A.note(i)}</p>
-      <div class="row">${S.focus === i ? `<button data-a="close" class="pri">Přiblížit</button><button data-a="far">Oddálit</button>` : `<button data-a="go" class="pri">Leť tam ⏎</button>`}${p > 0 ? `<button data-a="parent">↑ ${B[p].cs}</button>` : ''}</div>`;
+      <div class="row">${S.focus === i ? `<button data-a="close" class="pri">Přiblížit</button><button data-a="far">Oddálit</button>` : `<button data-a="go" class="pri">Leť tam ⏎</button>`}${i === SUN ? '' : surfBtn(i)}${p > 0 ? `<button data-a="parent">↑ ${B[p].cs}</button>` : ''}</div>`;
     cardExtra(i);
     drawSub();
   }
@@ -724,8 +724,8 @@ export function createUI(S, A) {
           ? ['✅', K() ? 'Přistát tady' : 'Přistát sem', 'Přistát na místě pod zaměřovacím křížkem (Enter, dvojklik)']
           : [
               gas ? '☁' : '🛬',
-              gas ? (K() ? 'Na mraky' : 'Přistát na mracích') : K() ? 'Přistát' : 'Přistát na povrchu',
-              'Přistát a rozhlédnout se: krajina, obloha, Slunce a hvězdy odtud. Místo vybereš zaměřovacím křížkem (nebo kolečkem blíž a blíž).',
+              gas ? 'Na mraky' : 'Přistát',
+              'Přistát na povrchu a rozhlédnout se: krajina, obloha, Slunce a hvězdy odtud. Místo vybereš zaměřovacím křížkem (klik = přistání), blízko u tělesa dvojklikem na místo, nebo kolečkem blíž a blíž.',
             ];
     return `<button data-a="surf" class="landb${aim || busy ? ' aim' : ''}${on ? ' up' : ''}" title="${ti}"${busy ? ' disabled' : ''}>${ic} ${t}</button>`;
   }
@@ -1379,6 +1379,7 @@ export function createUI(S, A) {
     S.wake();
   });
   cv.addEventListener('pointermove', (e) => {
+    S.mouse = [e.clientX, e.clientY]; /* 2.3: kam míří myš (přistání pod kurzorem, křížek u myši) */
     const p = ptr.get(e.pointerId);
     if (!p) {
       const h = S.pick(e.clientX, e.clientY);
@@ -1413,12 +1414,19 @@ export function createUI(S, A) {
     pinch = 0;
     cv.style.cursor = 'grab';
     if (!p || moved >= 5 || p.b !== 0) return;
+    /* 2.3: při výběru místa přistání je klik na těleso přistáním přesně tam */
+    if (api.povrch && api.povrch.pickClick(e.clientX, e.clientY)) {
+      lastTap = 0;
+      return;
+    }
     const i = S.pick(e.clientX, e.clientY),
       now = performance.now();
     if (i >= 0) S.bus.emit('tap', i, e.timeStamp); /* počítá si je Superkarta (pětiklik na těleso) */
     if (now - lastTap < 380 && i === lastTapI) {
       if (i >= 0) {
-        if (i === S.focus) S.flyTo(i, { alt: shape[i].rmax * 0.6 });
+        /* 2.3: dvojklik – daleko: přiblížit; blízko u tělesa: přistát na místě dvojkliku (hrubé místo; přesné dává křížek) */
+        if (i === S.focus && S.nearBody(i) && i !== SUN && api.povrch && api.povrch.landAt(i, e.clientX, e.clientY));
+        else if (i === S.focus) S.flyTo(i, { alt: shape[i].rmax * 0.6 });
         else S.flyTo(i);
       }
       lastTap = 0;

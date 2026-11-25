@@ -462,6 +462,7 @@ export function createKrajina(S, renderer) {
     return 'bez';
   }
   function dispose() {
+    hProf = null;
     if (!terScene) return;
     terScene.traverse((o) => {
       if (o.geometry) o.geometry.dispose();
@@ -523,6 +524,8 @@ export function createKrajina(S, renderer) {
     const t0 = performance.now();
     ter = buildTeren(o);
     ter.ls = T.ls || 0;
+    /* 2.3: profil obzoru (hvězdy a značky za terénem se nekreslí) */
+    hProf = ter.horizon(0, 0, eyeOf(q));
     const mat = patch(new THREE.MeshLambertMaterial({ vertexColors: true }), true, true);
     const ground = new THREE.Mesh(ter.geo, mat);
     ground.receiveShadow = true;
@@ -968,14 +971,16 @@ export function createKrajina(S, renderer) {
       });
     }
   }
+  /* nad oblačným mořem obrů jako z letadla (1,5 km nad vršky kup), jinak výška očí */
+  const eyeOf = (q) => (ter && ter.deck ? 1500 : B[q.i].R < 50 ? 1.2 : 1.7);
+  let hProf = null;
   /* kamera krajiny: stejné natočení jako kamera oblohy, v místní soustavě (x = východ, y = nahoru, z = jih) */
   function setCam(q, v) {
     const f = S.surfSite(),
       r = enu([v.right.x, v.right.y, v.right.z], f, [0, 0, 0]),
       u = enu([v.up.x, v.up.y, v.up.z], f, [0, 0, 0]),
       fw = enu([v.fwd.x, v.fwd.y, v.fwd.z], f, [0, 0, 0]),
-      /* nad oblačným mořem obrů jako z letadla (1,5 km nad vršky kup), jinak výška očí */
-      eye = ter.deck ? 1500 : B[q.i].R < 50 ? 1.2 : 1.7;
+      eye = eyeOf(q);
     const M = new THREE.Matrix4().makeBasis(
       new THREE.Vector3(r[0], r[2], -r[1]),
       new THREE.Vector3(u[0], u[2], -u[1]),
@@ -1052,6 +1057,12 @@ export function createKrajina(S, renderer) {
     adjust,
     on: () => !!S.surf && !S.surf.quiet && S.krajinaOn !== false,
     state: () => ({ ...stat, key }),
+    /* 2.3: výška obzoru krajiny v azimutu az (rad, od severu k východu) v radiánech, null bez krajiny */
+    horizonEl: (az) => {
+      if (!hProf || !ter) return null;
+      const a = ((((az * 180) / Math.PI) % 360) + 360) % 360;
+      return hProf[Math.min(359, Math.floor(a))];
+    },
     /* výška krajiny v bodě (m, místní soustava) – zkoušky */
     yAt: (x, z) => (ter ? ter.yAt(x, z) : null),
     sky: (d) => {
