@@ -369,6 +369,14 @@ body.mob.land #ukc:not(.min) { left: calc(6px + env(safe-area-inset-left)); righ
 #splash { overflow-y: auto; } body.mob.land #sp-con, body.mob.land #splash .ver { display: none; } body.mob.land #splash .in { padding: 8px 14px; }
 /* ukázka v režimu kina: konzole s textem zůstává vidět */
 body.cine.tutoring #tut { opacity: 1; }
+
+/* 2.3: zajímavosti po přistání */
+#landfacts { display: none; top: 62px; right: 10px; width: 350px; padding: 10px 14px 10px; font-size: 13.5px; line-height: 1.45; border-color: rgba(140, 200, 255, 0.45); }
+#landfacts.on { display: block; animation: lfIn 0.5s ease; } @keyframes lfIn { from { opacity: 0; transform: translateY(-8px); } }
+#landfacts .lf-h { font-weight: 700; font-size: 15px; margin: 0 22px 6px 0; color: #cfe6ff; } #landfacts p { margin: 5px 0; } #landfacts .lf-d { font-size: 12px; color: var(--mu); border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 6px; margin-top: 8px; }
+#landfacts [data-x] { position: absolute; top: 6px; right: 6px; padding: 1px 7px; font-size: 12px; }
+body.kid #landfacts { font-size: 14.5px; } body.mob #landfacts { top: auto; bottom: calc(var(--dk, 84px) + 8px); left: 6px; right: 6px; width: auto; font-size: 12.5px; max-height: 40vh; overflow: auto; }
+body:not(.surfon) #landfacts { display: none !important; } body.big #landfacts { zoom: var(--bk); }
 </style>
 </head>
 <body>

@@ -3,9 +3,11 @@
 // Kameru počítá engine (S.surf, S.setSurf); tady je zem a obzor ve 2D vrstvě, denní obloha, ovládací proužek a hledání těles.
 // Zjednodušení, která uživatel vidí v nápovědě: zem je rovná plocha bez krajiny, lom světla ve vzduchu se nepočítá,
 // denní obloha je ilustrace (barva podle výšky Slunce), u těles bez pevného povrchu stojíme na horní vrstvě oblak.
-import { B, idx, par, kids, P, SUN, EARTH, MOON, AU } from '../core/sim.js';
+import { B, idx, par, kids, P, SUN, EARTH, MOON, AU, period } from '../core/sim.js';
 import { createPovrchInfo } from './povrch_info.js';
 import { createPristani } from './pristani.js';
+import { zajimavosti } from '../data/zajimavosti.js';
+import { slozeniOf } from '../data/slozeni.js';
 import { AIR } from '../data/mista.js';
 const DEG = Math.PI / 180,
   RS = 696000;
@@ -201,17 +203,93 @@ export function createPovrch(S, A, ui) {
     draw();
     /* 2.2: po dosednutí uklidit okna (karta tělesa a minimapa se v pohledu z povrchu skryjí stylem body.surfon) */
     if (!opt.quiet) S.bus.emit('fly', i);
+    if (!opt.quiet) setTimeout(() => facts(i), 700);
     if (!opt.quiet) {
       const b = B[i];
       ui.toast(
-        (NOTE[b.id] ? NOTE[b.id] + ' ' : '') +
-          (kid()
-            ? `Stojíš na tělese ${b.cs}! Tahej a rozhlížej se. ${touch() ? 'Dvěma prsty' : 'Kolečkem'} si oblohu přiblížíš jako dalekohledem.`
-            : `Stojíš na povrchu (${b.cs}, ${place(q)}). Tahem se rozhlížíš, ${touch() ? 'dvěma prsty' : 'kolečkem'} měníš zorné pole jako dalekohledem. Zpátky do vesmíru: 🚀 Vzlétnout, Esc nebo ${touch() ? 'roztažením prstů' : 'kolečkem'} ven.`),
+        kid()
+          ? `Stojíš na tělese ${b.cs}! Tahej a rozhlížej se. ${touch() ? 'Dvěma prsty' : 'Kolečkem'} si oblohu přiblížíš jako dalekohledem.`
+          : `Stojíš na povrchu (${b.cs}, ${place(q)}). Tahem se rozhlížíš, ${touch() ? 'dvěma prsty' : 'kolečkem'} měníš zorné pole jako dalekohledem. Zpátky do vesmíru: 🚀 Vzlétnout, Esc nebo ${touch() ? 'roztažením prstů' : 'kolečkem'} ven.`,
         7000
       );
     }
     S.wake();
+  }
+  /* 2.3: zajímavosti po přistání – panel pod lištou pohledu z povrchu, sám zmizí po 18 s (✕ dřív) */
+  const fp = document.createElement('div');
+  fp.id = 'landfacts';
+  fp.className = 'panel';
+  document.body.appendChild(fp);
+  let fpT = 0;
+  fp.addEventListener('click', (e) => {
+    if (e.target.closest('[data-x]')) fp.classList.remove('on');
+  });
+  S.bus.on('surf', (q) => {
+    if (!q) fp.classList.remove('on');
+  });
+  const angOf = (j) => {
+    const r = S.R[j];
+    return r && r.dist > 0 ? (2 * Math.asin(Math.min(1, B[j].R / r.dist))) / DEG : 0;
+  };
+  function factsCtx(i) {
+    const b = B[i],
+      q = S.surf,
+      st = S.krajina ? S.krajina.state() : {},
+      sd = S.surfDir(SUN),
+      dS = S.R[SUN].dist,
+      c = {
+        id: b.id,
+        cs: b.cs,
+        kid: kid(),
+        g: b.g || 0,
+        vesc: b.vesc || 0,
+        atm: slozeniOf(b).atm,
+        sunDeg: angOf(SUN),
+        sunE: (AU / dS) ** 2,
+        sunEl: sd ? sd.el / DEG : 0,
+        opaque: !!(AIR[b.id] && AIR[b.id].opaque && q.air),
+        deck: /^(jupiter|saturn|uranus|neptune)$/.test(b.id),
+        small: b.R < 50,
+        lat: q.lat,
+        relH: st.relH || 0,
+      };
+    const sync = (j) => b.rot && Math.abs(Math.abs(b.rot) / 24 - period[j]) < 0.03 * period[j];
+    if (i === MOON) {
+      const d = S.surfDir(EARTH);
+      c.earth = { el: d.el / DEG, deg: angOf(EARTH) };
+    } else if (par[i] !== SUN && par[i] >= 0) {
+      const pj = par[i],
+        d = S.surfDir(pj);
+      c.parent = { cs: B[pj].cs, deg: angOf(pj), el: d.el / DEG, sync: sync(i) };
+    }
+    const cand = [...kids[i], ...(par[i] !== SUN && par[i] >= 0 ? kids[par[i]] : [])].filter((j) => j !== i);
+    c.moons = cand
+      .map((j) => ({ j, cs: B[j].cs, deg: angOf(j), el: S.surfDir(j).el / DEG }))
+      .filter((m) => m.el > 2 && m.deg > 1 / 60)
+      .sort((a, b2) => b2.deg - a.deg);
+    if (b.id === 'earth') {
+      const la = q.lat * DEG,
+        lo = q.lon * DEG,
+        pla = 80.79 * DEG,
+        plo = -72.76 * DEG;
+      c.geomag = Math.asin(Math.sin(la) * Math.sin(pla) + Math.cos(la) * Math.cos(pla) * Math.cos(lo - plo)) / DEG;
+    }
+    return c;
+  }
+  function facts(i, n = 0) {
+    if (!S.surf || S.surf.i !== i) return;
+    /* počkat, až je krajina postavená (výška nad okolím z výškové mapy) */
+    const k = S.krajina && S.krajina.on() ? S.krajina.state().key || '' : 'x';
+    if (k !== 'x' && !k.startsWith(`${i}|${S.surf.lat.toFixed(5)}|`) && n < 8)
+      return setTimeout(() => facts(i, n + 1), 400);
+    const z = zajimavosti(factsCtx(i));
+    fp.innerHTML =
+      `<button data-x title="Zavřít">✕</button><div class="lf-h">🛸 ${kid() ? `Jsi na tělese ${B[i].cs}!` : `${B[i].cs}: co je tu jinak`}</div>` +
+      z.top.map((t) => `<p>${t}</p>`).join('') +
+      `<p class="lf-d">${z.data}</p>`;
+    fp.classList.add('on');
+    clearTimeout(fpT);
+    fpT = setTimeout(() => fp.classList.remove('on'), 18000);
   }
   function exit() {
     if (!S.surf) return;
@@ -462,6 +540,7 @@ export function createPovrch(S, A, ui) {
     cover,
     AU,
     info,
+    facts: () => (S.surf ? zajimavosti(factsCtx(S.surf.i)) : null),
     targets,
     draw,
   };
