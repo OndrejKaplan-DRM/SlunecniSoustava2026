@@ -118,6 +118,89 @@ const brightOf = (E) => Math.max(0.004, Math.min(0.42, 0.25 + 0.06 * Math.log10(
 /* noční vidění: oko přivyklé tmě vidí obzor a světlý sníh i bez Měsíce (jas krajiny s albedem 0,2 asi 3,5 % poledne) */
 const NIGHT_B = 0.024,
   NIGHT_TINT = [0.82, 0.93, 1.18];
+/* 2.3: větry v oblačné vrstvě (m/s, kladně = na východ) podle šířky φ (°). Velikosti z NSSDCA fact sheets: Jupiter do
+   150 m/s pod 30° a 40 m/s nad 30°, Saturn 400 / 150, Uran 0–250, Neptun 0–580; rovník Saturnu na východ až 450 m/s
+   (NASA PIA05386). Směr podle šířky (střídavé pásy Jupiteru a Saturnu, rovník Uranu a Neptunu proti otáčení, Venuše nad
+   oblaky na západ asi 100 m/s) je z paměti – neověřeno. L = velikost oka (~ výška stupnice H: J 27, S 59,5, U 27,7,
+   N 19–20 km, NSSDCA), C = kontrast oblačnosti, A = vlnění výšek (m). */
+const sm01 = (x) => {
+  const t = Math.max(0, Math.min(1, x));
+  return t * t * (3 - 2 * t);
+};
+const DECKW = {
+  jupiter: { u: (f) => (f < 30 ? 130 : 38) * Math.cos((f * Math.PI) / 12), L: 24000, C: 0.34, A: 380 },
+  saturn: {
+    u: (f) => (f < 30 ? 400 * Math.cos((f * Math.PI) / 60) : 150 * Math.cos(((f - 30) * Math.PI) / 15)),
+    L: 48000,
+    C: 0.2,
+    A: 420,
+  },
+  uranus: { u: (f) => (f < 60 ? -100 + 350 * sm01(f / 60) : (250 * (90 - f)) / 30), L: 30000, C: 0.1, A: 220 },
+  neptune: { u: (f) => (f < 70 ? -400 + 650 * sm01(f / 70) : (250 * (90 - f)) / 20), L: 20000, C: 0.2, A: 260 },
+  venus: { u: () => -100, L: 30000, C: 0.12, A: 150 },
+  titan: { u: () => 20, L: 30000, C: 0.06, A: 60 },
+};
+const DECK_PARS = `
+uniform float uTime, uDeckL, uDeckC, uDeckA, uDeckTp;
+uniform vec2 uWind;
+uniform sampler2D tDeck;
+/* velké vlnění: vzor nesený větrem, pomalu pulzuje */
+/* kupy (buňky) nesené větrem, podél větru protažené 1,6×; pomalu „dýchají“ (pulz) */
+vec2 deckUV(vec2 P, vec2 o) { vec2 q = (P - o) / uDeckL; return vec2(q.x / 1.6, q.y); }
+float deckBig(vec2 P) {
+  float n = texture2D(tDeck, deckUV(P, uWind * uTime)).r;
+  float pul = 0.8 + 0.2 * sin(uTime * 0.23 + P.x * 2e-4 + P.y * 1.3e-4);
+  return uDeckA * (n - 0.45) * 2.0 * pul * (1.0 - smoothstep(25000.0, 90000.0, length(P)));
+}`;
+const DECK_COL = `float deckH = 0.0, deckM = 0.5;
+{
+  vec2 P = vWp.xz;
+  float L = uDeckL, Tp = uDeckTp;
+  deckH = deckBig(P);
+  /* barva podle téže kupy: vršky světlejší, propady tmavší (hlouběji, víc pohlcování) */
+  float hb = texture2D(tDeck, deckUV(P, uWind * uTime)).r;
+  float f1 = fract(uTime / Tp), f2 = fract(uTime / Tp + 0.5), w1 = 1.0 - abs(2.0 * f1 - 1.0), w2 = 1.0 - w1;
+  vec2 o1 = uWind * (f1 - 0.5) * Tp, o2 = uWind * (f2 - 0.5) * Tp,
+    sh = vec2(-uWind.y, uWind.x) * 0.18 + uWind * 0.25;
+  /* jemná struktura: menší zkroucené obláčky (víry) ve dvou střídajících se fázích */
+  vec2 u1 = deckUV(P, o1) * 3.0, u2 = deckUV(P, o2) * 3.0 + vec2(0.37, 0.61);
+  vec2 q1 = texture2D(tDeck, u1 * 0.25).gb - 0.5, q2 = texture2D(tDeck, u2 * 0.25 + 0.21).gb - 0.5;
+  float c1 = texture2D(tDeck, u1 + 1.2 * q1).r, c2 = texture2D(tDeck, u2 + 1.2 * q2).r;
+  vec2 v1 = (P - o1 - sh * (f1 - 0.5) * Tp) * 12.0 / L, v2 = (P - o2 - sh * (f2 - 0.5) * Tp) * 12.0 / L + vec2(0.13, 0.71);
+  float e1 = texture2D(tDeck, v1 + 2.0 * q1).a, e2 = texture2D(tDeck, v2 + 2.0 * q2).a;
+  /* prolnutí se zachovaným kontrastem (jinak by vzor v půlce fáze vybledl) */
+  float nr = inversesqrt(w1 * w1 + w2 * w2);
+  float cl = (c1 * w1 + c2 * w2 - 0.5) * nr, ed = (e1 * w1 + e2 * w2 - 0.5) * nr;
+  float dd = length(vWp - cameraPosition), nearK = 1.0 - smoothstep(3000.0, 30000.0, dd);
+  deckM = clamp(0.5 + 0.8 * (hb - 0.45) + 0.35 * cl * nearK + 0.25 * ed * (1.0 - smoothstep(1500.0, 8000.0, dd)), 0.0, 1.0);
+  diffuseColor.rgb *= 1.0 + uDeckC * (deckM - 0.5) * 2.0;
+  /* propady do sytější barvy (světlo jde hlouběji a víc se pohltí) */
+  diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * diffuseColor.rgb * 1.6, uDeckC * 1.5 * smoothstep(0.5, 0.05, hb));
+  /* vršky kup bělejší (krystalky čpavku a vody odrážejí víc), jako oblaka z letadla */
+  float lw = dot(diffuseColor.rgb, vec3(0.3, 0.5, 0.2));
+  diffuseColor.rgb = mix(diffuseColor.rgb, vec3(lw * 1.25 + 0.03), uDeckC * 1.2 * smoothstep(0.55, 0.95, deckM));
+  /* drobné vršky a údolí jen do stínování (ne do tvaru) */
+  deckH += uDeckA * 0.1 * cl * nearK + 5.0 * ed * (1.0 - smoothstep(1500.0, 6000.0, dd));
+}`;
+const DECK_BUMP = `
+{
+  vec3 sp = -vViewPosition, sX = dFdx(sp), sY = dFdy(sp), N = normal;
+  vec3 R1 = cross(sY, N), R2 = cross(N, sX);
+  float det = dot(sX, R1) * faceDirection;
+  vec2 dH = vec2(dFdx(deckH), dFdy(deckH));
+  vec3 g = sign(det) * (dH.x * R1 + dH.y * R2);
+  normal = normalize(abs(det) * N - g);
+}`;
+const DECK_LIGHT = `
+{
+  /* dopředný rozptyl (stříbrné okraje při pohledu proti Slunci, víc v řidších místech) a měkký lesk na vrcholcích;
+     v pásmu rozptylu jemné pulzování */
+  vec3 vv = normalize(vViewPosition);
+  float cp = dot(uSunV, vv),
+    fwd = pow(max(0.0, -cp), 9.0) * (0.5 + 0.9 * (1.0 - deckM)) * (1.0 + 0.08 * sin(uTime * 0.9 + deckM * 11.0)),
+    sheen = pow(max(0.0, dot(normal, normalize(uSunV + vv))), 30.0) * 0.18;
+  reflectedLight.directDiffuse *= 1.0 + uSunFrac * (1.3 * fwd + sheen);
+}`;
 export function createKrajina(S, renderer) {
   let terScene = null,
     ter = null,
@@ -151,16 +234,29 @@ export function createKrajina(S, renderer) {
     uSunV: { value: new THREE.Vector3(0, 1, 0) },
     uHobs: { value: 0 },
     uHsc: { value: 8 },
+    /* 2.3: pohyb oblačné vrstvy obrů */
+    uTime: { value: 0 },
+    uWind: { value: new THREE.Vector2() },
+    uDeckL: { value: 22000 },
+    uDeckC: { value: 0.3 },
+    uDeckA: { value: 120 },
+    uDeckTp: { value: 120 },
+    tDeck: { value: black },
   };
-  const patch = (mat, detail, vis) => {
+  const patch = (mat, detail, vis, deck) => {
+    if (deck) mat.defines = { ...(mat.defines || {}), DECK: 1 };
+    mat.customProgramCacheKey = () => `kraj${detail ? 1 : 0}${vis ? 1 : 0}${deck ? 1 : 0}`;
     mat.onBeforeCompile = (sh) => {
       Object.assign(sh.uniforms, U);
       sh.vertexShader = sh.vertexShader
         .replace(
           '#include <common>',
-          `#include <common>\nvarying vec3 vWp;${vis ? '\nattribute float vis;\nvarying float vVis;' : ''}`
+          `#include <common>\nvarying vec3 vWp;${vis ? '\nattribute float vis;\nvarying float vVis;' : ''}${deck ? DECK_PARS : ''}`
         )
-        .replace('#include <begin_vertex>', `#include <begin_vertex>${vis ? '\n vVis = vis;' : ''}`)
+        .replace(
+          '#include <begin_vertex>',
+          `#include <begin_vertex>${vis ? '\n vVis = vis;' : ''}${deck ? '\n transformed.y += deckBig(transformed.xz);' : ''}`
+        )
         .replace(
           '#include <project_vertex>',
           '#include <project_vertex>\n vec4 wpK = vec4(transformed, 1.0);\n#ifdef USE_INSTANCING\n wpK = instanceMatrix * wpK;\n#endif\n vWp = (modelMatrix * wpK).xyz;'
@@ -168,19 +264,22 @@ export function createKrajina(S, renderer) {
       sh.fragmentShader = sh.fragmentShader
         .replace(
           '#include <common>',
-          `#include <common>\nvarying vec3 vWp;${vis ? '\nvarying float vVis;' : ''}\nuniform sampler2D uSkyL, uDet;\nuniform vec2 uRes;\nuniform float uExpS, uFogOn, uDetK, uDetS, uNight, uSunFrac, uLS, uHobs, uHsc;\nuniform vec3 uExt, uNG, uSunV;\n${TONE}`
+          `#include <common>\nvarying vec3 vWp;${vis ? '\nvarying float vVis;' : ''}\nuniform sampler2D uSkyL, uDet;\nuniform vec2 uRes;\nuniform float uExpS, uFogOn, uDetK, uDetS, uNight, uSunFrac, uLS, uHobs, uHsc;\nuniform vec3 uExt, uNG, uSunV;\n${TONE}${deck ? DECK_PARS : ''}`
         )
         .replace(
           '#include <color_fragment>',
-          detail
-            ? `#include <color_fragment>\n{ float dd = length(vWp.xz - cameraPosition.xz); float fd = uDetK * (1.0 - smoothstep(12.0, 60.0, dd));
+          deck
+            ? `#include <color_fragment>\n${DECK_COL}`
+            : detail
+              ? `#include <color_fragment>\n{ float dd = length(vWp.xz - cameraPosition.xz); float fd = uDetK * (1.0 - smoothstep(12.0, 60.0, dd));
                float t1 = texture2D(uDet, vWp.xz * uDetS).r, t2 = texture2D(uDet, vWp.xz * uDetS * 0.173 + 0.37).r;
                diffuseColor.rgb *= mix(1.0, (0.55 + 0.9 * t1) * (0.8 + 0.4 * t2), fd); }`
-            : '#include <color_fragment>'
+              : '#include <color_fragment>'
         )
+        .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>${deck ? DECK_BUMP : ''}`)
         .replace(
           '#include <lights_fragment_end>',
-          `#include <lights_fragment_end>${vis ? '\n reflectedLight.directDiffuse *= mix(1.0, vVis, uSunFrac);' : ''}
+          `#include <lights_fragment_end>${vis ? '\n reflectedLight.directDiffuse *= mix(1.0, vVis, uSunFrac);' : ''}${deck ? DECK_LIGHT : ''}
            /* prachový regolit bez vzduchu nesvítí jako Lambertova plocha, ale podle Lommela a Seeligera (jas ~ μ0/(μ0+μ)):
               Měsíc je i při nízkém Slunci a při pohledu k obzoru světlý, směrem od Slunce ještě světlejší (opoziční efekt) */
            if (uLS > 0.0) {
@@ -209,6 +308,120 @@ export function createKrajina(S, renderer) {
     };
     return mat;
   };
+  /* 2.3: pohyb oblačné vrstvy obrů – „matematický trik“: šumová textura posouvaná větrem ve dvou střídajících se fázích
+     (flow map: každá fáze se posune nejvýš o půl periody, prolnutí skryje návrat), zkroucená druhou texturou (víry),
+     drobné víry rychleji a se střihem; jemné vlnění výšek ve vrcholech (pulzuje), reliéf ze šumu jen ve stínování
+     (normála z derivací), dopředný rozptyl a lesk proti Slunci. Rychlost a směr větru podle šířky místa. */
+  let deckOn = false,
+    deckWrap = 1e4,
+    deckTex = null;
+  function deckNoise() {
+    if (deckTex) return deckTex;
+    const n = 256,
+      d = new Uint8Array(n * n * 4);
+    /* periodický hodnotový šum (perioda p buněk na 256 px) */
+    const hv = (ix, iy, sd) => {
+      let h = Math.imul(ix * 374761393 + iy * 668265263 + sd * 2246822519, 1);
+      h = Math.imul(h ^ (h >>> 13), 1274126177);
+      return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+    };
+    const vn = (x, y, p, sd) => {
+      const fx = (x / n) * p,
+        fy = (y / n) * p,
+        x0 = Math.floor(fx),
+        y0 = Math.floor(fy),
+        tx = fx - x0,
+        ty = fy - y0,
+        sx = tx * tx * (3 - 2 * tx),
+        sy = ty * ty * (3 - 2 * ty),
+        a = hv(x0 % p, y0 % p, sd),
+        b = hv((x0 + 1) % p, y0 % p, sd),
+        c = hv(x0 % p, (y0 + 1) % p, sd),
+        e = hv((x0 + 1) % p, (y0 + 1) % p, sd);
+      return a + (b - a) * sx + (c - a) * sy + (a - b - c + e) * sx * sy;
+    };
+    const fb = (x, y, p0, oct, sd, ridge) => {
+      let s = 0,
+        w = 0.5,
+        t = 0;
+      for (let k = 0, p = p0; k < oct; k++, p *= 2) {
+        let v = vn(x, y, p, sd + k * 17);
+        if (ridge) v = 1 - Math.abs(2 * v - 1);
+        s += w * v;
+        t += w;
+        w *= 0.5;
+      }
+      return s / t;
+    };
+    /* buňky (Worleyho šum, 8 × 8 na dlaždici, periodický): kupy oblaků s klenutým vrškem, mezi nimi tmavší propady */
+    const P8 = 8,
+      cs = n / P8,
+      pts = [];
+    for (let j = 0; j < P8; j++)
+      for (let i = 0; i < P8; i++)
+        pts.push([(i + 0.15 + 0.7 * hv(i, j, 31)) * cs, (j + 0.15 + 0.7 * hv(i, j, 37)) * cs]);
+    const cell = (x, y) => {
+      const ci = Math.floor(x / cs),
+        cj = Math.floor(y / cs);
+      let f1 = 1e9,
+        f2 = 1e9;
+      for (let dj = -1; dj <= 1; dj++)
+        for (let di = -1; di <= 1; di++) {
+          const ii = ci + di,
+            jj = cj + dj,
+            pt = pts[(((jj % P8) + P8) % P8) * P8 + (((ii % P8) + P8) % P8)],
+            px = pt[0] + Math.floor(ii / P8) * n,
+            py = pt[1] + Math.floor(jj / P8) * n,
+            dd = Math.hypot(x - px, y - py);
+          if (dd < f1) {
+            f2 = f1;
+            f1 = dd;
+          } else if (dd < f2) f2 = dd;
+        }
+      /* měkké propady (nulový sklon na hranici buněk) a zaoblený vršek */
+      const e = Math.max(0, Math.min(1, ((f2 - f1) / (f2 + f1)) * 2.2));
+      return e * e * (3 - 2 * e);
+    };
+    for (let y = 0; y < n; y++)
+      for (let x = 0; x < n; x++) {
+        const k = (y * n + x) * 4,
+          /* kupa zkroucená šumem, aby buňky nebyly mnohoúhelníky */
+          wx = x + (fb(x, y, 4, 3, 41, false) - 0.5) * cs * 0.9,
+          wy = y + (fb(x, y, 4, 3, 43, false) - 0.5) * cs * 0.9,
+          c = 0.72 * cell(((wx % n) + n) % n, ((wy % n) + n) % n) + 0.28 * fb(x, y, 16, 3, 1, false);
+        d[k] = Math.max(0, Math.min(255, c * 255));
+        d[k + 1] = fb(x, y, 2, 4, 9, false) * 255;
+        d[k + 2] = fb(x, y, 2, 4, 13, false) * 255;
+        d[k + 3] = Math.max(0, Math.min(255, (fb(x, y, 32, 3, 21, true) - 0.5) * 2.2 * 255 + 128));
+      }
+    const t = new THREE.DataTexture(d, n, n, THREE.RGBAFormat);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    t.magFilter = THREE.LinearFilter;
+    t.minFilter = THREE.LinearMipmapLinearFilter;
+    t.generateMipmaps = true;
+    t.needsUpdate = true;
+    return (deckTex = t);
+  }
+  function deckSetup(b, q, deck) {
+    deckOn = !!deck;
+    if (!deck) return;
+    const id = b.id,
+      p = DECKW[id] || DECKW.jupiter,
+      u = p.u(Math.abs(q.lat)),
+      L = p.L;
+    U.tDeck.value = deckNoise();
+    U.uWind.value.set(u, 0);
+    U.uDeckL.value = L;
+    U.uDeckC.value = p.C;
+    U.uDeckA.value = p.A;
+    /* perioda prolínání: posun za půl periody ~ třetina oka */
+    const sp = Math.max(5, Math.abs(u));
+    U.uDeckTp.value = Math.max(20, Math.min(400, (0.6 * L) / sp));
+    /* čas se přetočí, až vítr posune vzor o celé dlaždice (64 × L) – bez skoku; perioda prolínání se vejde celá */
+    const Tw = (64 * L) / sp;
+    deckWrap = Math.max(U.uDeckTp.value, Math.round(Tw / U.uDeckTp.value) * U.uDeckTp.value);
+    U.uWind.value.x = Math.sign(u || 1) * ((64 * L) / deckWrap);
+  }
   /* --- obloha a složení --- */
   const tri = new THREE.BufferGeometry();
   tri.setAttribute('position', new THREE.BufferAttribute(new Float32Array([-1, -1, 0, 3, -1, 0, -1, 3, 0]), 3));
@@ -564,7 +777,8 @@ export function createKrajina(S, renderer) {
     ter.ls = T.ls || 0;
     /* 2.3: profil obzoru (hvězdy a značky za terénem se nekreslí) */
     hProf = ter.horizon(0, 0, eyeOf(q));
-    const mat = patch(new THREE.MeshLambertMaterial({ vertexColors: true }), true, true);
+    const mat = patch(new THREE.MeshLambertMaterial({ vertexColors: true }), true, true, ter.deck);
+    deckSetup(b, q, ter.deck);
     const ground = new THREE.Mesh(ter.geo, mat);
     ground.receiveShadow = true;
     ground.castShadow = false;
@@ -604,6 +818,7 @@ export function createKrajina(S, renderer) {
     U.uDetS.value = T.typ === 'zeme' ? 0.9 : 0.45;
     stat = {
       typ: T.typ,
+      wind: deckOn ? Math.round(U.uWind.value.x) : 0,
       ms: Math.round(performance.now() - t0),
       rocks: rocks.reduce((s, m) => s + m.count, 0),
       trees: trees.reduce((s, m) => s + m.count, 0),
@@ -762,6 +977,10 @@ export function createKrajina(S, renderer) {
     /* 2.3: přestavba mřížky kolem chodce běží po kouscích */
     if (job) {
       recenterStep(2);
+      S.wake();
+    }
+    if (deckOn) {
+      U.uTime.value = (performance.now() / 1000) % deckWrap;
       S.wake();
     }
     const b = B[q.i],
@@ -1264,6 +1483,8 @@ export function createKrajina(S, renderer) {
     adjust,
     on: () => !!S.surf && !S.surf.quiet && S.krajinaOn !== false,
     state: () => ({ ...stat, key }),
+    /* zkoušky: uniformy krajiny */
+    uni: U,
     /* 2.3 (chůze): dá se tu chodit? (oblačné moře obrů a pohled nad oblaky ne) */
     walkable: () => !!(ter && !ter.deck && mode !== 'nad'),
     /* výška země (m) v bodě (x východ, z jih) – stejná plocha, jakou kreslí mřížka; mimo ni přesný výpočet */
