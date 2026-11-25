@@ -1484,10 +1484,11 @@ export function createUI(S, A) {
       return;
     }
     if ($('#splash').classList.contains('on')) {
-      if (k === 'Enter' || k === ' ') {
+      /* 2.3: Enter (mezerník, Esc) = Spustit, U = ukázka ovládání */
+      if (k === 'Enter' || k === ' ' || k === 'Escape') {
         e.preventDefault();
-        ($('#sp-tut').offsetParent ? $('#sp-tut') : $('#sp-go')).click();
-      } else if (k === 'Escape') $('#sp-go').click();
+        $('#sp-go').click();
+      } else if ((k === 'u' || k === 'U') && $('#sp-tut').offsetParent) $('#sp-tut').click();
       return;
     }
     seq.push(e.key);

@@ -317,7 +317,13 @@ body.kid:not(.mob) #album { right: 372px; } @media (min-width: 1700px) { body.ki
 /* 1.5: ikona tělesa s prstenci je širší – nesmí zakrýt název a druh tělesa */
 #card .hd .ball { width: auto; min-width: 58px; }
 /* verze 1.6 */
-#sp-fs { font-size: 17px; line-height: 1; padding: 7px 11px; margin-left: 6px; } body.nofs #sp-fs { display: none; }
+#sp-fs { font-size: 15px; } body.nofs #sp-fs { display: none; }
+/* 2.3: nabídka úvodu v jednom sloupci (volba rozhraní nad sebou, pod ní Spustit, Ukázka, Celá obrazovka) */
+#splash p { text-wrap: balance; }
+#splash .modes { flex-direction: column; align-items: center; gap: 8px; margin: 12px 0 14px; } #splash .modes button { width: min(340px, 86vw); padding: 9px 14px; }
+#splash .acts { display: flex; flex-direction: column; align-items: center; gap: 8px; } #splash .acts button { width: min(340px, 86vw); margin: 0; padding: 9px 14px; border-radius: 12px; font-size: 15.5px; }
+#splash .acts #sp-go { font-size: 18px; padding: 11px 14px; background: rgba(255, 200, 87, 0.2); border-color: rgba(255, 200, 87, 0.7); color: #ffe7ad; font-weight: 700; }
+body.mob.land #splash .modes { flex-direction: row; } body.mob.land #splash .modes button { width: 48%; } body.mob.land #splash .acts { flex-direction: row; justify-content: center; flex-wrap: wrap; } body.mob.land #splash .acts button { width: auto; }
 body.kid [data-a="tm"] { display: none !important; }
 .li b { overflow: visible; display: grid; place-items: center; }
 .sunw { margin-top: 8px; padding-top: 7px; border-top: 1px solid var(--ln); }
@@ -424,9 +430,9 @@ body.cine.tutoring #tut { opacity: 1; }
   <p>Přes 200 těles ve skutečném měřítku. Všechna tam, kde právě teď opravdu jsou.<br>Leť, kam chceš: od Slunce až k návštěvníkům od cizích hvězd.</p>
   <div id="sp-load" title="Připravuji tělesa, která nejspíš navštívíš jako první"><div class="tr"><i></i></div><span><b>0 %</b> <em>připravuji vesmír</em></span><div id="sp-con"></div><pre id="sp-log"></pre></div>
   <div class="modes"><button id="sp-adult"><b>🎓 Dospělé rozhraní</b><small>Věcné údaje, jednotky, zdroje.</small></button><button id="sp-kid"><b>🧒 Dětské rozhraní</b><small>Hravé karty, tykání, zajímavosti.</small></button></div>
-  <button id="sp-tut" class="pri">▶ Ukázka ovládání (2 min)</button><button id="sp-go">Rovnou do vesmíru</button><button id="sp-fs" title="Celá obrazovka – zapnout / vypnout" aria-label="Celá obrazovka">⛶</button>
+  <div class="acts"><button id="sp-go" class="pri">🚀 Spustit</button><button id="sp-tut">▶ Ukázka ovládání (2 min)</button><button id="sp-fs" title="Celá obrazovka – zapnout / vypnout" aria-label="Celá obrazovka">⛶ Celá obrazovka</button></div>
   <div class="tg">👆 jeden prst otáčí · 🤏 dva prsty přibližují<br>ťuknutí vybere · dvojí ťuknutí letí k tělesu</div>
-  <div class="fine">Se zvukem. Rozhraní i zvuk jde kdykoli přepnout (K, X). Enter = ukázka, Esc = přeskočit.</div>
+  <div class="fine">Se zvukem. Rozhraní i zvuk jde kdykoli přepnout (K, X). Enter = spustit, U = ukázka ovládání.</div>
   <div class="ver">Verze 2.2b (zkušební) · <span class="autor">Ondřej Kaplan</span>, 2026 · zdarma, bez reklam a bez sběru dat · více v nápovědě (?)</div>
 </div></div>
 <script src="app.js"></script>
