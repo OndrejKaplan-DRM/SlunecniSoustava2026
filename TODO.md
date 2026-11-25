@@ -40,6 +40,12 @@ Superkarta, aby šly zacílit; 6/ oblaka obrů v pohybu (rychlost a směr větru
       vlnění výšek, reliéf do stínování, bělejší vršky, dopředný rozptyl proti Slunci.
 - [x] Zkouška `t_23` (15 kontrol), `t_krajina` podle nového chování kolečka.
 
+### Regrese 2.3 (25. 11. 2026, po jednom)
+- [x] `tut`, `test:fakta`, `test:model`, `test:vernost`, `test:sceny`, `t_krajina` (49), `t_povrch` (203; mez pohledu dolů je nově −86°,
+      sledované těleso pod obzorem dál nejvýš −20°), `t_preload`, `t_karty`, `t_pasy`, `t_obloha`, `t_scena` (287), `t_l2` (12),
+      `t_okna` (0 nálezů), `t_23` (16), `t_hi` (11/11) bez chyb.
+- [ ] `t_displej` – dál jen dřívější `tv_400: podrobná mapa mercury se nenačetla` (stejně jako v `main`).
+
 ### Neuděláno / zbývá
 - [ ] 120 snímků/s na Lenovu T460 v sandboxu ověřit nejde (softwarové kreslení 3–18 snímků/s). Změřeno: přestavba terénu ≤ 2 ms
       za snímek (nejdelší kousek ~10 ms před zjemněním, po zjemnění neměřeno na zařízení), kameny kolem chodce 0,5 ms.

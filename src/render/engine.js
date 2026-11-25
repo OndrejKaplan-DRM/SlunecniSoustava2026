@@ -1376,6 +1376,7 @@ export function createEngine(canvas, overlay) {
      posunuté o (ox, oy) bodů od středu obrazu (volná plocha vedle karty úkazu). */
   const SURF_FOV = [0.25, 75],
     SURF_EL = [-1.5, 1.5533] /* 2.3: s krajinou se dá podívat i pod nohy (dřív −20°) */,
+    SURF_TRACK_EL = -0.35,
     sN = new THREE.Vector3(),
     sE = new THREE.Vector3(),
     sNo = new THREE.Vector3(),
@@ -1422,7 +1423,10 @@ export function createEngine(canvas, overlay) {
     if (q.track >= 0 && q.track !== i) {
       surfDir(q.track, sAE);
       q.az = sAE[0];
-      q.el = Math.max(SURF_EL[0], sAE[1]);
+      q.el = Math.max(
+        SURF_TRACK_EL,
+        sAE[1]
+      ); /* sledované těleso pod obzorem: nejvýš 20° pod obzor (pak by se díval do země) */
       tracked = true;
     }
     const el = tracked ? q.el : Math.min(SURF_EL[1], Math.max(SURF_EL[0], q.el)),

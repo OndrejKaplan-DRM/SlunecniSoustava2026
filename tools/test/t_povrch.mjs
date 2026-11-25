@@ -250,8 +250,8 @@ for (const lay of which) {
   await frames();
   const lo = (await stav()).q.el;
   ok(
-    Math.max(hi, lo) <= 89.1 && Math.min(hi, lo) >= -20.1 && Math.abs(hi - lo) > 100,
-    `pohled jde od −20° po zenit (${lo.toFixed(1)}° až ${hi.toFixed(1)}°)`
+    Math.max(hi, lo) <= 89.1 && Math.min(hi, lo) >= -86.0 && Math.min(hi, lo) < -80 && Math.abs(hi - lo) > 160,
+    `pohled jde od −86° (2.3: pod nohy) po zenit (${lo.toFixed(1)}° až ${hi.toFixed(1)}°)`
   );
   // 6) zorné pole: meze 0,25° a 75°
   await page.evaluate(() => {
